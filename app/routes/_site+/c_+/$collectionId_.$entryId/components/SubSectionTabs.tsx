@@ -44,7 +44,6 @@ export function SubSectionTabs({
       .map((subSection) => {
          return subSection;
       });
-
    //On initial load, this will set the section active tab if url param exists
    const [searchParams] = useSearchParams();
    const subSectionId = searchParams.get("section");
@@ -62,10 +61,6 @@ export function SubSectionTabs({
       }
    }, [searchParams]);
 
-   const tabLength = tabs && tabs.length;
-
-   const hasMany = tabLength && tabLength > 1 ? true : false;
-
    const viewType = section?.viewType;
 
    return (
@@ -76,91 +71,80 @@ export function SubSectionTabs({
             className="scroll-mt-32 laptop:scroll-mt-[126px]"
          >
             <SectionTitle section={section} />
-            {hasMany ? (
-               <>
-                  {viewType == "tabs" && (
-                     <div className="shadow-sm dark:shadow-zinc-800/60 bg-clip-padding border-y tablet:border border-color-sub tablet:rounded-xl max-w-[754px] mx-auto max-tablet:-mx-3">
-                        <Tab.Group
-                           selectedIndex={selectedIndex}
-                           onChange={setSelectedIndex}
-                        >
-                           <Tab.List
-                              className="relative flex bg-zinc-50 dark:bg-dark350 scrollbar 
+            <>
+               {viewType == "tabs" && (
+                  <div className="shadow-sm dark:shadow-zinc-800/60 bg-clip-padding border-y tablet:border border-color-sub tablet:rounded-xl max-w-[754px] mx-auto max-tablet:-mx-3">
+                     <Tab.Group
+                        selectedIndex={selectedIndex}
+                        onChange={setSelectedIndex}
+                     >
+                        <Tab.List
+                           className="relative flex bg-zinc-50 dark:bg-dark350 scrollbar 
                             dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
                             scrollbar-thumb-zinc-300 scrollbar-track-zinc-100
                               overflow-auto border-b border-color-sub p-3 items-center gap-3 tablet:rounded-t-xl"
-                           >
-                              {tabs?.map((subSection) => {
-                                 return (
-                                    <Tab key={subSection.id} as={Fragment}>
-                                       {({ selected }) => (
-                                          //@ts-ignore
-                                          <Button
-                                             color={
-                                                selected
-                                                   ? "dark/white"
-                                                   : undefined
-                                             }
-                                             plain={selected ? undefined : true}
-                                             className={clsx(
-                                                !selected &&
-                                                   "bg-zinc-200/50 dark:shadow-none dark:bg-dark450",
-                                                "!py-1.5 !px-3 flex-none",
-                                             )}
-                                          >
-                                             {subSection.name}
-                                          </Button>
-                                       )}
-                                    </Tab>
-                                 );
-                              })}
-                           </Tab.List>
-                           <Tab.Panels className="p-3">
-                              {section?.subSections?.map((subSection) => (
-                                 <Tab.Panel key={subSection.id} unmount={false}>
-                                    <SubSection
-                                       customData={customData}
+                        >
+                           {tabs?.map((subSection) => {
+                              return (
+                                 <Tab key={subSection.id} as={Fragment}>
+                                    {({ selected }) => (
                                        //@ts-ignore
-                                       subSection={subSection}
-                                       customComponents={customComponents}
-                                    />
-                                 </Tab.Panel>
-                              ))}
-                           </Tab.Panels>
-                        </Tab.Group>
-                     </div>
-                  )}
-                  {viewType == "rows" && (
-                     <div className="space-y-6">
-                        {tabs?.map((section) => {
-                           return (
-                              <div key={section.id}>
-                                 {section.showTitle && (
-                                    <H2Plain
-                                       text={section?.name}
-                                       className="text-xl dark:text-zinc-300"
-                                    />
-                                 )}
+                                       <Button
+                                          color={
+                                             selected ? "dark/white" : undefined
+                                          }
+                                          plain={selected ? undefined : true}
+                                          className={clsx(
+                                             !selected &&
+                                                "bg-zinc-200/50 dark:shadow-none dark:bg-dark450",
+                                             "!py-1.5 !px-3 flex-none",
+                                          )}
+                                       >
+                                          {subSection.name}
+                                       </Button>
+                                    )}
+                                 </Tab>
+                              );
+                           })}
+                        </Tab.List>
+                        <Tab.Panels className="p-3">
+                           {section?.subSections?.map((subSection) => (
+                              <Tab.Panel key={subSection.id} unmount={false}>
                                  <SubSection
                                     customData={customData}
                                     //@ts-ignore
-                                    subSection={section}
+                                    subSection={subSection}
                                     customComponents={customComponents}
                                  />
-                              </div>
-                           );
-                        })}
-                     </div>
-                  )}
-               </>
-            ) : (
-               <SubSection
-                  customData={customData}
-                  //@ts-ignore
-                  subSection={section?.subSections[0]}
-                  customComponents={customComponents}
-               />
-            )}
+                              </Tab.Panel>
+                           ))}
+                        </Tab.Panels>
+                     </Tab.Group>
+                  </div>
+               )}
+               {viewType == "rows" && (
+                  <div className="space-y-6">
+                     {tabs?.map((section) => {
+                        return (
+                           <div key={section.id}>
+                              {section.showTitle && (
+                                 <H2Plain
+                                    text={section?.name}
+                                    className="text-xl dark:text-zinc-300"
+                                 />
+                              )}
+                              <SubSection
+                                 customData={customData}
+                                 //@ts-ignore
+                                 subSection={section}
+                                 customComponents={customComponents}
+                              />
+                           </div>
+                        );
+                     })}
+                  </div>
+               )}
+            </>
          </div>
       </>
    );
