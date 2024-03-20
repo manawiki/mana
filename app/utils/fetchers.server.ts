@@ -15,7 +15,9 @@ export function gqlEndpoint({
          ? "http://localhost:4000/api/graphql"
          : `https://${siteSlug}-db.${apiDBPath}/api/graphql`;
 
-   return "http://localhost:3000/api/graphql";
+   return process.env.NODE_ENV == "development"
+      ? "http://localhost:3000/api/graphql"
+      : `https://${apiDBPath}/api/graphql`;
 }
 
 export function authRestFetcher({
