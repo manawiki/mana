@@ -1,8 +1,9 @@
+import { jsonToGraphQLQuery } from "json-to-graphql-query";
 import type { Payload } from "payload";
 
 import type { RemixRequestContext } from "remix.env";
 import type { Collection } from "~/db/payload-types";
-import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
+import { cacheThis, gqlRequestWithCache } from "~/utils/cache.server";
 import {
    gqlFormat,
    gqlEndpoint,
@@ -63,27 +64,36 @@ export async function fetchListCore({
    if (collectionEntry?.customDatabase) {
       const label = gqlFormat(collectionId, "list");
 
-      const document = gql`
-         query ($page: Int!) {
-            entries: ${label}(page: $page, limit: 20) {
-               totalDocs
-               totalPages
-               limit
-               pagingCounter
-               hasPrevPage
-               prevPage
-               nextPage
-               hasNextPage
-               docs {
-                  id
-                  name
-                  icon {
-                     url
-                  }
-               }
-            }
-         }
-      `;
+      const query = {
+         query: {
+            entries: {
+               __aliasFor: label,
+               __args: {
+                  limit: 200,
+                  page: page,
+                  sort: "number",
+               },
+               totalDocs: true,
+               totalPages: true,
+               limit: true,
+               pagingCounter: true,
+               hasPrevPage: true,
+               prevPage: true,
+               nextPage: true,
+               hasNextPage: true,
+               docs: {
+                  id: true,
+                  slug: true,
+                  name: true,
+                  icon: {
+                     url: true,
+                  },
+               },
+            },
+         },
+      };
+
+      const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
 
       const { entries } = user
          ? await authGQLFetcher({
@@ -91,11 +101,11 @@ export async function fetchListCore({
               variables: {
                  page,
               },
-              document: document,
+              document: graphql_query,
            })
          : await gqlRequestWithCache(
               gqlEndpoint({ siteSlug: collectionEntry?.site.slug }),
-              document,
+              graphql_query,
               {
                  page,
               },
