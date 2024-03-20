@@ -115,6 +115,13 @@ const QUERY = gql`
             id
             name
             slug
+            filterGroups {
+               label
+               filterItem {
+                  icon
+                  queryString
+               }
+            }
             sections {
                id
                slug
