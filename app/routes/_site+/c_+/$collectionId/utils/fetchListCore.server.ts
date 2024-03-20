@@ -14,6 +14,7 @@ import type { CollectionsAllSchema } from "../_list";
 
 export async function fetchListCore({
    page = 1,
+   q,
    payload,
    siteSlug,
    user,
