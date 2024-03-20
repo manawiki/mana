@@ -46,11 +46,12 @@ export async function loader({
 
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const { page } = zx.parseQuery(request, CollectionsAllSchema);
+   const { page, q } = zx.parseQuery(request, CollectionsAllSchema);
 
    const { entries } = await fetchListCore({
       collectionId,
       page,
+      q,
       payload,
       siteSlug,
       user,
