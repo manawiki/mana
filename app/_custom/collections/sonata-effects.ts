@@ -43,7 +43,7 @@ export const SonataEffects: CollectionConfig = {
             },
             {
                name: "effect",
-               name: "text",
+               type: "text",
             },
             {
                name: "params",
