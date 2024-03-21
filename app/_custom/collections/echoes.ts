@@ -34,6 +34,11 @@ export const Echoes: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "rarity",
+         type: "relationship",
+         relationTo: "rarities",
+      },
+      {
          name: "element",
          type: "relationship",
          relationTo: "elements",
