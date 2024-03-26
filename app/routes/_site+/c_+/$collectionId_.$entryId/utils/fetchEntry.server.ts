@@ -1,4 +1,3 @@
-import { apiDBPath } from "~/utils/api-path.server";
 import { fetchWithCache, gqlRequestWithCache } from "~/utils/cache.server";
 import {
    authGQLFetcher,
@@ -30,14 +29,9 @@ export async function fetchEntry({
       siteSlug: entry.siteSlug,
    });
 
-   const restPath =
-      process.env.NODE_ENV == "development"
-         ? `http://localhost:4000/api/${entry.collectionSlug}/${
-              entry.id
-           }?depth=${rest?.depth ?? 2}`
-         : `https://${entry.siteSlug}-db.${apiDBPath}/api/${
-              entry.collectionSlug
-           }/${entry.id}?depth=${rest?.depth ?? 2}`;
+   const restPath = `http://localhost:4000/api/${entry.collectionSlug}/${
+      entry.id
+   }?depth=${rest?.depth ?? 2}`;
 
    const GQLorREST = gql?.query
       ? user

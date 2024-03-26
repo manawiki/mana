@@ -4,10 +4,14 @@
 ARG NODE_VERSION=20.8.0
 FROM node:${NODE_VERSION}-alpine as base
 
-LABEL fly_launch_runtime="Payload"
+LABEL fly_launch_runtime="Remix"
 
 # Remix app lives here
 WORKDIR /app
+
+# Set production environment
+ARG IS_HOME
+ENV IS_HOME $IS_HOME
 
 ENV NODE_ENV="production"
 ARG YARN_VERSION=1.22.21
@@ -22,18 +26,17 @@ RUN apk update && \
     apk add build-base gyp pkgconfig python3
 
 # Install node modules
-COPY --link package.json yarn.lock ./
+COPY --link package.json yarn.lock /patches ./
 RUN yarn install --frozen-lockfile --production=false
 
 # Copy application code
 COPY --link . .
 
 # Build application
-RUN yarn run custom-build
+RUN yarn run build:core
 
 # Remove development dependencies
 RUN yarn install --production=true
-
 
 # Final stage for app image
 FROM base
@@ -42,5 +45,6 @@ FROM base
 COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
-EXPOSE 8080
-CMD ["yarn", "run", "start:custom"]
+EXPOSE 3000
+CMD ["yarn", "run", "start:core"]
+

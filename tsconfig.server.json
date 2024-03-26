@@ -7,7 +7,7 @@
       "lib": ["ES2022"],
       "module": "NodeNext",
       "moduleResolution": "NodeNext",
-      "outDir": "dist",
+      "outDir": "build/core",
       "baseUrl": ".",
       "sourceMap": true,
       "noEmit": false
