@@ -1,5 +1,4 @@
 import type { Material as MaterialType } from "payload/generated-custom-types";
-import { H3 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
 export function Obtain({ data: mat }: { data: MaterialType }) {
@@ -7,7 +6,7 @@ export function Obtain({ data: mat }: { data: MaterialType }) {
 
    return (
       <>
-         <H3 text="How to Obtain" />
+         <h3>How to Obtain</h3> 
          <section>
             <div className="block items-center justify-center shadow-sm shadow-1 rounded-lg dark:bg-dark350 bg-zinc-50 border border-color-sub w-full">
                {mat?.obtain_way?.map((way: any) => {
