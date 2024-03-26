@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useLocation, useMatches, Link } from "@remix-run/react";
+import { useMatches, Link } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Avatar } from "~/components/Avatar";
@@ -17,7 +17,6 @@ import type { Collection } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
-import { CollectionImageUploader } from "./CollectionImageUploader";
 import type { Section } from "./List";
 import { AddSection } from "../$collectionId_.$entryId/components/AddSection";
 import { CollectionEdit } from "../$collectionId_.$entryId/components/CollectionEdit";
@@ -27,11 +26,13 @@ import { SectionList } from "../$collectionId_.$entryId/components/SectionList";
 import type { EntryType } from "../$collectionId_.$entryId/utils/_entryTypes";
 
 export function CollectionHeader({
+   collection,
    setIsChanged,
    isChanged,
    setAllSections,
    allSections,
 }: {
+   collection: Collection;
    setAllSections: (sections: any) => void;
    isChanged: boolean;
    setIsChanged: (value: boolean) => void;
@@ -45,32 +46,13 @@ export function CollectionHeader({
       entry: null,
    };
 
-   const { pathname } = useLocation();
-   const collectionSlug = pathname.split("/")[2];
-
-   const collection = site?.collections?.find(
-      (collection) => collection.slug === collectionSlug,
-   ) as Collection;
-
    const entryName = entry?.name;
+
+   const collectionName = collection?.name;
 
    const isEntry = entry?.name && entry?.id;
 
-   const icon = isEntry
-      ? entry?.icon && entry?.icon
-      : collection?.icon && collection?.icon;
-
-   const intent = isEntry ? "entry" : "collection";
-
-   const entityId = isEntry ? entry?.id : collection?.id;
-
-   const actionPath = isEntry
-      ? `/c/${collection?.slug}/${entry?.id}`
-      : "/collections";
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
-
-   //Get root domain from full domain url
-   let customDomainHostname = site?.domain?.split(".").slice(-2).join(".");
 
    return (
       <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
@@ -109,7 +91,7 @@ export function CollectionHeader({
                         </Button>
                         {entry ? (
                            <>
-                              {collection.customDatabase ? (
+                              {collection?.customDatabase ? (
                                  <>
                                     <EntryEdit entry={entry} />
                                     <span className="h-4 w-[1px] bg-zinc-300 dark:bg-zinc-600 rounded" />
@@ -117,13 +99,7 @@ export function CollectionHeader({
                                        className="size-8 !p-0"
                                        color="violet"
                                        target="_blank"
-                                       href={`https://${site.slug}-db.${
-                                          customDomainHostname
-                                             ? customDomainHostname
-                                             : "mana.wiki"
-                                       }/admin/collections/${collection.slug}/${
-                                          entry.id
-                                       }`}
+                                       href={`https://${site.slug}-db.mana.wiki/admin/collections/${collection.slug}/${entry.id}`}
                                     >
                                        <Icon
                                           title="Edit"
@@ -168,25 +144,27 @@ export function CollectionHeader({
                   />
                </div>
             </AdminOrStaffOrOwner>
-            <div className="flex items-center max-tablet:px-3  justify-between gap-4 pt-4 mx-auto max-w-[728px] laptop:w-[728px]">
-               <h1 className="font-bold font-header text-3xl pb-3">
-                  {entryName ?? collection?.name}
+            <div className="flex items-center max-tablet:px-3 justify-between gap-4 pt-4 mx-auto max-w-[728px] laptop:w-[728px] relative">
+               <h1 className="font-bold font-header text-2xl tablet:text-3xl pb-3 max-tablet:pr-14">
+                  {entryName ?? collectionName}
                </h1>
-               <div
-                  className="flex-none group relative tablet:-mr-1 border border-color-sub
-                  shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-10 flex 
-                  size-16 rounded-full overflow-hidden items-center"
-               >
-                  <CollectionImageUploader
-                     image={icon}
-                     actionPath={actionPath}
-                     intent={intent}
-                     entityId={entityId}
+               <div className="absolute right-3 laptop:right-0 top-7">
+                  <Avatar
+                     src={isEntry ? entry?.icon?.url : collection?.icon?.url}
+                     className="size-16 bg-3"
+                     initials={
+                        entry?.icon?.url || collection?.icon?.url
+                           ? undefined
+                           : isEntry
+                             ? entryName?.charAt(0)
+                             : collectionName?.charAt(0)
+                     }
+                     options="aspect_ratio=1:1&height=128&width=128"
                   />
                </div>
             </div>
          </div>
-         <section className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
+         <section className="border-b border-zinc-200/50 dark:border-darkBorder shadow-sm max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
             <div
                className="mx-auto max-w-[728px] flex items-center border-t max-tablet:mr-5
              py-2.5 border-zinc-200/50 dark:border-zinc-700/40 overflow-auto"
@@ -198,8 +176,12 @@ export function CollectionHeader({
                   >
                      <Avatar
                         src={collection?.icon?.url}
-                        className="size-6 !bg-white dark:!bg-zinc-800/30"
-                        initials={collection?.name.charAt(0)}
+                        className="size-6 dark:!bg-zinc-800/30"
+                        initials={
+                           collection?.icon?.url
+                              ? undefined
+                              : collectionName.charAt(0)
+                        }
                         options="aspect_ratio=1:1&height=80&width=80"
                      />
                      <Icon
@@ -219,7 +201,11 @@ export function CollectionHeader({
                            <Avatar
                               src={row?.icon?.url}
                               className="size-6"
-                              initials={row?.name.charAt(0)}
+                              initials={
+                                 row?.icon?.url
+                                    ? undefined
+                                    : row.name?.charAt(0)
+                              }
                               options="aspect_ratio=1:1&height=80&width=80"
                            />
                            {row.name}

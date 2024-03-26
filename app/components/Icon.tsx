@@ -1,7 +1,7 @@
 import type { SVGProps } from "react";
 import React from "react";
 
-import { type IconName } from "./icons";
+import type { IconName } from "./icons";
 
 /**
  * Renders an SVG icon. The icon defaults to the size of the font. To make it
@@ -11,17 +11,14 @@ import { type IconName } from "./icons";
  * you need to wrap the icon and text in a common parent and set the parent to
  * display "flex" (or "inline-flex") with "items-center" and a reasonable gap.
  */
-export function Icon({
-   name,
-   size,
-   title,
-   children,
-   ...props
-}: SVGProps<SVGSVGElement> & {
+
+interface IconProps extends SVGProps<SVGSVGElement> {
    name: IconName;
    size?: number;
    title?: string; // for accessibility
-}) {
+}
+
+export function Icon({ name, size, title, children, ...props }: IconProps) {
    if (children) {
       return (
          <span className="inline-flex items-center gap-1.5">

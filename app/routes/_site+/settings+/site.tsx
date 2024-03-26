@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Transition } from "@headlessui/react";
 import { redirect } from "@remix-run/node";
 import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
-import { useFetcher, useSubmit } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import { useZorm } from "react-zorm";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
@@ -20,6 +20,7 @@ import {
    Legend,
 } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
+import { ImageUploader } from "~/components/ImageUploader";
 import { Input } from "~/components/Input";
 import { Switch, SwitchField } from "~/components/Switch";
 import { Strong, TextLink, Text } from "~/components/Text";
@@ -30,9 +31,6 @@ import {
    uploadImage,
 } from "~/utils/upload-handler.server";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
-
-import { SiteBannerUploader } from "./components/SiteBannerUploader";
-import { SiteIconUploader } from "./components/SiteIconUploader";
 
 const SettingsSiteSchema = z.object({
    name: z.string().min(3),
@@ -82,8 +80,9 @@ export default function SiteSettings() {
    const [previewBannerImage, setPreviewBannerImage] = useState("");
 
    // Append the images to the form data if they exist
-   let submit = useSubmit();
    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+
       const $form = event.currentTarget;
 
       const formData = new FormData($form);
@@ -91,7 +90,7 @@ export default function SiteSettings() {
       preparedIconFile && formData.set("siteIcon", preparedIconFile);
       preparedBannerFile && formData.set("siteBanner", preparedBannerFile);
 
-      submit(formData, {
+      fetcher.submit(formData, {
          method: "POST",
          encType: "multipart/form-data",
       });
@@ -166,20 +165,24 @@ export default function SiteSettings() {
                      />
                   </Field>
                </FieldGroup>
-               <section className="laptop:w-[300px] space-y-6">
-                  <SiteIconUploader
-                     siteIcon={siteIcon}
-                     //@ts-ignore
-                     setPreparedFile={setPreparedIconFile}
+               <section className="laptop:w-[300px] space-y-6 flex-none">
+                  <ImageUploader
+                     label="Site Icon"
+                     icon={siteIcon}
                      previewImage={previewIconImage}
+                     setPreparedFile={setPreparedIconFile}
                      setPreviewImage={setPreviewIconImage}
+                     type="circle"
                   />
-                  <SiteBannerUploader
-                     siteBanner={siteBanner}
-                     //@ts-ignore
-                     setPreparedFile={setPreparedBannerFile}
+                  <ImageUploader
+                     type="rectangle"
+                     label="Site Banner"
+                     wrapperClassName="overflow-hidden"
+                     icon={siteBanner}
                      previewImage={previewBannerImage}
+                     setPreparedFile={setPreparedBannerFile}
                      setPreviewImage={setPreviewBannerImage}
+                     aspect={16 / 9}
                   />
                </section>
             </div>
@@ -287,7 +290,7 @@ export default function SiteSettings() {
                      type="submit"
                      color="dark/white"
                      className="cursor-pointer !font-bold text-sm h-8 w-[62px]"
-                     disabled={!isChanged || disabled}
+                     disabled={disabled}
                   >
                      {saving ? <DotLoader /> : "Save"}
                   </Button>

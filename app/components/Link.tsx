@@ -3,8 +3,12 @@ import React from "react";
 import { DataInteractive as HeadlessDataInteractive } from "@headlessui/react";
 import { Link as RemixLink, type LinkProps } from "@remix-run/react";
 
+interface LinkPropsWithHref extends Omit<LinkProps, "to"> {
+   href: LinkProps["to"];
+}
+
 export const Link = React.forwardRef(function Link(
-   props: { href: string | LinkProps["to"] } & Omit<LinkProps, "to">,
+   props: LinkPropsWithHref,
    ref: React.ForwardedRef<HTMLAnchorElement>,
 ) {
    return (

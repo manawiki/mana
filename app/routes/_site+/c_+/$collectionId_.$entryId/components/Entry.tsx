@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 
+import clsx from "clsx";
 import { useLocation, useParams } from "react-router-dom";
 
 import type { Collection } from "~/db/payload-types";
@@ -13,10 +14,12 @@ export function Entry({
    children,
    customData,
    customComponents,
+   className,
 }: {
    children?: ReactNode;
    customData?: unknown;
    customComponents?: unknown;
+   className?: string;
 }) {
    const { site } = useSiteLoaderData();
 
@@ -36,12 +39,18 @@ export function Entry({
    return (
       <>
          <CollectionHeader
+            collection={collection}
             allSections={allSections}
             setAllSections={setAllSections}
             setIsChanged={setIsChanged}
             isChanged={isChanged}
          />
-         <div className="mx-auto max-w-[728px] max-tablet:px-3 py-3 laptop:py-5 laptop:pb-44">
+         <div
+            className={clsx(
+               "max-tablet:px-3 py-3 laptop:py-5 laptop:pb-44 max-w-[728px] mx-auto",
+               className,
+            )}
+         >
             {children ? (
                children
             ) : (

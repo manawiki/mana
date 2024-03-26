@@ -33,7 +33,7 @@ export function PostTableOfContents({
    return (
       <>
          {rows && rows.length > 1 && (
-            <section className="relative">
+            <section className="relative max-w-[728px] w-full mx-auto">
                <div
                   className={clsx(
                      seeAllOpen ? "" : "max-h-[244px]",
@@ -86,14 +86,14 @@ export function PostTableOfContents({
                            )}
                            {row.type == "h3" && (
                               <div className="pb-1 pl-0.5 -ml-[3px]">
-                                 <div className="group py-1 flex items-center relative hover:underline dark:decoration-zinc-500 decoration-zinc-300">
+                                 <div className="group flex w-full items-center relative hover:underline dark:decoration-zinc-500 decoration-zinc-300">
                                     <div
-                                       className="w-[5px] h-4 group-hover:bg-zinc-300 -ml-[1px]
-                                     bg-zinc-200 dark:bg-dark500 rounded-r-sm dark:group-hover:bg-dark500"
+                                       className="w-[4px] h-4 group-hover:bg-zinc-300 -ml-[1px]
+                                            bg-zinc-200 dark:bg-dark450 rounded-r-sm dark:group-hover:bg-dark500"
                                     />
                                     <Link
                                        to={`#${row.slug}`}
-                                       className="font-semibold text-xs pl-[19px] text-1"
+                                       className="font-semibold text-sm rounded-lg pl-2.5 mx-3 dark:hover:bg-dark400 hover:bg-zinc-100 text-1 w-full py-1 block"
                                     >
                                        {row.name}
                                     </Link>

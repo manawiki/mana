@@ -55,7 +55,7 @@ const JoinFormSchema = z.object({
          "Username contains invalid characters",
       )
       .min(3, "Username must be at least 3 characters long")
-      .max(16, "Username cannot be more than 16 characters long")
+      .max(24, "Username cannot be more than 24 characters long")
       .toLowerCase(),
 });
 

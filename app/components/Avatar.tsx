@@ -11,14 +11,14 @@ import { Image } from "~/components/Image";
 import { TouchTarget } from "./Button";
 import { Link } from "./Link";
 
-type AvatarProps = {
+interface AvatarProps extends React.ComponentPropsWithoutRef<"span"> {
    src?: string | null;
    square?: boolean;
    initials?: string;
    alt?: string;
    className?: string;
    options?: string;
-};
+}
 
 export function Avatar({
    src = null,
@@ -28,7 +28,7 @@ export function Avatar({
    className,
    options,
    ...props
-}: AvatarProps & React.ComponentPropsWithoutRef<"span">) {
+}: AvatarProps) {
    return (
       <span
          data-slot="avatar"
@@ -36,7 +36,7 @@ export function Avatar({
             className,
 
             // Basic layout
-            "inline-grid align-middle *:col-start-1 *:row-start-1 dark:bg-dark450 bg-zinc-100",
+            "grid align-middle *:col-start-1 *:row-start-1 dark:bg-dark450 bg-white",
 
             // Add the correct border radius
             square

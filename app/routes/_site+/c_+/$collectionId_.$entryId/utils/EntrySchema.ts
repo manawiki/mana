@@ -7,4 +7,6 @@ export const EntrySchemaUpdateSchema = z.object({
    existingSlug: z.string().optional(),
    siteId: z.string().optional(),
    collectionId: z.string().optional(),
+   entryIcon: z.any().optional(),
+   entryIconId: z.string().optional(),
 });

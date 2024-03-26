@@ -1,5 +1,5 @@
 import type { Payload } from "payload";
-import { type Select } from "payload-query";
+import type { Select } from "payload-query";
 
 import type { Post } from "payload/generated-types";
 import type { RemixRequestContext } from "remix.env";

@@ -15,8 +15,17 @@ import { Icon } from "~/components/Icon";
 import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
-import type { Section } from "./Sections";
 import { SortableSubSectionItem } from "./SortableSubSectionItem";
+
+export type Section = {
+   id: string;
+   slug: string;
+   name?: string;
+   showTitle?: boolean;
+   viewType?: "tabs" | "rows";
+   showAd?: boolean;
+   subSections?: [{ id: string; slug: string; name: string; type: string }];
+};
 
 export function SubSectionList({
    section,
@@ -129,12 +138,12 @@ export function SubSectionList({
                items={allSubSections}
                strategy={verticalListSortingStrategy}
             >
-               <div className="divide-y bg-2-sub divide-color-sub mb-4 -mx-5 border-y border-color-sub">
+               <div className="divide-y bg-2-sub divide-color-sub mb-4 -mx-4 border-y border-color-sub">
                   {allSubSections?.map((row) => (
                      <SortableSubSectionItem
                         key={row.id}
                         subSection={row}
-                        sectionId={section.id}
+                        section={section}
                         fetcher={fetcher}
                         collectionId={collection?.id}
                      />
@@ -146,7 +155,7 @@ export function SubSectionList({
                   <SortableSubSectionItem
                      fetcher={fetcher}
                      subSection={activeSubSection}
-                     sectionId={section.id}
+                     section={section}
                      collectionId={collection?.id}
                   />
                )}
