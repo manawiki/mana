@@ -32,6 +32,9 @@
    .border-color-sub {
       @apply border-[#ededed] dark:border-zinc-700;
    }
+   h3 {
+      @apply font-header dark:text-zinc-100 text-xl mt-4 pb-1 scroll-mt-32 laptop:scroll-mt-20;
+   }
    /* table {
       @apply border-collapse;
    }
@@ -54,8 +57,16 @@ html.dark {
 }
 
 @layer components {
+   audio::-webkit-media-controls-panel {
+      @apply bg-zinc-200;
+   }
+
+   audio {
+      @apply h-6 w-full;
+   }
+
    input[type="range"] {
-      @apply appearance-none bg-transparent;
+      @apply appearance-none bg-transparent !border-0;
    }
 
    input[type="range"]::-webkit-slider-runnable-track {
@@ -68,15 +79,6 @@ html.dark {
 
    input[type="range"]::-ms-track {
       @apply bg-zinc-200 dark:bg-dark500 rounded-full;
-   }
-   .input-text {
-      @apply border-color
-        focus:bg-2
-        bg-3
-        mt-1
-        block h-11 w-full
-      rounded-md border focus:border-zinc-200
-        focus:ring-0 dark:placeholder:text-zinc-300 focus:dark:border-zinc-700;
    }
    .divide-color {
       @apply divide-[#ededed] dark:divide-[#36393e];

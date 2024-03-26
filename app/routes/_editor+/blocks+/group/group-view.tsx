@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { Node } from "slate";
 import { ReactEditor, useSlateStatic } from "slate-react";
 
+import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Modal } from "~/components/Modal";
@@ -23,38 +24,76 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
    return (
       <>
          {viewMode == "list" && (
-            <div className="bg-2-sub group relative flex items-center gap-2 p-2.5">
-               <Link
-                  reloadDocument={element?.isCustomSite ?? false}
-                  key={element?.id}
-                  to={element?.path ?? ""}
-                  prefetch="intent"
-                  className="flex items-center flex-grow gap-2"
-               >
-                  <div
-                     className="shadow-1 border-color flex h-8 w-8 items-center
-                  justify-between overflow-hidden rounded-full border-2 shadow-sm"
+            <>
+               {element.isPost && element.iconUrl ? (
+                  <Link
+                     reloadDocument={element?.isCustomSite ?? false}
+                     key={element?.id}
+                     to={element?.path ?? ""}
+                     prefetch="intent"
+                     className="flex items-center w-full gap-5 group p-3"
+                  >
+                     {element.iconUrl && (
+                        <div className="w-1/2 tablet:w-28 flex-none overflow-hidden rounded">
+                           <Image
+                              alt={element.name}
+                              className="w-full rounded object-cover"
+                              height={300}
+                              options="height=300"
+                              url={element?.iconUrl}
+                           />
+                        </div>
+                     )}
+                     <div className="relative flex-grow space-y-1">
+                        {element.name && (
+                           <div className="font-header font-bold group-hover:underline line-clamp-2">
+                              {element.name}
+                           </div>
+                        )}
+                        {element.subtitle && (
+                           <div className="text-sm text-1 line-clamp-2">
+                              {element.subtitle}
+                           </div>
+                        )}
+                     </div>
+                  </Link>
+               ) : (
+                  <Link
+                     reloadDocument={element?.isCustomSite ?? false}
+                     key={element?.id}
+                     to={element?.path ?? ""}
+                     prefetch="intent"
+                     className="flex items-center flex-grow gap-2 p-3 group"
                   >
                      {element?.iconUrl ? (
-                        <Image
-                           height={80}
-                           width={80}
-                           url={element?.iconUrl}
+                        <Avatar
+                           src={element?.iconUrl}
+                           initials={
+                              element?.iconUrl
+                                 ? undefined
+                                 : element.name.charAt(0)
+                           }
+                           className="size-9"
                            options="aspect_ratio=1:1&height=80&width=80"
-                           alt={element?.name ?? "Icon"}
+                        />
+                     ) : element.isPost ? (
+                        <Icon
+                           name="pen-square"
+                           className="text-1 mx-auto"
+                           size={14}
                         />
                      ) : (
                         <Icon
-                           name="component"
+                           name="database"
                            className="text-1 mx-auto"
-                           size={18}
+                           size={15}
                         />
                      )}
-                  </div>
-                  <span className="text-1 flex-grow truncate text-sm font-bold group-hover:underline">
-                     {element?.name}
-                  </span>
-               </Link>
+                     <span className="flex-grow truncate text-sm font-bold group-hover:underline">
+                        {element?.name}
+                     </span>
+                  </Link>
+               )}
                {element.groupContent && (
                   <button
                      className="flex group/doc h-7 w-7 items-center justify-center"
@@ -78,10 +117,10 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      {element.label}
                   </div>
                )}
-            </div>
+            </>
          )}
          {viewMode == "grid" && (
-            <div className="border-color-sub shadow-1 group relative flex items-center justify-center rounded-lg border bg-2-sub shadow-sm">
+            <>
                {element.groupContent && (
                   <button
                      className="flex h-7 w-7 absolute group/doc right-1.5 top-1.5 z-20 items-center justify-center"
@@ -102,7 +141,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                   prefetch="intent"
                   className={clsx(
                      element.groupContent ? "" : "w-full",
-                     "block truncate p-3",
+                     "flex items-center justify-center flex-col p-3 bg-2-sub rounded-lg border border-color-sub shadow-sm shadow-1",
                   )}
                >
                   {element.label && (
@@ -118,31 +157,19 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                         </div>
                      </div>
                   )}
-                  <div
-                     className="shadow-1 border-color-sub mx-auto flex h-[60px] w-[60px]
-                  items-center overflow-hidden rounded-full border shadow-sm"
-                  >
-                     {element?.iconUrl ? (
-                        <Image
-                           height={80}
-                           width={80}
-                           url={element?.iconUrl}
-                           options="aspect_ratio=1:1&height=120&width=120"
-                           alt={element?.name ?? "Icon"}
-                        />
-                     ) : (
-                        <Icon
-                           name="component"
-                           className="text-1 mx-auto"
-                           size={18}
-                        />
-                     )}
-                  </div>
-                  <div className="text-1 truncate pt-0.5 text-center text-sm font-bold">
+                  <Avatar
+                     src={element?.iconUrl}
+                     initials={
+                        element?.iconUrl ? undefined : element.name.charAt(0)
+                     }
+                     className="size-14 mx-auto"
+                     options="aspect_ratio=1:1&height=120&width=120"
+                  />
+                  <div className="text-center pt-2 text-xs font-bold">
                      {element?.name}
                   </div>
                </Link>
-            </div>
+            </>
          )}
          {element.groupContent && (
             <Modal
@@ -212,7 +239,7 @@ export function BlockGroupView({
       <section
          className={clsx(
             element.itemsViewMode == "list"
-               ? `border-color-sub divide-color-sub shadow-1 relative
+               ? `border-color-sub divide-color-sub shadow-1 relative bg-2-sub
                   mb-3 divide-y overflow-hidden rounded-lg border shadow-sm`
                : "",
             element.itemsViewMode == "grid"

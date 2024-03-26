@@ -1,6 +1,6 @@
 import type { Payload } from "payload";
 
-import type { User } from "~/db/payload-types";
+import type { RemixRequestContext } from "remix.env";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { gqlRequestWithCache } from "~/utils/cache.server";
 import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
@@ -8,7 +8,7 @@ import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
 export interface ListFetchType {
    request: Request;
    payload: Payload;
-   user?: User;
+   user?: RemixRequestContext["user"];
    gql?: {
       query: string;
       variables?: {};

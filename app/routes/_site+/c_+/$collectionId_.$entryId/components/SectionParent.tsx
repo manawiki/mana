@@ -37,9 +37,6 @@ export function SectionParent({
       const isSingle =
          section?.subSections && section?.subSections?.length == 1;
 
-      const isEmbedEmpty =
-         !entry?.embeddedContent || entry?.embeddedContent.length == 0;
-
       const isActiveSection = activeSection === section?.slug;
 
       const activeSectionName = sections?.find(
@@ -65,13 +62,10 @@ export function SectionParent({
          <>
             {isActiveSection && (
                <div
-                  className="fixed top-[117px] max-tablet:left-0 max-tablet:px-3 laptop:top-[61px]
-                  flex items-center max-tablet:bg-3 w-full tablet:w-[736px] laptop:-mx-1 z-30 max-laptop:py-3"
+                  className="fixed top-[117px] left-0  max-tablet:px-3 laptop:top-[61px] bg-3-sub laptop:shadow-sm shadow-1 px-2.5 py-2 laptop:pb-3 laptop:pt-3.5
+                  flex items-center w-full z-50 laptop:z-30 max-laptop:py-3 mx-auto  border-y laptop:border-t-0 dark:border-zinc-600/50"
                >
-                  <div
-                     className="flex items-center w-full justify-between bg-3-sub laptop:shadow-sm shadow-1
-                     px-2.5 py-2 laptop:pb-2.5 border laptop:border-t-0 max-laptop:rounded-xl rounded-b-xl dark:border-zinc-600/50"
-                  >
+                  <div className="flex items-center w-full justify-between laptop:ml-36 desktop:ml-[300px] laptop:mr-80">
                      <div className="flex items-center gap-2.5">
                         <Popover>
                            {({ open }) => (
@@ -100,11 +94,13 @@ export function SectionParent({
                                     leaveFrom="opacity-100 translate-y-0"
                                     leaveTo="opacity-0 translate-y-1"
                                  >
-                                    <Popover.Panel className="max-laptop:px-3 absolute w-full mt-4 drop-shadow-xl left-0 transform">
-                                       <TableOfContents
-                                          entry={entry}
-                                          sections={sections}
-                                       />
+                                    <Popover.Panel className="absolute w-full mt-3.5 laptop:mt-5 drop-shadow-xl left-0 transform">
+                                       <div className="flex items-center justify-center laptop:pl-[138px] desktop:pl-[306px] laptop:pr-[340px]">
+                                          <TableOfContents
+                                             entry={entry}
+                                             sections={sections}
+                                          />
+                                       </div>
                                     </Popover.Panel>
                                  </Transition>
                               </>
@@ -115,7 +111,7 @@ export function SectionParent({
                         </div>
                      </div>
                      {isActiveSection && (
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 laptop:pr-4">
                            <Tooltip setDelay={1000} placement="top">
                               <TooltipTrigger title="Next Section" asChild>
                                  <Link
@@ -164,12 +160,11 @@ export function SectionParent({
                </div>
             )}
 
-            {/* If no embed data is returned and user is anon or doesn't have access, render as single section */}
-            {isSingle || (isEmbedEmpty && !hasAccess) ? (
+            {isSingle ? (
                <div
                   data-section
                   id={section?.slug ?? ""}
-                  className="scroll-mt-32 laptop:scroll-mt-[126px]"
+                  className="scroll-mt-32 laptop:scroll-mt-[126px] max-w-[728px] mx-auto"
                >
                   <SectionTitle section={section} />
                   <SubSection
