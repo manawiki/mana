@@ -36,7 +36,6 @@ COPY --link . .
 
 # Build application
 RUN yarn run build
-RUN yarn run custom-build
 
 # Remove development dependencies
 RUN yarn install --production=true

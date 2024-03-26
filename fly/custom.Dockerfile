@@ -29,7 +29,7 @@ RUN yarn install --frozen-lockfile --production=false
 COPY --link . .
 
 # Build application
-RUN yarn run custom-build
+RUN yarn run build:custom
 
 # Remove development dependencies
 RUN yarn install --production=true
