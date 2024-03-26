@@ -4,7 +4,7 @@ import type { EntryContext } from "@remix-run/node";
 import { createInstance } from "i18next";
 import Backend from "i18next-fs-backend";
 import { initReactI18next } from "react-i18next";
-import { RemixI18Next } from "remix-i18next";
+import { RemixI18Next } from "remix-i18next/server";
 
 import { config } from "./config"; // your i18n configuration file
 
@@ -21,27 +21,29 @@ export const i18nextServer = new RemixI18Next({
          loadPath: resolve("./public/locales/{{lng}}/{{ns}}.json"),
       },
    },
-   // The backend you want to use to load the translations
-   // Tip: You could pass `resources` to the `i18next` configuration and avoid
-   // a backend here
-   backend: Backend,
+   // The i18next plugins you want RemixI18next to use for `i18n.getFixedT` inside loaders and actions.
+   // E.g. The Backend plugin for loading translations from the file system
+   // Tip: You could pass `resources` to the `i18next` configuration and avoid a backend here
+   plugins: [Backend],
 });
 
 export async function createI18nextServerInstance(
    request: Request,
-   remixContext: EntryContext
+   remixContext: EntryContext,
 ) {
    // Create a new instance of i18next so every request will have a
    // completely unique instance and not share any state
    const instance = createInstance();
+   let lng = await i18nextServer.getLocale(request);
+   let ns = i18nextServer.getRouteNamespaces(remixContext);
 
    await instance
       .use(initReactI18next) // Tell our instance to use react-i18next
       .use(Backend) // Setup our backend
       .init({
          ...config, // spread the configuration
-         lng: await i18nextServer.getLocale(request), // detect locale from the request
-         ns: i18nextServer.getRouteNamespaces(remixContext), // detect what namespaces the routes about to render want to use
+         lng, // detect locale from the request
+         ns, // detect what namespaces the routes about to render want to use
          backend: {
             loadPath: resolve("./public/locales/{{lng}}/{{ns}}.json"),
          },

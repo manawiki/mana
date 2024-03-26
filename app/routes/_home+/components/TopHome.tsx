@@ -4,7 +4,7 @@ import { Image } from "~/components/Image";
 import { ManaCore } from "./manacore";
 import { Particles } from "./particles";
 
-export const Top = () => {
+export function TopHome() {
    return (
       <>
          <section className="relative z-10 bg-zinc-900">
@@ -14,7 +14,7 @@ export const Top = () => {
 
                {/* Illustration */}
                <div
-                  className="pointer-events-none absolute inset-0 -z-10 -mx-28 overflow-hidden rounded-b-[3rem]"
+                  className="pointer-events-none absolute inset-0 -z-10 laptop:-mx-28 overflow-hidden laptop:rounded-b-[3rem]"
                   aria-hidden="true"
                >
                   <div className="absolute bottom-0 left-1/2 -z-10 -translate-x-1/2">
@@ -251,4 +251,4 @@ export const Top = () => {
          </section>
       </>
    );
-};
+}

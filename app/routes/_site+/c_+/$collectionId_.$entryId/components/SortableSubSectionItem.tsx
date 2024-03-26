@@ -7,24 +7,32 @@ import clsx from "clsx";
 import { useZorm } from "react-zorm";
 
 import { Button } from "~/components/Button";
-import { Dialog } from "~/components/Dialog";
 import { Field, FieldGroup, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
+import { Switch, SwitchField } from "~/components/Switch";
+import { NestedTray } from "~/routes/_site+/_components/MobileTray";
 import { isAdding, isProcessing } from "~/utils/form";
 
 import { SubSectionSchema } from "./AddSubSection";
+import type { Section } from "./SubSectionList";
 
 export function SortableSubSectionItem({
    collectionId,
    subSection,
-   sectionId,
+   section,
    fetcher,
 }: {
    collectionId: string | undefined;
-   sectionId: string;
-   subSection: { id: string; slug: string; name: string; type: string };
+   section: Section;
+   subSection: {
+      id: string;
+      showTitle?: boolean;
+      slug: string;
+      name: string;
+      type: string;
+   };
    fetcher: FetcherWithComponents<unknown>;
 }) {
    const {
@@ -69,14 +77,9 @@ export function SortableSubSectionItem({
             } as React.CSSProperties /* cast because of css variable */
          }
          {...attributes}
-         className="flex items-center gap-3 p-2 pl-[18px] pr-5 justify-between"
+         className="flex items-center gap-3 py-2 px-3 justify-between"
       >
-         <Dialog
-            className="relative"
-            size="lg"
-            onClose={setIsOpen}
-            open={isOpen}
-         >
+         <NestedTray open={isOpen} onOpenChange={setIsOpen} direction="right">
             <fetcher.Form
                onChange={() => setSubSectionUpdateFormChanged(true)}
                method="post"
@@ -112,6 +115,18 @@ export function SortableSubSectionItem({
                         <option value="comments">Comments</option>
                      </Select>
                   </Field>
+                  {section.viewType === "rows" && (
+                     <SwitchField fullWidth disabled={disabled}>
+                        <Label>Show Title</Label>
+                        <Switch
+                           onChange={() => setSubSectionUpdateFormChanged(true)}
+                           defaultChecked={subSection.showTitle}
+                           value="true"
+                           color="emerald"
+                           name={updateSubSection.fields.showTitle()}
+                        />
+                     </SwitchField>
+                  )}
                   <input
                      type="hidden"
                      name={updateSubSection.fields.collectionId()}
@@ -120,7 +135,7 @@ export function SortableSubSectionItem({
                   <input
                      type="hidden"
                      name={updateSubSection.fields.sectionId()}
-                     value={sectionId}
+                     value={section.id}
                   />
                   <input
                      type="hidden"
@@ -176,7 +191,7 @@ export function SortableSubSectionItem({
                   </div>
                </FieldGroup>
             </fetcher.Form>
-         </Dialog>
+         </NestedTray>
          <div className="flex items-center gap-2 flex-grow">
             <div
                className={clsx(

@@ -8,7 +8,7 @@ export async function fetchApplicationData({
    user,
 }: {
    payload: Payload;
-   siteSlug: string;
+   siteSlug: string | undefined;
    user: RemixRequestContext["user"];
 }) {
    const { docs } = await payload.find({

@@ -18,6 +18,14 @@ const TableContext = createContext<{
    framed: false,
 });
 
+interface TableProps extends React.ComponentPropsWithoutRef<"div"> {
+   bleed?: boolean;
+   dense?: boolean;
+   grid?: boolean;
+   striped?: boolean;
+   framed?: boolean;
+}
+
 export function Table({
    bleed = false,
    dense = false,
@@ -27,13 +35,7 @@ export function Table({
    className,
    children,
    ...props
-}: {
-   bleed?: boolean;
-   dense?: boolean;
-   grid?: boolean;
-   striped?: boolean;
-   framed?: boolean;
-} & React.ComponentPropsWithoutRef<"div">) {
+}: TableProps) {
    return (
       <TableContext.Provider
          value={
@@ -47,9 +49,11 @@ export function Table({
                {...props}
                className={clsx(
                   className,
-                  "-mx-[--gutter] overflow-x-auto whitespace-nowrap",
+                  `-mx-[--gutter] overflow-x-auto whitespace-nowrap scrollbar 
+                  dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
+                  scrollbar-thumb-zinc-300 scrollbar-track-zinc-100`,
                   framed &&
-                     "border-y tablet:border tablet:rounded-lg border-color-sub dark:bg-dark350 shadow-sm shadow-1",
+                     "border-y mobile:border mobile:rounded-lg border-color-sub dark:bg-dark350 shadow-sm shadow-1",
                )}
             >
                <div
@@ -98,6 +102,12 @@ const TableRowContext = createContext<{
    grouped: false,
 });
 
+interface TableRowProps extends React.ComponentPropsWithoutRef<"tr"> {
+   href?: string;
+   target?: string;
+   title?: string;
+}
+
 export function TableRow({
    href,
    target,
@@ -105,11 +115,7 @@ export function TableRow({
    className,
    children,
    ...props
-}: {
-   href?: string;
-   target?: string;
-   title?: string;
-} & React.ComponentPropsWithoutRef<"tr">) {
+}: TableRowProps) {
    let { striped } = useContext(TableContext);
 
    return (
@@ -137,32 +143,40 @@ export function TableRow({
    );
 }
 
-export function TableHeader({
-   className,
-   ...props
-}: React.ComponentPropsWithoutRef<"th">) {
-   let { bleed, grid, framed } = useContext(TableContext);
+interface TableHeaderProps extends React.ComponentPropsWithoutRef<"th"> {
+   center?: boolean;
+}
+
+export function TableHeader({ className, center, ...props }: TableHeaderProps) {
+   let { grid, framed } = useContext(TableContext);
 
    return (
       <th
          {...props}
          className={clsx(
             className,
+            center && "text-center",
             framed && "bg-zinc-50 dark:bg-dark400",
-            "border-b border-color-sub font-semibold px-4 py-2.5 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
+            "border-b border-color-sub font-semibold px-3 py-2.5",
             grid && "border-l border-color-sub first:border-l-0",
-            !bleed && "tablet:first:pl-2 tablet:last:pr-2",
          )}
       />
    );
 }
 
+interface TableCellProps extends React.ComponentPropsWithoutRef<"td"> {
+   center?: boolean;
+   bold?: boolean;
+}
+
 export function TableCell({
    className,
    children,
+   center,
+   bold,
    ...props
-}: React.ComponentPropsWithoutRef<"td">) {
-   let { bleed, dense, grid, striped, framed } = useContext(TableContext);
+}: TableCellProps) {
+   let { dense, grid, striped, framed } = useContext(TableContext);
    let { href, target, title } = useContext(TableRowContext);
    let [cellRef, setCellRef] = useState<HTMLElement | null>(null);
 
@@ -172,11 +186,12 @@ export function TableCell({
          {...props}
          className={clsx(
             className,
-            "relative px-4 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
+            center && "text-center",
+            bold && "font-bold",
+            "relative px-3",
             !striped && !framed && "border-b border-color",
             grid && "border-l border-color-sub first:border-l-0",
             dense ? "py-2.5" : "py-4",
-            !bleed && "tablet:first:pl-2 tablet:last:pr-2",
          )}
       >
          {href && (

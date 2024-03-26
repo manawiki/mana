@@ -28,6 +28,7 @@ export const SubSectionSchema = z.object({
    subSectionId: z.string().optional(),
    sectionId: z.string(),
    collectionId: z.string(),
+   showTitle: z.coerce.boolean(),
    type: z.enum(["editor", "customTemplate", "qna", "comments"]),
 });
 
@@ -74,30 +75,32 @@ export function AddSubSection({
             }
          }}
       >
-         <FieldGroup className="tablet:space-y-0 tablet:flex items-center gap-4 pb-5">
-            <Field disabled={disabled} className="w-full">
-               <Label>Name</Label>
-               <Input
-                  name={addSubSection.fields.subSectionName()}
-                  type="text"
-                  value={subSubSectionName}
-                  onChange={(e) => {
-                     setSubSectionName(e.target.value);
-                     setSubSectionSlug(urlSlug(e.target.value));
-                  }}
-               />
-            </Field>
-            <Field disabled={disabled} className="w-full">
-               <Label>Slug</Label>
-               <Input
-                  name={addSubSection.fields.subSectionSlug()}
-                  value={subSubSectionSlug}
-                  onChange={(e) => {
-                     setSubSectionSlug(e.target.value);
-                  }}
-                  type="text"
-               />
-            </Field>
+         <FieldGroup className="pb-5">
+            <div className="grid grid-cols-2 gap-3">
+               <Field disabled={disabled} className="w-full">
+                  <Label>Name</Label>
+                  <Input
+                     name={addSubSection.fields.subSectionName()}
+                     type="text"
+                     value={subSubSectionName}
+                     onChange={(e) => {
+                        setSubSectionName(e.target.value);
+                        setSubSectionSlug(urlSlug(e.target.value));
+                     }}
+                  />
+               </Field>
+               <Field disabled={disabled} className="w-full">
+                  <Label>Slug</Label>
+                  <Input
+                     name={addSubSection.fields.subSectionSlug()}
+                     value={subSubSectionSlug}
+                     onChange={(e) => {
+                        setSubSectionSlug(e.target.value);
+                     }}
+                     type="text"
+                  />
+               </Field>
+            </div>
             <Field disabled={disabled} className="tablet:min-w-40">
                <Label>Type</Label>
                <Select name={addSubSection.fields.type()}>
