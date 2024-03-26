@@ -1,3 +1,8 @@
+interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+   url?: string | null | undefined;
+   options?: string;
+}
+
 export function Image({
    url,
    options,
@@ -6,10 +11,7 @@ export function Image({
    width,
    height,
    ...props
-}: {
-   url?: string | null | undefined;
-   options?: string;
-} & React.ImgHTMLAttributes<HTMLImageElement>) {
+}: ImageProps) {
    const searchParams = new URLSearchParams(options);
 
    // If width is not provided, but it is in the options, insert it to hint the browser and reduce CLS

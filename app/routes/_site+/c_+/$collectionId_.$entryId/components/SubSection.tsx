@@ -41,12 +41,12 @@ function CustomTemplateSection({
    data: unknown;
 }) {
    if (
-      subSection?.id &&
+      subSection?.slug &&
       customComponents &&
-      Object.keys(customComponents).includes(subSection?.id)
+      Object.keys(customComponents).includes(subSection?.slug)
    ) {
       //@ts-ignore
-      const CustomComponentView = customComponents[subSection?.id];
+      const CustomComponentView = customComponents[subSection?.slug];
 
       return <CustomComponentView data={data} />;
    }

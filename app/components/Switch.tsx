@@ -29,11 +29,15 @@ export function SwitchGroup({
    );
 }
 
+interface SwitchFieldProps extends HeadlessFieldProps {
+   fullWidth?: boolean;
+}
+
 export function SwitchField({
    fullWidth = false,
    className,
    ...props
-}: { fullWidth?: boolean } & HeadlessFieldProps) {
+}: SwitchFieldProps) {
    return (
       <HeadlessField
          data-slot="field"
@@ -155,16 +159,18 @@ let colors = {
 
 type Color = keyof typeof colors;
 
+interface SwitchProps extends Omit<HeadlessSwitchProps, "children"> {
+   color?: Color;
+   className?: string;
+   children?: React.ReactNode;
+}
+
 export function Switch({
    color = "dark/zinc",
    className,
    children,
    ...props
-}: {
-   color?: Color;
-   className?: string;
-   children?: React.ReactNode;
-} & Omit<HeadlessSwitchProps, "children">) {
+}: SwitchProps) {
    return (
       <HeadlessSwitch
          data-slot="control"

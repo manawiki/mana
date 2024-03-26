@@ -20,7 +20,7 @@ import { gqlEndpoint } from "~/utils/fetchers.server";
 
 import { Discover } from "./components/Discover";
 import { EditorDemo } from "./components/EditorDemo";
-import { Top } from "./components/top";
+import { TopHome } from "./components/TopHome";
 import indexStyles from "./styles.css";
 
 export const meta: MetaFunction = () => [
@@ -107,7 +107,7 @@ export default function IndexMain() {
 
    return (
       <>
-         <Top />
+         <TopHome />
          <Discover />
          <div className="bg-zinc-50 dark:bg-zinc-800/20 w-full z-10 relative max-laptop:px-5 border-y border-color">
             <div className="max-w-[770px] mx-auto pt-14 pb-5 border-b border-color">

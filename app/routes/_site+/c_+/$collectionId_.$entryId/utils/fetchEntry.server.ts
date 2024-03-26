@@ -1,8 +1,9 @@
-import { request as gqlRequest } from "graphql-request";
-
-import { apiDBPath } from "~/utils/api-path.server";
 import { fetchWithCache, gqlRequestWithCache } from "~/utils/cache.server";
-import { authRestFetcher, gqlEndpoint } from "~/utils/fetchers.server";
+import {
+   authGQLFetcher,
+   authRestFetcher,
+   gqlEndpoint,
+} from "~/utils/fetchers.server";
 
 import type { RestOrGraphql } from "./_entryTypes";
 import { getEmbeddedContent } from "./getEmbeddedContent.server";
@@ -28,15 +29,16 @@ export async function fetchEntry({
       siteSlug: entry.siteSlug,
    });
 
-   const restPath = `https://${entry.siteSlug}-db.${apiDBPath}/api/${
-      entry.collectionSlug
-   }/${entry.id}?depth=${rest?.depth ?? 2}`;
+   const restPath = `http://localhost:4000/api/${entry.collectionSlug}/${
+      entry.id
+   }?depth=${rest?.depth ?? 2}`;
 
    const GQLorREST = gql?.query
       ? user
-         ? gqlRequest(gqlPath, gql?.query, {
-              entryId: entry.id,
-              ...gql?.variables,
+         ? authGQLFetcher({
+              siteSlug: entry.siteSlug,
+              variables: { entryId: entry.id, ...gql?.variables },
+              document: gql?.query,
            })
          : gqlRequestWithCache(gqlPath, gql?.query, {
               entryId: entry.id,

@@ -35,13 +35,14 @@ export function DropdownButton<T extends React.ElementType = typeof Button>(
    return <HeadlessMenuButton as={Button} {...props} />;
 }
 
+interface DropdownMenuProps extends Omit<HeadlessMenuItemsProps, "anchor"> {
+   anchor?: NonNullable<HeadlessMenuItemsProps["anchor"]>["to"];
+}
+
 export function DropdownMenu({
    anchor = "bottom",
    ...props
-}: { anchor?: NonNullable<HeadlessMenuItemsProps["anchor"]>["to"] } & Omit<
-   HeadlessMenuItemsProps,
-   "anchor"
->) {
+}: DropdownMenuProps) {
    return (
       <HeadlessTransition
          as={Fragment}
@@ -85,9 +86,11 @@ export function DropdownMenu({
    );
 }
 
-export function DropdownItem(
-   props: { href?: string } & HeadlessMenuItemProps<"button">,
-) {
+interface DropdownItemProps extends HeadlessMenuItemProps<"button"> {
+   href?: string;
+}
+
+export function DropdownItem(props: DropdownItemProps) {
    return (
       <HeadlessMenuItem
          as={props.href ? Link : "button"}
@@ -210,11 +213,15 @@ export function DropdownDescription({
    );
 }
 
+interface DropdownShortcutProps extends HeadlessDescriptionProps<"kbd"> {
+   keys: string | string[];
+}
+
 export function DropdownShortcut({
    className,
    keys,
    ...props
-}: { keys: string | string[] } & HeadlessDescriptionProps<"kbd">) {
+}: DropdownShortcutProps) {
    return (
       <HeadlessDescription
          as="kbd"

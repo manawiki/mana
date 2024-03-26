@@ -14,24 +14,26 @@ export function SectionTitle({
 
    if (hasTitle)
       return (
-         <Link to={`#${section?.slug}`}>
-            <h2
-               className={clsx(
-                  `border-color relative  mt-8 overflow-hidden  rounded-lg shadow-sm dark:shadow-black/20 mb-2.5 border-2
+         <div className="max-w-[728px] mx-auto">
+            <Link to={`#${section?.slug}`}>
+               <h2
+                  className={clsx(
+                     `border-color relative  mt-8 overflow-hidden  rounded-lg shadow-sm dark:shadow-black/20 mb-2.5 border-2
                     font-header text-xl font-bold  dark:bg-dark350 `,
-               )}
-            >
-               <div
-                  className="pattern-dots absolute left-0 top-0 -z-0 h-full
+                  )}
+               >
+                  <div
+                     className="pattern-dots absolute left-0 top-0 -z-0 h-full
                   w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
                   pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
-               />
-               <div className="flex items-center gap-2">
-                  <div className="relative h-full px-3.5 flex-grow py-2.5">
-                     {section?.name}
+                  />
+                  <div className="flex items-center gap-2">
+                     <div className="relative h-full px-3.5 flex-grow py-2.5">
+                        {section?.name}
+                     </div>
                   </div>
-               </div>
-            </h2>
-         </Link>
+               </h2>
+            </Link>
+         </div>
       );
 }

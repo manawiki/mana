@@ -1,4 +1,11 @@
 export type IconName =
+  | "coins"
+  | "brackets"
+  | "expand"
+  | "captions-off"
+  | "captions"
+  | "list-filter"
+  | "arrow-up-down"
   | "chevrons-right"
   | "text"
   | "layout-panel-top"

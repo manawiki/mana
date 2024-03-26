@@ -23,6 +23,7 @@ export function TableOfContents({
    const sectionsWithContent = sections?.map((section) => {
       const subSection = section?.subSections
          ?.filter((subSection) => {
+            if (subSection.showTitle == false) return false;
             if (subSection.type == "editor") {
                const embeddedContent = entry?.embeddedContent;
                const hasContent = embeddedContent?.find(
@@ -53,11 +54,11 @@ export function TableOfContents({
    return (
       <>
          {sectionsList && sectionsList?.length > 1 && (
-            <section className="relative">
+            <section className="relative w-full">
                <div
                   className={clsx(
                      seeAllOpen ? "" : "max-h-[243px]",
-                     "text-sm border border-color-sub overflow-hidden shadow-sm shadow-1 rounded-lg mb-4 bg-zinc-50 dark:bg-dark350",
+                     "text-sm border-y tablet:border border-color-sub overflow-hidden shadow-sm shadow-1 tablet:rounded-lg bg-zinc-50 dark:bg-dark350",
                   )}
                >
                   <div className="py-3 px-2.5 font-bold text-xs flex items-center justify-between gap-2.5 border-b border-color shadow-zinc-100/70 dark:shadow-zinc-800/70 shadow-sm">
@@ -128,8 +129,8 @@ export function TableOfContents({
                </div>
                {showAll ? (
                   <div
-                     className="bg-gradient-to-b absolute bottom-0 border border-color-sub border-t-0 w-full group p-3
-                  from-transparent to-zinc-50 dark:to-dark400 dark:from-transparent rounded-b-lg"
+                     className="bg-gradient-to-b absolute bottom-0 laptop:border border-color-sub laptop:border-t-0 w-full group p-3
+                  from-transparent to-zinc-50 dark:to-dark400 dark:from-transparent laptop:rounded-b-lg"
                   >
                      <button
                         onClick={() => setSeeAllOpen(!seeAllOpen)}
