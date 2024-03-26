@@ -8,6 +8,7 @@ import { Button } from "~/components/Button";
 import { ErrorMessage, Field, FieldGroup, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
+import { Radio, RadioField, RadioGroup } from "~/components/Radio";
 import { Switch, SwitchField } from "~/components/Switch";
 import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
@@ -27,6 +28,7 @@ export const SectionUpdateSchema = z.object({
    showTitle: z.coerce.boolean(),
    showAd: z.coerce.boolean(),
    collectionId: z.string(),
+   viewType: z.enum(["rows", "tabs"]),
 });
 
 export function UpdateSection({
@@ -62,36 +64,52 @@ export function UpdateSection({
          method="post"
          action="/collections/sections"
          ref={updateSection.ref}
+         className="border-y border-color-sub -mx-4 mb-5 p-4 dark:bg-dark350 bg-zinc-50"
       >
-         <div className="text-xs font-semibold flex items-center gap-2 pb-3 pl-2">
-            <Icon
-               name="layout-panel-top"
-               className="text-zinc-400 dark:text-zinc-500"
-               size={16}
-            />
-            <span className="pt-0.5">Section</span>
-         </div>
-         <FieldGroup className="p-5 bg-2-sub border border-color-sub rounded-xl mb-7">
+         <FieldGroup>
+            <div className="grid grid-cols-2 gap-3">
+               <Field disabled={disabled} className="w-full">
+                  <Label>Name</Label>
+                  <Input
+                     name={updateSection.fields.sectionName()}
+                     defaultValue={section.name}
+                     type="text"
+                  />
+               </Field>
+               <Field disabled={disabled} className="w-full">
+                  <Label>Slug</Label>
+                  <Input
+                     name={updateSection.fields.sectionSlug()}
+                     defaultValue={section.slug}
+                     type="text"
+                  />
+                  {updateSection.errors.sectionSlug((err) => (
+                     <ErrorMessage>{err.message}</ErrorMessage>
+                  ))}
+               </Field>
+            </div>
             <Field disabled={disabled} className="w-full">
-               <Label>Name</Label>
-               <Input
-                  name={updateSection.fields.sectionName()}
-                  defaultValue={section.name}
-                  type="text"
-               />
+               <Label>View</Label>
+               <RadioGroup
+                  onChange={() => setSectionUpdateFormChanged(true)}
+                  name={updateSection.fields.viewType()}
+                  defaultValue={section.viewType}
+                  aria-label="View Type"
+                  className="flex items-center gap-6 !space-y-0 border dark:border-zinc-600/50 rounded-lg p-2.5 
+                  shadow-sm dark:shadow-zinc-800/80
+                   bg-white dark:bg-dark400"
+               >
+                  <RadioField className="!gap-2">
+                     <Radio value="rows" />
+                     <Label>Rows</Label>
+                  </RadioField>
+                  <RadioField className="!gap-2">
+                     <Radio value="tabs" />
+                     <Label>Tabs</Label>
+                  </RadioField>
+               </RadioGroup>
             </Field>
-            <Field disabled={disabled} className="w-full">
-               <Label>Slug</Label>
-               <Input
-                  name={updateSection.fields.sectionSlug()}
-                  defaultValue={section.slug}
-                  type="text"
-               />
-               {updateSection.errors.sectionSlug((err) => (
-                  <ErrorMessage>{err.message}</ErrorMessage>
-               ))}
-            </Field>
-            <div className="max-laptop:space-y-6 laptop:flex items-center justify-between gap-6">
+            <div className="space-y-6">
                <div className="flex items-center justify-end gap-8">
                   <SwitchField disabled={disabled}>
                      <Label className="!text-xs text-1">Show Ad</Label>
@@ -99,7 +117,7 @@ export function UpdateSection({
                         onChange={() => setSectionUpdateFormChanged(true)}
                         defaultChecked={Boolean(section.showAd)}
                         value="true"
-                        color="dark/white"
+                        color="emerald"
                         name={updateSection.fields.showAd()}
                      />
                   </SwitchField>
@@ -109,7 +127,7 @@ export function UpdateSection({
                         onChange={() => setSectionUpdateFormChanged(true)}
                         defaultChecked={Boolean(section.showTitle)}
                         value="true"
-                        color="dark/white"
+                        color="emerald"
                         name={updateSection.fields.showTitle()}
                      />
                   </SwitchField>

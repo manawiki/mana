@@ -86,7 +86,7 @@ export function BlockInfoBox({
                title="Add Button"
                contentEditable={false}
                onClick={handleAddInfoBoxRow}
-               className="transition group-hover/infobox:opacity-100 opacity-0 z-0
+               className="transition group-hover/infobox:opacity-100 opacity-0 z-10
                shadow-1 flex h-8 items-center justify-center gap-2 rounded-b-full border-color-sub border bg-white
                p-3 text-xs font-bold shadow-sm dark:bg-dark400 dark:hover:bg-dark450
                absolute -bottom-5 right-12 select-none duration-100 ease-in laptop:translate-x-full laptop:translate-y-0"

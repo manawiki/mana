@@ -36,12 +36,12 @@ export const ManaCore = () => {
                      />
 
                      <div className="flex items-center justify-center">
-                        <div className="relative flex h-48 w-48 items-center justify-center">
+                        <div className="relative flex size-36 laptop:size-48 items-center justify-center">
                            {/* Halo effect */}
                            <svg
                               className="pointer-events-none absolute inset-0 left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transform blur-md will-change-transform"
-                              width="480"
-                              height="480"
+                              width="280"
+                              height="280"
                               viewBox="0 0 480 480"
                               xmlns="http://www.w3.org/2000/svg"
                            >
@@ -83,15 +83,14 @@ export const ManaCore = () => {
                               </g>
                            </svg>
                            {/* Grid */}
-                           <div className="pointer-events-none absolute inset-0 left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 transform overflow-hidden rounded-full [mask-image:_radial-gradient(black,_transparent_60%)]">
+                           {/* <div className="pointer-events-none absolute inset-0 left-1/2 top-1/2 size-[300px] laptop:size-[500px] -translate-x-1/2 -translate-y-1/2 transform overflow-hidden rounded-full [mask-image:_radial-gradient(black,_transparent_60%)]">
                               <div className="animate-endless h-[200%]">
                                  <div className="absolute inset-0 opacity-20 blur-[2px] [background:_repeating-linear-gradient(transparent,_transparent_48px,_theme(colors.white)_48px,_theme(colors.white)_49px)]" />
                                  <div className="absolute inset-0 [background:_repeating-linear-gradient(transparent,_transparent_48px,_theme(colors.zinc.600)_48px,_theme(colors.zinc.600)_49px)]" />
                                  <div className="absolute inset-0 opacity-20 blur-[2px] [background:_repeating-linear-gradient(90deg,transparent,_transparent_48px,_theme(colors.white)_48px,_theme(colors.white)_49px)]" />
                                  <div className="absolute inset-0 [background:_repeating-linear-gradient(90deg,transparent,_transparent_48px,_theme(colors.zinc.700)_48px,_theme(colors.zinc.600)_49px)]" />
                               </div>
-                           </div>
-                           {/* Icons */}
+                           </div> */}
                            <Transition
                               show={tab === 1}
                               className="absolute"
@@ -102,7 +101,7 @@ export const ManaCore = () => {
                               leaveFrom="opacity-100 rotate-0"
                               leaveTo="opacity-0 rotate-[60deg]"
                            >
-                              <div className="relative flex h-16 w-16 -rotate-[14deg] items-center justify-center rounded-2xl border border-transparent shadow-2xl [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] before:absolute before:inset-0 before:rounded-2xl before:bg-slate-800/30">
+                              <div className="relative flex size-16 -rotate-[14deg] items-center justify-center rounded-2xl border border-transparent shadow-2xl [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] before:absolute before:inset-0 before:rounded-2xl before:bg-slate-800/30">
                                  <Logo className="h-8 w-8" />
                               </div>
                            </Transition>
@@ -116,7 +115,7 @@ export const ManaCore = () => {
                               leaveFrom="opacity-100 rotate-0"
                               leaveTo="opacity-0 rotate-[60deg]"
                            >
-                              <div className="relative flex h-16 w-16 -rotate-[14deg] items-center justify-center rounded-2xl border border-transparent shadow-2xl [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] before:absolute before:inset-0 before:rounded-2xl before:bg-slate-800/30">
+                              <div className="relative flex size-16 -rotate-[14deg] items-center justify-center rounded-2xl border border-transparent shadow-2xl [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] before:absolute before:inset-0 before:rounded-2xl before:bg-slate-800/30">
                                  <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -138,7 +137,7 @@ export const ManaCore = () => {
                               leaveFrom="opacity-100 rotate-0"
                               leaveTo="opacity-0 rotate-[60deg]"
                            >
-                              <div className="relative flex h-16 w-16 -rotate-[14deg] items-center justify-center rounded-2xl border border-transparent shadow-2xl [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] before:absolute before:inset-0 before:rounded-2xl before:bg-slate-800/30">
+                              <div className="relative flex size-16 -rotate-[14deg] items-center justify-center rounded-2xl border border-transparent shadow-2xl [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] before:absolute before:inset-0 before:rounded-2xl before:bg-slate-800/30">
                                  <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -162,7 +161,7 @@ export const ManaCore = () => {
                               leaveFrom="opacity-100 rotate-0"
                               leaveTo="opacity-0 rotate-[60deg]"
                            >
-                              <div className="relative flex h-16 w-16 -rotate-[14deg] items-center justify-center rounded-2xl border border-transparent shadow-2xl [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] before:absolute before:inset-0 before:rounded-2xl before:bg-slate-800/30">
+                              <div className="relative flex size-16 -rotate-[14deg] items-center justify-center rounded-2xl border border-transparent shadow-2xl [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] before:absolute before:inset-0 before:rounded-2xl before:bg-slate-800/30">
                                  <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"

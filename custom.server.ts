@@ -35,10 +35,10 @@ async function startCustom() {
 
    app.use(morgan("tiny"));
 
-   const port = process.env.PORT || 4000;
+   const port = 4000;
 
    app.listen(port, () => {
-      console.log(`Custom server listening on port ${port}`);
+      console.log(`Custom DB listening on port http://localhost:${port}`);
    });
 }
 startCustom();

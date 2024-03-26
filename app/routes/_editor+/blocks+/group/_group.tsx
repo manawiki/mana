@@ -47,6 +47,8 @@ import type {
    Post,
    Site,
 } from "payload/generated-types";
+import { Avatar } from "~/components/Avatar";
+import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Modal } from "~/components/Modal";
@@ -55,7 +57,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { gqlEndpoint, gqlFormat } from "~/utils/fetchers.server";
 import { useIsMount } from "~/utils/use-debounce";
-import { useRootLoaderData } from "~/utils/useSiteLoaderData";
+import {
+   useRootLoaderData,
+   useSiteLoaderData,
+} from "~/utils/useSiteLoaderData";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";
@@ -93,6 +98,7 @@ type groupRowData = {
    isCustomSite: boolean;
    slug?: Post["slug"];
    icon: { url: string };
+   subtitle?: string;
 };
 
 export async function loader({
@@ -146,6 +152,7 @@ export async function loader({
                id: true,
                name: true,
                slug: true,
+               subtitle: true,
             };
             const imageSelect: Select<PayloadImage> = {
                id: false,
@@ -208,7 +215,11 @@ export async function loader({
       }
    }
    //For entries
-   if (site?.type == "custom") {
+   const collection = site?.collections?.find(
+      (collection) => collection.slug === filterOption,
+   );
+
+   if (collection?.customDatabase) {
       const label = gqlFormat(filterOption, "list");
 
       const document = gql`
@@ -220,6 +231,7 @@ export async function loader({
                ) {
                docs {
                   id
+                  slug
                   name
                   icon {
                      url
@@ -230,7 +242,7 @@ export async function loader({
       `;
 
       const endpoint = gqlEndpoint({
-         siteSlug: site.slug,
+         siteSlug: site?.slug,
       });
 
       const result: any = await gqlRequest(endpoint, document, {
@@ -241,49 +253,49 @@ export async function loader({
          return {
             ...doc,
             siteId: siteSlug,
-            isCustomSite: site?.type == "custom",
+            isCustomSite: collection.customDatabase,
          };
       });
       return json(filtered);
    }
-   if (site?.type == "core") {
-      const { docs } = await payload.find({
-         collection: "entries",
-         where: {
-            site: {
-               equals: site?.id,
-            },
-            "collectionEntity.slug": {
-               equals: filterOption,
-            },
-            ...(groupSelectQuery
-               ? {
-                    name: {
-                       contains: groupSelectQuery,
-                    },
-                 }
-               : {}),
+
+   const { docs } = await payload.find({
+      collection: "entries",
+      where: {
+         site: {
+            equals: site?.id,
          },
-         depth: 1,
-         overrideAccess: false,
-         user,
-      });
-      const filtered = docs.map((doc) => {
-         return {
-            ...select(
-               {
-                  id: true,
-                  name: true,
-               },
-               doc,
-            ),
-            siteId: siteSlug,
-            isCustomSite: site?.type == "custom",
-            icon: doc.icon && select({ id: false, url: true }, doc.icon),
-         };
-      });
-      return json(filtered);
-   }
+         "collectionEntity.slug": {
+            equals: filterOption,
+         },
+         ...(groupSelectQuery
+            ? {
+                 name: {
+                    contains: groupSelectQuery,
+                 },
+              }
+            : {}),
+      },
+      depth: 1,
+      overrideAccess: false,
+      user,
+   });
+   const filtered = docs.map((doc) => {
+      return {
+         ...select(
+            {
+               id: true,
+               name: true,
+               slug: true,
+            },
+            doc,
+         ),
+         siteId: siteSlug,
+         isCustomSite: site?.type == "custom",
+         icon: doc.icon && select({ id: false, url: true }, doc.icon),
+      };
+   });
+   return json(filtered);
 }
 
 export function BlockGroup({
@@ -302,14 +314,12 @@ export function BlockGroup({
 
    //Get collection data, used to populate select
 
+   const { site } = useSiteLoaderData();
+
    const fetcher = (...args: [any]) => fetch(...args).then((res) => res.json());
 
-   const { data: collectionData } = useSWR(
-      `/api/collections?where[site.slug][equals]=${siteSlug}&[hiddenCollection][equals]=false`,
-      fetcher,
-   );
-   const selectOptions = collectionData
-      ? [...defaultOptions, ...collectionData?.docs]
+   const selectOptions = site.collections
+      ? [...defaultOptions, ...site.collections]
       : defaultOptions;
 
    const [selected] = useState();
@@ -360,10 +370,10 @@ export function BlockGroup({
                return `/${event.siteId}`;
             }
             case "post": {
-               return `/p/${event.id}/${event.slug}`;
+               return `/p/${event.slug}`;
             }
             default:
-               return `/c/${filterOption}/${event.id}`; //May need to update filterOption to an event variable when we want to siteId to work globally
+               return `/c/${filterOption}/${event.slug ?? event.id}`; //May need to update filterOption to an event variable when we want to siteId to work globally
          }
       };
       const path = [
@@ -380,6 +390,8 @@ export function BlockGroup({
          isCustomSite: event.isCustomSite,
          refId: event.id,
          name: event.name,
+         isPost: filterOption === "post",
+         subtitle: event?.subtitle,
          path: rowPath(),
          iconUrl: event?.icon?.url,
          children: [{ text: "" }],
@@ -392,9 +404,11 @@ export function BlockGroup({
       return setGroupItems((items) => [...items, nodeId]);
    }
 
+   interface Editors extends BaseEditor, ReactEditor {}
+
    function handleUpdateItemsViewMode(
       event: any,
-      editor: BaseEditor & ReactEditor,
+      editor: Editors,
       element: GroupElement,
    ) {
       const path = ReactEditor.findPath(editor, element);
@@ -518,21 +532,15 @@ export function BlockGroup({
             portal
          >
             <Float.Reference>
-               <div className="transition group-hover/group:opacity-100 flex 0 w-10 h-10 opacity-0 laptop:absolute -right-12 top-0">
-                  <button
-                     className="border bg-white bg-2-sub flex items-center justify-center border-color shadow-sm shadow-1 w-8 h-8 rounded-lg"
+               <div className="flex size-10 laptop:absolute -right-12 top-0">
+                  <Button
+                     className="size-9 !p-0"
+                     color="light/zinc"
                      onClick={() => setElementEditor(true)}
                      contentEditable={false}
                   >
-                     <Icon
-                        name="list-plus"
-                        className={clsx(
-                           isElementEditorOpen ? "rotate-45" : "",
-                           "transform transition duration-300 ease-in-out",
-                        )}
-                        size={16}
-                     />
-                  </button>
+                     <Icon name="list-plus" size={16} />
+                  </Button>
                </div>
             </Float.Reference>
             <Transition appear show={isElementEditorOpen} as={Fragment}>
@@ -550,7 +558,7 @@ export function BlockGroup({
                            leaveTo="opacity-0 translate-y-1"
                         >
                            <Dialog.Panel>
-                              <div className="relative laptop:w-[728px] px-4">
+                              <div className="relative w-full laptop:w-[728px] px-4">
                                  <div
                                     className="flex px-2 py-0.5 shadow-xl border-2 items-center shadow-1 bg-3-sub border-color-sub
                                     justify-center transform rounded-full"
@@ -681,7 +689,7 @@ export function BlockGroup({
                                              {({ value }) => (
                                                 <>
                                                    {activeSelectItem(value) ??
-                                                      "Select a Collection"}
+                                                      "Select"}
                                                    <Icon
                                                       name="chevron-down"
                                                       size={20}
@@ -698,10 +706,10 @@ export function BlockGroup({
                                              leaveTo="transform scale-95 opacity-0"
                                           >
                                              <Listbox.Options
-                                                className="border-color bg-2 shadow-1 absolute right-0
+                                                className="border-color-sub bg-2-sub shadow-1 absolute right-0
                                              z-20 w-[160px] rounded-lg border p-1.5 shadow-lg"
                                              >
-                                                {collectionData?.docs?.map(
+                                                {site.collections?.map(
                                                    (
                                                       row: Collection,
                                                       rowIdx: number,
@@ -964,29 +972,67 @@ export function BlockGroupItem({
                className="bg-2-sub relative"
             >
                <div className="hidden">{children}</div>
-               <div className="flex items-center justify-between gap-2 p-2.5">
-                  <div className="bg-2-sub flex flex-grow items-center gap-3 hover:underline">
-                     <div className="bg-3 border-color-sub shadow-1 flex h-8 w-8 items-center justify-between rounded-full border shadow-sm">
-                        {element?.iconUrl ? (
-                           <Image
-                              width={32}
-                              height={32}
-                              className="overflow-hidden rounded-full"
-                              url={element?.iconUrl}
-                              options="aspect_ratio=1:1&height=80&width=80"
-                              alt={element?.name ?? "Icon"}
-                           />
-                        ) : (
-                           <Icon
-                              name="component"
-                              className="text-1 mx-auto"
-                              size={18}
-                           />
-                        )}
-                     </div>
-                     <span className="truncate text-sm font-bold">
-                        {element?.name}
-                     </span>
+               <div className="flex items-center justify-between gap-2 p-3">
+                  <div className="bg-2-sub flex flex-grow items-center gap-3">
+                     {element.isPost && element.iconUrl ? (
+                        <div className="flex items-center w-full gap-5 group">
+                           {element.iconUrl && (
+                              <div className="w-1/2 tablet:w-28 flex-none overflow-hidden rounded">
+                                 <Image
+                                    alt={element.name}
+                                    className="w-full rounded object-cover"
+                                    height={300}
+                                    options="height=300"
+                                    url={element?.iconUrl}
+                                 />
+                              </div>
+                           )}
+                           <div className="relative flex-grow space-y-1">
+                              {element.name && (
+                                 <div className="font-header font-bold group-hover:underline line-clamp-2">
+                                    {element.name}
+                                 </div>
+                              )}
+                              {element.subtitle && (
+                                 <div className="text-sm text-1 line-clamp-2">
+                                    {element.subtitle}
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     ) : (
+                        <>
+                           <div className="bg-white dark:bg-dark450 dark:border-zinc-600/70 shadow-1 flex size-9 items-center justify-between rounded-full border shadow-sm group">
+                              {element?.iconUrl ? (
+                                 <Avatar
+                                    src={element?.iconUrl}
+                                    initials={
+                                       element?.iconUrl
+                                          ? undefined
+                                          : element.name.charAt(0)
+                                    }
+                                    className="size-9"
+                                    options="aspect_ratio=1:1&height=80&width=80"
+                                 />
+                              ) : element.isPost ? (
+                                 <Icon
+                                    name="pen-square"
+                                    className="text-1 mx-auto"
+                                    size={14}
+                                 />
+                              ) : (
+                                 <Icon
+                                    name="database"
+                                    className="text-1 mx-auto"
+                                    size={15}
+                                 />
+                              )}
+                           </div>
+                           <span className="truncate text-sm font-bold group-hover:underline">
+                              {element?.name}
+                           </span>
+                        </>
+                     )}
                   </div>
                   <div
                      className="absolute bg-white dark:bg-dark450 border dark:border-zinc-600 rounded-md divide-x dark:divide-zinc-600
@@ -1252,7 +1298,7 @@ export function BlockGroupItem({
                      </div>
                   </FloatingDelayGroup>
                </div>
-               <div className="block truncate">
+               <div className="block">
                   {/* Label Editor */}
                   {editMode && (
                      <>
@@ -1327,25 +1373,15 @@ export function BlockGroupItem({
                         </div>
                      </div>
                   )}
-                  <div
-                     className="shadow-1 border-color-sub mx-auto flex h-[60px] w-[60px]
-                  items-center overflow-hidden rounded-full border shadow-sm"
-                  >
-                     {element?.iconUrl ? (
-                        <Image
-                           url={element?.iconUrl}
-                           options="aspect_ratio=1:1&height=120&width=120"
-                           alt={element?.name ?? "Icon"}
-                        />
-                     ) : (
-                        <Icon
-                           name="component"
-                           className="text-1 mx-auto"
-                           size={18}
-                        />
-                     )}
-                  </div>
-                  <div className="text-1 truncate text-center pt-0.5 text-sm font-bold">
+                  <Avatar
+                     src={element?.iconUrl}
+                     initials={
+                        element?.iconUrl ? undefined : element.name.charAt(0)
+                     }
+                     className="size-14 mx-auto"
+                     options="aspect_ratio=1:1&height=120&width=120"
+                  />
+                  <div className="text-center pt-2 text-xs font-bold">
                      {element?.name}
                   </div>
                </div>

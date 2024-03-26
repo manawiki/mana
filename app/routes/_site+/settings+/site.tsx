@@ -177,6 +177,7 @@ export default function SiteSettings() {
                   <ImageUploader
                      type="rectangle"
                      label="Site Banner"
+                     wrapperClassName="overflow-hidden"
                      icon={siteBanner}
                      previewImage={previewBannerImage}
                      setPreparedFile={setPreparedBannerFile}

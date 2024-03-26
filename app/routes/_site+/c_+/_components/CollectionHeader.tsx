@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useLocation, useMatches, Link } from "@remix-run/react";
+import { useMatches, Link } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Avatar } from "~/components/Avatar";
@@ -26,11 +26,13 @@ import { SectionList } from "../$collectionId_.$entryId/components/SectionList";
 import type { EntryType } from "../$collectionId_.$entryId/utils/_entryTypes";
 
 export function CollectionHeader({
+   collection,
    setIsChanged,
    isChanged,
    setAllSections,
    allSections,
 }: {
+   collection: Collection;
    setAllSections: (sections: any) => void;
    isChanged: boolean;
    setIsChanged: (value: boolean) => void;
@@ -44,13 +46,6 @@ export function CollectionHeader({
       entry: null,
    };
 
-   const { pathname } = useLocation();
-   const collectionSlug = pathname.split("/")[2];
-
-   const collection = site?.collections?.find(
-      (collection) => collection.slug === collectionSlug,
-   ) as Collection;
-
    const entryName = entry?.name;
 
    const collectionName = collection?.name;
@@ -58,9 +53,6 @@ export function CollectionHeader({
    const isEntry = entry?.name && entry?.id;
 
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
-
-   //Get root domain from full domain url
-   let customDomainHostname = site?.domain?.split(".").slice(-2).join(".");
 
    return (
       <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
@@ -107,13 +99,7 @@ export function CollectionHeader({
                                        className="size-8 !p-0"
                                        color="violet"
                                        target="_blank"
-                                       href={`https://${site.slug}-db.${
-                                          customDomainHostname
-                                             ? customDomainHostname
-                                             : "mana.wiki"
-                                       }/admin/collections/${collection.slug}/${
-                                          entry.id
-                                       }`}
+                                       href={`https://${site.slug}-db.mana.wiki/admin/collections/${collection.slug}/${entry.id}`}
                                     >
                                        <Icon
                                           title="Edit"
@@ -159,7 +145,7 @@ export function CollectionHeader({
                </div>
             </AdminOrStaffOrOwner>
             <div className="flex items-center max-tablet:px-3 justify-between gap-4 pt-4 mx-auto max-w-[728px] laptop:w-[728px] relative">
-               <h1 className="font-bold font-header text-3xl pb-3">
+               <h1 className="font-bold font-header text-2xl tablet:text-3xl pb-3 max-tablet:pr-14">
                   {entryName ?? collectionName}
                </h1>
                <div className="absolute right-3 laptop:right-0 top-7">
@@ -171,14 +157,14 @@ export function CollectionHeader({
                            ? undefined
                            : isEntry
                              ? entryName?.charAt(0)
-                             : collectionName.charAt(0)
+                             : collectionName?.charAt(0)
                      }
                      options="aspect_ratio=1:1&height=128&width=128"
                   />
                </div>
             </div>
          </div>
-         <section className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
+         <section className="border-b border-zinc-200/50 dark:border-darkBorder shadow-sm max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
             <div
                className="mx-auto max-w-[728px] flex items-center border-t max-tablet:mr-5
              py-2.5 border-zinc-200/50 dark:border-zinc-700/40 overflow-auto"
@@ -192,11 +178,9 @@ export function CollectionHeader({
                         src={collection?.icon?.url}
                         className="size-6 dark:!bg-zinc-800/30"
                         initials={
-                           entry?.icon?.url || collection?.icon?.url
+                           collection?.icon?.url
                               ? undefined
-                              : isEntry
-                                ? entryName?.charAt(0)
-                                : collectionName.charAt(0)
+                              : collectionName.charAt(0)
                         }
                         options="aspect_ratio=1:1&height=80&width=80"
                      />
@@ -220,9 +204,7 @@ export function CollectionHeader({
                               initials={
                                  row?.icon?.url
                                     ? undefined
-                                    : isEntry
-                                      ? entryName?.charAt(0)
-                                      : collectionName.charAt(0)
+                                    : row.name?.charAt(0)
                               }
                               options="aspect_ratio=1:1&height=80&width=80"
                            />

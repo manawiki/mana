@@ -2,7 +2,6 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 
 import type { Collection } from "payload/generated-types";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { apiDBPath } from "~/utils/api-path.server";
 
 const toXmlSitemap = (urls: string[]) => {
    const urlsAsXml = urls
@@ -82,7 +81,7 @@ export async function loader({
       isCustom &&
       (await Promise.all(
          collections.map(async (collection: Collection) => {
-            const url = `https://${siteSlug}-db.${apiDBPath}/api/${collection.slug}?depth=0&limit=1000`;
+            const url = `http://localhost:4000/api/${collection.slug}?depth=0&limit=1000`;
             const { docs } = await (await fetch(url)).json();
             return docs.map(
                ({ id }: { id: string }) =>

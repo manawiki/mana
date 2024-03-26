@@ -13,9 +13,9 @@ export type EntryType = {
    };
 };
 
-export type EntryAllData = EntryType & {
+export interface EntryAllData extends EntryType {
    embeddedContent: JSON;
-};
+}
 
 // https://stackoverflow.com/questions/40510611/typescript-interface-require-one-of-two-properties-to-exist
 type RequireOnlyOneOptional<T, Keys extends keyof T = keyof T> = Pick<

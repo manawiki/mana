@@ -1,19 +1,16 @@
-app = "mana-home"
+app = ""
 primary_region = "sea"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
 
 [build]
-  dockerfile = "core.Dockerfile"
-
-[build.args]
-  IS_HOME = "true"
+  dockerfile = "custom.Dockerfile"
 
 [env]
-  PORT = "8080"
+  PORT = "4000"
 
 [http_service]
-  internal_port = 8080
+  internal_port = 4000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
@@ -21,8 +18,8 @@ kill_timeout = "5s"
   processes = ["app"]
   [http_service.concurrency]
     type = "requests"
-    soft_limit = 800
-    hard_limit = 1000
+    soft_limit = 200
+    hard_limit = 250
 
 [[vm]]
   cpu_kind = "shared"

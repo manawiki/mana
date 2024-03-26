@@ -4,9 +4,11 @@ import type { ReactEditor } from "slate-react";
 import type { Site, Collection } from "payload/generated-types";
 import type { Time } from "~/routes/_site+/_components/_datepicker/time-picker/types";
 
+interface Editors extends BaseEditor, ReactEditor {}
+
 declare module "slate" {
    interface CustomTypes {
-      Editor: BaseEditor & ReactEditor;
+      Editor: Editors;
       Element: CustomElement;
       Text: CustomText;
       Operation: BaseOperation & { isRemote?: boolean };
@@ -36,6 +38,7 @@ export enum BlockType {
    InlineAd = "inline-ad",
    InfoBox = "info-box",
    InfoBoxItem = "info-box-item",
+   Embed = "embed",
 }
 
 export type TextBlock =
@@ -51,19 +54,19 @@ export type BlockElement = {
    children: CustomText[];
 };
 
-export type ParagraphElement = BlockElement & {
+export interface ParagraphElement extends BlockElement {
    type: BlockType.Paragraph;
-};
+}
 
-export type CodeBlockElement = BlockElement & {
+export interface CodeBlockElement extends BlockElement {
    type: BlockType.CodeBlock;
    value?: string;
-};
+}
 
-export type HTMLBlockElement = BlockElement & {
+export interface HTMLBlockElement extends BlockElement {
    type: BlockType.HTMLBlock;
    value?: string;
-};
+}
 
 export type InfoBoxElement = {
    id: string;
@@ -71,20 +74,21 @@ export type InfoBoxElement = {
    children: [InfoBoxItemElement];
 };
 
-export type InfoBoxItemElement = BlockElement & {
+export interface InfoBoxItemElement extends BlockElement {
    type: BlockType.InfoBoxItem;
    infoBoxLeftContent?: [Descendant];
    infoBoxRightContent?: [Descendant];
-};
+}
 
-export type InlineAdElement = BlockElement & {
+export interface InlineAdElement extends BlockElement {
    type: BlockType.InlineAd;
-};
+}
 
-export type HeadingElement = BlockElement & {
+export interface HeadingElement extends BlockElement {
    type: BlockType.H2 | BlockType.H3;
-};
-export type GroupItemElement = BlockElement & {
+}
+
+export interface GroupItemElement extends BlockElement {
    isCustomSite?: boolean;
    siteId: Site["slug"];
    type: BlockType.GroupItem;
@@ -94,8 +98,10 @@ export type GroupItemElement = BlockElement & {
    labelColor?: string;
    iconUrl?: string;
    path?: string;
+   isPost?: boolean;
+   subtitle?: string;
    groupContent?: [Descendant];
-};
+}
 
 export type GroupElement = {
    id: string;
@@ -105,7 +111,7 @@ export type GroupElement = {
    children: [GroupItemElement];
 };
 
-export type EventItemElement = BlockElement & {
+export interface EventItemElement extends BlockElement {
    type: BlockType.EventItem;
    label?: string | null;
    startDate?: Date | null;
@@ -115,7 +121,7 @@ export type EventItemElement = BlockElement & {
    endTime?: Time;
    endTimestamp?: Date | null;
    eventContent?: [Descendant];
-};
+}
 
 export type EventsElement = {
    id: string;
@@ -123,10 +129,10 @@ export type EventsElement = {
    children: [EventItemElement];
 };
 
-export type TabsItemElement = BlockElement & {
+export interface TabsItemElement extends BlockElement {
    type: BlockType.TabsItem;
    tabContent?: [Descendant];
-};
+}
 
 export type TabsElement = {
    id: string;
@@ -135,9 +141,9 @@ export type TabsElement = {
    children: [TabsItemElement];
 };
 
-export type ListElement = BlockElement & {
+export interface ListElement extends BlockElement {
    type: BlockType.ListItem;
-};
+}
 
 export type NumberedListElement = {
    id: string;
@@ -163,31 +169,41 @@ export type BulletedListElement = {
    ];
 };
 
-export type ImageElement = BlockElement & {
+export interface EmbedElement extends BlockElement {
+   type: BlockType.Embed;
+   postUrl: string | undefined;
+   imageUrl: string | undefined;
+   title: string | undefined;
+   description: string | undefined;
+}
+
+export interface ImageElement extends BlockElement {
    type: BlockType.Image;
    refId: string | null;
    url: string | null;
+   containerWidth: number | null;
+   caption: boolean | undefined;
    children: [{ text: "" }];
-};
+}
 
-export type ToggleBlockElement = BlockElement & {
+export interface ToggleBlockElement extends BlockElement {
    type: BlockType.ToggleBlock;
    isOpen: boolean | undefined;
    children: [{ text: "" }];
    toggleBlockContent?: [Descendant];
-};
+}
 
-export type TwoColumnElement = BlockElement & {
+export interface TwoColumnElement extends BlockElement {
    type: BlockType.TwoColumn;
    columnOneContent?: [Descendant];
    columnTwoContent?: [Descendant];
-};
+}
 
-export type UpdatesElement = BlockElement & {
+export interface UpdatesElement extends BlockElement {
    type: BlockType.Updates;
-};
+}
 
-export type LinkElement = BlockElement & {
+export interface LinkElement extends BlockElement {
    type: BlockType.Link;
    url: string | undefined;
    icon: {
@@ -196,7 +212,7 @@ export type LinkElement = BlockElement & {
    name: string | undefined;
    view: "icon-inline" | undefined;
    children: [{ text: "" }];
-};
+}
 
 export type CustomElement =
    | ParagraphElement
@@ -219,7 +235,8 @@ export type CustomElement =
    | HTMLBlockElement
    | InlineAdElement
    | InfoBoxElement
-   | InfoBoxItemElement;
+   | InfoBoxItemElement
+   | EmbedElement;
 
 export type CustomText = {
    text: string;
