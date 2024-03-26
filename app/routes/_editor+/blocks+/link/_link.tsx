@@ -222,16 +222,6 @@ type Fields = {
 };
 
 export function BlockLink({ element, children }: Props) {
-   let { hostname, pathname } = new URL(element.url as string);
-   const { site } = useSiteLoaderData();
-
-   const isSelfLink = site?.domain
-      ? hostname === site?.domain
-      : hostname === "mana.wiki";
-
-   let url = element.url && new URL(element.url).pathname;
-   let pathSection = url && url.split("/");
-
    const canFetch = element.icon == undefined;
 
    const linkDataQuery = qs.stringify(
@@ -309,16 +299,6 @@ export function BlockLink({ element, children }: Props) {
             </span>
             {children}
          </span>
-      );
-   }
-   if (isSelfLink) {
-      return (
-         <Link
-            className="text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
-            to={pathname}
-         >
-            {children}
-         </Link>
       );
    }
 
