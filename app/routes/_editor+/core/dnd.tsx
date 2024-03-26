@@ -154,15 +154,11 @@ function BlockInlineActions({
    element,
    editor,
    sortable,
-   isEditorTrayOpen,
-   setEditorTray,
    isParentTwoColumn,
 }: {
    element: CustomElement;
    editor: Editor;
    sortable: any;
-   isEditorTrayOpen: boolean;
-   setEditorTray: any;
    isParentTwoColumn: boolean;
 }) {
    const { listeners, setActivatorNodeRef } = useDraggable({
@@ -271,12 +267,7 @@ function BlockInlineActions({
                </>
             )}
          </Popover>
-         <BlockSelector
-            isEditorTrayOpen={isEditorTrayOpen}
-            setEditorTray={setEditorTray}
-            element={element}
-            editor={editor}
-         />
+         <BlockSelector element={element} editor={editor} />
       </div>
    );
 }
@@ -319,7 +310,6 @@ function HoverElement({
    isTwoColumn,
    isNested,
 }: HoverElementProps) {
-   const [isEditorTrayOpen, setEditorTray] = useState(false);
    const animateLayoutChanges: AnimateLayoutChanges = (args) =>
       defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
@@ -384,16 +374,13 @@ function HoverElement({
             contentEditable={false}
             //If editor tray is also open, we keep the menu open
             className={clsx(
-               isEditorTrayOpen ? "opacity-100" : "opacity-0",
                isParentTwoColumn ? "pr-16" : "pr-2",
                isTwoColumn ? "z-20" : "z-10",
-               "laptop:-translate-x-full laptop:translate-y-0 left-0 group-hover/editor:opacity-100 absolute select-none duration-100 ease-in top-0",
+               "laptop:-translate-x-full laptop:translate-y-0 left-0 opacity-0 group-hover/editor:opacity-100 absolute select-none duration-100 ease-in top-0",
             )}
          >
             <BlockInlineActions
                isParentTwoColumn={isParentTwoColumn}
-               isEditorTrayOpen={isEditorTrayOpen}
-               setEditorTray={setEditorTray}
                editor={editor}
                sortable={sortable}
                element={element}

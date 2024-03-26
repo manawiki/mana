@@ -23,6 +23,7 @@ export function TableOfContents({
    const sectionsWithContent = sections?.map((section) => {
       const subSection = section?.subSections
          ?.filter((subSection) => {
+            if (subSection.showTitle == false) return false;
             if (subSection.type == "editor") {
                const embeddedContent = entry?.embeddedContent;
                const hasContent = embeddedContent?.find(
@@ -57,7 +58,7 @@ export function TableOfContents({
                <div
                   className={clsx(
                      seeAllOpen ? "" : "max-h-[243px]",
-                     "text-sm border-y laptop:border border-color-sub overflow-hidden shadow-sm shadow-1 laptop:rounded-lg bg-zinc-50 dark:bg-dark350",
+                     "text-sm border-y tablet:border border-color-sub overflow-hidden shadow-sm shadow-1 tablet:rounded-lg bg-zinc-50 dark:bg-dark350",
                   )}
                >
                   <div className="py-3 px-2.5 font-bold text-xs flex items-center justify-between gap-2.5 border-b border-color shadow-zinc-100/70 dark:shadow-zinc-800/70 shadow-sm">

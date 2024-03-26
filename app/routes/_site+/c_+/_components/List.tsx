@@ -15,7 +15,15 @@ export type Section = {
    showTitle?: boolean;
    showAd?: boolean;
    viewType?: "tabs" | "rows";
-   subSections?: [{ id: string; slug: string; name: string; type: string }];
+   subSections?: [
+      {
+         id: string;
+         showTitle?: boolean;
+         slug: string;
+         name: string;
+         type: string;
+      },
+   ];
 };
 
 export function List({ children }: { children: ReactNode }) {

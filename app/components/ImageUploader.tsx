@@ -338,24 +338,6 @@ export function ImageUploader({
                      }}
                   />
                )}
-               {label && (
-                  <div
-                     className={clsx(
-                        type === "circle"
-                           ? "-top-1 -right-1"
-                           : " -top-3 right-3",
-                        `absolute flex items-center justify-center dark:border-zinc-500 border shadow-sm 
-                     size-6 dark:bg-zinc-600 bg-zinc-50 border-zinc-300 rounded-full shadow-1 z-20`,
-                     )}
-                  >
-                     <Icon
-                        title="Upload Image"
-                        name="image-plus"
-                        className="mx-auto"
-                        size={12}
-                     />
-                  </div>
-               )}
                <div
                   className={clsx(
                      type === "circle" ? "rounded-full" : "w-full",
@@ -386,7 +368,7 @@ export function ImageUploader({
                                  src={previewImage}
                                  className={clsx(
                                     type === "circle" ? "rounded-full" : "",
-                                    "max-h-80",
+                                    "",
                                  )}
                               />
                               <div className="group-hover:block hidden absolute w-full h-full  overflow-hidden">

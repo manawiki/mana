@@ -38,6 +38,7 @@ export enum BlockType {
    InlineAd = "inline-ad",
    InfoBox = "info-box",
    InfoBoxItem = "info-box-item",
+   Embed = "embed",
 }
 
 export type TextBlock =
@@ -86,6 +87,7 @@ export interface InlineAdElement extends BlockElement {
 export interface HeadingElement extends BlockElement {
    type: BlockType.H2 | BlockType.H3;
 }
+
 export interface GroupItemElement extends BlockElement {
    isCustomSite?: boolean;
    siteId: Site["slug"];
@@ -96,6 +98,8 @@ export interface GroupItemElement extends BlockElement {
    labelColor?: string;
    iconUrl?: string;
    path?: string;
+   isPost?: boolean;
+   subtitle?: string;
    groupContent?: [Descendant];
 }
 
@@ -165,6 +169,14 @@ export type BulletedListElement = {
    ];
 };
 
+export interface EmbedElement extends BlockElement {
+   type: BlockType.Embed;
+   postUrl: string | undefined;
+   imageUrl: string | undefined;
+   title: string | undefined;
+   description: string | undefined;
+}
+
 export interface ImageElement extends BlockElement {
    type: BlockType.Image;
    refId: string | null;
@@ -223,7 +235,8 @@ export type CustomElement =
    | HTMLBlockElement
    | InlineAdElement
    | InfoBoxElement
-   | InfoBoxItemElement;
+   | InfoBoxItemElement
+   | EmbedElement;
 
 export type CustomText = {
    text: string;

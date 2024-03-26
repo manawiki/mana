@@ -188,6 +188,27 @@ export function BlockImage({ element, children }: Props) {
                            <Icon name="trash" size={16} />
                         )}
                      </Button>
+                     <Button
+                        color="light/zinc"
+                        type="button"
+                        className="!p-0 !size-9"
+                        onClick={() => {
+                           setImageSize({
+                              width: 728,
+                           });
+                           Transforms.setNodes<CustomElement>(
+                              editor,
+                              {
+                                 containerWidth: 728,
+                              },
+                              {
+                                 at: path,
+                              },
+                           );
+                        }}
+                     >
+                        R
+                     </Button>
                   </div>
                   <div
                      className={clsx(
@@ -205,7 +226,7 @@ export function BlockImage({ element, children }: Props) {
                         )}
                      >
                         <Image
-                           className="max-h-80 w-auto mx-auto"
+                           className="w-auto mx-auto h-auto"
                            alt="Inline"
                            url={element.url}
                         />

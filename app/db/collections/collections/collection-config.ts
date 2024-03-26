@@ -89,6 +89,29 @@ export const Collections: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "filterGroups",
+         type: "array",
+         label: "Filter Groups",
+         fields: [
+            {
+               name: "label",
+               type: "text",
+            },
+            {
+               type: "array",
+               name: "filterItem",
+               fields: [
+                  { name: "icon", type: "text" },
+                  {
+                     name: "queryString",
+                     type: "json",
+                     required: true,
+                  },
+               ],
+            },
+         ],
+      },
+      {
          name: "sections",
          type: "array",
          label: "Sections",
@@ -115,7 +138,7 @@ export const Collections: CollectionConfig = {
                name: "showTitle",
                type: "checkbox",
                label: "Display Title",
-               defaultValue: false,
+               defaultValue: true,
             },
             {
                name: "showAd",
@@ -139,6 +162,7 @@ export const Collections: CollectionConfig = {
                   },
                ],
             },
+
             {
                name: "subSections",
                type: "array",
@@ -157,6 +181,12 @@ export const Collections: CollectionConfig = {
                   {
                      name: "name",
                      type: "text",
+                  },
+                  {
+                     name: "showTitle",
+                     type: "checkbox",
+                     label: "Display Title",
+                     defaultValue: false,
                   },
                   {
                      name: "type",
