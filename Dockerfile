@@ -4,7 +4,7 @@
 ARG NODE_VERSION=20.8.0
 FROM node:${NODE_VERSION}-alpine as base
 
-LABEL fly_launch_runtime="Remix"
+LABEL fly_launch_runtime="Mana"
 
 # Remix app lives here
 WORKDIR /app
@@ -17,13 +17,15 @@ ENV NODE_ENV="production"
 ARG YARN_VERSION=1.22.21
 RUN npm install -g yarn@$YARN_VERSION --force
 
+# Install supervisor in the base image
+RUN apk add --no-cache bash supervisor curl
 
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
 # Install packages needed to build node modules
 RUN apk update && \
-    apk add build-base gyp pkgconfig python3
+    apk add build-base gyp pkgconfig python3 
 
 # Install node modules
 COPY --link package.json yarn.lock /patches ./
@@ -34,10 +36,10 @@ COPY --link . .
 
 # Build application
 RUN yarn run build
+RUN yarn run custom-build
 
 # Remove development dependencies
 RUN yarn install --production=true
-
 
 # Final stage for app image
 FROM base
@@ -46,6 +48,8 @@ FROM base
 COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
-EXPOSE 8080
-CMD ["yarn", "run", "start:core"]
+COPY supervisord.conf /app/supervisord.conf
+EXPOSE 3000
+CMD ["supervisord", "-c", "/app/supervisord.conf"]
+
 

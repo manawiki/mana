@@ -3,9 +3,6 @@
    "extends": "./tsconfig.server.json",
    "files": ["custom.server.ts", "app/db/payload.custom.config.ts"],
    "compilerOptions": {
-      "paths": {
-         "~/*": ["app/*"],
-         "payload/generated-types": ["app/db/payload-custom-types.ts"]
-      }
+      "outDir": "build/custom"
    }
 }
