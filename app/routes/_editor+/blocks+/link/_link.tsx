@@ -123,7 +123,6 @@ export async function loader({
                      await authGQLFetcher({
                         request,
                         siteSlug: site?.slug,
-                        useProd: true,
                         variables: {
                            entryId,
                         },
