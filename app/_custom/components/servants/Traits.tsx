@@ -1,5 +1,4 @@
 import type { Servant as ServantType } from "payload/generated-custom-types";
-import { H3 } from "~/components/Headers";
 
 export function Traits({ data: servant }: { data: ServantType }) {
    return (
@@ -23,7 +22,7 @@ const TraitBlock = ({ charData }: any) => {
       <>
          {traitlist.length > 0 ? (
             <>
-               <H3 text="Traits" />
+               <h3>Traits</h3>
                {traitlist.map((trait: any) => {
                   return (
                      <>
@@ -49,7 +48,7 @@ const TagBlock = ({ charData }: any) => {
       <>
          {taglist.length > 0 ? (
             <>
-               <H3 text="Tags" />
+               <h3>Tags</h3>
                {taglist.map((tag: any) => {
                   return (
                      <>

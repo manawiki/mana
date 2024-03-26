@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 
 import type { Servant as ServantType } from "payload/generated-custom-types";
-import { H3, H2 } from "~/components/Headers";
+import {  H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
 export function Skills({ data: servant }: { data: ServantType }) {
@@ -30,7 +30,7 @@ export function Skills({ data: servant }: { data: ServantType }) {
 
             {classunlock ? (
                <>
-                  <H3 text="Class Skill Unlock Conditions" />
+                 <h3>Class Skill Unlock Conditions</h3>
                   <div dangerouslySetInnerHTML={{ __html: classunlock }}></div>
                </>
             ) : null}
