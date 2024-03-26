@@ -2,7 +2,7 @@ import { useEffect, type ReactNode } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
-import { gql } from "graphql-request";
+import { gql, request as gqlRequest } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
 import { Transforms } from "slate";
@@ -13,7 +13,7 @@ import { zx } from "zodix";
 import type { Collection, Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import { authGQLFetcher, gqlFormat } from "~/utils/fetchers.server";
+import { gqlFormat } from "~/utils/to-words";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import type { CustomElement, LinkElement } from "../../core/types";
@@ -26,83 +26,85 @@ export async function loader({
       linkUrl: z.string(),
    });
 
-   let url = new URL(linkUrl);
-   const pathSection = url.pathname.split("/");
-   const subdomain = url.host.split(".")[0];
-   let domain = url.hostname.split(".").slice(-2).join(".");
+   try {
+      let url = new URL(linkUrl);
 
-   switch (pathSection[1]) {
-      case "c": {
-         const slug = await payload.find({
-            collection: "sites",
-            where: {
-               ...(domain === "mana.wiki"
-                  ? {
-                       slug: {
-                          equals: subdomain,
-                       },
-                    }
-                  : {
-                       domain: {
-                          equals: `${subdomain}.${domain}`,
-                       },
-                    }),
-            },
-            depth: 1,
-            overrideAccess: false,
-            user,
-         });
+      const pathSection = url.pathname.split("/");
+      const subdomain = url.host.split(".")[0];
+      let domain = url.hostname.split(".").slice(-2).join(".");
 
-         const site = slug?.docs[0];
+      const slug = await payload.find({
+         collection: "sites",
+         where: {
+            ...(domain === "mana.wiki"
+               ? {
+                    slug: {
+                       equals: subdomain,
+                    },
+                 }
+               : {
+                    domain: {
+                       equals: `${subdomain}.${domain}`,
+                    },
+                 }),
+         },
+         depth: 1,
+         overrideAccess: false,
+         user,
+      });
 
-         //List
-         if (pathSection[2] && pathSection[3] == null) {
-            try {
-               const collectionData = await payload.find({
-                  collection: "collections",
-                  where: {
-                     site: {
-                        equals: site?.id,
+      const site = slug?.docs[0];
+
+      switch (pathSection[1]) {
+         case "c": {
+            //List
+            if (pathSection[2] && pathSection[3] == null) {
+               try {
+                  const collectionData = await payload.find({
+                     collection: "collections",
+                     where: {
+                        site: {
+                           equals: site?.id,
+                        },
+                        slug: {
+                           equals: pathSection[2],
+                        },
                      },
-                     slug: {
-                        equals: pathSection[2],
+                     depth: 1,
+                     overrideAccess: false,
+                     user,
+                  });
+
+                  const collection = collectionData?.docs[0];
+
+                  if (collection == undefined) return null;
+
+                  return {
+                     name: collection?.name,
+                     icon: {
+                        url: collection?.icon?.url,
                      },
-                  },
-                  depth: 1,
-                  overrideAccess: false,
-                  user,
-               });
-
-               const collection = collectionData?.docs[0];
-
-               if (collection == undefined) return null;
-
-               return {
-                  name: collection?.name,
-                  icon: {
-                     url: collection?.icon?.url,
-                  },
-               };
-            } catch (err: unknown) {
-               payload.logger.error(`${err}`);
+                  };
+               } catch (err: unknown) {
+                  payload.logger.error(`${err}`);
+               }
             }
-         }
 
-         //Entry
-         if (pathSection[3]) {
-            try {
-               const entryId = pathSection[3];
-               const collectionId = pathSection[2];
+            //Entry
+            if (pathSection[3]) {
+               try {
+                  const entryId = pathSection[3];
+                  const collectionId = pathSection[2];
 
-               const collection = site?.collections?.find(
-                  (collection) => collection.slug === collectionId,
-               ) as Collection;
+                  const collection = site?.collections?.find(
+                     (collection) => collection.slug === collectionId,
+                  ) as Collection;
 
-               if (collection?.customDatabase === true) {
-                  const label = gqlFormat(collectionId ?? "", "list");
+                  if (collection?.customDatabase === true) {
+                     const label = gqlFormat(collectionId ?? "", "list");
 
-                  //Document request if slug does exist
-                  const entryQuery = gql`
+                     //Document request if slug does exist
+                     const entryQuery = gql`
                         query ($entryId: String!) {
                            entryData: ${label}(
                                  where: { OR: [{ slug: { equals: $entryId } }, { id: { equals: $entryId } }] }
@@ -117,81 +119,93 @@ export async function loader({
                         }
                   `;
 
-                  //Fetch to see if slug exists
-                  //@ts-ignore
-                  const { entryData }: { entryData: PaginatedDocs<Entry> } =
-                     await authGQLFetcher({
-                        request,
-                        siteSlug: site?.slug,
-                        variables: {
-                           entryId,
-                        },
-                        document: entryQuery,
-                     });
+                     //Fetch to see if slug exists
+                     //@ts-ignore
+                     const { entryData }: { entryData: PaginatedDocs<Entry> } =
+                        await gqlRequest(
+                           url.origin + ":4000/api/graphql",
+                           entryQuery,
+                           {
+                              entryId,
+                           },
+                        );
 
-                  return json(entryData?.docs[0]);
+                     return json(entryData?.docs[0]);
+                  }
+                  //If not custom site, fetch local api entries collection
+                  const coreEntryData = await payload.find({
+                     collection: "entries",
+                     where: {
+                        "site.slug": {
+                           equals: site?.slug,
+                        },
+                        "collectionEntity.slug": {
+                           equals: collectionId,
+                        },
+                        or: [
+                           {
+                              slug: {
+                                 equals: entryId,
+                              },
+                           },
+                           {
+                              id: {
+                                 equals: entryId,
+                              },
+                           },
+                        ],
+                     },
+                     depth: 1,
+                     user,
+                     overrideAccess: false,
+                  });
+
+                  const entryData = coreEntryData?.docs[0];
+
+                  const entry = {
+                     name: entryData?.name,
+                     icon: {
+                        url: entryData?.icon?.url,
+                     },
+                  };
+
+                  return entry;
+               } catch (err: unknown) {
+                  payload.logger.error(`${err}`);
                }
-               //If not custom site, fetch local api entries collection
-               const coreEntryData = await payload.find({
-                  collection: "entries",
-                  where: {
-                     "site.slug": {
-                        equals: site?.slug,
-                     },
-                     "collectionEntity.slug": {
-                        equals: collectionId,
-                     },
-                     or: [
-                        {
-                           slug: {
-                              equals: entryId,
-                           },
-                        },
-                        {
-                           id: {
-                              equals: entryId,
-                           },
-                        },
-                     ],
-                  },
-                  depth: 1,
-                  user,
-                  overrideAccess: false,
-               });
-
-               const entryData = coreEntryData?.docs[0];
-
-               const entry = {
-                  name: entryData?.name,
-                  icon: {
-                     url: entryData?.icon?.url,
-                  },
-               };
-
-               return entry;
-            } catch (err: unknown) {
-               payload.logger.error(`${err}`);
             }
          }
+         // Posts version (future)
+         // case "posts": {
+         //    if (pathSection[3]) {
+         //       const postId = pathSection[3];
+         //       const doc = await payload.findByID({
+         //          collection: "posts",
+         //          id: postId,
+         //          depth: 1,
+         //          overrideAccess: false,
+         //          user,
+         //       });
+         //       const filtered = select({ name: true, banner: true }, doc);
+         //       return filtered;
+         //    }
+         //    return;
+         // }
+
+         //Otherwise, return site
+         default:
+            return {
+               name: site?.name,
+               icon: {
+                  url: site?.icon?.url,
+               },
+            };
       }
-      // Posts version (future)
-      // case "posts": {
-      //    if (pathSection[3]) {
-      //       const postId = pathSection[3];
-      //       const doc = await payload.findByID({
-      //          collection: "posts",
-      //          id: postId,
-      //          depth: 1,
-      //          overrideAccess: false,
-      //          user,
-      //       });
-      //       const filtered = select({ name: true, banner: true }, doc);
-      //       return filtered;
-      //    }
-      //    return;
-      // }
-      default:
-         return;
+   } catch (err: unknown) {
+      payload.logger.error(`${err}`);
+      return {
+         error: "Error fetching link data",
+      };
    }
 }
 
@@ -218,12 +232,7 @@ export function BlockLink({ element, children }: Props) {
    let url = element.url && new URL(element.url).pathname;
    let pathSection = url && url.split("/");
 
-   const canFetch =
-      element.icon == undefined &&
-      pathSection &&
-      pathSection[1] == "c" &&
-      pathSection[2] &&
-      true;
+   const canFetch = element.icon == undefined;
 
    const linkDataQuery = qs.stringify(
       {
@@ -245,7 +254,7 @@ export function BlockLink({ element, children }: Props) {
       }
 
       // Once we have the data, Slate will update the element
-      if (canFetch && data) {
+      if (canFetch && data && data.name && data.icon?.url) {
          const path = ReactEditor.findPath(editor, element);
 
          const newProperties: Partial<CustomElement> = {
