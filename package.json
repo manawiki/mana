@@ -3,7 +3,7 @@
    "sideEffects": false,
    "scripts": {
       "dev": "run-p dev:core dev:custom",
-      "build": "run-p build:core build:custom",
+      "build": "yarn run generate:types && run-p \"build:core:*\" \"build:custom:*\"",
       "start": "run-p start:core start:custom",
       "dev:core": "yarn run generate:types && remix dev -c \"npm run dev:node\" --manual",
       "dev:node": "cross-env NODE_ENV=development PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts node -r ts-node/register ./core.server.ts",
@@ -12,7 +12,7 @@
       "build:core:remix": "remix build",
       "build:core:payload": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts payload build",
       "build:core:server": "tsc -p tsconfig.server.json",
-      "build:custom": "run-p \"build:custom:*\"",
+      "build:custom": "yarn run generate:types && run-p \"build:custom:*\"",
       "build:custom:payload": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts payload build",
       "build:custom:server": "tsc -p tsconfig.custom.json",
       "start:core": "cross-env PAYLOAD_CONFIG_PATH=build/core/app/db/payload.config.js NODE_ENV=production node build/core/core.server.js",
