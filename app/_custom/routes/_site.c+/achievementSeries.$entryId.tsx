@@ -30,12 +30,12 @@ export async function loader({
    // Pull Achievement list for this Series
    // ======================
 
-   const url = `https://${entry.siteSlug}-db.${settings.domain}/api/achievements?limit=100&depth=3&where[achievement_series][equals]=${entry?.id}`;
+   const url = `http://localhost:4000/api/achievements?limit=100&depth=3&where[achievement_series][equals]=${entry?.id}`;
    const achievementRaw = await fetchWithCache(url);
    const achievementData = achievementRaw.docs as AchievementType[];
 
    // Get the image URL reference for the Stellar Jade icon lol.
-   const sjurl = `https://${entry.siteSlug}-db.${settings.domain}/api/images/ItemIcon_900001`;
+   const sjurl = `http://localhost:4000/api/images/ItemIcon_900001`;
    const sjRaw = await fetchWithCache(sjurl);
    const stellarJadeURL = sjRaw?.url;
 

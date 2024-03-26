@@ -33,7 +33,7 @@ export async function loader({
    // Pull Skill Tree data for character
    // ======================
 
-   const url = `https://starrail-db.mana.wiki/api/relics?limit=50&depth=4&where[relicset_id][equals]=${entry.id}`;
+   const url = `http://localhost:4000/api/relics?limit=50&depth=4&where[relicset_id][equals]=${entry.id}`;
    const relicRaw = await fetchWithCache(url);
    const relicData = relicRaw.docs as Relic[];
 

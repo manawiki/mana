@@ -33,19 +33,19 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const url = `https://${settings.siteId}-db.${settings.domain}/api/characters?limit=100`;
+   const url = `http://localhost:4000/api/characters?limit=100`;
    const characterRaw = await fetchWithCache(url);
    const characters = characterRaw.docs;
 
-   const url2 = `https://${settings.siteId}-db.${settings.domain}/api/lightCones?limit=200&sort=lightcone_id`;
+   const url2 = `http://localhost:4000/api/lightCones?limit=200&sort=lightcone_id`;
    const lightConesRaw = await fetchWithCache(url2);
    const lightCones = lightConesRaw.docs;
 
-   const url3 = `https://${settings.siteId}-db.${settings.domain}/api/banners?limit=100&sort=-banner_id`;
+   const url3 = `http://localhost:4000/api/banners?limit=100&sort=-banner_id`;
    const bannerRaw = await fetchWithCache(url3);
    const banners = bannerRaw.docs;
 
-   const url4 = `https://${settings.siteId}-db.${settings.domain}/api/submittedWarps?limit=1000&sort=id`;
+   const url4 = `http://localhost:4000/api/submittedWarps?limit=1000&sort=id`;
    const warpRaw = await fetchWithCache(url4);
    const warps = warpRaw.docs;
 

@@ -24,20 +24,20 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   let url = `https://starrail-db.mana.wiki/api/banners?limit=500&sort=id`;
+   let url = `http://localhost:4000/api/banners?limit=500&sort=id`;
    const bannerRaw = await fetchWithCache(url);
    const banners = bannerRaw.docs;
 
-   url = `https://starrail-db.mana.wiki/api/characters?limit=500`;
+   url = `http://localhost:4000/api/characters?limit=500`;
    const characterRaw = await fetchWithCache(url);
    const characters = characterRaw.docs;
 
-   url = `https://starrail-db.mana.wiki/api/lightCones?limit=500`;
+   url = `http://localhost:4000/api/lightCones?limit=500`;
    const lightConeRaw = await fetchWithCache(url);
    const lightCones = lightConeRaw.docs;
 
    // Get the image URL reference for the Stellar Jade icon lol.
-   url = `https://starrail-db.mana.wiki/api/images/ItemIcon_900001`;
+   url = `http://localhost:4000/api/images/ItemIcon_900001`;
    const sjRaw = await fetchWithCache(url);
    const stellarJadeURL = sjRaw?.url;
 

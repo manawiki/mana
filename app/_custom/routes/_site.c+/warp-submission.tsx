@@ -333,7 +333,7 @@ const CorrectFile = ({ jsonlist }: any) => {
 };
 
 async function postWarp(warp: any) {
-   const url = `https://starrail-db.mana.wiki/api/submittedWarps`;
+   const url = `http://localhost:4000/api/submittedWarps`;
 
    const submitWarp = await fetch(url, {
       method: "POST",

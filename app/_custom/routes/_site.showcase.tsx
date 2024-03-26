@@ -31,7 +31,7 @@ export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 async function fetchGQL(query: string, variables?: Record<string, any>) {
    const { data, errors } = await fetchWithCache(
-      `https://starrail-db.mana.wiki/api/graphql`,
+      `http://localhost:4000/api/graphql`,
       {
          method: "POST",
          headers: {
