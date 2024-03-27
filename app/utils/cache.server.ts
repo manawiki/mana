@@ -72,6 +72,7 @@ export async function gqlRequestWithCache(
       key,
       async getFreshValue() {
          try {
+            // We need to catch this to avoid graphql throwing crashing the server
             const response = await gqlRequest(url, query, variables, {
                cookie: request?.headers.get("cookie") ?? "",
             });
