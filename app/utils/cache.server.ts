@@ -71,10 +71,15 @@ export async function gqlRequestWithCache(
       cache,
       key,
       async getFreshValue() {
-         const response = await gqlRequest(url, query, variables, {
-            cookie: request?.headers.get("cookie") ?? "",
-         });
-         return response;
+         try {
+            const response = await gqlRequest(url, query, variables, {
+               cookie: request?.headers.get("cookie") ?? "",
+            });
+            return response;
+         } catch (error) {
+            console.error(error);
+            return null;
+         }
       },
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
