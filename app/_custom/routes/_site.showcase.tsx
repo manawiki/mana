@@ -231,7 +231,10 @@ const DisplayPlayerInfo = ({
    uid,
    refreshCooldown,
 }: any) => {
-   const [displayChar, setDisplayChar] = useState(0);
+   const [displayChar, setDisplayChar] = useState(
+      pdata?.detail_info?.assist_avatars?.[0]?.avatar_id ??
+         pdata?.detail_info?.avatar_detail_list?.[0]?.avatar_id,
+   );
 
    return (
       <main className="desktop:pb-16">
@@ -243,7 +246,7 @@ const DisplayPlayerInfo = ({
             data={pdata}
             characters={characters}
             displayChar={displayChar}
-            setDisplayChar={(e: any) => setDisplayChar(e)}
+            setDisplayChar={setDisplayChar}
          />
          <div
             id="showcase-canvas"
@@ -430,22 +433,22 @@ const CharacterSelector = ({
    return (
       <>
          <div className="relative z-20 -mt-5 flex items-center justify-center gap-3">
-            {charids.map((c: any, i: any) => {
+            {charids.map((c: any) => {
                const cdata = characters.find((a: any) => a.character_id == c);
 
                return (
                   <div
                      className="cursor-pointer"
                      onClick={() => {
-                        setDisplayChar(i);
+                        setDisplayChar(c);
                      }}
-                     key={c + "-" + i}
+                     key={c}
                   >
                      {/* NOTE: Passing style in as a parameter in case we want to format the actively selected character differently! */}
                      <ItemFrameRound
                         mat={cdata}
                         className={`${
-                           displayChar == i
+                           displayChar == c
                               ? "border-zinc-300 shadow dark:border-zinc-400"
                               : ""
                         }`}
@@ -518,15 +521,15 @@ const CharacterInfo = ({
    }, [navigation.state, refreshCooldown]);
 
    // Character Data Loading
-   const allChars = [
-      ...data?.detail_info?.assist_avatars,
-      ...data?.detail_info?.avatar_detail_list,
-   ];
+   const chardata =
+      data?.detail_info?.assist_avatars.find(
+         (a: any) => a?.avatar_id == displayChar,
+      ) ??
+      data?.detail_info?.avatar_detail_list.find(
+         (a: any) => a?.avatar_id == displayChar,
+      );
 
-   const chardata = allChars[displayChar];
-   const charid = chardata?.avatar_id;
-
-   const charbase = characters.find((a: any) => a.character_id == charid);
+   const charbase = characters.find((a: any) => a.character_id == displayChar);
 
    // Character Showcase Canvas!
    // const bg_url = "https://static.mana.wiki/starrail/UI_Star_Bg.png";
