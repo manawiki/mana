@@ -1,30 +1,26 @@
-import { jsonToGraphQLQuery } from "json-to-graphql-query";
 import type { Payload } from "payload";
 
 import type { RemixRequestContext } from "remix.env";
-import type { Collection } from "~/db/payload-types";
-import { cacheThis, gqlRequestWithCache } from "~/utils/cache.server";
-import {
-   gqlFormat,
-   gqlEndpoint,
-   authGQLFetcher,
-} from "~/utils/fetchers.server";
-
-import type { CollectionsAllSchema } from "../_list";
+import { cacheThis, fetchWithCache } from "~/utils/cache.server";
+import { authRestFetcher } from "~/utils/fetchers.server";
 
 export async function fetchListCore({
-   page = 1,
-   q,
+   request,
    payload,
    siteSlug,
    user,
-   collectionId,
-}: typeof CollectionsAllSchema._type & {
+}: {
+   request: Request;
    payload: Payload;
-   collectionId: Collection["slug"];
    siteSlug: string | undefined;
    user?: RemixRequestContext["user"];
 }) {
+   const urlParams = new URL(request.url).search;
+
+   const url = new URL(request.url).pathname;
+
+   const collectionId = url.split("/")[2];
+
    const { docs: collectionData } = user
       ? await payload.find({
            collection: "collections",
@@ -63,56 +59,26 @@ export async function fetchListCore({
 
    // Get custom collection list data
    if (collectionEntry?.customDatabase) {
-      const label = gqlFormat(collectionId, "list");
+      const restPath = `http://localhost:4000/api/${collectionEntry.slug}${
+         urlParams ? `${urlParams}&` : "?"
+      }depth=2&limit=50`;
 
-      const query = {
-         query: {
-            entries: {
-               __aliasFor: label,
-               __args: {
-                  limit: 200,
-                  page: page,
-                  sort: "number",
-               },
-               totalDocs: true,
-               totalPages: true,
-               limit: true,
-               pagingCounter: true,
-               hasPrevPage: true,
-               prevPage: true,
-               nextPage: true,
-               hasNextPage: true,
-               docs: {
-                  id: true,
-                  slug: true,
-                  name: true,
-                  icon: {
-                     url: true,
-                  },
-               },
-            },
-         },
-      };
-
-      const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
-
-      const { entries } = user
-         ? await authGQLFetcher({
-              siteSlug: siteSlug,
-              variables: {
-                 page,
-              },
-              document: graphql_query,
+      const { docs, ...entryMetaData } = user
+         ? await authRestFetcher({
+              method: "GET",
+              path: restPath,
            })
-         : await gqlRequestWithCache(
-              gqlEndpoint({ siteSlug: collectionEntry?.site.slug }),
-              graphql_query,
-              {
-                 page,
-              },
-           );
+         : await fetchWithCache(restPath);
 
-      return { entries };
+      const filteredDocs = docs.map((entry: any) => ({
+         id: entry.id,
+         name: entry.name,
+         slug: entry.slug,
+         icon: {
+            url: entry.icon?.url,
+         },
+      }));
+      return { entries: { docs: filteredDocs, ...entryMetaData } };
    }
 
    //Otherwise pull data from core
