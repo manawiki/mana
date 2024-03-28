@@ -98,15 +98,49 @@ export const Collections: CollectionConfig = {
                type: "text",
             },
             {
+               name: "filterKey",
+               type: "text",
+               required: true,
+            },
+            {
+               name: "queryLogic",
+               type: "select",
+               required: true,
+               defaultValue: "or",
+               options: [
+                  {
+                     label: "or",
+                     value: "or",
+                  },
+                  {
+                     label: "and",
+                     value: "and",
+                  },
+               ],
+            },
+            {
+               name: "queryOperator",
+               type: "select",
+               required: true,
+               defaultValue: "equals",
+               options: [
+                  {
+                     label: "Equals",
+                     value: "equals",
+                  },
+                  {
+                     label: "Contains",
+                     value: "contains",
+                  },
+               ],
+            },
+            {
                type: "array",
                name: "filterItem",
                fields: [
+                  { name: "name", type: "text" },
                   { name: "icon", type: "text" },
-                  {
-                     name: "queryString",
-                     type: "json",
-                     required: true,
-                  },
+                  { name: "value", type: "text" },
                ],
             },
          ],

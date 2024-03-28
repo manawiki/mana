@@ -117,9 +117,13 @@ const QUERY = gql`
             slug
             filterGroups {
                label
+               filterKey
+               queryLogic
+               queryOperator
                filterItem {
+                  name
                   icon
-                  queryString
+                  value
                }
             }
             sections {
