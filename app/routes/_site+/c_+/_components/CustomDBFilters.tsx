@@ -52,7 +52,6 @@ export function CustomDBFilters({ collection }: { collection: Collection }) {
          <div className="flex items-center gap-3">
             <Button
                onClick={() => setFilterToggle(!filterMenuToggle)}
-               href={`/c/${collection.slug}?sort=name`}
                className="text-sm"
             >
                Filter
