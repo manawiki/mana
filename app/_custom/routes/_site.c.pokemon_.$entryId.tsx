@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { gql } from "graphql-request";
 
 import { Badge } from "~/components/Badge";
+import { H2Plain } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
@@ -276,33 +277,27 @@ function Main({ data: pokemon }: { data: PokemonType }) {
 }
 
 function Ratings({ data: pokemon }: { data: PokemonType }) {
-   const exists =
-      pokemon.ratings?.attackerRating ||
-      pokemon.ratings?.greatLeagueRating ||
-      pokemon.ratings?.ultraLeagueRating ||
-      pokemon.ratings?.masterLeagueRating;
    return (
       <>
-         <div
-            className={clsx(
-               exists
-                  ? "border border-color-sub divide-y divide-color-sub bg-2-sub shadow-sm shadow-1 rounded-lg overflow-hidden"
-                  : "",
-            )}
-         >
+         <div className="space-y-3">
             {pokemon.ratings?.attackerRating && (
-               <div className="p-3 justify-between flex items-center gap-2">
-                  <div className="flex items-center gap-3">
+               <Link
+                  to="/c/tier-lists/attackers-tier-list"
+                  className="relative flex items-center justify-between dark:hover:border-zinc-600  
+                  gap-1.5 p-2.5 bg-2-sub shadow-sm shadow-1 rounded-lg border border-color-sub"
+               >
+                  <div className="flex items-center gap-2.5">
                      <Image
-                        height={24}
-                        width={24}
-                        url="https://static.mana.wiki/pokemongo/attackers-tier-list.png"
-                        options="height=40&width=40"
+                        height={32}
+                        width={32}
+                        url="https://static.mana.wiki/entry-icon-MvlMIm49ktCGFbwNma2Gd.png"
+                        options="height=120&width=120"
                         alt="Attacker Tier List"
                      />
                      <div className="font-semibold text-sm">
                         Attackers Tier List
                      </div>
+                     <Icon name="external-link" className="text-1" size={14} />
                   </div>
                   <Badge color="teal">
                      <RatingsLabel
@@ -311,21 +306,26 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                      />{" "}
                      Tier
                   </Badge>
-               </div>
+               </Link>
             )}
             {pokemon.ratings?.greatLeagueRating && (
-               <div className="p-3 justify-between flex items-center gap-2">
-                  <div className="flex items-center gap-3">
+               <Link
+                  to="/c/tier-lists/great-league-pvp-tier-list"
+                  className="relative flex items-center justify-between dark:hover:border-zinc-600  
+                  gap-1.5 p-2.5 bg-2-sub shadow-sm shadow-1 rounded-lg border border-color-sub"
+               >
+                  <div className="flex items-center gap-2.5">
                      <Image
-                        height={24}
-                        width={24}
-                        url="https://static.mana.wiki/pokemongo/great_league.webp"
-                        options="height=40&width=40"
+                        height={32}
+                        width={32}
+                        url="https://static.mana.wiki/entry-icon-TkBwBHXbgb4E8xmhDXmnj.png"
+                        options="height=120&width=120"
                         alt="Great League Rating"
                      />
                      <div className="font-semibold text-sm">
                         Great League PVP
                      </div>
+                     <Icon name="external-link" className="text-1" size={14} />
                   </div>
                   <Badge color="blue">
                      <RatingsLabel
@@ -334,21 +334,26 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                      />{" "}
                      / 5
                   </Badge>
-               </div>
+               </Link>
             )}
             {pokemon.ratings?.ultraLeagueRating && (
-               <div className="p-3 justify-between flex items-center gap-2">
-                  <div className="flex items-center gap-3">
+               <Link
+                  to="/c/tier-lists/ultra-league-pvp-tier-list"
+                  className="relative flex items-center justify-between dark:hover:border-zinc-600  
+                  gap-1.5 p-2.5 bg-2-sub shadow-sm shadow-1 rounded-lg border border-color-sub"
+               >
+                  <div className="flex items-center gap-2.5">
                      <Image
-                        height={24}
-                        width={24}
-                        url="https://static.mana.wiki/pokemongo/ultra_league.png"
-                        options="height=40&width=40"
+                        height={32}
+                        width={32}
+                        url="https://static.mana.wiki/entry-icon-pXFr_gG0jDPlKKZRF_-Fb.png"
+                        options="height=120&width=120"
                         alt="Ultra League Rating"
                      />
                      <div className="font-semibold text-sm">
                         Ultra League PVP
                      </div>
+                     <Icon name="external-link" className="text-1" size={14} />
                   </div>
                   <Badge color="yellow">
                      <RatingsLabel
@@ -357,21 +362,26 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                      />{" "}
                      / 5
                   </Badge>
-               </div>
+               </Link>
             )}
             {pokemon.ratings?.masterLeagueRating && (
-               <div className="p-3 justify-between flex items-center gap-2">
-                  <div className="flex items-center gap-3">
+               <Link
+                  to="/c/tier-lists/master-league-pvp-tier-list"
+                  className="relative flex items-center justify-between dark:hover:border-zinc-600  
+                  gap-1.5 p-2.5 bg-2-sub shadow-sm shadow-1 rounded-lg border border-color-sub"
+               >
+                  <div className="flex items-center gap-2.5">
                      <Image
-                        height={24}
-                        width={24}
-                        url="https://static.mana.wiki/pokemongo/master_league.webp"
-                        options="height=40&width=40"
+                        height={32}
+                        width={32}
+                        url="https://static.mana.wiki/entry-icon-0zMXRTy0xlTZ5TwiaRGmo.png"
+                        options="height=120&width=120"
                         alt="Master League Rating"
                      />
                      <div className="font-semibold text-sm">
                         Master League PVP
                      </div>
+                     <Icon name="external-link" className="text-1" size={14} />
                   </div>
                   <Badge color="purple">
                      <RatingsLabel
@@ -380,7 +390,7 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                      />{" "}
                      / 5
                   </Badge>
-               </div>
+               </Link>
             )}
          </div>
       </>
@@ -390,7 +400,7 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
 function Moves({ data: pokemon }: { data: PokemonType }) {
    return (
       <>
-         <h3>Fast</h3>
+         <H2Plain text="Fast" className="!text-xl" />
          <div className="border border-color-sub divide-y divide-color-sub bg-2-sub shadow-sm shadow-1 rounded-lg overflow-hidden mb-3">
             {pokemon.fastMoves?.map((row) => (
                <div className="flex items-center" key={row?.move?.id}>
@@ -410,16 +420,16 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                         {row?.move?.name}
                      </div>
                   </Link>
-                  <div className="flex items-center gap-3 p-3">
+                  <div className="flex items-center gap-3 p-3 flex-none">
                      {row?.category && (
-                        <div className="text-[10px] capitalize font-bold text-1 bg-3-sub py-1 px-2 rounded-lg border border-color-sub">
+                        <Badge className="capitalize !text-xs">
                            {row?.category}
-                        </div>
+                        </Badge>
                      )}
                      <Tooltip placement="top">
                         <TooltipTrigger
-                           className="rounded-full size-6 border shadow-sm shadow-1 border-color-sub flex 
-                           items-center justify-center bg-white dark:bg-zinc-800"
+                           className="rounded-lg h-7 px-0.5 border shadow-sm shadow-1 border-color-sub 
+                                  flex items-center justify-center bg-white dark:bg-zinc-800"
                         >
                            <Image
                               height={28}
@@ -435,7 +445,7 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                      </Tooltip>
                      <div
                         className="font-semibold text-sm w-10 text-center h-7 flex items-center justify-center 
-                        rounded-lg shadow-sm shadow-1 border border-color bg-white dark:bg-dark400"
+                          rounded-lg shadow-sm dark:shadow-zinc-800/80 border border-color-sub bg-white dark:bg-dark400"
                      >
                         {row.move?.pve?.power}
                      </div>
@@ -443,7 +453,7 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                </div>
             ))}
          </div>
-         <h3>Charge</h3>
+         <H2Plain text="Charge" className="!text-xl" />
          <div className="border border-color-sub divide-y divide-color-sub bg-2-sub shadow-sm shadow-1 rounded-lg overflow-hidden">
             {pokemon.chargeMoves?.map((row) => (
                <div className="flex items-center" key={row?.move?.id}>
@@ -459,19 +469,20 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                         options="height=40&width=40"
                         alt={row?.move?.name}
                      />
-                     <div className="text-sm font-semibold flex-grow">
-                        {row?.move?.name}
+                     <div className="text-sm font-bold flex-grow space-y-1">
+                        <div>{row?.move?.name}</div>
+                        <ChargeBar value={row?.move?.pve?.energyDeltaCharge} />
                      </div>
                   </Link>
-                  <div className="flex items-center gap-3 p-3">
+                  <div className="flex items-center gap-3 p-3 flex-none">
                      {row?.category && (
-                        <div className="text-[10px] capitalize font-bold text-1 bg-3-sub py-1 px-2 rounded-lg border border-color-sub">
+                        <Badge className="capitalize !text-xs">
                            {row?.category}
-                        </div>
+                        </Badge>
                      )}
                      <Tooltip placement="top">
                         <TooltipTrigger
-                           className="rounded-full w-6 h-6 border shadow-sm shadow-1 border-color-sub 
+                           className="rounded-lg h-7 px-0.5 border shadow-sm shadow-1 border-color-sub 
                         flex items-center justify-center bg-white dark:bg-zinc-800"
                         >
                            <Image
@@ -487,8 +498,8 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                         </TooltipContent>
                      </Tooltip>
                      <div
-                        className="font-semibold text-sm w-10 text-center h-7 flex items-center justify-center 
-                        rounded-lg shadow-sm shadow-1 border border-color bg-white dark:bg-dark400"
+                        className="font-semibold text-sm w-12 text-center h-7 flex items-center justify-center 
+                        rounded-lg shadow-sm dark:shadow-zinc-800/80 border border-color-sub bg-white dark:bg-dark400"
                      >
                         {row.move?.pve?.power}
                      </div>
@@ -588,6 +599,58 @@ function Label({
    return <>{getLabel?.label && getLabel.label}</>;
 }
 
+function ChargeBar({ value }: { value: string | undefined }) {
+   switch (value) {
+      case "_20": {
+         return (
+            <div className="grid grid-cols-5 gap-2 flex-none w-24">
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+            </div>
+         );
+      }
+      case "_25": {
+         return (
+            <div className="grid grid-cols-4 gap-2 flex-none w-24">
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+            </div>
+         );
+      }
+      case "_33": {
+         return (
+            <div className="grid grid-cols-3 gap-2 flex-none w-24">
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+            </div>
+         );
+      }
+      case "_50": {
+         return (
+            <div className="grid grid-cols-2 gap-2 flex-none w-24">
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+               <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
+            </div>
+         );
+      }
+      case "_100": {
+         return (
+            <div className="h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500 w-24" />
+         );
+      }
+
+      default:
+         //Render default element if no custom blocks match
+         return;
+   }
+}
+
 const QUERY = gql`
    query ($entryId: String!) {
       pokemon: Pokemon(id: $entryId) {
@@ -651,6 +714,7 @@ const QUERY = gql`
                category
                pve {
                   power
+                  energyDeltaCharge
                }
                icon {
                   url
