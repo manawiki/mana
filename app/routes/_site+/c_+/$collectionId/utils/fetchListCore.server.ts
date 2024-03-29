@@ -64,8 +64,20 @@ export async function fetchListCore({
       const sort = qs.parse(searchParams, { ignoreQueryPrefix: true })?.sort;
       const page = qs.parse(searchParams, { ignoreQueryPrefix: true })?.page;
 
+      const defaultSortParam =
+         collectionEntry?.sortGroups &&
+         collectionEntry?.sortGroups.find(
+            (element: any) => element?.default == true,
+         );
+
       const preparedQuery = `${where ? where : ""}${
-         sort ? `&sort=${sort}` : ""
+         sort
+            ? `&sort=${sort}`
+            : `&sort=${
+                 defaultSortParam?.defaultSortType == "ascending"
+                    ? `${defaultSortParam.value}`
+                    : defaultSortParam?.value && `-${defaultSortParam.value}`
+              }`
       }${page ? `&page=${page}` : ""}`;
 
       const restPath = `http://localhost:4000/api/${collectionEntry.slug}${
