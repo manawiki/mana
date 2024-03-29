@@ -89,6 +89,38 @@ export const Collections: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "sortGroups",
+         type: "array",
+         label: "Sort Groups",
+         fields: [
+            {
+               name: "label",
+               type: "text",
+               required: true,
+            },
+            {
+               name: "value",
+               type: "text",
+               required: true,
+            },
+            {
+               name: "defaultSortType",
+               type: "select",
+               defaultValue: "descending",
+               options: [
+                  {
+                     label: "Ascending",
+                     value: "ascending",
+                  },
+                  {
+                     label: "Descending",
+                     value: "descending",
+                  },
+               ],
+            },
+         ],
+      },
+      {
          name: "filterGroups",
          type: "array",
          label: "Filter Groups",
@@ -96,17 +128,52 @@ export const Collections: CollectionConfig = {
             {
                name: "label",
                type: "text",
+               required: true,
+            },
+            {
+               name: "filterKey",
+               type: "text",
+               required: true,
+            },
+            {
+               name: "queryLogic",
+               type: "select",
+               required: true,
+               defaultValue: "or",
+               options: [
+                  {
+                     label: "or",
+                     value: "or",
+                  },
+                  {
+                     label: "and",
+                     value: "and",
+                  },
+               ],
+            },
+            {
+               name: "queryOperator",
+               type: "select",
+               required: true,
+               defaultValue: "equals",
+               options: [
+                  {
+                     label: "Equals",
+                     value: "equals",
+                  },
+                  {
+                     label: "Contains",
+                     value: "contains",
+                  },
+               ],
             },
             {
                type: "array",
                name: "filterItem",
                fields: [
+                  { name: "name", type: "text", required: true },
+                  { name: "value", type: "text", required: true },
                   { name: "icon", type: "text" },
-                  {
-                     name: "queryString",
-                     type: "json",
-                     required: true,
-                  },
                ],
             },
          ],
