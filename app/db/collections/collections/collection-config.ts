@@ -91,7 +91,7 @@ export const Collections: CollectionConfig = {
       {
          name: "sortGroups",
          type: "array",
-         label: "Filter Groups",
+         label: "Sort Groups",
          fields: [
             {
                name: "label",
@@ -104,7 +104,7 @@ export const Collections: CollectionConfig = {
                required: true,
             },
             {
-               name: "orderType",
+               name: "defaultSortType",
                type: "select",
                defaultValue: "descending",
                options: [
