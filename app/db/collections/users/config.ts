@@ -97,6 +97,9 @@ export const Users: CollectionConfig = {
          name: "stripeCustomerId",
          type: "text",
          unique: true,
+         access: {
+            read: isStaffFieldLevel,
+         },
       },
       {
          name: "email",
