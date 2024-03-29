@@ -1,4 +1,5 @@
 import type { Payload } from "payload";
+import qs from "qs";
 
 import type { RemixRequestContext } from "remix.env";
 import { cacheThis, fetchWithCache } from "~/utils/cache.server";
@@ -15,8 +16,6 @@ export async function fetchListCore({
    siteSlug: string | undefined;
    user?: RemixRequestContext["user"];
 }) {
-   const urlParams = new URL(request.url).search;
-
    const url = new URL(request.url).pathname;
 
    const collectionId = url.split("/")[2];
@@ -59,8 +58,18 @@ export async function fetchListCore({
 
    // Get custom collection list data
    if (collectionEntry?.customDatabase) {
+      const searchParams = new URL(request.url).search;
+
+      const where = qs.parse(searchParams, { ignoreQueryPrefix: true })?.where;
+      const sort = qs.parse(searchParams, { ignoreQueryPrefix: true })?.sort;
+      const page = qs.parse(searchParams, { ignoreQueryPrefix: true })?.page;
+
+      const preparedQuery = `${where ? where : ""}${
+         sort ? `&sort=${sort}` : ""
+      }${page ? `&page=${page}` : ""}`;
+
       const restPath = `http://localhost:4000/api/${collectionEntry.slug}${
-         urlParams ? `${urlParams}&` : "?"
+         preparedQuery ? `?${preparedQuery}&` : "?"
       }depth=2&limit=50`;
 
       const { docs, ...entryMetaData } = user
