@@ -89,6 +89,38 @@ export const Collections: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "sortGroups",
+         type: "array",
+         label: "Filter Groups",
+         fields: [
+            {
+               name: "label",
+               type: "text",
+               required: true,
+            },
+            {
+               name: "value",
+               type: "text",
+               required: true,
+            },
+            {
+               name: "orderType",
+               type: "select",
+               defaultValue: "descending",
+               options: [
+                  {
+                     label: "Ascending",
+                     value: "ascending",
+                  },
+                  {
+                     label: "Descending",
+                     value: "descending",
+                  },
+               ],
+            },
+         ],
+      },
+      {
          name: "filterGroups",
          type: "array",
          label: "Filter Groups",
@@ -96,6 +128,7 @@ export const Collections: CollectionConfig = {
             {
                name: "label",
                type: "text",
+               required: true,
             },
             {
                name: "filterKey",
@@ -138,9 +171,9 @@ export const Collections: CollectionConfig = {
                type: "array",
                name: "filterItem",
                fields: [
-                  { name: "name", type: "text" },
+                  { name: "name", type: "text", required: true },
+                  { name: "value", type: "text", required: true },
                   { name: "icon", type: "text" },
-                  { name: "value", type: "text" },
                ],
             },
          ],
