@@ -10,9 +10,13 @@ const USER_ID = "644069d751c100f909f89e62"; // TODO(dim): Not hardcode this valu
 
 interface IDataEntry {
     table: string;
-    data: any,
+    data: IDataEntryData;
     checksum: string;
     path?: string;
+}
+
+interface IDataEntryData {
+    id: any;
 }
 
 function delay(ms: number) {
@@ -20,8 +24,27 @@ function delay(ms: number) {
 }
 
 async function importEntry(entry: IDataEntry): Promise<void> {
-    await payload.create({
+    try {
+        await payload.findByID({
+            collection: entry.table,
+            id: entry.data.id
+        });
+    } catch {
+        await payload.create({
+            collection: entry.table,
+            data: {
+                ...entry.data,
+                checksum: entry.checksum,
+                createdBy: USER_ID,
+            },
+            filePath: entry.path ? entry.path : undefined,
+        });
+        return;
+    }
+
+    await payload.update({
         collection: entry.table,
+        id: entry.data.id,
         data: {
             ...entry.data,
             checksum: entry.checksum,
