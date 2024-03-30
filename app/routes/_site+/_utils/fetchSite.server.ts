@@ -115,11 +115,20 @@ const QUERY = gql`
             id
             name
             slug
+            sortGroups {
+               label
+               value
+               defaultSortType
+            }
             filterGroups {
                label
+               filterKey
+               queryLogic
+               queryOperator
                filterItem {
+                  name
                   icon
-                  queryString
+                  value
                }
             }
             sections {
