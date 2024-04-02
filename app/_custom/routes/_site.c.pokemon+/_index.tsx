@@ -23,7 +23,7 @@ export async function loader({
 
 export default function ListPage() {
    function Row() {
-      return <div></div>;
+      return <div>kjhkjhkj</div>;
    }
 
    return (
