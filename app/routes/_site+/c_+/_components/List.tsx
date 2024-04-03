@@ -6,6 +6,7 @@ import type { PaginatedDocs } from "payload/database";
 import type { Collection, Entry } from "~/db/payload-types";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
+import { AddEntry } from "./AddEntry";
 import { CollectionHeader } from "./CollectionHeader";
 import { CollectionListRows } from "./CollectionListRows";
 import { CustomDBFilters } from "./CustomDBFilters";
@@ -32,7 +33,7 @@ export function List({
    children,
    RowComponent,
 }: {
-   children: ReactNode;
+   children?: ReactNode;
    RowComponent?: unknown;
 }) {
    const { site } = useSiteLoaderData();
@@ -63,6 +64,7 @@ export function List({
             isChanged={isChanged}
          />
          <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
+            {!collection.customDatabase && <AddEntry />}
             {collection?.filterGroups?.length != 0 &&
                !collection.customListTemplate && (
                   <CustomDBFilters collection={collection} />

@@ -6,6 +6,7 @@ import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { slateEditor } from "@payloadcms/richtext-slate";
 import { buildConfig } from "payload/config";
+import { selectPlugin } from "payload-query";
 
 import { Logo } from "./components/Logo";
 import { CustomImages } from "./custom/CustomImages";
@@ -60,6 +61,7 @@ export default buildConfig({
       },
    },
    plugins: [
+      selectPlugin(),
       cloudStorage({
          collections: {
             images: {
@@ -101,4 +103,5 @@ export default buildConfig({
       outputFile: path.resolve(__dirname, "./payload-custom-types.ts"),
    },
    collections: [Users, CustomImages, ...CustomCollections],
+   globals: [],
 });
