@@ -1,4 +1,7 @@
 export type IconName =
+  | "swords"
+  | "sword"
+  | "shield"
   | "coins"
   | "brackets"
   | "expand"
