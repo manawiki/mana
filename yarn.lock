@@ -8249,6 +8249,11 @@ lru-queue@^0.1.0:
   dependencies:
     es5-ext "~0.10.2"
 
+lucide@^0.364.0:
+  version "0.364.0"
+  resolved "https://registry.yarnpkg.com/lucide/-/lucide-0.364.0.tgz#fc1fc2e300d49499d4085d8b3717749d8e65e02e"
+  integrity sha512-fUicNBP/uinzxvHUch75z2swiNwRDanakwAB3lgKx2vv6nFeJNjteDkwmmbUrlWsVZqZvO9CDQZQepoB3YDbnw==
+
 lz-string@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.5.0.tgz#c1ab50f77887b712621201ba9fd4e3a6ed099941"

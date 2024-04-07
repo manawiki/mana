@@ -40,5 +40,15 @@ export const Users: CollectionConfig = {
             },
          ],
       },
+      {
+         name: "email",
+         type: "email",
+         label: "User email",
+         required: true,
+         unique: true,
+         access: {
+            read: isStaffFieldLevel,
+         },
+      },
    ],
 };
