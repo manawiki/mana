@@ -16,6 +16,10 @@ export const EvolutionRequirements: CollectionConfig = {
    },
    fields: [
       {
+         name: "id",
+         type: "text",
+      },
+      {
          name: "name",
          type: "text",
       },
