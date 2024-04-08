@@ -172,7 +172,10 @@ export function CustomDBFilters({ collection }: { collection: Collection }) {
                color="blue"
                target="_blank"
                className="text-sm"
-               href={`http://localhost:4000/admin/collections/${collection?.slug}/create`}
+               href={`/admin/collections/${collection?.slug}/create`}
+               onClick={(e: any) => {
+                  e.target.port = 4000;
+               }}
             >
                <Icon className="text-blue-200" name="plus" size={15} />
                Add {collection?.name}

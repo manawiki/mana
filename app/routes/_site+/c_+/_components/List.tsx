@@ -31,10 +31,12 @@ export type Section = {
 
 export function List({
    children,
-   RowComponent,
+   CellComponent,
+   cellContainerClass,
 }: {
    children?: ReactNode;
-   RowComponent?: unknown;
+   CellComponent?: any;
+   cellContainerClass?: string;
 }) {
    const { site } = useSiteLoaderData();
 
@@ -69,13 +71,15 @@ export function List({
                !collection.customListTemplate && (
                   <CustomDBFilters collection={collection} />
                )}
-            {!collection.customListTemplate && (
+            {children ? (
+               children
+            ) : (
                <CollectionListRows
                   entries={entries}
-                  rowComponent={RowComponent}
+                  CellComponent={CellComponent}
+                  cellContainerClass={cellContainerClass}
                />
             )}
-            {children}
          </div>
       </>
    );
