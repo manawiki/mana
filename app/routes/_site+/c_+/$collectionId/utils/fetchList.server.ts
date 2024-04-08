@@ -1,5 +1,6 @@
 import type { Params } from "@remix-run/react";
 import type { Payload } from "payload";
+import qs from "qs";
 
 import type { RemixRequestContext } from "remix.env";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
@@ -40,16 +41,22 @@ export async function fetchList({
       return { entries };
    }
 
+   const searchParams = new URL(request.url).search;
+
+   const page = qs.parse(searchParams, { ignoreQueryPrefix: true })?.page;
+
    const data =
       gql?.query && !user
          ? await gqlRequestWithCache(gqlPath, gql?.query, {
               ...gql?.variables,
+              page: parseInt(page as any),
            })
          : gql?.query &&
            (await authGQLFetcher({
               siteSlug: siteSlug,
               variables: {
                  ...gql?.variables,
+                 page: parseInt(page as any),
               },
               document: gql?.query,
            }));
