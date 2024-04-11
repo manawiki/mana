@@ -31,3 +31,9 @@ pnpm import_collection_data collection:mystic-codes,filename:MysticCode.json,idn
 
 # Quests
 pnpm import_collection_data collection:quests,filename:Quest.json,idname:drupal_nid,sync:false,overwrite:false
+
+# Banners
+pnpm import_collection_data collection:summon-events,filename:SummonEvent.json,idname:drupal_nid,sync:false,overwrite:false
+
+# ServantRedirects
+pnpm import_collection_data collection:servant-redirects,filename:ServantRedirect.json,idname:drupal_nid,sync:false,overwrite:false
