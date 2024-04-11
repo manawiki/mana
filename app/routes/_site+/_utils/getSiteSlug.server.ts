@@ -15,7 +15,7 @@ export async function getSiteSlug(
    payload: Payload,
    user: RemixRequestContext["user"],
 ) {
-   let siteSlug = process.env.SITE_SLUG;
+   let siteSlug = process.env.SITE_SLUG ?? "hq";
 
    if (process.env.NODE_ENV == "development") return { siteSlug };
 
@@ -48,6 +48,7 @@ export async function getSiteSlug(
 
    let [subDomain] = hostname.split(".");
 
+   // Fixes the issue with fly.dev subdomains, make sure to define SITE_SLUG on fly secrets!
    if (subDomain && subDomain !== "localhost" && !hostname.includes("fly.dev"))
       siteSlug = subDomain;
 

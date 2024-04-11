@@ -2,16 +2,37 @@ import { useCallback, useMemo } from "react";
 
 import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
-import { Slate, Editable, withReact } from "slate-react";
+import { Slate, Editable, withReact, ReactEditor } from "slate-react";
 
 // eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "./EditorBlocks";
 import { Leaf } from "./Leaf";
+import { BlockType } from "../types";
 
 export function EditorView({ data }: { data: any }) {
    const editor = useMemo(() => withReact(createEditor()), []);
+
    const renderElement = useCallback((props: RenderElementProps) => {
-      return <EditorBlocks {...props} />;
+      const path = ReactEditor.findPath(editor, props.element);
+      const isTopLevel = path.length === 1;
+      const isVariableWidth =
+         props.element.type === BlockType.Image && props.element.containerWidth;
+
+      return isTopLevel ? (
+         <div
+            style={{
+               width: isVariableWidth
+                  ? //@ts-ignore
+                    `${props.element.containerWidth}px`
+                  : "728px",
+            }}
+            className="relative mx-auto max-tablet:!w-full"
+         >
+            <EditorBlocks {...props} />
+         </div>
+      ) : (
+         <EditorBlocks {...props} />
+      );
    }, []);
    return (
       <Slate editor={editor} initialValue={data}>

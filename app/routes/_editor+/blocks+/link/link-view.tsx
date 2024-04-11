@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Link } from "@remix-run/react";
 
 import { Image } from "~/components/Image";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import type { LinkElement } from "../../core/types";
 
@@ -14,10 +15,13 @@ type Props = {
 export function BlockLinkView({ element, children }: Props) {
    const { hostname, pathname } = new URL(element.url as string);
 
-   // todo: we should avoid hardcoding this, maybe check hostname again current host?
-   const isSafeLink = hostname.endsWith("mana.wiki");
+   const { site } = useSiteLoaderData();
 
-   if (isSafeLink && element.icon) {
+   const isSelfLink = site?.domain
+      ? hostname === site?.domain
+      : hostname === "mana.wiki";
+
+   if (element.icon) {
       return (
          <Link
             prefetch="intent"
@@ -33,6 +37,7 @@ export function BlockLinkView({ element, children }: Props) {
                   width={30}
                   height={30}
                   url={element.icon.url}
+                  alt={children ? "" : element.name}
                   options="aspect_ratio=1:1&height=40&width=40"
                   loading="lazy"
                />
@@ -43,7 +48,7 @@ export function BlockLinkView({ element, children }: Props) {
    }
 
    // Use client-side routing if internal link
-   if (isSafeLink) {
+   if (isSelfLink) {
       return (
          <Link
             prefetch="intent"

@@ -1,8 +1,8 @@
-import { Collections } from "./collections/config";
+import { Collections } from "./collections/collection-config";
 import { Comments } from "./comments/config";
 import { ContentEmbeds } from "./content-embeds/config";
 import { CustomPages } from "./custom-pages/config";
-import { Entries } from "./entries/config";
+import { Entries } from "./entries/entries-config";
 import { HomeContents } from "./home-contents/config";
 import { Images } from "./images/config";
 import { PostContents } from "./post-contents/config";

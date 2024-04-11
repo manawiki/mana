@@ -1,28 +1,25 @@
 import type { Payload } from "payload";
+import qs from "qs";
 
 import type { RemixRequestContext } from "remix.env";
-import type { Collection } from "~/db/payload-types";
-import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
-import {
-   gqlFormat,
-   gqlEndpoint,
-   authGQLFetcher,
-} from "~/utils/fetchers.server";
-
-import type { CollectionsAllSchema } from "../_list";
+import { cacheThis, fetchWithCache } from "~/utils/cache.server";
+import { authRestFetcher } from "~/utils/fetchers.server";
 
 export async function fetchListCore({
-   page = 1,
+   request,
    payload,
    siteSlug,
    user,
-   collectionId,
-}: typeof CollectionsAllSchema._type & {
+}: {
+   request: Request;
    payload: Payload;
-   collectionId: Collection["slug"];
    siteSlug: string | undefined;
    user?: RemixRequestContext["user"];
 }) {
+   const url = new URL(request.url).pathname;
+
+   const collectionId = url.split("/")[2];
+
    const { docs: collectionData } = user
       ? await payload.find({
            collection: "collections",
@@ -61,47 +58,48 @@ export async function fetchListCore({
 
    // Get custom collection list data
    if (collectionEntry?.customDatabase) {
-      const label = gqlFormat(collectionId, "list");
+      const searchParams = new URL(request.url).search;
 
-      const document = gql`
-         query ($page: Int!) {
-            entries: ${label}(page: $page, limit: 20) {
-               totalDocs
-               totalPages
-               limit
-               pagingCounter
-               hasPrevPage
-               prevPage
-               nextPage
-               hasNextPage
-               docs {
-                  id
-                  name
-                  icon {
-                     url
-                  }
-               }
-            }
-         }
-      `;
+      const where = qs.parse(searchParams, { ignoreQueryPrefix: true })?.where;
+      const sort = qs.parse(searchParams, { ignoreQueryPrefix: true })?.sort;
+      const page = qs.parse(searchParams, { ignoreQueryPrefix: true })?.page;
 
-      const { entries } = user
-         ? await authGQLFetcher({
-              siteSlug: siteSlug,
-              variables: {
-                 page,
-              },
-              document: document,
+      const defaultSortParam =
+         collectionEntry?.sortGroups &&
+         collectionEntry?.sortGroups.find(
+            (element: any) => element?.default == true,
+         );
+
+      const preparedQuery = `${where ? where : ""}${
+         sort
+            ? `&sort=${sort}`
+            : `&sort=${
+                 defaultSortParam?.defaultSortType == "ascending"
+                    ? `${defaultSortParam.value}`
+                    : defaultSortParam?.value && `-${defaultSortParam.value}`
+              }`
+      }${page ? `&page=${page}` : ""}`;
+
+      const restPath = `http://localhost:4000/api/${collectionEntry.slug}${
+         preparedQuery ? `?${preparedQuery}&` : "?"
+      }depth=2&limit=50`;
+
+      const { docs, ...entryMetaData } = user
+         ? await authRestFetcher({
+              method: "GET",
+              path: restPath,
            })
-         : await gqlRequestWithCache(
-              gqlEndpoint({ siteSlug: collectionEntry?.site.slug }),
-              document,
-              {
-                 page,
-              },
-           );
+         : await fetchWithCache(restPath);
 
-      return { entries };
+      const filteredDocs = docs.map((entry: any) => ({
+         id: entry.id,
+         name: entry.name,
+         slug: entry.slug,
+         icon: {
+            url: entry.icon?.url,
+         },
+      }));
+      return { entries: { docs: filteredDocs, ...entryMetaData } };
    }
 
    //Otherwise pull data from core

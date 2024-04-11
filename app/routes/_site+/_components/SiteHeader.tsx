@@ -243,6 +243,7 @@ export function SiteHeader() {
                            <Icon name="menu" className="w-5 h-5" />
                         </button>
                         <MobileTray
+                           shouldScaleBackground
                            onOpenChange={setPrimaryMenuOpen}
                            open={isPrimaryMenu}
                         >

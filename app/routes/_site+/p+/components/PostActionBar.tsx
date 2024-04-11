@@ -1,7 +1,3 @@
-import { Fragment } from "react";
-
-import { Popover } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
 import { Link } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
@@ -10,7 +6,7 @@ import type { PostData } from "../utils/fetchPostWithSlug.server";
 
 export function PostActionBar({ post }: { post: PostData }) {
    return (
-      <div className="pb-3 mb-4 border-b border-color-secondary flex items-center justify-between">
+      <div className="pb-3 mb-4 border-b border-color-secondary flex items-center justify-between max-w-[728px] w-full mx-auto">
          <Link
             to="/posts"
             className="flex items-center hover:underline group gap-2.5 group"

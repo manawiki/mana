@@ -2,8 +2,6 @@ import { redirect } from "@remix-run/node";
 import type { Params } from "@remix-run/react";
 import type { Payload } from "payload";
 import type { PaginatedDocs } from "payload/dist/database/types";
-import { z } from "zod";
-import { zx } from "zodix";
 
 import type { Entry } from "payload/generated-types";
 import type { RemixRequestContext } from "remix.env";
@@ -26,13 +24,11 @@ export async function getEntryFields({
    request: Request;
    user: RemixRequestContext["user"];
 }) {
-   const { entryId } = zx.parseParams(params, {
-      entryId: z.string(),
-   });
-
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const url = new URL(request.url).pathname;
+
+   const entryId = url.split("/")[3];
 
    const collectionId = url.split("/")[2];
 
@@ -195,6 +191,7 @@ export async function getEntryFields({
       entry: {
          id: entryData?.id,
          name: entryData?.name,
+         slug: entryData?.slug,
          icon: { id: entryData?.icon?.id, url: entryData?.icon?.url },
          collectionName: collection?.name,
          collectionSlug: collection?.slug,

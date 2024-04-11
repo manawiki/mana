@@ -1,23 +1,14 @@
 import { request as gqlRequest } from "graphql-request";
 
-import { apiDBPath } from "./api-path.server";
-
 export function gqlEndpoint({
-   useProd,
    siteSlug,
 }: {
-   useProd?: boolean;
    siteSlug?: string | undefined | null;
 }) {
    //Custom sites
-   if (siteSlug)
-      return process.env.NODE_ENV == "development" && !useProd
-         ? "http://localhost:4000/api/graphql"
-         : `https://${siteSlug}-db.${apiDBPath}/api/graphql`;
+   if (siteSlug) return "http://localhost:4000/api/graphql";
 
-   return process.env.NODE_ENV == "development"
-      ? "http://localhost:3000/api/graphql"
-      : `https://${apiDBPath}/api/graphql`;
+   return "http://localhost:3000/api/graphql";
 }
 
 export function authRestFetcher({
@@ -51,32 +42,25 @@ export function authRestFetcher({
 }
 
 export function authGQLFetcher({
-   useProd,
    document,
    variables,
    siteSlug,
    request,
 }: {
-   useProd?: boolean;
    document?: any;
    variables?: any;
-   siteSlug?: string;
+   siteSlug?: string | undefined | null;
    request?: Request;
 }) {
    try {
-      return gqlRequest(
-         gqlEndpoint({ siteSlug, useProd }),
-         document,
-         variables,
-         {
-            ...(request && {
-               cookie: request?.headers.get("cookie") ?? "",
-            }),
-            ...(process.env.MANA_APP_KEY && {
-               Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
-            }),
-         },
-      );
+      return gqlRequest(gqlEndpoint({ siteSlug }), document, variables, {
+         ...(request && {
+            cookie: request?.headers.get("cookie") ?? "",
+         }),
+         ...(process.env.MANA_APP_KEY && {
+            Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
+         }),
+      });
    } catch (err) {
       console.log(err);
    }

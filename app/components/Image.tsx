@@ -1,3 +1,8 @@
+interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+   url?: string | null | undefined;
+   options?: string;
+}
+
 export function Image({
    url,
    options,
@@ -6,10 +11,7 @@ export function Image({
    width,
    height,
    ...props
-}: {
-   url?: string | null | undefined;
-   options?: string;
-} & React.ImgHTMLAttributes<HTMLImageElement>) {
+}: ImageProps) {
    const searchParams = new URLSearchParams(options);
 
    // If width is not provided, but it is in the options, insert it to hint the browser and reduce CLS
@@ -69,11 +71,7 @@ export function Image({
          width={width ?? searchParams.get("width") ?? undefined}
          height={height ?? searchParams.get("height") ?? undefined}
          alt={alt}
-         sizes={
-            srcSet
-               ? `(max-width: 728px) 100vw, (max-width: 1200px) 728px, ${maxWidth}px`
-               : undefined
-         }
+         sizes={srcSet ? `(min-width: 1200px) 728px, 100vw` : undefined}
          srcSet={srcSet}
          src={`${url}?${searchParams.toString()}` ?? "/favicon.ico"}
       />

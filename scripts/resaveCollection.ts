@@ -32,7 +32,7 @@ const resaveCollection = async () => {
 
    try {
       await Promise.all(
-         results.docs.map(async (result) => {
+         results.docs.map(async (result: any) => {
             const { id } = result;
             if (collectionSlug) {
                try {

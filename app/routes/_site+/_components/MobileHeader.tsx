@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useFetcher, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import { Avatar } from "~/components/Avatar";
+import { AvatarButton } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -22,7 +22,9 @@ export function MobileHeader() {
    const adding = isAdding(fetcher, "followSite");
    const location = useLocation();
 
-   const isUserPath = location.pathname.startsWith("/user");
+   const isNotSite =
+      location.pathname.startsWith("/user") ||
+      location.pathname.startsWith("/home");
 
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
 
@@ -37,13 +39,15 @@ export function MobileHeader() {
                   {/* Following menu modal */}
                   <div className="flex items-center gap-3">
                      <Link
-                        className="border border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200 dark:shadow-zinc-900
+                        className="border border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200/70 dark:shadow-zinc-800/80
                      active:translate-y-0.5 dark:hover:border-zinc-500 rounded-xl flex items-center from-white to-zinc-100
-                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow-sm hover:border-zinc-400 mx-auto"
+                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow-sm hover:border-zinc-300 mx-auto"
                         to={
                            process.env.NODE_ENV === "development"
                               ? "/"
-                              : "https://mana.wiki"
+                              : user
+                                ? "https://mana.wiki/home"
+                                : "https://mana.wiki"
                         }
                      >
                         <svg
@@ -59,7 +63,7 @@ export function MobileHeader() {
                            />
                         </svg>
                      </Link>
-                     {!isUserPath && (
+                     {!isNotSite && (
                         <NotFollowingSite>
                            <div className="flex items-center">
                               <button
@@ -88,7 +92,7 @@ export function MobileHeader() {
                         </NotFollowingSite>
                      )}
                      <button
-                        className="bg-3-sub border-zinc-200 shadow-zinc-200 dark:shadow-zinc-900/50 flex items-center justify-center
+                        className="bg-3-sub border-zinc-200 shadow-zinc-200/80 dark:shadow-zinc-800/80 flex items-center justify-center
                                        rounded-full border pr-1.5 pl-3 text-sm font-bold shadow h-9 dark:border-zinc-700"
                         onClick={() => setFollowerMenuOpen(true)}
                      >
@@ -102,20 +106,15 @@ export function MobileHeader() {
                         </div>
                      </button>
                   </div>
-                  <Link
+                  <AvatarButton
+                     square
                      prefetch="intent"
-                     to="/user/account"
-                     className="border border-zinc-300 dark:border-zinc-600 transition duration-300 
-                  active:translate-y-0.5 dark:hover:border-zinc-500 size-9
-                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-800 hover:border-zinc-400"
-                  >
-                     <Avatar
-                        src={user?.avatar?.url}
-                        initials={user?.username.charAt(0)}
-                        className="size-6"
-                        options="aspect_ratio=1:1&height=60&width=60"
-                     />
-                  </Link>
+                     href="/user/account"
+                     src={user?.avatar?.url}
+                     initials={user?.username.charAt(0)}
+                     className="size-9"
+                     options="aspect_ratio=1:1&height=60&width=60"
+                  />
                </div>
             </LoggedIn>
             <LoggedOut>
@@ -162,6 +161,7 @@ export function MobileHeader() {
          <MobileTray
             onOpenChange={setFollowerMenuOpen}
             open={isFollowerMenuOpen}
+            shouldScaleBackground
          >
             <menu className="flex h-full flex-col">
                <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />

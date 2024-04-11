@@ -12,7 +12,6 @@ import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { apiDBPath } from "~/utils/api-path.server";
 import { isAdding } from "~/utils/form";
 import { useDebouncedValue } from "~/utils/use-debounce";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
@@ -56,7 +55,7 @@ export async function loader({
    }
    if (type == "custom") {
       try {
-         const customSearchUrl = `https://${siteSlug}-db.${apiDBPath}/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
+         const customSearchUrl = `http://localhost:4000/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
 
          const [{ docs: coreSearchResults }, { docs: customSearchResults }] =
             await Promise.all([
@@ -210,6 +209,7 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
                   autoFocus
                   className="h-full w-full border-0 p-0 bg-transparent outline-none !ring-transparent"
                   displayValue={(item: Search) => item?.name ?? ""}
+                  name="search"
                   placeholder="Search..."
                   onChange={(e) => setQuery(e.target.value)}
                />

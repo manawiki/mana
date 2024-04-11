@@ -1,4 +1,4 @@
-import { type ZodIssue } from "zod";
+import type { ZodIssue } from "zod";
 
 export function isProcessing(state: "idle" | "submitting" | "loading") {
    return state === "submitting" || state === "loading";

@@ -23,6 +23,7 @@ export function TableOfContents({
    const sectionsWithContent = sections?.map((section) => {
       const subSection = section?.subSections
          ?.filter((subSection) => {
+            if (subSection.showTitle == false) return false;
             if (subSection.type == "editor") {
                const embeddedContent = entry?.embeddedContent;
                const hasContent = embeddedContent?.find(
@@ -53,11 +54,11 @@ export function TableOfContents({
    return (
       <>
          {sectionsList && sectionsList?.length > 1 && (
-            <section className="relative">
+            <section className="relative w-full">
                <div
                   className={clsx(
-                     seeAllOpen ? "" : "max-h-[230px]",
-                     "text-sm border border-color-sub overflow-hidden shadow-sm shadow-1 rounded-lg mb-4 bg-zinc-50 dark:bg-dark350",
+                     seeAllOpen ? "" : "max-h-[243px]",
+                     "text-sm border-y tablet:border border-color-sub overflow-hidden shadow-sm shadow-1 tablet:rounded-lg bg-zinc-50 dark:bg-dark350",
                   )}
                >
                   <div className="py-3 px-2.5 font-bold text-xs flex items-center justify-between gap-2.5 border-b border-color shadow-zinc-100/70 dark:shadow-zinc-800/70 shadow-sm">
@@ -86,52 +87,50 @@ export function TableOfContents({
                      )}
                   </div>
                   <div className="py-1.5">
-                     {sectionsList?.map((section) =>
-                        section.subSections?.length != 0 ? (
-                           <div key={section.id}>
-                              <div className="py-2 group flex items-center relative -ml-1.5 hover:underline dark:decoration-zinc-500 decoration-zinc-300">
-                                 <div
-                                    className="w-3 h-3 border group-hover:bg-zinc-200 dark:border-zinc-600 border-zinc-300 dark:group-hover:border-zinc-500
+                     {sectionsList?.map((section) => (
+                        <div key={section.id}>
+                           <div className="py-2 group flex items-center relative -ml-1.5 hover:underline dark:decoration-zinc-500 decoration-zinc-300">
+                              <div
+                                 className="w-3 h-3 border group-hover:bg-zinc-200 dark:border-zinc-600 border-zinc-300 dark:group-hover:border-zinc-500
                                bg-zinc-100 dark:bg-dark500 rounded-full dark:shadow-zinc-800 dark:group-hover:bg-dark500"
-                                 />
-                                 <div className="w-3 h-[1px] dark:bg-zinc-700 bg-zinc-200" />
-                                 <Link
-                                    to={`#${section?.slug}`}
-                                    className="font-bold pl-2 flex items-center w-full gap-3"
-                                 >
-                                    <span>{section.name}</span>
-                                    <div className="border-t border-dashed border-zinc-200 dark:border-zinc-700 flex-grow" />
-                                 </Link>
-                              </div>
-                              {section.subSections &&
-                              section.subSections?.length === 1
-                                 ? null
-                                 : section.subSections?.map((subSection) => (
-                                      <div
-                                         key={subSection.id}
-                                         className="group flex w-full items-center relative hover:underline dark:decoration-zinc-500 decoration-zinc-300"
-                                      >
-                                         <div
-                                            className="w-[4px] h-4 group-hover:bg-zinc-300 -ml-[1px]
-                                 bg-zinc-200 dark:bg-dark450 rounded-r-sm dark:group-hover:bg-dark500"
-                                         />
-                                         <Link
-                                            to={`?section=${subSection?.slug}#${section?.slug}`}
-                                            className="font-semibold text-sm rounded-lg pl-2.5 mx-3 dark:hover:bg-dark400 hover:bg-zinc-100 text-1 w-full py-1 block"
-                                         >
-                                            {subSection.name}
-                                         </Link>
-                                      </div>
-                                   ))}
+                              />
+                              <div className="w-3 h-[1px] dark:bg-zinc-700 bg-zinc-200" />
+                              <Link
+                                 to={`#${section?.slug}`}
+                                 className="font-bold pl-2 flex items-center w-full gap-3"
+                              >
+                                 <span>{section.name}</span>
+                                 <div className="border-t border-dashed border-zinc-200 dark:border-zinc-700 flex-grow" />
+                              </Link>
                            </div>
-                        ) : null,
-                     )}
+                           {section.subSections &&
+                           section.subSections?.length === 1
+                              ? null
+                              : section.subSections?.map((subSection) => (
+                                   <div
+                                      key={subSection.id}
+                                      className="group flex w-full items-center relative hover:underline dark:decoration-zinc-500 decoration-zinc-300"
+                                   >
+                                      <div
+                                         className="w-[4px] h-4 group-hover:bg-zinc-300 -ml-[1px]
+                                 bg-zinc-200 dark:bg-dark450 rounded-r-sm dark:group-hover:bg-dark500"
+                                      />
+                                      <Link
+                                         to={`?section=${subSection?.slug}#${section?.slug}`}
+                                         className="font-semibold text-sm rounded-lg pl-2.5 mx-3 dark:hover:bg-dark400 hover:bg-zinc-100 text-1 w-full py-1 block"
+                                      >
+                                         {subSection.name}
+                                      </Link>
+                                   </div>
+                                ))}
+                        </div>
+                     ))}
                   </div>
                </div>
-               {showAll && (
+               {showAll ? (
                   <div
-                     className="bg-gradient-to-b absolute bottom-0 border border-color-sub border-t-0 w-full group p-3
-                  from-transparent to-zinc-50 dark:to-dark400 dark:from-transparent rounded-b-lg"
+                     className="bg-gradient-to-b absolute bottom-0 laptop:border border-color-sub laptop:border-t-0 w-full group p-3
+                  from-transparent to-zinc-50 dark:to-dark400 dark:from-transparent laptop:rounded-b-lg"
                   >
                      <button
                         onClick={() => setSeeAllOpen(!seeAllOpen)}
@@ -153,7 +152,7 @@ export function TableOfContents({
                         </div>
                      </button>
                   </div>
-               )}
+               ) : null}
             </section>
          )}
       </>

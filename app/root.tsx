@@ -230,9 +230,16 @@ function App() {
             <Links />
          </head>
          <body className="text-light dark:text-dark">
-            <Outlet
-               context={[searchToggle, setSearchToggle] satisfies ContextType}
-            />
+            <div
+               vaul-drawer-wrapper=""
+               className="max-laptop:min-h-screen bg-white dark:bg-bg3Dark"
+            >
+               <Outlet
+                  context={
+                     [searchToggle, setSearchToggle] satisfies ContextType
+                  }
+               />
+            </div>
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {!isBot && <Scripts />}

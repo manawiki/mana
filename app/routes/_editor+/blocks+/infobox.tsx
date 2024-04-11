@@ -83,9 +83,10 @@ export function BlockInfoBox({
          </div>
          <Tooltip placement="bottom" setDelay={800}>
             <TooltipTrigger
+               title="Add Button"
                contentEditable={false}
                onClick={handleAddInfoBoxRow}
-               className="transition group-hover/infobox:opacity-100 opacity-0 z-0
+               className="transition group-hover/infobox:opacity-100 opacity-0 z-10
                shadow-1 flex h-8 items-center justify-center gap-2 rounded-b-full border-color-sub border bg-white
                p-3 text-xs font-bold shadow-sm dark:bg-dark400 dark:hover:bg-dark450
                absolute -bottom-5 right-12 select-none duration-100 ease-in laptop:translate-x-full laptop:translate-y-0"
@@ -178,7 +179,7 @@ export function BlockInfoBoxItem({
                         <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
                            <Menu.Item>
                               <Tooltip placement="left">
-                                 <TooltipTrigger>
+                                 <TooltipTrigger title="Delete Button">
                                     <button
                                        className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark450"
                                        onClick={() => {
@@ -199,7 +200,7 @@ export function BlockInfoBoxItem({
                            </Menu.Item>
                            <Menu.Item>
                               <Tooltip placement="left">
-                                 <TooltipTrigger>
+                                 <TooltipTrigger title="Copy Button">
                                     <button className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark450">
                                        <Icon name="copy" size={14} />
                                     </button>

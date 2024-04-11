@@ -102,6 +102,7 @@ export async function fetchPostWithSlug({
       },
       ...(fullPost?.banner?.url && {
          banner: {
+            id: fullPost?.banner.id,
             url: fullPost?.banner?.url,
          },
       }),

@@ -1,4 +1,4 @@
-/* Partytown 0.9.1 - MIT builder.io */
+/* Partytown 0.9.2 - MIT builder.io */
 (window => {
     const isPromise = v => "object" == typeof v && v && v.then;
     const noop = () => {};
@@ -496,9 +496,7 @@
             $config$: $config$,
             $interfaces$: readImplementations(impls, initialInterfaces),
             $libPath$: new URL(libPath, mainWindow.location) + "",
-            $origin$: origin,
-            $localStorage$: readStorage("localStorage"),
-            $sessionStorage$: readStorage("sessionStorage")
+            $origin$: origin
         };
         addGlobalConstructorUsingPrototype(initWebWorkerData.$interfaces$, mainWindow, "IntersectionObserverEntry");
         return initWebWorkerData;
@@ -565,17 +563,6 @@
             console.warn(e);
         }
     };
-    const readStorage = storageName => {
-        let items = [];
-        let i = 0;
-        let l = len(mainWindow[storageName]);
-        let key;
-        for (;i < l; i++) {
-            key = mainWindow[storageName].key(i);
-            items.push([ key, mainWindow[storageName].getItem(key) ]);
-        }
-        return items;
-    };
     const getGlobalConstructor = (mainWindow, cstrName) => void 0 !== mainWindow[cstrName] ? new mainWindow[cstrName](noop) : 0;
     const addGlobalConstructorUsingPrototype = ($interfaces$, mainWindow, cstrName) => {
         void 0 !== mainWindow[cstrName] && $interfaces$.push([ cstrName, "Object", Object.keys(mainWindow[cstrName].prototype).map((propName => [ propName, 6 ])), 12 ]);
@@ -591,14 +578,14 @@
         }));
     })(((accessReq, responseCallback) => mainAccessHandler(worker, accessReq).then(responseCallback))).then((onMessageHandler => {
         if (onMessageHandler) {
-            worker = new Worker(libPath + "partytown-ww-sw.js?v=0.9.1", {
+            worker = new Worker(libPath + "partytown-ww-sw.js?v=0.9.2", {
                 name: "Partytown 🎉"
             });
             worker.onmessage = ev => {
                 const msg = ev.data;
                 12 === msg[0] ? mainAccessHandler(worker, msg[1]) : onMessageHandler(worker, msg);
             };
-            logMain("Created Partytown web worker (0.9.1)");
+            logMain("Created Partytown web worker (0.9.2)");
             worker.onerror = ev => console.error("Web Worker Error", ev);
             mainWindow.addEventListener("pt1", (ev => registerWindow(worker, getAndSetInstanceId(ev.detail.frameElement), ev.detail)));
         }

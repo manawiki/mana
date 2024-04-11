@@ -5,12 +5,12 @@ import { Dialog, Transition } from "@headlessui/react";
 //A modal generic wrapper, pass in show and onClose to control the modal state, otherwise use it as a route modal
 export function Modal({
    show = true,
-   onClose,
+   onClose = () => {},
    children,
    unmount = true,
 }: {
    show?: boolean;
-   onClose?: () => void;
+   onClose: () => void;
    children?: React.ReactNode;
    unmount?: boolean;
 }) {
