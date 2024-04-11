@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 
 import type { Servant as ServantType } from "payload/generated-custom-types";
-import { H3, H2 } from "~/components/Headers";
+import {  H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
 const thformat = "p-1.5 leading-none text-center";
@@ -109,7 +109,7 @@ const NoblePhantasmDisplay = ({ np }: any) => {
                      </Disclosure.Button>
                      <Disclosure.Panel className="mb-1">
                         <section>
-                           <H3 text={np_name} />
+                           <h3>{np_name}</h3>
                            {np_sub}
 
                            {/* NP Main info table */}
