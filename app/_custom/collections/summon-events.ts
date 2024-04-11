@@ -36,16 +36,30 @@ export const SummonEvents: CollectionConfig = {
       relationTo: "images",
     },
     {
-      name: "featured_servants",
-      type: "relationship",
-      relationTo: "servants",
-      hasMany: true,
+      label: "featured_servants",
+      type: "collapsible",
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          name: "featured_servants",
+          type: "relationship",
+          relationTo: "servants",
+          hasMany: true,
+        },
+      ],
     },
     {
-      name: "featured_essences",
-      type: "relationship",
-      relationTo: "craft-essences",
-      hasMany: true,
+      label: "featured_essences",
+      type: "collapsible",
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          name: "featured_essences",
+          type: "relationship",
+          relationTo: "craft-essences",
+          hasMany: true,
+        },
+      ],
     },
     {
       name: "sim_number",
@@ -95,61 +109,83 @@ export const SummonEvents: CollectionConfig = {
       name: "jp_end_date",
       type: "text",
     },
+
     {
-      name: "base_servant_override_3",
-      type: "relationship",
-      relationTo: "servants",
-      hasMany: true,
-    },
-    {
-      name: "base_servant_override_4",
-      type: "relationship",
-      relationTo: "servants",
-      hasMany: true,
-    },
-    {
-      name: "base_servant_override_5",
-      type: "relationship",
-      relationTo: "servants",
-      hasMany: true,
-    },
-    {
-      name: "base_ce_override_3",
-      type: "relationship",
-      relationTo: "craft-essences",
-      hasMany: true,
-    },
-    {
-      name: "base_ce_override_4",
-      type: "relationship",
-      relationTo: "craft-essences",
-      hasMany: true,
-    },
-    {
-      name: "base_ce_override_5",
-      type: "relationship",
-      relationTo: "craft-essences",
-      hasMany: true,
-    },
-    {
-      name: "servant_profile_future_banner",
-      type: "array",
+      label: "servant_overrides",
+      type: "collapsible",
+      admin: { initCollapsed: true },
       fields: [
         {
-          name: "banner_servant",
+          name: "base_servant_override_3",
           type: "relationship",
           relationTo: "servants",
-          hasMany: false,
+          hasMany: true,
         },
         {
-          name: "banner_reference",
-          type: "select",
-          hasMany: false,
-          options: [
-            { value: "single", label: "Single" },
-            { value: "shared", label: "Shared" },
-            { value: "guaranteed-gacha", label: "Guaranteed Gacha" },
-            { value: "class-based", label: "Class-Based" },
+          name: "base_servant_override_4",
+          type: "relationship",
+          relationTo: "servants",
+          hasMany: true,
+        },
+        {
+          name: "base_servant_override_5",
+          type: "relationship",
+          relationTo: "servants",
+          hasMany: true,
+        },
+      ],
+    },
+    {
+      label: "ce_overrides",
+      type: "collapsible",
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          name: "base_ce_override_3",
+          type: "relationship",
+          relationTo: "craft-essences",
+          hasMany: true,
+        },
+        {
+          name: "base_ce_override_4",
+          type: "relationship",
+          relationTo: "craft-essences",
+          hasMany: true,
+        },
+        {
+          name: "base_ce_override_5",
+          type: "relationship",
+          relationTo: "craft-essences",
+          hasMany: true,
+        },
+      ],
+    },
+    {
+      label: "servant_profile_future_banner",
+      type: "collapsible",
+      admin: { initCollapsed: true },
+      fields: [
+        {
+          name: "servant_profile_future_banner",
+          type: "array",
+          fields: [
+            {
+              name: "banner_servant",
+              type: "relationship",
+              relationTo: "servants",
+              hasMany: false,
+            },
+            {
+              name: "battle_stage",
+              type: "select",
+              hasMany: false,
+              options: [
+                { value: "single", label: "Single" },
+                { value: "shared", label: "Shared" },
+                { value: "guaranteed-gacha", label: "Guaranteed Gacha" },
+                { value: "class-based", label: "Class-Based" },
+              ],
+            },
           ],
         },
       ],
