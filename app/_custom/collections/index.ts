@@ -49,7 +49,9 @@ import { MysticCodes } from "./mystic-codes";
 import { NoblePhantasms } from "./noble-phantasms";
 import { Quests } from "./quests";
 import { Servants } from "./servants";
+import { ServantRedirects } from "./servant-redirects";
 import { ServantSkills } from "./servant-skills";
+import { SummonEvents } from "./summon-events";
 
 export const CustomDefaultPriorities = {
   servants: 90,
@@ -81,6 +83,8 @@ export const CustomCollections = [
   MangaPages,
   MysticCodeSkills,
   MysticCodes,
+  SummonEvents,
+  ServantRedirects,
   _Alignments,
   _Attributes,
   _Availabilities,
