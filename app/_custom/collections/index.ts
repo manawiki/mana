@@ -44,6 +44,8 @@ import { Enemies } from "./enemies";
 import { Locations } from "./locations";
 import { Materials } from "./materials";
 import { MangaPages } from "./manga-pages";
+import { MysticCodeSkills } from "./mystic-code-skills";
+import { MysticCodes } from "./mystic-codes";
 import { NoblePhantasms } from "./noble-phantasms";
 import { Quests } from "./quests";
 import { Servants } from "./servants";
@@ -77,6 +79,8 @@ export const CustomCollections = [
   Locations,
   Quests,
   MangaPages,
+  MysticCodeSkills,
+  MysticCodes,
   _Alignments,
   _Attributes,
   _Availabilities,

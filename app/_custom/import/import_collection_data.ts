@@ -308,6 +308,89 @@ const seedUploads = async (result: any) => {
     }
   });
 
+  // !! 3rd level nested array relationships
+
+  var relationNested3 = flatFields
+    .filter((a) => a.type == "array")
+    .map((lv1) => {
+      return lv1.fields
+        .filter((a) => a.type == "array")
+        .map((lv2) => {
+          return lv2.fields
+            .filter((a) => a.type == "array")
+            .map((lv3) => {
+              return lv3.fields
+                .filter((a) => a.type == "relationship")
+                .map((lv4) => {
+                  // Get first instance of ID that exists for nested relationship
+                  var idtemp = result[lv1.name]
+                    ?.map((a) =>
+                      a[lv2.name]?.map((b) =>
+                        b[lv3.name]?.map((c) =>
+                          c[lv4.name] ? Object.keys(c[lv4.name])[0] : null
+                        )
+                      )
+                    )
+                    .flat()
+                    .flat()
+                    .flat()
+                    .filter((a) => a); // Filter out undefined
+                  return {
+                    fieldlevel1: lv1.name,
+                    fieldlevel2: lv2.name,
+                    fieldlevel3: lv3.name,
+                    fieldlevel4: lv4.name,
+                    idkey: idtemp?.[0],
+                  };
+                });
+            });
+        });
+    })
+    .flat()
+    .flat()
+    .flat();
+
+  relationNested3.map((rn) => {
+    var fieldlevel1 = rn.fieldlevel1; // Array (1st)
+    var fieldlevel2 = rn.fieldlevel2; // Array (2nd)
+    var fieldlevel3 = rn.fieldlevel3; // Array (3rd)
+    var fieldlevel4 = rn.fieldlevel4; // Relation (3rd)
+    var idkey = rn.idkey; // Identifier key
+
+    var temparrayval = arrayRelationImport[fieldlevel1];
+    if (temparrayval) {
+      temparrayval = temparrayval.map((sk) => {
+        var temparray2val = sk[fieldlevel2];
+        var tempout = sk;
+        if (temparray2val) {
+          temparray2val = temparray2val.map((sk2) => {
+            var temparray3val = sk2[fieldlevel3];
+            var tempout3 = sk2;
+            if (temparray3val) {
+              temparray3val = temparray3val.map((up) => {
+                return {
+                  ...up,
+                  [fieldlevel4]: up[fieldlevel4]?.[idkey]?.toString(),
+                };
+              });
+            }
+            tempout3 = {
+              ...tempout3,
+              [fieldlevel3]: temparray3val,
+            };
+            return tempout3;
+          });
+          tempout = {
+            ...tempout,
+            [fieldlevel2]: temparray2val,
+          };
+        }
+        return tempout;
+      });
+      arrayRelationImport[fieldlevel1] = temparrayval;
+    }
+  });
+
   // Check if Relation entry exists for each field and get ID
   // FIX: This always is the ID field for this entry - so we can just put the ID in without having to look up the prior entry. This way a relation can also be imported later and automatically link up.
 
