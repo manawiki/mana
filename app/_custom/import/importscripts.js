@@ -23,3 +23,11 @@ pnpm import_collection_data collection:_manga-character-images,filename:_MangaCh
 pnpm import_collection_data collection:_manga-series,filename:_MangaSeries.json,idname:drupal_tid,sync:false,overwrite:false
 # Manga Pages
 pnpm import_collection_data collection:manga-pages,filename:MangaPage.json,idname:drupal_nid,sync:false,overwrite:false
+
+# Mystic Code Skills
+pnpm import_collection_data collection:mystic-code-skills,filename:MysticCodeSkill.json,idname:drupal_nid,sync:false,overwrite:false
+# Mystic Codes
+pnpm import_collection_data collection:mystic-codes,filename:MysticCode.json,idname:drupal_nid,sync:false,overwrite:false
+
+# Quests
+pnpm import_collection_data collection:quests,filename:Quest.json,idname:drupal_nid,sync:false,overwrite:false
