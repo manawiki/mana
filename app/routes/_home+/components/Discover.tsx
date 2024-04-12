@@ -6,6 +6,8 @@ import clsx from "clsx";
 
 import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
 import { useDebouncedValue } from "~/utils/use-debounce";
 
@@ -35,123 +37,131 @@ export function Discover() {
 
    return (
       <>
-         <section className="relative z-10 h-full">
-            <div className="border-zinc-300/80 dark:border-zinc-600/50 border-t-2 pb-16 px-4 tablet:px-0 relative">
-               <div className="relative z-20 mx-auto max-w-[680px]">
-                  <div className="flex items-center justify-center">
-                     <div
-                        className="bg-white dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative -mt-7 dark:bg-dark350
+         <section className="relative z-10 h-full flex-grow">
+            <div className="border-zinc-300/80 dark:border-zinc-600/50 border-t-2 pb-16 px-4 relative">
+               <div className="relative z-20">
+                  <main className="mx-auto max-w-2xl">
+                     <div className="flex items-center justify-center">
+                        <div
+                           className="bg-white dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative -mt-7 dark:bg-dark350
                          h-12 w-full rounded-xl border-2 border-zinc-300/80 drop-shadow-sm dark:focus-within:border-zinc-600
                         focus-within:border-zinc-300"
-                     >
-                        <>
-                           <div className="relative flex h-full w-full items-center gap-4 px-3">
-                              <Icon name="search" size={18} />
-                              <input
-                                 type="text"
-                                 placeholder="Search..."
-                                 className="h-full w-full rounded-2xl border-0 bg-transparent 
+                        >
+                           <>
+                              <div className="relative flex h-full w-full items-center gap-4 px-3">
+                                 <Icon name="search" size={18} />
+                                 <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    className="h-full w-full rounded-2xl border-0 bg-transparent 
                                  focus:outline-none focus:ring-0"
-                                 value={query}
-                                 onChange={(e) => setQuery(e.target.value)}
-                              />
-                              {searchParams.size >= 1 && (
-                                 <button
-                                    onClick={() => {
-                                       setSearchParams((searchParams) => {
-                                          searchParams.delete("q");
-                                          searchParams.delete("c");
-                                          setCategory("all");
-                                          return searchParams;
-                                       });
-                                       setQuery("");
-                                    }}
-                                    className="size-7 flex items-center justify-center flex-none
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                 />
+                                 {searchParams.size >= 1 && (
+                                    <button
+                                       onClick={() => {
+                                          setSearchParams((searchParams) => {
+                                             searchParams.delete("q");
+                                             searchParams.delete("c");
+                                             setCategory("all");
+                                             return searchParams;
+                                          });
+                                          setQuery("");
+                                       }}
+                                       className="size-7 flex items-center justify-center flex-none
                                      rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
-                                 >
-                                    <Icon name="x" size={14} />
-                                 </button>
-                              )}
-                           </div>
-                        </>
+                                    >
+                                       <Icon name="x" size={14} />
+                                    </button>
+                                 )}
+                              </div>
+                           </>
+                        </div>
                      </div>
-                  </div>
-                  <div className="flex items-center justify-between gap-4 pb-4 pt-6">
-                     <RadioGroup
-                        className="flex items-center gap-3"
-                        value={category}
-                        onChange={(value) => {
-                           if (value != "all") {
-                              setSearchParams(
-                                 (searchParams) => {
-                                    searchParams.set("c", value);
-                                    return searchParams;
-                                 },
-                                 { preventScrollReset: false },
-                              );
-                           } else
-                              setSearchParams(
-                                 (searchParams) => {
-                                    searchParams.delete("c");
-                                    return searchParams;
-                                 },
-                                 { preventScrollReset: false },
-                              );
-                           setCategory(value);
-                        }}
-                     >
-                        <RadioGroup.Option value="all">
-                           {({ checked }) => (
-                              <div
-                                 className={clsx(
-                                    checked
-                                       ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
-                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
-                                 )}
-                              >
-                                 <Icon name="globe-2" className="h-3.5 w-3.5">
-                                    All
-                                 </Icon>
-                              </div>
-                           )}
-                        </RadioGroup.Option>
-                        <RadioGroup.Option value="gaming">
-                           {({ checked }) => (
-                              <div
-                                 className={clsx(
-                                    checked
-                                       ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
-                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
-                                 )}
-                              >
-                                 {/* <Gamepad2 size={16} /> */}
-                                 <Icon name="gamepad-2" className="h-4 w-4">
-                                    Gaming
-                                 </Icon>
-                              </div>
-                           )}
-                        </RadioGroup.Option>
-                        <RadioGroup.Option value="other">
-                           {({ checked }) => (
-                              <div
-                                 className={clsx(
-                                    checked
-                                       ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
-                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
-                                 )}
-                              >
-                                 <Icon name="component" className="h-3.5 w-3.5">
-                                    Other
-                                 </Icon>
-                              </div>
-                           )}
-                        </RadioGroup.Option>
-                     </RadioGroup>
-                  </div>
-                  <div className="relative z-20 flex-grow space-y-4">
+                     <div className="flex items-center justify-between gap-4 pb-4 pt-6">
+                        <RadioGroup
+                           className="flex items-center gap-3"
+                           value={category}
+                           onChange={(value) => {
+                              if (value != "all") {
+                                 setSearchParams(
+                                    (searchParams) => {
+                                       searchParams.set("c", value);
+                                       return searchParams;
+                                    },
+                                    { preventScrollReset: false },
+                                 );
+                              } else
+                                 setSearchParams(
+                                    (searchParams) => {
+                                       searchParams.delete("c");
+                                       return searchParams;
+                                    },
+                                    { preventScrollReset: false },
+                                 );
+                              setCategory(value);
+                           }}
+                        >
+                           <RadioGroup.Option value="all">
+                              {({ checked }) => (
+                                 <div
+                                    className={clsx(
+                                       checked
+                                          ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
+                                          : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                       "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
+                                    )}
+                                 >
+                                    <Icon
+                                       name="globe-2"
+                                       className="h-3.5 w-3.5"
+                                    >
+                                       All
+                                    </Icon>
+                                 </div>
+                              )}
+                           </RadioGroup.Option>
+                           <RadioGroup.Option value="gaming">
+                              {({ checked }) => (
+                                 <div
+                                    className={clsx(
+                                       checked
+                                          ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
+                                          : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                       "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
+                                    )}
+                                 >
+                                    {/* <Gamepad2 size={16} /> */}
+                                    <Icon name="gamepad-2" className="h-4 w-4">
+                                       Gaming
+                                    </Icon>
+                                 </div>
+                              )}
+                           </RadioGroup.Option>
+                           <RadioGroup.Option value="other">
+                              {({ checked }) => (
+                                 <div
+                                    className={clsx(
+                                       checked
+                                          ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
+                                          : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                       "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
+                                    )}
+                                 >
+                                    <Icon
+                                       name="component"
+                                       className="h-3.5 w-3.5"
+                                    >
+                                       Other
+                                    </Icon>
+                                 </div>
+                              )}
+                           </RadioGroup.Option>
+                        </RadioGroup>
+                     </div>
+                  </main>
+                  <div className="relative z-20 grid tablet:grid-cols-2 laptop:grid-cols-3 gap-4 mx-auto max-w-5xl">
                      {sites?.docs.length === 0 ? (
                         <div className="py-3 text-sm "></div>
                      ) : (
@@ -165,21 +175,61 @@ export function Discover() {
                                     : `https://${site.slug}.mana.wiki`
                               }
                               key={site.id}
-                              className="group bg-zinc-50 dark:shadow-zinc-900/50 flex border-zinc-200/80 hover:border-zinc-300/80
-                              items-center gap-3.5 rounded-2xl border p-3 shadow-sm dark:hover:border-zinc-600/70 dark:bg-dark350 dark:border-zinc-700"
+                              className="group bg-zinc-50 dark:shadow-zinc-900/50  border-zinc-200/80 hover:border-zinc-300/80
+                              gap-3.5 rounded-2xl border p-2.5 shadow-sm dark:hover:border-zinc-600/70 dark:bg-dark350 dark:border-zinc-700"
                            >
-                              <Avatar
-                                 src={site.icon?.url}
-                                 initials={site?.name?.charAt(0)}
-                                 className="size-11"
-                                 options="aspect_ratio=1:1&height=120&width=120"
+                              <Image
+                                 url={site?.banner?.url}
+                                 options="aspect_ratio=1.9:1&height=400"
+                                 className="rounded-lg overflow-hidden"
                               />
-                              <div className="space-y-1 truncate">
-                                 <div className="truncate font-header font-bold">
+                              <div className="-mt-9 space-y-1 p-2 flex flex-col ">
+                                 <Avatar
+                                    src={site.icon?.url}
+                                    initials={site?.name?.charAt(0)}
+                                    className="size-14 flex-none border-4 border-zinc-50 dark:border-dark350 relative z-10 ml-0.5"
+                                    options="aspect_ratio=1:1&height=120&width=120"
+                                 />
+                                 <div className="font-header font-bold relative flex items-center gap-1.5 z-20">
+                                    <Tooltip placement="bottom" setDelay={800}>
+                                       <TooltipTrigger>
+                                          <Icon
+                                             name="badge-check"
+                                             size={16}
+                                             className="text-teal-500"
+                                          />
+                                       </TooltipTrigger>
+                                       <TooltipContent>Verified</TooltipContent>
+                                    </Tooltip>
+
                                     {site.name}
                                  </div>
-                                 <div className="truncate text-xs text-1">
+                                 <div className="text-xs text-1 line-clamp-1">
                                     {site.about}
+                                 </div>
+                                 <div className="flex items-center justify-between pt-1">
+                                    {site?.followers && (
+                                       <div className="text-[10px] flex items-center gap-1">
+                                          <Icon
+                                             name="users-2"
+                                             size={12}
+                                             className="text-1"
+                                          />
+                                          <span className="dark:text-zinc-500 text-zinc-400">
+                                             {site?.followers}
+                                          </span>
+                                       </div>
+                                    )}
+                                    <span className="text-xs dark:text-zinc-500 text-zinc-400 flex items-center gap-1">
+                                       <Icon
+                                          name="link-2"
+                                          size={12}
+                                          className="text-1"
+                                       />
+                                       {site.domain
+                                          ? site.domain
+                                          : `${site.slug}.mana.wiki`}
+                                    </span>
                                  </div>
                               </div>
                            </Link>

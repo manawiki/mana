@@ -81,7 +81,7 @@ export function SiteHeader() {
                                  <div className="text-[10px] flex items-center gap-1">
                                     <Icon
                                        name="users-2"
-                                       className="text-1 w-3 h-3"
+                                       className="text-1 size-3"
                                     />
                                     <span className="dark:text-zinc-500 text-zinc-400">
                                        {site?.followers}
