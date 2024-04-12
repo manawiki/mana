@@ -51,7 +51,12 @@ export async function loader({
           slug
           status
           about
+          domain
+          followers
           icon {
+            url
+          }
+          banner {
             url
           }
         }
