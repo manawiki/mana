@@ -175,23 +175,26 @@ export function Discover() {
                                     : `https://${site.slug}.mana.wiki`
                               }
                               key={site.id}
-                              className="group bg-zinc-50 dark:shadow-zinc-900/50  border-zinc-200/80 hover:border-zinc-300/80
-                              gap-3.5 rounded-2xl border p-2.5 shadow-sm dark:hover:border-zinc-600/70 dark:bg-dark350 dark:border-zinc-700"
+                              className="group bg-zinc-50 dark:shadow-zinc-900/50  border-zinc-200/80 hover:border-zinc-300
+                              gap-3.5 rounded-2xl border p-2.5 shadow-sm dark:hover:border-zinc-600 dark:bg-dark350 dark:border-zinc-700"
                            >
                               <Image
                                  url={site?.banner?.url}
-                                 options="aspect_ratio=1.9:1&height=400"
-                                 className="rounded-lg overflow-hidden"
+                                 options="aspect_ratio=1.9:1&height=800"
+                                 className="rounded-lg overflow-hidden shadow-sm shadow-1"
                               />
                               <div className="-mt-9 space-y-1 p-2 flex flex-col ">
                                  <Avatar
                                     src={site.icon?.url}
                                     initials={site?.name?.charAt(0)}
                                     className="size-14 flex-none border-4 border-zinc-50 dark:border-dark350 relative z-10 ml-0.5"
-                                    options="aspect_ratio=1:1&height=120&width=120"
+                                    options="aspect_ratio=1:1&height=140&width=140"
                                  />
-                                 <div className="font-header font-bold relative flex items-center gap-1.5 z-20">
-                                    <Tooltip placement="bottom" setDelay={800}>
+                                 <div
+                                    className="font-header group-hover:underline underline-offset-2 decoration-zinc-400 dark:decoration-zinc-500
+                                     font-bold relative flex items-center gap-1.5 z-20"
+                                 >
+                                    <Tooltip placement="top">
                                        <TooltipTrigger>
                                           <Icon
                                              name="badge-check"
@@ -201,7 +204,6 @@ export function Discover() {
                                        </TooltipTrigger>
                                        <TooltipContent>Verified</TooltipContent>
                                     </Tooltip>
-
                                     {site.name}
                                  </div>
                                  <div className="text-xs text-1 line-clamp-1">

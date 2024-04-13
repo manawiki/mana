@@ -50,6 +50,7 @@ export async function loader({
                 : ""
           }
         }
+        sort:"-followers"
       ) {
         totalDocs
         totalPages

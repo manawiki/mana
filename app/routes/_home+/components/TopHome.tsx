@@ -42,8 +42,8 @@ export function TopHome() {
                      data-aos="fade-down"
                      data-aos-delay="200"
                   >
-                     Mana gives you the power to build better wikis <br />
-                     Community-powered, open-source, and free forever...
+                     Open-source, easy to use, and fully customizable. Build
+                     better wikis with Mana.
                   </p>
                   <div
                      data-aos="fade-down"

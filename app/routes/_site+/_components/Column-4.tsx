@@ -60,7 +60,7 @@ export function ColumnFour() {
                         <section
                            className={clsx(
                               site?.banner
-                                 ? "h-[170px] border-zinc-300 dark:border-zinc-700"
+                                 ? "h-[170px] border-zinc-300 dark:border-zinc-700/80"
                                  : "h-[70px] border-color",
                               `bg-3 border flex items-center rounded-lg mx-4
                               justify-center bg-white overflow-hidden shadow-sm shadow-1 relative z-20`,
@@ -75,12 +75,12 @@ export function ColumnFour() {
                                     alt="Site Banner"
                                     loading="lazy"
                                  />
-                                 <span className="bg-gradient-to-t dark:from-zinc-900/90 from-white/90 to-transparent  w-full h-full absolute top-0 left-0 z-10" />
+                                 <span className="bg-gradient-to-t dark:from-zinc-900/90 from-white/70 to-transparent  w-full h-full absolute top-0 left-0 z-10" />
                               </>
                            )}
                            <div
                               className="absolute dark:[text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] [text-shadow:_0_1px_0_rgb(255_255_255_/_40%)]
-                           dark:text-white bottom-0 text-sm left-0 p-4 z-20 space-y-1"
+                           dark:text-white text-zinc-700 bottom-0 text-sm left-0 p-4 z-20 space-y-1"
                            >
                               <span className="font-bold">{site.name}</span>
                               {site.about && (
