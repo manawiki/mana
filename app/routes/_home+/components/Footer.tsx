@@ -5,11 +5,11 @@ import { DarkModeToggle } from "~/routes/_site+/action+/theme-toggle";
 
 export function Footer() {
    return (
-      <footer className="py-3 max-laptop:px-4 w-full bg-3 flex items-center">
-         <div className="max-w-4xl w-full mx-auto flex items-center justify-between">
+      <footer className="py-3 max-laptop:px-4 w-full bg-3 flex items-center border-t border-color">
+         <div className="max-w-3xl w-full mx-auto flex items-center justify-between">
             <div className="flex items-center justify-center gap-5 text-1">
                <a
-                  href="https://github.com/manawiki"
+                  href="https://github.com/manawiki/mana"
                   aria-label="Mana Wiki Github"
                   rel="noreferrer"
                   target="_blank"

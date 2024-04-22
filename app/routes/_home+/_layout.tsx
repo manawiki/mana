@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from "@remix-run/react";
+import { Link, Outlet } from "@remix-run/react";
 
 import { LogoFull } from "~/components/Logo";
 
@@ -6,20 +6,20 @@ import { Footer } from "./components/Footer";
 
 export default function IndexLayout() {
    return (
-      <div className="relative min-h-screen">
+      <div className="relative min-h-screen flex flex-col">
          <Header />
-         <Outlet />
+         <div className="flex flex-col flex-grow">
+            <Outlet />
+         </div>
          <Footer />
       </div>
    );
 }
 
 function Header() {
-   const location = useLocation();
-
    return (
       <header className="z-50 w-full absolute">
-         <div className="mx-auto max-w-[924px] p-4 flex items-center justify-between w-full">
+         <div className="mx-auto max-w-4xl p-4 flex items-center justify-between w-full">
             <Link className="block text-white" to="/" aria-label="Mana Wiki">
                <LogoFull />
             </Link>
@@ -45,7 +45,7 @@ function Header() {
                      <Link
                         className="flex h-[34px] items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 px-3 text-center 
                                     text-xs font-extrabold uppercase text-white shadow-sm shadow-zinc-950"
-                        to={`/login?redirectTo=${location.pathname}`}
+                        to={`/login?redirectTo=/home`}
                      >
                         Login
                      </Link>

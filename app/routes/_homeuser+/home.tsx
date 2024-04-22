@@ -37,6 +37,7 @@ export async function loader({
                 : ""
           }
         }
+        sort:"-followers"
       ) {
         totalDocs
         totalPages
@@ -51,7 +52,12 @@ export async function loader({
           slug
           status
           about
+          domain
+          followers
           icon {
+            url
+          }
+          banner {
             url
           }
         }

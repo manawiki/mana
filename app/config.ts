@@ -5,7 +5,7 @@ export type ManaConfig = {
 };
 
 export const settings: ManaConfig = {
-   title: "Mana - A new kind of wiki",
+   title: "Mana - The all-in-one wiki builder",
    fromEmail: "dev@mana.wiki",
    fromName: "No Reply - Mana Wiki",
 };

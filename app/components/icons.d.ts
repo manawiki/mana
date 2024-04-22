@@ -1,4 +1,5 @@
 export type IconName =
+  | "badge-check"
   | "swords"
   | "sword"
   | "shield"
