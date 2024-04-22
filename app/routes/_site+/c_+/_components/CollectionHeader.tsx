@@ -99,7 +99,10 @@ export function CollectionHeader({
                                        className="size-8 !p-0"
                                        color="violet"
                                        target="_blank"
-                                       href={`https://${site.slug}-db.mana.wiki/admin/collections/${collection.slug}/${entry.id}`}
+                                       href={`/admin/collections/${collection.slug}/${entry.id}`}
+                                       onClick={(e: any) => {
+                                          e.target.port = 4000;
+                                       }}
                                     >
                                        <Icon
                                           title="Edit"

@@ -3,7 +3,7 @@
    "sideEffects": false,
    "scripts": {
       "dev": "run-p dev:core dev:custom",
-      "build": "yarn run generate:types && run-p \"build:core:*\" \"build:custom:*\"",
+      "build": "yarn run generate:types && run-p \"build:core:*\" && run-p \"build:custom:*\"",
       "start": "run-p start:core start:custom",
       "dev:core": "yarn run generate:types && remix dev -c \"npm run dev:node\" --manual",
       "dev:node": "cross-env NODE_ENV=development PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts node -r ts-node/register ./core.server.ts",
@@ -76,6 +76,7 @@
       "json-to-graphql-query": "^2.2.5",
       "linkify-it": "^4.0.1",
       "lru-cache": "^10.2.0",
+      "lucide": "^0.364.0",
       "morgan": "^1.10.0",
       "nanoid": "3",
       "patch-package": "^8.0.0",

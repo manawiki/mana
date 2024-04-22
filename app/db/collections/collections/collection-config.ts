@@ -94,6 +94,10 @@ export const Collections: CollectionConfig = {
          label: "Sort Groups",
          fields: [
             {
+               name: "default",
+               type: "checkbox",
+            },
+            {
                name: "label",
                type: "text",
                required: true,
