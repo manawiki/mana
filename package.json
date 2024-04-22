@@ -3,7 +3,7 @@
    "sideEffects": false,
    "scripts": {
       "dev": "run-p dev:core dev:custom",
-      "build": "yarn run generate:types && run-p \"build:core:*\" \"build:custom:*\"",
+      "build": "yarn run generate:types && run-p \"build:core:*\" && run-p \"build:custom:*\"",
       "start": "run-p start:core start:custom",
       "dev:core": "yarn run generate:types && remix dev -c \"npm run dev:node\" --manual",
       "dev:node": "cross-env NODE_ENV=development PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts node -r ts-node/register ./core.server.ts",
