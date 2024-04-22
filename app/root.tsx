@@ -230,7 +230,10 @@ function App() {
             <Links />
          </head>
          <body className="text-light dark:text-dark">
-            <div vaul-drawer-wrapper="">
+            <div
+               vaul-drawer-wrapper=""
+               className="max-laptop:min-h-screen bg-white dark:bg-bg3Dark"
+            >
                <Outlet
                   context={
                      [searchToggle, setSearchToggle] satisfies ContextType

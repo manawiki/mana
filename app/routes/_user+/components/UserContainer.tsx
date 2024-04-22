@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { Icon } from "~/components/Icon";
+import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
 import { MobileTray } from "~/routes/_site+/_components/MobileTray";
 
 import { UserMenuItems } from "./UserMenuItems";
@@ -45,8 +46,23 @@ export function UserContainer({
             open={isUserMenuOpen}
             shouldScaleBackground
          >
-            <menu className="flex h-full flex-col">
+            <menu className="flex min-h-[calc(100vh-7rem)] gap-8 flex-col justify-between">
                <UserMenuItems />
+               <button
+                  onClick={() => {
+                     handleLogout();
+                  }}
+                  type="submit"
+                  className="bg-zinc-100 group px-4 py-2.5
+               dark:bg-dark400 text-left text-sm font-bold gap-4 flex items-center rounded-lg"
+               >
+                  <div className="font-bold flex-grow">Logout</div>
+                  <Icon
+                     name="log-out"
+                     size={16}
+                     className="text-zinc-400 dark:group-hover:text-zinc-300 group-hover:text-zinc-500"
+                  />
+               </button>
             </menu>
          </MobileTray>
       </>
