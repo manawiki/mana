@@ -11,6 +11,7 @@ import { withLinkify } from "./plugins/link/withLinkify";
 import { withLists } from "./plugins/list/withLists";
 import type { CustomElement, ParagraphElement } from "./types";
 import { BlockType } from "./types";
+import { withTable } from "../blocks+/table/src/with-table";
 
 export function withNodeId(editor: Editor) {
    const makeNodeId = () => nanoid(16);
@@ -187,14 +188,28 @@ export function withShortcuts(editor: Editor) {
 export const useEditor = () =>
    useMemo(
       () =>
-         withLists(
-            withShortcuts(
-               withNodeId(
-                  withLayout(
-                     withLinkify(withReact(withHistory(createEditor()))),
+         withTable(
+            withLists(
+               withShortcuts(
+                  withNodeId(
+                     withLayout(
+                        withLinkify(withReact(withHistory(createEditor()))),
+                     ),
                   ),
                ),
             ),
+            {
+               blocks: {
+                  table: BlockType.Table,
+                  thead: BlockType.TableHead,
+                  tbody: BlockType.TableBody,
+                  tfoot: BlockType.TableFooter,
+                  tr: BlockType.TableRow,
+                  th: BlockType.TableHeaderCell,
+                  td: BlockType.TableCell,
+                  content: BlockType.Paragraph,
+               },
+            },
          ),
       [],
    );

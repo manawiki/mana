@@ -12,6 +12,7 @@ import type { Config } from "payload/generated-types";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 
+import { TableEditor } from "./blocks+/table/src/table-editor";
 import { Toolbar } from "./core/components/Toolbar";
 import { EditorWithDnD } from "./core/dnd";
 import { useEditor } from "./core/plugins";
@@ -70,6 +71,16 @@ export function ManaEditor({
          editor={editor}
          initialValue={value as Descendant[]}
       >
+         <button
+            type="button"
+            className="flex justify-between px-4 py-2 cursor-pointer hover:bg-gray-100"
+            onClick={(event) => {
+               TableEditor.insertTable(editor, { rows: 3, cols: 3 });
+               event.preventDefault();
+            }}
+         >
+            <span>Insert table</span>
+         </button>
          <Toolbar />
          <EditorWithDnD editor={editor} />
       </Slate>
