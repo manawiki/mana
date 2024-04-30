@@ -55,11 +55,7 @@ export function EditorBlocks({
 
    switch (element.type) {
       case BlockType.Paragraph: {
-         return (
-            <p className="mb-3" {...attributes}>
-               {children}
-            </p>
-         );
+         return <p {...attributes}>{children}</p>;
       }
       case BlockType.H2: {
          //@ts-ignore

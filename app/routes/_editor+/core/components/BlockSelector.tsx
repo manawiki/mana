@@ -227,7 +227,96 @@ export function BlockSelector({ element, editor }: Props) {
                   });
                },
             },
-
+            {
+               label: "Table",
+               icon: (
+                  <Icon
+                     name="table"
+                     title="Table"
+                     className="text-teal-500"
+                     size={12}
+                  />
+               ),
+               description: "Add a table",
+               onSelect: () => {
+                  onInsertBelow({
+                     type: BlockType.Table,
+                     id: nanoid(),
+                     children: [
+                        //@ts-ignore
+                        {
+                           type: BlockType.TableBody,
+                           children: [
+                              {
+                                 type: BlockType.TableRow,
+                                 children: [
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.Paragraph,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.Paragraph,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.Paragraph,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                 ],
+                              },
+                              {
+                                 type: BlockType.TableRow,
+                                 children: [
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.Paragraph,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.Paragraph,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.Paragraph,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                 ],
+                              },
+                           ],
+                        },
+                     ],
+                  });
+               },
+            },
             {
                label: "Two Column",
                icon: (
