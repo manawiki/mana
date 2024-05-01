@@ -54,24 +54,24 @@ export async function loader({
          },
       },
       limit: 0,
+      overrideAccess: false,
    });
 
-   console.log("entries: ", entries);
+   // console.log("entries: ", entries);
 
-   const isCustom = site?.type == "custom";
+   const processCustomEntries = await Promise.all(
+      collections!.map(async (collection: Collection) => {
+         if (!collection.customDatabase) return [];
 
-   const processCustomEntries =
-      isCustom &&
-      (await Promise.all(
-         collections!.map(async (collection: Collection) => {
-            const url = `http://localhost:4000/api/${collection.slug}?depth=0&limit=1000`;
-            const { docs } = await (await fetch(url)).json();
-            return docs.map(
-               ({ slug, id }: any) =>
-                  `${origin}/c/${collection.slug}/${slug ?? id}`,
-            );
-         }),
-      ));
+         const url = `http://localhost:4000/api/${collection.slug}?depth=0&limit=0&select[slug]=true`;
+
+         const { docs } = await (await fetch(url)).json();
+         return docs.map(
+            ({ slug, id }: any) =>
+               `${origin}/c/${collection.slug}/${slug ?? id}`,
+         );
+      }),
+   );
 
    const customEntries = processCustomEntries
       ? processCustomEntries.flatMap((items) => items)
