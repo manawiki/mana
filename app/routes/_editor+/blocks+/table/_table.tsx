@@ -237,7 +237,7 @@ export function BlockTableHeaderCell({
          className={clsx(
             selected &&
                "bg-zinc-100 border-blue-300 dark:border-blue-800 dark:bg-blue-700/20",
-            "bg-2-sub border border-zinc-200 p-3 dark:border-zinc-700 text-left",
+            "bg-2-sub border border-zinc-200 p-3 dark:border-zinc-700 text-left font-semibold",
          )}
          rowSpan={element.rowSpan}
          colSpan={element.colSpan}

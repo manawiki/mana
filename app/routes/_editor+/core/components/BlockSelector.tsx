@@ -254,7 +254,7 @@ export function BlockSelector({ element, editor }: Props) {
                                        type: BlockType.TableCell,
                                        children: [
                                           {
-                                             type: BlockType.Paragraph,
+                                             type: BlockType.TableContent,
                                              children: [{ text: "" }],
                                           },
                                        ],
@@ -263,7 +263,7 @@ export function BlockSelector({ element, editor }: Props) {
                                        type: BlockType.TableCell,
                                        children: [
                                           {
-                                             type: BlockType.Paragraph,
+                                             type: BlockType.TableContent,
                                              children: [{ text: "" }],
                                           },
                                        ],
@@ -272,7 +272,7 @@ export function BlockSelector({ element, editor }: Props) {
                                        type: BlockType.TableCell,
                                        children: [
                                           {
-                                             type: BlockType.Paragraph,
+                                             type: BlockType.TableContent,
                                              children: [{ text: "" }],
                                           },
                                        ],
@@ -286,7 +286,7 @@ export function BlockSelector({ element, editor }: Props) {
                                        type: BlockType.TableCell,
                                        children: [
                                           {
-                                             type: BlockType.Paragraph,
+                                             type: BlockType.TableContent,
                                              children: [{ text: "" }],
                                           },
                                        ],
@@ -295,7 +295,7 @@ export function BlockSelector({ element, editor }: Props) {
                                        type: BlockType.TableCell,
                                        children: [
                                           {
-                                             type: BlockType.Paragraph,
+                                             type: BlockType.TableContent,
                                              children: [{ text: "" }],
                                           },
                                        ],
@@ -304,7 +304,7 @@ export function BlockSelector({ element, editor }: Props) {
                                        type: BlockType.TableCell,
                                        children: [
                                           {
-                                             type: BlockType.Paragraph,
+                                             type: BlockType.TableContent,
                                              children: [{ text: "" }],
                                           },
                                        ],

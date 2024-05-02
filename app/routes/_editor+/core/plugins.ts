@@ -104,6 +104,7 @@ export function withShortcuts(editor: Editor) {
       if (text.endsWith(" ") && selection && Range.isCollapsed(selection)) {
          const { anchor } = selection;
          const block = Editor.above(editor, {
+            //@ts-ignore
             match: (n) => Editor.isBlock(editor, n),
          });
          const path = block ? block[1] : [];
@@ -117,6 +118,7 @@ export function withShortcuts(editor: Editor) {
             if (!Range.isCollapsed(range)) {
                Transforms.delete(editor);
             }
+            //@ts-ignore
             const newProperties: Partial<CustomElement> = {
                type,
             };
@@ -130,7 +132,9 @@ export function withShortcuts(editor: Editor) {
                   type: LIST_WRAPPER[beforeText],
                   children: [],
                };
+               //@ts-ignore
                Transforms.wrapNodes(editor, list, {
+                  //@ts-ignore
                   match: (n) => n.type === BlockType.ListItem,
                });
             }
@@ -207,7 +211,7 @@ export const useEditor = () =>
                   tr: BlockType.TableRow,
                   th: BlockType.TableHeaderCell,
                   td: BlockType.TableCell,
-                  content: BlockType.Paragraph,
+                  content: BlockType.TableContent,
                },
             },
          ),

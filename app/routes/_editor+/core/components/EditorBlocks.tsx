@@ -55,7 +55,11 @@ export function EditorBlocks({
 
    switch (element.type) {
       case BlockType.Paragraph: {
-         return <p {...attributes}>{children}</p>;
+         return (
+            <p className="mb-3" {...attributes}>
+               {children}
+            </p>
+         );
       }
       case BlockType.H2: {
          //@ts-ignore
@@ -276,6 +280,9 @@ export function EditorBlocks({
                attributes={attributes}
             />
          );
+      case BlockType.TableContent: {
+         return children;
+      }
       case BlockType.TableHead:
          return <TableHead {...attributes}>{children}</TableHead>;
       case BlockType.TableBody:

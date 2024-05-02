@@ -46,6 +46,7 @@ export enum BlockType {
    TableHeaderCell = "header-cell",
    TableRow = "table-row",
    TableCell = "table-cell",
+   TableContent = "table-content",
 }
 
 export type TextBlock =
@@ -263,6 +264,11 @@ export interface TableCellElement {
    children: CustomText[];
 }
 
+export interface TableContentElement {
+   type: BlockType.TableContent;
+   children: CustomText[];
+}
+
 export type CustomElement =
    | ParagraphElement
    | HeadingElement
@@ -292,7 +298,8 @@ export type CustomElement =
    | TableFooterElement
    | TableHeaderCellElement
    | TableRowElement
-   | TableCellElement;
+   | TableCellElement
+   | TableContentElement;
 
 export type CustomText = {
    text: string;
