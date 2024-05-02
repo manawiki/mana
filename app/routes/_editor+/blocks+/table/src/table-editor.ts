@@ -105,7 +105,7 @@ export const TableEditor = {
     */
    insertRow(
       editor: Editor,
-      options: { at?: Location; before?: boolean } = {},
+      options: { at?: Location; before?: boolean; isHeader?: boolean } = {},
    ): void {
       const editorOptions = EDITOR_TO_WITH_TABLE_OPTIONS.get(editor);
 
@@ -200,7 +200,9 @@ export const TableEditor = {
                children: Array.from({ length: colLen - increasedRowspan }).map(
                   () => ({
                      type:
-                        section.type === blocks.thead ? blocks.th : blocks.td,
+                        section.type === blocks.thead || options.isHeader
+                           ? blocks.th
+                           : blocks.td,
                      children: [
                         {
                            type: blocks.content,
