@@ -2,7 +2,7 @@ import type { Editor, Element } from "slate";
 import { Node, Transforms } from "slate";
 
 import type { WithTableOptions } from "../options";
-import { isElement } from "../utils";
+import { isElement } from "../utils/is-element";
 
 /**
  * Normalizes the `thead`, `tbody` and `tfoot` nodes by wrapping each of its

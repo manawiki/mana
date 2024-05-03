@@ -2,7 +2,7 @@ import type { Editor } from "slate";
 import { Transforms } from "slate";
 
 import type { WithTableOptions } from "../options";
-import { isElement } from "../utils";
+import { isElement } from "../utils/is-element";
 import type { CellElement } from "../utils/types";
 
 /**

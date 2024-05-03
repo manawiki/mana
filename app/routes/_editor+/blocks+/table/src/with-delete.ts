@@ -1,7 +1,8 @@
 import { Editor, Node, Path, Point, Range, Transforms } from "slate";
 
 import type { WithTableOptions } from "./options";
-import { hasCommon, isOfType } from "./utils";
+import { hasCommon } from "./utils/has-common";
+import { isOfType } from "./utils/is-of-type";
 import { EDITOR_TO_SELECTION } from "./weak-maps";
 
 export function withDelete<T extends Editor>(

@@ -162,6 +162,7 @@ export function withShortcuts(editor: Editor) {
                !Editor.isEditor(block) &&
                Element.isElement(block) &&
                block.type !== BlockType.Paragraph &&
+               block.type !== BlockType.TableContent &&
                Point.equals(selection.anchor, start)
             ) {
                const newProperties: Partial<CustomElement> = {

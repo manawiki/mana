@@ -2,7 +2,8 @@ import type { Element, NodeEntry } from "slate";
 import { Editor, Node, Path, Transforms } from "slate";
 
 import type { WithTableOptions } from "../options";
-import { isElement, isOfType } from "../utils";
+import { isElement } from "../utils/is-element";
+import { isOfType } from "../utils/is-of-type";
 
 /** Normalizes the given `table` node by wrapping invalid nodes into a `tbody`. */
 export function normalizeTable<T extends Editor>(
@@ -38,6 +39,7 @@ export function normalizeTable<T extends Editor>(
             const [tbodyElement, tbodyPath] = tbodyEntry;
 
             const elements = tbodyElement.children.filter(
+               //@ts-ignore
                (n) => isElement(n) && !editor.isInline(n),
             );
 

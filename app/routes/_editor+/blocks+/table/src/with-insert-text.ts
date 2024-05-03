@@ -3,7 +3,7 @@ import { Range, Transforms } from "slate";
 
 import type { WithTableOptions } from "./options";
 import { TableCursor } from "./table-cursor";
-import { hasCommon } from "./utils";
+import { hasCommon } from "./utils/has-common";
 
 export function withInsertText<T extends Editor>(
    editor: T,

@@ -1,38 +1,40 @@
-import { CellElement } from "./types";
-import { Editor, Location, Node, NodeEntry, Span } from "slate";
+import type { Location, NodeEntry } from "slate";
+import { Editor, Node, Span } from "slate";
+
 import { isElement } from "./is-element";
 import { isOfType } from "./is-of-type";
+import type { CellElement } from "./types";
 
 export function* matrix(
-  editor: Editor,
-  options: { at?: Location | Span; reverse?: boolean } = {}
+   editor: Editor,
+   options: { at?: Location | Span; reverse?: boolean } = {},
 ): Generator<NodeEntry<CellElement>[], undefined> {
-  const { at, reverse } = options;
+   const { at, reverse } = options;
 
-  const [table] = Editor.nodes(editor, {
-    match: isOfType(editor, "table"),
-    at,
-  });
+   const [table] = Editor.nodes(editor, {
+      match: isOfType(editor, "table"),
+      at,
+   });
 
-  if (!table) {
-    return;
-  }
+   if (!table) {
+      return;
+   }
 
-  const [, tablePath] = table;
+   const [, tablePath] = table;
 
-  for (const [, rowPath] of Editor.nodes(editor, {
-    at: Span.isSpan(at) ? at : tablePath,
-    match: isOfType(editor, "tr"),
-    reverse,
-  })) {
-    const cells: NodeEntry<CellElement>[] = [];
+   for (const [, rowPath] of Editor.nodes(editor, {
+      at: Span.isSpan(at) ? at : tablePath,
+      match: isOfType(editor, "tr"),
+      reverse,
+   })) {
+      const cells: NodeEntry<CellElement>[] = [];
 
-    for (const [cell, path] of Node.children(editor, rowPath, { reverse })) {
-      if (isElement<CellElement>(cell)) {
-        cells.push([cell, path]);
+      for (const [cell, path] of Node.children(editor, rowPath, { reverse })) {
+         if (isElement<CellElement>(cell)) {
+            cells.push([cell, path]);
+         }
       }
-    }
 
-    yield cells;
-  }
+      yield cells;
+   }
 }

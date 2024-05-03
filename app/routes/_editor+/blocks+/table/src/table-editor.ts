@@ -5,9 +5,12 @@ import { Editor, Node, Path, Transforms } from "slate";
 import type { InsertTableOptions } from "./options";
 import { DEFAULT_INSERT_TABLE_OPTIONS } from "./options";
 import { TableCursor } from "./table-cursor";
-import { filledMatrix, hasCommon, isElement, isOfType } from "./utils";
+import { filledMatrix } from "./utils/filled-matrix";
+import { hasCommon } from "./utils/has-common";
+import { isElement } from "./utils/is-element";
+import { isOfType } from "./utils/is-of-type";
 import type { CellElement } from "./utils/types";
-import { EDITOR_TO_SELECTION, EDITOR_TO_WITH_TABLE_OPTIONS } from "./weak-maps";
+import { EDITOR_TO_WITH_TABLE_OPTIONS } from "./weak-maps";
 
 export const TableEditor = {
    /**
@@ -659,7 +662,7 @@ export const TableEditor = {
               at: childPath,
             });
           }
-
+               //@ts-ignore
                const [[, trPath]] = Editor.nodes(editor, {
                   match: isOfType(editor, "tr"),
                   at: path,
@@ -675,7 +678,9 @@ export const TableEditor = {
                // there has to be a better way to do this
                let trIndex = 0;
                out: for (let i = 0; i < matrix.length; i++) {
+                  //@ts-ignore
                   for (let j = 0; j < matrix[i].length; j++) {
+                     //@ts-ignore
                      const [[, tdPath]] = matrix[i][j];
                      if (Path.equals(tdPath, path)) {
                         trIndex = i;
@@ -683,8 +688,9 @@ export const TableEditor = {
                      }
                   }
                }
-
+               //@ts-ignore
                for (let y = 0; y < matrix[trIndex].length; y++) {
+                  //@ts-ignore
                   const [[, tdPath], { ttb, ltr }] = matrix[trIndex][y];
                   y += ltr - 1;
 
