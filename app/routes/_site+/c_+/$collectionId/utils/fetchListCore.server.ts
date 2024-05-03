@@ -81,7 +81,7 @@ export async function fetchListCore({
 
       const restPath = `http://localhost:4000/api/${collectionEntry.slug}${
          preparedQuery ? `?${preparedQuery}&` : "?"
-      }depth=0&limit=50`;
+      }depth=1&limit=50`;
 
       const { docs, ...entryMetaData } = user
          ? await authRestFetcher({
