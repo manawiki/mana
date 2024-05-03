@@ -32,6 +32,11 @@ import {
    BlockTableCell,
    BlockTableHeaderCell,
 } from "../../blocks+/table/_table";
+import {
+   BlockTableView,
+   BlockTableHeaderCellView,
+   BlockTableCellView,
+} from "../../blocks+/table/TableView";
 import { BlockTabs, BlockTabsItem } from "../../blocks+/tabs/_tabs";
 import { BlockToggleBlock } from "../../blocks+/toggleblock";
 import { BlockTwoColumn } from "../../blocks+/two-column";
@@ -273,6 +278,15 @@ export function EditorBlocks({
          );
       }
       case BlockType.Table:
+         if (readOnly) {
+            return (
+               <BlockTableView
+                  children={children}
+                  element={element}
+                  attributes={attributes}
+               />
+            );
+         }
          return (
             <BlockTable
                children={children}
@@ -292,6 +306,15 @@ export function EditorBlocks({
       case BlockType.TableRow:
          return <TableRow {...attributes}>{children}</TableRow>;
       case BlockType.TableHeaderCell:
+         if (readOnly) {
+            return (
+               <BlockTableHeaderCellView
+                  children={children}
+                  element={element}
+                  attributes={attributes}
+               />
+            );
+         }
          return (
             <BlockTableHeaderCell
                attributes={attributes}
@@ -300,6 +323,15 @@ export function EditorBlocks({
             />
          );
       case BlockType.TableCell:
+         if (readOnly) {
+            return (
+               <BlockTableCellView
+                  children={children}
+                  element={element}
+                  attributes={attributes}
+               />
+            );
+         }
          return (
             <BlockTableCell
                attributes={attributes}
