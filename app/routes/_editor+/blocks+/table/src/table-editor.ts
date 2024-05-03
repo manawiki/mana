@@ -10,7 +10,7 @@ import { hasCommon } from "./utils/has-common";
 import { isElement } from "./utils/is-element";
 import { isOfType } from "./utils/is-of-type";
 import type { CellElement } from "./utils/types";
-import { EDITOR_TO_WITH_TABLE_OPTIONS } from "./weak-maps";
+import { EDITOR_TO_SELECTION, EDITOR_TO_WITH_TABLE_OPTIONS } from "./weak-maps";
 
 export const TableEditor = {
    /**
