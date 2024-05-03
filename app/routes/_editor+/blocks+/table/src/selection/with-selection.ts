@@ -1,11 +1,12 @@
 import type { Element } from "slate";
-import { Editor, Operation, Path, Point, Range } from "slate";
+import { Editor, Operation, Path, Range } from "slate";
 
 import type { WithTableOptions } from "../options";
 import { TableCursor } from "../table-cursor";
 import { filledMatrix } from "../utils/filled-matrix";
 import { hasCommon } from "../utils/has-common";
 import { isOfType } from "../utils/is-of-type";
+import { Point } from "../utils/point";
 import type { NodeEntryWithContext } from "../utils/types";
 import { EDITOR_TO_SELECTION, EDITOR_TO_SELECTION_SET } from "../weak-maps";
 
