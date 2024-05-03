@@ -3,6 +3,9 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import type { Collection } from "payload/generated-types";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 
+import { fetchSite } from "../_site+/_utils/fetchSite.server";
+import { fetchPublishedPosts } from "../_site+/posts+/utils/fetchPublishedPosts";
+
 const toXmlSitemap = (urls: string[]) => {
    const urlsAsXml = urls
       .map((url) => `<url><loc>${url}</loc></url>`)
@@ -25,88 +28,70 @@ export async function loader({
 }: LoaderFunctionArgs) {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const { hostname } = new URL(request.url);
+   const { origin } = new URL(request.url);
 
-   const siteData = await payload.find({
-      collection: "sites",
-      depth: 0,
-      where: {
-         slug: {
-            equals: siteSlug,
-         },
-      },
-   });
-   const id = siteData?.docs[0]?.id;
-   const isCustom = siteData?.docs[0]?.type == "custom";
-   const { docs: collections } = await payload.find({
-      collection: "collections",
-      depth: 0,
-      where: {
-         hiddenCollection: {
-            equals: false,
-         },
-         site: {
-            equals: id,
-         },
-      },
-      limit: 1000,
+   const site = await fetchSite({ siteSlug, request, payload });
+
+   // console.log("site: ", site);
+
+   const collections = site?.collections;
+
+   // console.log("collections: ", collections);
+
+   const { docs: posts } = await fetchPublishedPosts({
+      payload,
+      siteSlug,
    });
 
-   const { docs: posts } = await payload.find({
-      collection: "posts",
-      depth: 0,
-      where: {
-         site: {
-            equals: id,
-         },
-         _status: {
-            equals: "published",
-         },
-      },
-      limit: 1000,
-   });
+   // console.log("posts: ", posts);
 
    const { docs: entries } = await payload.find({
       collection: "entries",
       depth: 1,
       where: {
-         site: {
-            equals: id,
+         "site.slug": {
+            equals: siteSlug,
          },
       },
-      limit: 1000,
+      limit: 0,
+      overrideAccess: false,
    });
 
-   const processCustomEntries =
-      isCustom &&
-      (await Promise.all(
-         collections.map(async (collection: Collection) => {
-            const url = `http://localhost:4000/api/${collection.slug}?depth=0&limit=1000`;
-            const { docs } = await (await fetch(url)).json();
-            return docs.map(
-               ({ id }: { id: string }) =>
-                  `https://${hostname}/c/${collection.slug}/${id}`,
-            );
-         }),
-      ));
+   // console.log("entries: ", entries);
+
+   const processCustomEntries = await Promise.all(
+      collections!.map(async (collection: Collection) => {
+         if (!collection.customDatabase) return [];
+
+         const url = `http://localhost:4000/api/${collection.slug}?depth=0&limit=0&select[slug]=true`;
+
+         const { docs } = await (await fetch(url)).json();
+         return docs.map(
+            ({ slug, id }: any) =>
+               `${origin}/c/${collection.slug}/${slug ?? id}`,
+         );
+      }),
+   );
 
    const customEntries = processCustomEntries
       ? processCustomEntries.flatMap((items) => items)
       : [];
 
+   // console.log("customEntries: ", customEntries);
+
    try {
       const sitemap = toXmlSitemap([
-         `https://${hostname}`,
-         `https://${hostname}/collections`,
-         `https://${hostname}/posts`,
+         `${origin}`,
+         `${origin}/collections`,
+         `${origin}/posts`,
          ...posts.map(
             //@ts-ignore
-            ({ url, id }) => `https://${hostname}/p/${id}/${url}`,
+            ({ slug }) => `${origin}/p/${slug}`,
          ),
-         ...collections.map(({ slug }) => `https://${hostname}/${slug}`),
+         ...collections!.map(({ slug }) => `${origin}/${slug}`),
          ...entries.map(
-            ({ id, collectionEntity }) =>
-               `https://${hostname}/c/${collectionEntity?.slug}/${id}`,
+            ({ id, collectionEntity, slug }) =>
+               `${origin}/c/${collectionEntity?.slug}/${slug ?? id}`,
          ),
          ...customEntries,
       ]);
@@ -119,6 +104,7 @@ export async function loader({
          },
       });
    } catch (e) {
+      console.log(e);
       throw new Response("Internal Server Error", { status: 500 });
    }
 }

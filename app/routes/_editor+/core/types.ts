@@ -39,6 +39,14 @@ export enum BlockType {
    InfoBox = "info-box",
    InfoBoxItem = "info-box-item",
    Embed = "embed",
+   Table = "table",
+   TableHead = "table-head",
+   TableBody = "table-body",
+   TableFooter = "table-footer",
+   TableHeaderCell = "header-cell",
+   TableRow = "table-row",
+   TableCell = "table-cell",
+   TableContent = "table-content",
 }
 
 export type TextBlock =
@@ -214,6 +222,54 @@ export interface LinkElement extends BlockElement {
    children: [{ text: "" }];
 }
 
+export interface TableElement {
+   id: string;
+   type: BlockType.Table;
+   tableLayout: "auto" | "fixed";
+   children: Array<
+      BlockType.TableHead | BlockType.TableBody | BlockType.TableFooter
+   >;
+}
+
+export interface TableHeadElement {
+   type: BlockType.TableHead;
+   children: TableRowElement[];
+}
+
+export interface TableBodyElement {
+   type: BlockType.TableBody;
+   children: TableRowElement[];
+}
+
+export interface TableFooterElement {
+   type: BlockType.TableFooter;
+   children: TableRowElement[];
+}
+
+export interface TableRowElement {
+   type: BlockType.TableRow;
+   children: Array<TableCellElement | TableHeaderCellElement>;
+}
+
+export interface TableHeaderCellElement {
+   type: BlockType.TableHeaderCell;
+   rowSpan?: number;
+   colSpan?: number;
+   children: CustomText[];
+}
+
+export interface TableCellElement {
+   type: BlockType.TableCell;
+   rowSpan?: number;
+   colSpan?: number;
+   children: CustomText[];
+}
+
+export interface TableContentElement {
+   type: BlockType.TableContent;
+   children: CustomText[];
+}
+
 export type CustomElement =
    | ParagraphElement
    | HeadingElement
@@ -236,7 +292,15 @@ export type CustomElement =
    | InlineAdElement
    | InfoBoxElement
    | InfoBoxItemElement
-   | EmbedElement;
+   | EmbedElement
+   | TableElement
+   | TableHeadElement
+   | TableBodyElement
+   | TableFooterElement
+   | TableHeaderCellElement
+   | TableRowElement
+   | TableCellElement
+   | TableContentElement;
 
 export type CustomText = {
    text: string;

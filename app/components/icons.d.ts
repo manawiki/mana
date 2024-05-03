@@ -1,4 +1,7 @@
 export type IconName =
+  | "table-cells-split"
+  | "table-cells-merge"
+  | "table"
   | "badge-check"
   | "swords"
   | "sword"

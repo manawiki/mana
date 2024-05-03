@@ -176,6 +176,10 @@ export function verboseReporter<T>(): CreateReporter<T> {
       let getFreshValueStartTs: number;
       let refreshValueStartTS: number;
 
+      //let abbrevated key be 50 characters long that takes the first 20 characters and the last 20 characters
+      const abbrevatedKey =
+         key.length > 100 ? key.slice(0, 50) + "..." + key.slice(-50) : key;
+
       return (event) => {
          switch (event.name) {
             case "getCachedValueRead":
@@ -183,19 +187,19 @@ export function verboseReporter<T>(): CreateReporter<T> {
                break;
             case "checkCachedValueError":
                console.warn(
-                  `check failed for cached value of ${key}\nReason: ${event.reason}.\nDeleting the cache key and trying to get a fresh value.`,
+                  `check failed for cached value of ${abbrevatedKey}, Reason: ${event.reason}.\nDeleting the cache key and trying to get a fresh value.`,
                   cached,
                );
                break;
             case "getCachedValueError":
                console.error(
-                  `error with cache at ${key}. Deleting the cache key and trying to get a fresh value.`,
+                  `error with cache at ${abbrevatedKey}. Deleting the cache key and trying to get a fresh value.`,
                   event.error,
                );
                break;
             case "getFreshValueError":
                console.error(
-                  `getting a fresh value for ${key} failed`,
+                  `getting a fresh value for ${abbrevatedKey} failed`,
                   { fallbackToCache, forceFresh },
                   event.error,
                );
@@ -207,12 +211,14 @@ export function verboseReporter<T>(): CreateReporter<T> {
                const totalTime = performance.now() - getFreshValueStartTs;
                if (event.written) {
                   console.log(
-                     `Fresh cache took ${formatDuration(totalTime)}, `,
+                     `Fresh cache took ${abbrevatedKey} ${formatDuration(
+                        totalTime,
+                     )}, `,
                      `${lruCache.size} cached total.`,
                   );
                } else {
                   console.log(
-                     `Not updating the cache value for ${key}.`,
+                     `Not updating the cache value for ${abbrevatedKey}.`,
                      `Getting a fresh value for this took ${formatDuration(
                         totalTime,
                      )}.`,
@@ -221,14 +227,17 @@ export function verboseReporter<T>(): CreateReporter<T> {
                break;
             }
             case "writeFreshValueError":
-               console.error(`error setting cache: ${key}`, event.error);
+               console.error(
+                  `error setting cache: ${abbrevatedKey}`,
+                  event.error,
+               );
                break;
             case "getFreshValueSuccess":
                freshValue = event.value;
                break;
             case "checkFreshValueError":
                console.error(
-                  `check failed for fresh value of ${key}\nReason: ${event.reason}.`,
+                  `check failed for fresh value of ${abbrevatedKey} Reason: ${event.reason}.`,
                   freshValue,
                );
                break;
@@ -237,7 +246,7 @@ export function verboseReporter<T>(): CreateReporter<T> {
                break;
             case "refreshValueSuccess":
                console.log(
-                  `Stale cache took ${formatDuration(
+                  `Stale cache ${abbrevatedKey} took ${formatDuration(
                      performance.now() - refreshValueStartTS,
                   )}, `,
                   `${lruCache.size} cached total.`,
@@ -245,7 +254,7 @@ export function verboseReporter<T>(): CreateReporter<T> {
                break;
             case "refreshValueError":
                console.log(
-                  `Background refresh for ${key} failed.`,
+                  `Background refresh for ${abbrevatedKey} failed.`,
                   event.error,
                );
                break;

@@ -10,6 +10,7 @@ import type { PostsAllSchema } from "../_posts";
 
 export async function fetchPublishedPosts({
    q,
+   page,
    payload,
    siteSlug,
    user,
@@ -55,6 +56,7 @@ export async function fetchPublishedPosts({
                  },
               ],
            },
+           page: page ?? 1,
            depth: 2,
            overrideAccess: false,
            user,
@@ -88,14 +90,15 @@ export async function fetchPublishedPosts({
                        },
                     ],
                  },
+                 page: page ?? 1,
                  depth: 2,
                  overrideAccess: false,
                  user,
                  sort: "-publishedAt",
               }),
-           `publishedPosts-${siteSlug}`,
+           `publishedPosts-${siteSlug}=q-${q}=page-${page}`,
         );
-   const { docs } = filterAuthorFields(data, postSelect);
+   const result = filterAuthorFields(data, postSelect);
 
-   return { docs };
+   return result;
 }
