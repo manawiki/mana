@@ -7,6 +7,7 @@ import urlSlug from "url-slug";
 
 import { CustomBlocks } from "~/_custom/blocks";
 import { Loading } from "~/components/Loading";
+import { TableBody, TableHead, TableRow } from "~/components/Table";
 
 import { BlockEmbed } from "../../blocks+/embed";
 import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
@@ -26,6 +27,16 @@ import { BlockInfoBox, BlockInfoBoxItem } from "../../blocks+/infobox";
 import { BlockInlineAd } from "../../blocks+/inline-ad";
 import { BlockLink } from "../../blocks+/link/_link";
 import { BlockLinkView } from "../../blocks+/link/link-view";
+import {
+   BlockTable,
+   BlockTableCell,
+   BlockTableHeaderCell,
+} from "../../blocks+/table/_table";
+import {
+   BlockTableView,
+   BlockTableHeaderCellView,
+   BlockTableCellView,
+} from "../../blocks+/table/TableView";
 import { BlockTabs, BlockTabsItem } from "../../blocks+/tabs/_tabs";
 import { BlockToggleBlock } from "../../blocks+/toggleblock";
 import { BlockTwoColumn } from "../../blocks+/two-column";
@@ -266,6 +277,68 @@ export function EditorBlocks({
             </div>
          );
       }
+      case BlockType.Table:
+         if (readOnly) {
+            return (
+               <BlockTableView
+                  children={children}
+                  element={element}
+                  attributes={attributes}
+               />
+            );
+         }
+         return (
+            <BlockTable
+               children={children}
+               element={element}
+               attributes={attributes}
+            />
+         );
+      case BlockType.TableContent: {
+         return children;
+      }
+      case BlockType.TableHead:
+         return <TableHead {...attributes}>{children}</TableHead>;
+      case BlockType.TableBody:
+         return <TableBody {...attributes}>{children}</TableBody>;
+      case BlockType.TableFooter:
+         return <tfoot {...attributes}>{children}</tfoot>;
+      case BlockType.TableRow:
+         return <TableRow {...attributes}>{children}</TableRow>;
+      case BlockType.TableHeaderCell:
+         if (readOnly) {
+            return (
+               <BlockTableHeaderCellView
+                  children={children}
+                  element={element}
+                  attributes={attributes}
+               />
+            );
+         }
+         return (
+            <BlockTableHeaderCell
+               attributes={attributes}
+               children={children}
+               element={element}
+            />
+         );
+      case BlockType.TableCell:
+         if (readOnly) {
+            return (
+               <BlockTableCellView
+                  children={children}
+                  element={element}
+                  attributes={attributes}
+               />
+            );
+         }
+         return (
+            <BlockTableCell
+               attributes={attributes}
+               children={children}
+               element={element}
+            />
+         );
       default:
          //Check if any custom blocks to render
          return (
