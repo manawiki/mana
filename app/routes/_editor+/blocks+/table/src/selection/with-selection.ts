@@ -7,6 +7,7 @@ import { filledMatrix } from "../utils/filled-matrix";
 import { hasCommon } from "../utils/has-common";
 import { isOfType } from "../utils/is-of-type";
 import type { NodeEntryWithContext } from "../utils/types";
+import { EDITOR_TO_SELECTION, EDITOR_TO_SELECTION_SET } from "../weak-maps";
 
 export function withSelection<T extends Editor>(
    editor: T,
@@ -63,14 +64,20 @@ export function withSelection<T extends Editor>(
       // TODO: perf: could be improved by passing a Span [fromPath, toPath]
       const filled = filledMatrix(editor, { at: fromPath });
       // find initial bounds
+      //@ts-ignore
       const from = Point.valueOf(0, 0);
+      //@ts-ignore
       const to = Point.valueOf(0, 0);
       outer: for (let x = 0; x < filled.length; x++) {
+         //@ts-ignore
          for (let y = 0; y < filled[x].length; y++) {
+            //@ts-ignore
             const [[, path]] = filled[x][y];
 
             if (Path.equals(fromPath, path)) {
+               //@ts-ignore
                from.x = x;
+               //@ts-ignore
                from.y = y;
             }
 
@@ -81,15 +88,18 @@ export function withSelection<T extends Editor>(
             }
          }
       }
-
+      //@ts-ignore
       let start = Point.valueOf(Math.min(from.x, to.x), Math.min(from.y, to.y));
+      //@ts-ignore
       let end = Point.valueOf(Math.max(from.x, to.x), Math.max(from.y, to.y));
 
       // expand the selection based on rowspan and colspan
       for (;;) {
+         //@ts-ignore
          const nextStart = Point.valueOf(start.x, start.y);
+         //@ts-ignore
          const nextEnd = Point.valueOf(end.x, end.y);
-
+         //@ts-ignore
          for (let x = nextStart.x; x <= nextEnd.x; x++) {
             for (let y = nextStart.y; y <= nextEnd.y; y++) {
                const [, { rtl, ltr, btt, ttb }] = filled[x][y];
