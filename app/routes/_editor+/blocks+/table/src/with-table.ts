@@ -1,9 +1,10 @@
 import type { Editor } from "slate";
 
-import { withNormalization } from "./normalization";
+import { withNormalization } from "./normalization/with-normalization";
 import type { WithTableOptions } from "./options";
 import { DEFAULT_WITH_TABLE_OPTIONS } from "./options";
-import { withSelection, withSelectionAdjustment } from "./selection";
+import { withSelection } from "./selection/with-selection";
+import { withSelectionAdjustment } from "./selection/with-selection-adjustment";
 import { EDITOR_TO_WITH_TABLE_OPTIONS } from "./weak-maps";
 import { withDelete } from "./with-delete";
 import { withFragments } from "./with-fragments";

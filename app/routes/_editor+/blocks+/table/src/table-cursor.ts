@@ -1,7 +1,9 @@
 import type { Element, Location, NodeEntry, Operation } from "slate";
 import { Editor, Node, Path, Point, Range, Transforms } from "slate";
 
-import { filledMatrix, isOfType, matrix } from "./utils";
+import { filledMatrix } from "./utils/filled-matrix";
+import { isOfType } from "./utils/is-of-type";
+import { matrix } from "./utils/matrix";
 import type { Edge, NodeEntryWithContext, SelectionMode } from "./utils/types";
 import {
    EDITOR_TO_SELECTION,

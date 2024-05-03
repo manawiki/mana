@@ -2,7 +2,7 @@ import type { Descendant, Editor } from "slate";
 import { Node } from "slate";
 
 import type { WithTableOptions } from "./options";
-import { isOfType } from "./utils";
+import { isOfType } from "./utils/is-of-type";
 
 export function withFragments<T extends Editor>(
    editor: T,
@@ -27,6 +27,7 @@ export function withFragments<T extends Editor>(
             pass: ([node]) => isOfType(editor, "content")(node, []),
          })) {
             if (isOfType(editor, "content")(node, [])) {
+               //@ts-ignore
                newFragment.push(node);
             }
          }
