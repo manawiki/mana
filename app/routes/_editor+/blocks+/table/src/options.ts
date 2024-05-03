@@ -27,7 +27,7 @@ export const DEFAULT_WITH_TABLE_OPTIONS = {
    blocks: {
       td: BlockType.TableCell,
       th: BlockType.TableHeaderCell,
-      content: BlockType.Paragraph,
+      content: BlockType.TableContent,
       tr: BlockType.TableRow,
       table: BlockType.Table,
       tbody: BlockType.TableBody,
