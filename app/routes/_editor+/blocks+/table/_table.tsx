@@ -1,6 +1,7 @@
 import clsx from "clsx";
+import { Transforms } from "slate";
 import type { RenderElementProps } from "slate-react";
-import { useSlateSelection, useSlateStatic } from "slate-react";
+import { ReactEditor, useSlateSelection, useSlateStatic } from "slate-react";
 
 import {
    Dropdown,
@@ -16,6 +17,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 
 import { TableCursor } from "./src/table-cursor";
 import { TableEditor } from "./src/table-editor";
+import type { CustomElement } from "../../core/types";
 
 export function BlockTable({
    attributes,
@@ -25,12 +27,18 @@ export function BlockTable({
    const editor = useSlateStatic();
    const [isSelecting] = TableCursor.selection(editor);
    const inTable = TableCursor.isInTable(editor);
+   const path = ReactEditor.findPath(editor, element);
+
    return (
       <>
          <table
             className={clsx(
+               //@ts-ignore
+               element.tableLayout === "fixed" && "table-fixed",
+               //@ts-ignore
+               element.tableLayout === "auto" && "table-auto",
                isSelecting && "table-selection-none",
-               "table-auto my-4 w-full relative",
+               "my-4 w-full relative",
             )}
             {...attributes}
          >
@@ -209,6 +217,77 @@ export function BlockTable({
                            >
                               Delete Column
                            </DropdownItem>
+                        </DropdownMenu>
+                     </Dropdown>
+                     <Dropdown>
+                        <Tooltip placement="top">
+                           <TooltipTrigger title="Table options">
+                              <DropdownButton
+                                 className="!px-1.5"
+                                 plain
+                                 aria-label="Table options"
+                              >
+                                 <Icon
+                                    size={14}
+                                    name="more-vertical"
+                                    title="Table Options"
+                                 />
+                              </DropdownButton>
+                           </TooltipTrigger>
+                           <TooltipContent>Table Options</TooltipContent>
+                        </Tooltip>
+                        <DropdownMenu className="z-50" anchor="bottom end">
+                           <DropdownSection aria-label="Cell">
+                              <DropdownHeading>Table Layout</DropdownHeading>
+                              <DropdownItem
+                                 className="flex justify-between"
+                                 onClick={() =>
+                                    Transforms.setNodes<CustomElement>(
+                                       editor,
+                                       {
+                                          tableLayout: "fixed",
+                                       },
+                                       {
+                                          at: path,
+                                       },
+                                    )
+                                 }
+                              >
+                                 {/* @ts-ignore */}
+                                 {element.tableLayout === "fixed" && (
+                                    <Icon
+                                       size={14}
+                                       name="check"
+                                       title="Active"
+                                    />
+                                 )}
+                                 <span className="flex-grow">Fixed</span>
+                              </DropdownItem>
+                              <DropdownItem
+                                 className="flex justify-between"
+                                 onClick={() =>
+                                    Transforms.setNodes<CustomElement>(
+                                       editor,
+                                       {
+                                          tableLayout: "auto",
+                                       },
+                                       {
+                                          at: path,
+                                       },
+                                    )
+                                 }
+                              >
+                                 {/* @ts-ignore */}
+                                 {element.tableLayout === "auto" && (
+                                    <Icon
+                                       size={14}
+                                       name="check"
+                                       title="Active"
+                                    />
+                                 )}
+                                 <span className="flex-grow">Auto</span>
+                              </DropdownItem>
+                           </DropdownSection>
                         </DropdownMenu>
                      </Dropdown>
                   </div>

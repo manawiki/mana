@@ -242,6 +242,7 @@ export function BlockSelector({ element, editor }: Props) {
                   onInsertBelow({
                      type: BlockType.Table,
                      id: nanoid(),
+                     tableLayout: "fixed",
                      children: [
                         //@ts-ignore
                         {

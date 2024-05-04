@@ -225,6 +225,7 @@ export interface LinkElement extends BlockElement {
 export interface TableElement {
    id: string;
    type: BlockType.Table;
+   tableLayout: "auto" | "fixed";
    children: Array<
       BlockType.TableHead | BlockType.TableBody | BlockType.TableFooter
    >;
