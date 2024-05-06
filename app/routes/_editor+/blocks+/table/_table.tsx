@@ -17,13 +17,20 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 
 import { TableCursor } from "./src/table-cursor";
 import { TableEditor } from "./src/table-editor";
-import type { CustomElement } from "../../core/types";
+import type {
+   CustomElement,
+   TableCellElement,
+   TableElement,
+   TableHeaderCellElement,
+} from "../../core/types";
 
 export function BlockTable({
    attributes,
    children,
    element,
-}: RenderElementProps) {
+}: RenderElementProps & {
+   element: TableElement;
+}) {
    const editor = useSlateStatic();
    const [isSelecting] = TableCursor.selection(editor);
    const inTable = TableCursor.isInTable(editor);
@@ -33,9 +40,7 @@ export function BlockTable({
       <>
          <table
             className={clsx(
-               //@ts-ignore
                element.tableLayout === "fixed" && "table-fixed",
-               //@ts-ignore
                element.tableLayout === "auto" && "table-auto",
                isSelecting && "table-selection-none",
                "my-4 w-full relative",
@@ -93,7 +98,7 @@ export function BlockTable({
                      <div className="mx-2 h-5 w-[1px] rounded-lg dark:bg-dark500" />
                      <Dropdown>
                         <Tooltip placement="top">
-                           <TooltipTrigger title="Row options">
+                           <TooltipTrigger asChild title="Row options">
                               <DropdownButton
                                  className="!px-1.5"
                                  plain
@@ -168,7 +173,7 @@ export function BlockTable({
                      </Dropdown>
                      <Dropdown>
                         <Tooltip placement="top">
-                           <TooltipTrigger title="Column options">
+                           <TooltipTrigger asChild title="Column options">
                               <DropdownButton
                                  className="!px-1.5"
                                  plain
@@ -221,7 +226,7 @@ export function BlockTable({
                      </Dropdown>
                      <Dropdown>
                         <Tooltip placement="top">
-                           <TooltipTrigger title="Table options">
+                           <TooltipTrigger asChild title="Table options">
                               <DropdownButton
                                  className="!px-1.5"
                                  plain
@@ -253,7 +258,6 @@ export function BlockTable({
                                     )
                                  }
                               >
-                                 {/* @ts-ignore */}
                                  {element.tableLayout === "fixed" && (
                                     <Icon
                                        size={14}
@@ -277,7 +281,6 @@ export function BlockTable({
                                     )
                                  }
                               >
-                                 {/* @ts-ignore */}
                                  {element.tableLayout === "auto" && (
                                     <Icon
                                        size={14}
@@ -302,7 +305,9 @@ export function BlockTableHeaderCell({
    attributes,
    element,
    children,
-}: RenderElementProps) {
+}: RenderElementProps & {
+   element: TableHeaderCellElement;
+}) {
    if (element.type !== "header-cell") {
       throw new Error('Element "Th" must be of type "header-cell"');
    }
@@ -311,18 +316,98 @@ export function BlockTableHeaderCell({
    const editor = useSlateStatic();
    const selected = TableCursor.isSelected(editor, element);
 
+   const align = element.align || "left";
+   const path = ReactEditor.findPath(editor, element);
+   const inTable = TableCursor.isInTable(editor);
+
    return (
       <th
          className={clsx(
             selected &&
                "bg-zinc-100 border-blue-300 dark:border-blue-800 dark:bg-blue-700/20",
-            "bg-2-sub border border-zinc-200 p-3 dark:border-zinc-700 text-left font-semibold",
+            align === "center" && "text-center",
+            align === "right" && "text-right",
+            align === "left" && "text-left",
+            "bg-2-sub border border-zinc-200 px-3 py-2.5 dark:border-zinc-700 text-left font-semibold relative",
          )}
          rowSpan={element.rowSpan}
          colSpan={element.colSpan}
          {...attributes}
       >
          {children}
+         {inTable && (
+            <Dropdown>
+               <Tooltip placement="top">
+                  <TooltipTrigger asChild title="Table options">
+                     <DropdownButton
+                        className="!px-1.5 group-hover:block  !absolute top-2.5 right-1.5"
+                        plain
+                        aria-label="Table options"
+                     >
+                        <Icon
+                           size={14}
+                           name="more-vertical"
+                           title="Table Options"
+                        />
+                     </DropdownButton>
+                  </TooltipTrigger>
+                  <TooltipContent>Table Options</TooltipContent>
+               </Tooltip>
+               <DropdownMenu className="z-50" anchor="bottom end">
+                  <DropdownSection aria-label="Cell">
+                     <DropdownHeading>Align</DropdownHeading>
+                     <DropdownItem
+                        className="flex justify-between"
+                        onClick={() =>
+                           Transforms.setNodes<CustomElement>(
+                              editor,
+                              {
+                                 align: "left",
+                              },
+                              {
+                                 at: path,
+                              },
+                           )
+                        }
+                     >
+                        <span className="flex-grow">Left</span>
+                     </DropdownItem>
+                     <DropdownItem
+                        className="flex justify-between"
+                        onClick={() =>
+                           Transforms.setNodes<CustomElement>(
+                              editor,
+                              {
+                                 align: "center",
+                              },
+                              {
+                                 at: path,
+                              },
+                           )
+                        }
+                     >
+                        <span className="flex-grow">Center</span>
+                     </DropdownItem>
+                     <DropdownItem
+                        className="flex justify-between"
+                        onClick={() =>
+                           Transforms.setNodes<CustomElement>(
+                              editor,
+                              {
+                                 align: "right",
+                              },
+                              {
+                                 at: path,
+                              },
+                           )
+                        }
+                     >
+                        <span className="flex-grow">Right</span>
+                     </DropdownItem>
+                  </DropdownSection>
+               </DropdownMenu>
+            </Dropdown>
+         )}
       </th>
    );
 }
@@ -331,7 +416,9 @@ export function BlockTableCell({
    attributes,
    element,
    children,
-}: RenderElementProps) {
+}: RenderElementProps & {
+   element: TableCellElement;
+}) {
    if (element.type !== "table-cell") {
       throw new Error('Element "Td" must be of type "table-cell"');
    }
@@ -339,19 +426,100 @@ export function BlockTableCell({
    useSlateSelection();
    const editor = useSlateStatic();
    const selected = TableCursor.isSelected(editor, element);
+   const inTable = TableCursor.isInTable(editor);
+
+   const path = ReactEditor.findPath(editor, element);
+
+   const align = element.align || "left";
 
    return (
       <td
          className={clsx(
             selected &&
                "bg-zinc-100 border-blue-300 dark:border-blue-800 dark:bg-blue-700/20",
-            "bg-3 border border-zinc-200 p-3 dark:border-zinc-700 relative",
+            align === "center" && "text-center",
+            align === "right" && "text-right",
+            align === "left" && "text-left",
+            "bg-3 border border-zinc-200 px-3 py-2.5 dark:border-zinc-700 relative group",
          )}
          rowSpan={element.rowSpan}
          colSpan={element.colSpan}
          {...attributes}
       >
          {children}
+         {inTable && (
+            <Dropdown>
+               <Tooltip placement="top">
+                  <TooltipTrigger asChild title="Table options">
+                     <DropdownButton
+                        className="!px-1.5 group-hover:block  !absolute top-2.5 right-1.5"
+                        plain
+                        aria-label="Table options"
+                     >
+                        <Icon
+                           size={14}
+                           name="more-vertical"
+                           title="Table Options"
+                        />
+                     </DropdownButton>
+                  </TooltipTrigger>
+                  <TooltipContent>Table Options</TooltipContent>
+               </Tooltip>
+               <DropdownMenu className="z-50" anchor="bottom end">
+                  <DropdownSection aria-label="Cell">
+                     <DropdownHeading>Align</DropdownHeading>
+                     <DropdownItem
+                        className="flex justify-between"
+                        onClick={() =>
+                           Transforms.setNodes<CustomElement>(
+                              editor,
+                              {
+                                 align: "left",
+                              },
+                              {
+                                 at: path,
+                              },
+                           )
+                        }
+                     >
+                        <span className="flex-grow">Left</span>
+                     </DropdownItem>
+                     <DropdownItem
+                        className="flex justify-between"
+                        onClick={() =>
+                           Transforms.setNodes<CustomElement>(
+                              editor,
+                              {
+                                 align: "center",
+                              },
+                              {
+                                 at: path,
+                              },
+                           )
+                        }
+                     >
+                        <span className="flex-grow">Center</span>
+                     </DropdownItem>
+                     <DropdownItem
+                        className="flex justify-between"
+                        onClick={() =>
+                           Transforms.setNodes<CustomElement>(
+                              editor,
+                              {
+                                 align: "right",
+                              },
+                              {
+                                 at: path,
+                              },
+                           )
+                        }
+                     >
+                        <span className="flex-grow">Right</span>
+                     </DropdownItem>
+                  </DropdownSection>
+               </DropdownMenu>
+            </Dropdown>
+         )}
       </td>
    );
 }

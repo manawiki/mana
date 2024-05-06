@@ -255,6 +255,7 @@ export interface TableHeaderCellElement {
    type: BlockType.TableHeaderCell;
    rowSpan?: number;
    colSpan?: number;
+   align?: "left" | "center" | "right" | undefined;
    children: CustomText[];
 }
 
@@ -262,6 +263,7 @@ export interface TableCellElement {
    type: BlockType.TableCell;
    rowSpan?: number;
    colSpan?: number;
+   align?: "left" | "center" | "right" | undefined;
    children: CustomText[];
 }
 
