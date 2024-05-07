@@ -29,8 +29,10 @@ import { BlockLink } from "../../blocks+/link/_link";
 import { BlockLinkView } from "../../blocks+/link/link-view";
 import {
    BlockTable,
+   BlockTableBody,
    BlockTableCell,
    BlockTableHeaderCell,
+   BlockTableRow,
 } from "../../blocks+/table/_table";
 import {
    BlockTableView,
@@ -300,11 +302,23 @@ export function EditorBlocks({
       case BlockType.TableHead:
          return <TableHead {...attributes}>{children}</TableHead>;
       case BlockType.TableBody:
-         return <TableBody {...attributes}>{children}</TableBody>;
+         return (
+            <BlockTableBody
+               children={children}
+               element={element}
+               attributes={attributes}
+            />
+         );
       case BlockType.TableFooter:
          return <tfoot {...attributes}>{children}</tfoot>;
       case BlockType.TableRow:
-         return <TableRow {...attributes}>{children}</TableRow>;
+         return (
+            <BlockTableRow
+               children={children}
+               element={element}
+               attributes={attributes}
+            />
+         );
       case BlockType.TableHeaderCell:
          if (readOnly) {
             return (

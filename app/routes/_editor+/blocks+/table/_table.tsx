@@ -19,9 +19,11 @@ import { TableCursor } from "./src/table-cursor";
 import { TableEditor } from "./src/table-editor";
 import type {
    CustomElement,
+   TableBodyElement,
    TableCellElement,
    TableElement,
    TableHeaderCellElement,
+   TableRowElement,
 } from "../../core/types";
 
 export function BlockTable({
@@ -35,6 +37,7 @@ export function BlockTable({
    const [isSelecting] = TableCursor.selection(editor);
    const inTable = TableCursor.isInTable(editor);
    const path = ReactEditor.findPath(editor, element);
+   const tableStyle = element.tableStyle;
 
    return (
       <>
@@ -42,8 +45,10 @@ export function BlockTable({
             className={clsx(
                element.tableLayout === "fixed" && "table-fixed",
                element.tableLayout === "auto" && "table-auto",
+               tableStyle === "rounded" && "rounded-table",
+               tableStyle === "default" && "default-table",
                isSelecting && "table-selection-none",
-               "my-4 w-full relative",
+               "mb-4 w-full relative overflow-hidden",
             )}
             {...attributes}
          >
@@ -291,6 +296,55 @@ export function BlockTable({
                                  <span className="flex-grow">Auto</span>
                               </DropdownItem>
                            </DropdownSection>
+                           <DropdownSection aria-label="Cell">
+                              <DropdownHeading>Table Style</DropdownHeading>
+                              <DropdownItem
+                                 className="flex justify-between"
+                                 onClick={() =>
+                                    Transforms.setNodes<CustomElement>(
+                                       editor,
+                                       {
+                                          tableStyle: "default",
+                                       },
+                                       {
+                                          at: path,
+                                       },
+                                    )
+                                 }
+                              >
+                                 {element.tableStyle === "default" && (
+                                    <Icon
+                                       size={14}
+                                       name="check"
+                                       title="Active"
+                                    />
+                                 )}
+                                 <span className="flex-grow">Default</span>
+                              </DropdownItem>
+                              <DropdownItem
+                                 className="flex justify-between"
+                                 onClick={() =>
+                                    Transforms.setNodes<CustomElement>(
+                                       editor,
+                                       {
+                                          tableStyle: "rounded",
+                                       },
+                                       {
+                                          at: path,
+                                       },
+                                    )
+                                 }
+                              >
+                                 {element.tableStyle === "rounded" && (
+                                    <Icon
+                                       size={14}
+                                       name="check"
+                                       title="Active"
+                                    />
+                                 )}
+                                 <span className="flex-grow">Rounded</span>
+                              </DropdownItem>
+                           </DropdownSection>
                         </DropdownMenu>
                      </Dropdown>
                   </div>
@@ -328,7 +382,7 @@ export function BlockTableHeaderCell({
             align === "center" && "text-center",
             align === "right" && "text-right",
             align === "left" && "text-left",
-            "bg-2-sub border border-zinc-200 px-3 py-2.5 dark:border-zinc-700 text-left font-semibold relative",
+            "bg-2-sub px-3 py-2.5 text-left font-semibold relative",
          )}
          rowSpan={element.rowSpan}
          colSpan={element.colSpan}
@@ -440,7 +494,7 @@ export function BlockTableCell({
             align === "center" && "text-center",
             align === "right" && "text-right",
             align === "left" && "text-left",
-            "bg-3 border border-zinc-200 px-3 py-2.5 dark:border-zinc-700 relative group",
+            "bg-3  px-3 py-2.5 relative group",
          )}
          rowSpan={element.rowSpan}
          colSpan={element.colSpan}
@@ -522,4 +576,32 @@ export function BlockTableCell({
          )}
       </td>
    );
+}
+
+export function BlockTableRow({
+   attributes,
+   element,
+   children,
+}: RenderElementProps & {
+   element: TableRowElement;
+}) {
+   if (element.type !== "table-row") {
+      throw new Error('Element "Tr" must be of type "table-row"');
+   }
+
+   return <tr {...attributes}>{children}</tr>;
+}
+
+export function BlockTableBody({
+   attributes,
+   element,
+   children,
+}: RenderElementProps & {
+   element: TableBodyElement;
+}) {
+   if (element.type !== "table-body") {
+      throw new Error('Element "Tbody" must be of type "table-body"');
+   }
+
+   return <tbody {...attributes}>{children}</tbody>;
 }

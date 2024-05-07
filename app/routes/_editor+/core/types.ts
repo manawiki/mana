@@ -226,6 +226,7 @@ export interface TableElement {
    id: string;
    type: BlockType.Table;
    tableLayout: "auto" | "fixed";
+   tableStyle: "rounded" | "default";
    children: Array<
       BlockType.TableHead | BlockType.TableBody | BlockType.TableFooter
    >;

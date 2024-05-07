@@ -243,6 +243,7 @@ export function BlockSelector({ element, editor }: Props) {
                      type: BlockType.Table,
                      id: nanoid(),
                      tableLayout: "fixed",
+                     tableStyle: "default",
                      children: [
                         //@ts-ignore
                         {
