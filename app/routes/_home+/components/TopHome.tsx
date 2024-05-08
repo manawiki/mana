@@ -42,7 +42,7 @@ export function TopHome() {
                      data-aos="fade-down"
                      data-aos-delay="200"
                   >
-                     Open-source, easy to use, and fully customizable. Build
+                     Open-source, user-friendly, and fully customizable. Build
                      better wikis with Mana.
                   </p>
                   <div

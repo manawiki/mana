@@ -1,100 +1,104 @@
-import { Tab } from "@headlessui/react";
 import clsx from "clsx";
-
 import { Icon } from "~/components/Icon";
+import { Text } from "~/components/Text";
+import { IconName } from "~/components/icons";
 
-import { EditorDemo } from "./EditorDemo";
+function Item({
+   icon,
+   title,
+   description,
+   size,
+   className,
+}: {
+   icon: IconName;
+   title: string;
+   description: string;
+   size?: number;
+   className?: string;
+}) {
+   return (
+      <div
+         className="space-y-0.5 group border border-zinc-200/40 bg-white dark:bg-dark350 p-4 
+         rounded-xl shadow-sm shadow-zinc-200/30 dark:shadow-zinc-800/70 dark:border-zinc-700/80"
+      >
+         <div className="flex items-center justify-center size-6">
+            <Icon name={icon} size={size ?? 20} className={clsx(className)} />
+         </div>
+         <div className="font-semibold text-sm pb-1 pt-3">{title}</div>
+         <Text>{description}</Text>
+      </div>
+   );
+}
 
 export function ToolKit() {
    return (
-      <div className="bg-zinc-50 dark:bg-zinc-800/20 w-full z-10 relative max-laptop:px-5 border-y border-color">
-         <div className="max-w-[770px] mx-auto pt-14 pb-5 border-b border-color">
-            <div className="font-header text-center text-2xl pb-1.5">
-               Building blocks for your wiki
+      <section className="relative max-laptop:px-5">
+         <div className="w-full pt-20 pb-20 relative z-20">
+            <div className="laptop:max-w-5xl mx-auto">
+               <div className="font-header text-2xl pb-1.5">
+                  Not quite a wiki, quite a bit better
+               </div>
+               <div className="text-1">Tools for building communities</div>
             </div>
-            <div className="text-1 text-center">
-               The tools you need to build a collaborative wiki for your
-               community
+            <div className="max-w-6xl mx-auto grid tablet:grid-cols-2 laptop:grid-cols-4 gap-5 justify-center py-10">
+               <Item
+                  icon="database"
+                  title="Structured data"
+                  description="Enhance your wiki with queryable, dynamic data."
+                  className="text-amber-400"
+               />
+               <Item
+                  icon="square-pen"
+                  title="No-code editor"
+                  size={19}
+                  description="Create one of a kind content with an intuitive editor."
+                  className="text-blue-400"
+               />
+
+               <Item
+                  icon="dollar-sign"
+                  title="Monetization"
+                  description="Generate income through ads and subscriptions."
+                  className="text-emerald-400"
+               />
+               <Item
+                  icon="palette"
+                  title="Customizable"
+                  description="Extend your wiki with custom templates and plugins."
+                  className="text-rose-400"
+               />
+               <Item
+                  icon="zap"
+                  title="Built for performance"
+                  description="Optimized to deliver a great user experience."
+                  className="text-purple-400"
+               />
+               <Item
+                  icon="globe"
+                  title="Search optimized"
+                  description="Enhance your ranking with human-readable URLs and sitemaps."
+                  className="text-pink-400"
+               />
+               <Item
+                  icon="key"
+                  title="Own your work"
+                  description="You own your intellectual property, wiki data, and follower list."
+                  className="text-orange-400"
+               />
+               <Item
+                  icon="users"
+                  title="Collaboration"
+                  description="Advanced moderation tools to manage your community."
+                  className="text-indigo-400"
+               />
             </div>
          </div>
-         <div className="max-w-[770px] mx-auto gap-4 w-full pt-6 pb-20">
-            <Tab.Group>
-               <Tab.List className="grid max-laptop:grid-cols-2 gap-3 grid-cols-4 pb-4">
-                  <Tab
-                     className={({ selected }) =>
-                        clsx(
-                           selected
-                              ? "bg-white dark:bg-dark450 border-zinc-200 dark:border-zinc-600"
-                              : "dark:bg-dark400 bg-zinc-100",
-                           "focus-visible:outline-none shadow-sm shadow-zinc-200 dark:shadow-zinc-800 w-full pl-4 pr-6 py-2.5 font-bold text-left flex items-center gap-2 text-xs laptop:text-sm rounded-lg truncate border border-transparent",
-                        )
-                     }
-                  >
-                     <div className="size-3.5 bg-blue-500 rounded-full" />
-                     <span>Editor</span>
-                  </Tab>
-                  <Tab
-                     className={({ selected }) =>
-                        clsx(
-                           selected
-                              ? "bg-white dark:bg-dark450 border-zinc-200 dark:border-zinc-600"
-                              : "dark:bg-dark400 bg-zinc-100",
-                           "focus-visible:outline-none shadow-sm shadow-zinc-200 dark:shadow-zinc-800 w-full pl-4 pr-6 py-2.5 font-bold text-left flex items-center gap-2 text-xs laptop:text-sm rounded-lg truncate border border-transparent",
-                        )
-                     }
-                  >
-                     <Icon
-                        name="pen-square"
-                        className="text-emerald-500"
-                        size={16}
-                     />
-                     Posts
-                  </Tab>
-                  <Tab
-                     className={({ selected }) =>
-                        clsx(
-                           selected
-                              ? "bg-white dark:bg-dark450 border-zinc-200 dark:border-zinc-600"
-                              : "dark:bg-dark400 bg-zinc-100",
-                           "focus-visible:outline-none shadow-sm shadow-zinc-200 dark:shadow-zinc-800 w-full pl-4 pr-6 py-2.5 font-bold text-left flex items-center gap-2 text-xs laptop:text-sm rounded-lg truncate border border-transparent",
-                        )
-                     }
-                  >
-                     <Icon
-                        name="database"
-                        className="text-amber-500"
-                        size={16}
-                     />
-                     Collections
-                  </Tab>
-                  <Tab
-                     className={({ selected }) =>
-                        clsx(
-                           selected
-                              ? "bg-white dark:bg-dark450 border-zinc-200 dark:border-zinc-600"
-                              : "dark:bg-dark400 bg-zinc-100",
-                           "focus-visible:outline-none shadow-sm shadow-zinc-200 dark:shadow-zinc-800 w-full pl-4 pr-6 py-2.5 font-bold text-left flex items-center gap-2 text-xs laptop:text-sm rounded-lg truncate border border-transparent",
-                        )
-                     }
-                  >
-                     <Icon
-                        name="message-circle"
-                        className="text-purple-500"
-                        size={16}
-                     />
-                     Community
-                  </Tab>
-               </Tab.List>
-               <Tab.Panels className="flex-grow">
-                  <Tab.Panel>
-                     <EditorDemo />
-                  </Tab.Panel>
-                  <Tab.Panel></Tab.Panel>
-                  <Tab.Panel></Tab.Panel>
-                  <Tab.Panel></Tab.Panel>
-               </Tab.Panels>
-            </Tab.Group>
-         </div>
-      </div>
+         <div
+            className="pattern-boxes absolute left-0
+            top-0 h-full  w-full z-0
+            pb-6 pattern-bg-white pattern-zinc-200 pattern-opacity-10 dark:pattern-opacity-20 pattern-size-4 
+            dark:pattern-dark400 dark:pattern-bg-bg3Dark"
+         />
+      </section>
    );
 }

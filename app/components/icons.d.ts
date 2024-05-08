@@ -1,4 +1,12 @@
 export type IconName =
+  | "key"
+  | "dollar-sign"
+  | "square-pen"
+  | "zap"
+  | "piggy-bank"
+  | "wrench"
+  | "bolt"
+  | "server"
   | "table-cells-split"
   | "table-cells-merge"
   | "table"
