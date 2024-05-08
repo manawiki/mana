@@ -391,18 +391,19 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                      </TooltipTrigger>
                      <TooltipContent>Forgotten Hall Normal</TooltipContent>
                   </Tooltip>
-                  //<Tooltip>
-                  //   <TooltipTrigger className={dataClass}>
-                  //      <span className="text-1 truncate">F. Hall Hard</span>
-                  //      <span>
-                  //         {
-                  //            data?.detail_info?.record_info?.challenge_info
-                  //               ?.schedule_max_level
-                  //         }
-                  //      </span>
-                  //   </TooltipTrigger>
-                  //   <TooltipContent>Forgotten Hall Hard</TooltipContent>
-                  //</Tooltip>
+                  {/*<Tooltip>
+                     <TooltipTrigger className={dataClass}>
+                        <span className="text-1 truncate">F. Hall Hard</span>
+                        <span>
+                           {
+                              data?.detail_info?.record_info?.challenge_info
+                                 ?.schedule_max_level
+                           }
+                        </span>
+                     </TooltipTrigger>
+                     <TooltipContent>Forgotten Hall Hard</TooltipContent>
+                  </Tooltip>
+                  */}
                   <Tooltip>
                      <TooltipTrigger className={dataClass}>
                         <span className="text-1 truncate">Pure Fiction</span>
@@ -420,7 +421,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            )
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent>Pure Fiction</TooltipContent>
+                     <TooltipContent>Forgotten Hall Hard</TooltipContent>
                   </Tooltip>
                </div>
             </section>
