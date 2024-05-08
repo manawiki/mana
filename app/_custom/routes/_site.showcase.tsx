@@ -421,7 +421,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            )
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent>Forgotten Hall Hard</TooltipContent>
+                     <TooltipContent>Pure Fiction</TooltipContent>
                   </Tooltip>
                </div>
             </section>
