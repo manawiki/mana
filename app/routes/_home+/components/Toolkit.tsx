@@ -18,14 +18,14 @@ function Item({
 }) {
    return (
       <div
-         className="space-y-0.5 group border border-zinc-200/40 bg-white dark:bg-dark350 p-4 
-         rounded-xl shadow-sm shadow-zinc-200/30 dark:shadow-zinc-800/70 dark:border-zinc-700/80"
+         className="space-y-0.5 group border border-zinc-200/50 bg-zinc-50/70 dark:bg-dark350 p-4 
+         rounded-xl shadow-sm shadow-zinc-300/30 dark:shadow-zinc-800/70 dark:border-zinc-700/80"
       >
          <div className="flex items-center justify-center size-6">
             <Icon name={icon} size={size ?? 20} className={clsx(className)} />
          </div>
          <div className="font-semibold text-sm pb-1 pt-3">{title}</div>
-         <Text>{description}</Text>
+         <Text className="!text-sm">{description}</Text>
       </div>
    );
 }
@@ -33,14 +33,16 @@ function Item({
 export function ToolKit() {
    return (
       <section className="relative max-laptop:px-5">
-         <div className="w-full pt-20 pb-20 relative z-20">
+         <div className="w-full py-20 relative z-20">
             <div className="laptop:max-w-5xl mx-auto">
                <div className="font-header text-2xl pb-1.5">
                   Not quite a wiki, quite a bit better
                </div>
-               <div className="text-1">Tools for building communities</div>
+               <div className="text-1">
+                  Comprehensive toolset for building communities
+               </div>
             </div>
-            <div className="max-w-6xl mx-auto grid tablet:grid-cols-2 laptop:grid-cols-4 gap-5 justify-center py-10">
+            <div className="max-w-6xl mx-auto grid tablet:grid-cols-2 laptop:grid-cols-4 gap-5 justify-center pt-10">
                <Item
                   icon="database"
                   title="Structured data"

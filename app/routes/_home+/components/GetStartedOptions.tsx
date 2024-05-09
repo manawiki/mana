@@ -17,8 +17,7 @@ export function GetStartedOptions() {
             <div className="grid tablet:grid-cols-3 gap-16 tablet:gap-10 justify-center">
                <div className="bg-white dark:bg-dark350 rounded-2xl p-3.5 pt-8 pb-5 text-center relative space-y-0.5 group">
                   <div
-                     className="shadow-sm shadow-zinc-300 dark:shadow-zinc-800 absolute -inset-2 bg-zinc-300/20 dark:bg-transparent dark:bg-gradient-to-b dark:from-zinc-700/80 
-                     dark:to-zinc-700/70 rounded-lg -z-10 before:absolute before:inset-y-0 before:left-0 before:w-[16px] before:bg-[length:16px_16px] 
+                     className="shadow-sm shadow-zinc-300 dark:shadow-zinc-800 absolute -inset-2 bg-zinc-300/20 dark:bg-dark400 rounded-lg -z-10 before:absolute before:inset-y-0 before:left-0 before:w-[16px] before:bg-[length:16px_16px] 
                      before:[background-position:top_center,bottom_center] before:bg-no-repeat 
                      before:[background-image:radial-gradient(circle_at_center,theme(colors.zinc.500/.56)_1.5px,transparent_1.5px),radial-gradient(circle_at_center,theme(colors.zinc.500/.56)_1.5px,transparent_1.5px)] 
                      dark:before:[background-image:radial-gradient(circle_at_center,theme(colors.zinc.600)_1.5px,transparent_1.5px),radial-gradient(circle_at_center,theme(colors.zinc.600)_1.5px,transparent_1.5px)] 
@@ -56,8 +55,7 @@ export function GetStartedOptions() {
                </div>
                <div className="bg-white dark:bg-dark350 rounded-2xl p-3.5 pt-8 pb-5 text-center relative space-y-0.5 group">
                   <div
-                     className="shadow-sm shadow-zinc-300 dark:shadow-zinc-800 absolute -inset-2 bg-zinc-300/20 dark:bg-transparent dark:bg-gradient-to-b dark:from-zinc-700/80 
-                     dark:to-zinc-700/70 rounded-lg -z-10 before:absolute before:inset-y-0 before:left-0 before:w-[16px] before:bg-[length:16px_16px] 
+                     className="shadow-sm shadow-zinc-300 dark:shadow-zinc-800 absolute -inset-2 bg-zinc-300/20 dark:bg-dark400 rounded-lg -z-10 before:absolute before:inset-y-0 before:left-0 before:w-[16px] before:bg-[length:16px_16px] 
                      before:[background-position:top_center,bottom_center] before:bg-no-repeat 
                      before:[background-image:radial-gradient(circle_at_center,theme(colors.zinc.500/.56)_1.5px,transparent_1.5px),radial-gradient(circle_at_center,theme(colors.zinc.500/.56)_1.5px,transparent_1.5px)] 
                      dark:before:[background-image:radial-gradient(circle_at_center,theme(colors.zinc.600)_1.5px,transparent_1.5px),radial-gradient(circle_at_center,theme(colors.zinc.600)_1.5px,transparent_1.5px)] 
@@ -95,8 +93,7 @@ export function GetStartedOptions() {
                </div>
                <div className="bg-white dark:bg-dark350 rounded-2xl p-3.5 pt-8 pb-5 text-center relative space-y-0.5 group">
                   <div
-                     className="shadow-sm shadow-zinc-300 dark:shadow-zinc-800 absolute -inset-2 bg-zinc-300/20 dark:bg-transparent dark:bg-gradient-to-b dark:from-zinc-700/80 
-                     dark:to-zinc-700/70 rounded-lg -z-10 before:absolute before:inset-y-0 before:left-0 before:w-[16px] before:bg-[length:16px_16px] 
+                     className="shadow-sm shadow-zinc-300 dark:shadow-zinc-800 absolute -inset-2 bg-zinc-300/20 dark:bg-dark400 rounded-lg -z-10 before:absolute before:inset-y-0 before:left-0 before:w-[16px] before:bg-[length:16px_16px] 
                      before:[background-position:top_center,bottom_center] before:bg-no-repeat 
                      before:[background-image:radial-gradient(circle_at_center,theme(colors.zinc.500/.56)_1.5px,transparent_1.5px),radial-gradient(circle_at_center,theme(colors.zinc.500/.56)_1.5px,transparent_1.5px)] 
                      dark:before:[background-image:radial-gradient(circle_at_center,theme(colors.zinc.600)_1.5px,transparent_1.5px),radial-gradient(circle_at_center,theme(colors.zinc.600)_1.5px,transparent_1.5px)] 
