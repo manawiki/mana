@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { Icon } from "~/components/Icon";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
-import { PinnedSideMenu } from "./Menu";
+import { SideMenu } from "./SideMenu";
 
 export function ColumnTwo() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
@@ -119,7 +119,7 @@ export function ColumnTwo() {
                      </div>
                   )}
                </NavLink>
-               <PinnedSideMenu site={site} />
+               <SideMenu site={site} />
             </div>
          </div>
       </section>

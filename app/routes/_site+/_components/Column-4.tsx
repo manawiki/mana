@@ -7,7 +7,7 @@ import { AdUnit } from "~/routes/_site+/_components/Ramp";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
 import { Contributors } from "./Contributors";
-import { PinnedList, PrimaryMenuLinks } from "./Menu";
+import { PrimaryMenuLinks } from "./Menu";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 
 export function ColumnFour() {
@@ -26,7 +26,6 @@ export function ColumnFour() {
                   max-laptop:max-w-[728px] mx-auto w-full"
                >
                   <PrimaryMenuLinks site={site} />
-                  <PinnedList site={site} />
                </section>
                <div className="relative max-laptop:border-t max-laptop:border-color dark:border-zinc-700/50">
                   <div className="sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark">

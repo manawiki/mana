@@ -111,6 +111,22 @@ const QUERY = gql`
          favicon {
             url
          }
+         menu {
+            id
+            name
+            links {
+               id
+               name
+               path
+               icon
+               nestedLinks {
+                  id
+                  name
+                  path
+                  icon
+               }
+            }
+         }
          collections {
             id
             name
@@ -153,42 +169,6 @@ const QUERY = gql`
             icon {
                id
                url
-            }
-         }
-         pinned {
-            id
-            relation {
-               relationTo
-               value {
-                  ... on Entry {
-                     id
-                     entryName: name
-                     collectionEntity {
-                        slug
-                     }
-                     icon {
-                        url
-                     }
-                  }
-                  ... on CustomPage {
-                     customPageName: name
-                     customPageSlug: slug
-                     icon {
-                        url
-                     }
-                  }
-                  ... on Post {
-                     id
-                     postName: name
-                  }
-                  ... on Collection {
-                     collectionName: name
-                     collectionSlug: slug
-                     icon {
-                        url
-                     }
-                  }
-               }
             }
          }
          owner {

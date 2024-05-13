@@ -1,7 +1,11 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canEditSite, canReadSite, canUpdateSiteRolesField } from "./access";
-import { afterCreateSite } from "./hooks";
+import {
+   canEditSite,
+   canReadSite,
+   canUpdateSiteRolesField,
+} from "./site-access";
+import { afterCreateSite } from "./site-hooks";
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/access";
 
 export const sitesSlug = "sites";
@@ -47,20 +51,54 @@ export const Sites: CollectionConfig = {
          hasMany: true,
       },
       {
-         name: "pinned",
+         name: "menu",
          type: "array",
-         label: "Pinned",
          maxRows: 10,
-         labels: {
-            singular: "Pinned Item",
-            plural: "Pinned Items",
-         },
          fields: [
             {
-               name: "relation",
-               type: "relationship",
-               relationTo: ["customPages", "entries", "posts", "collections"],
-               hasMany: false,
+               name: "name",
+               type: "text",
+               required: true,
+            },
+            {
+               name: "links",
+               type: "array",
+               fields: [
+                  {
+                     name: "name",
+                     type: "text",
+                     required: true,
+                  },
+                  {
+                     name: "path",
+                     type: "text",
+                     required: true,
+                  },
+                  {
+                     name: "icon",
+                     type: "text",
+                  },
+                  {
+                     name: "nestedLinks",
+                     type: "array",
+                     fields: [
+                        {
+                           name: "name",
+                           type: "text",
+                           required: true,
+                        },
+                        {
+                           name: "path",
+                           type: "text",
+                           required: true,
+                        },
+                        {
+                           name: "icon",
+                           type: "text",
+                        },
+                     ],
+                  },
+               ],
             },
          ],
       },
