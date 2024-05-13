@@ -109,8 +109,6 @@ function SideMenuSection({
    const [activeId, setActiveId] = useState<string | null>(null);
    const [isChanged, setIsChanged] = useState(false);
 
-   console.log(menuSection);
-
    const activeSection = menuSection?.links?.find(
       (x: any) => "id" in x && x.id === activeId,
    );
@@ -180,25 +178,18 @@ function SideMenuSection({
          {...attributes}
          className="px-2 pt-4"
       >
-         <div className="pl-2 pr-1 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
+         <div className="pl-2 hover:pl-3 pr-1 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
             <div
-               className={clsx(
-                  "touch-none absolute hidden group-hover:block -left-1.5 top-1 cursor-grab",
-               )}
+               className="touch-none absolute hidden group-hover:block -left-1.5 top-0 cursor-grab hover:bg-zinc-200 dark:hover:bg-dark500 rounded py-1 px-0.5"
                aria-label="Drag to reorder"
                ref={setActivatorNodeRef}
                {...listeners}
             >
-               <Icon
-                  name="grip-vertical"
-                  title="Drag to reorder"
-                  size={14}
-                  className="dark:text-zinc-500"
-               />
+               <Icon name="grip-vertical" title="Drag to reorder" size={14} />
             </div>
             <input
                type="text"
-               className="text-sm bg-transparent focus:outline-none focus:bg-dark350 p-0.5 rounded"
+               className="text-sm bg-transparent focus:outline-none dark:focus:bg-dark350 focus:bg-white p-0.5 rounded"
                defaultValue={menuSection.name}
             />
             <Tooltip placement="top" setDelay={500}>
@@ -273,23 +264,17 @@ function SideMenuSectionNestedLink({ nestedSection }: { nestedSection: any }) {
                opacity: isDragging ? 0 : 1,
             } as React.CSSProperties /* cast because of css variable */
          }
-         className="relative group"
+         className="relative group/nestedLink"
          {...attributes}
       >
          <div
-            className={clsx(
-               "touch-none absolute hidden group-hover:block -left-1.5 top-1 cursor-grab",
-            )}
+            className="touch-none absolute hidden group-hover/nestedLink:block -left-[13.5px] top-1 cursor-grab 
+            hover:bg-zinc-200 dark:hover:bg-dark500 rounded py-1 px-0.5"
             aria-label="Drag to reorder"
             ref={setActivatorNodeRef}
             {...listeners}
          >
-            <Icon
-               name="grip-vertical"
-               title="Drag to reorder"
-               size={14}
-               className="dark:text-zinc-500"
-            />
+            <Icon name="grip-vertical" title="Drag to reorder" size={14} />
          </div>
          <NavLink
             to={nestedSection.path}
@@ -348,13 +333,13 @@ function SideMenuSectionLink({ link, setMenu }: { link: any; setMenu: any }) {
             const updatedMenu = existingMenuItems?.map((menuRow: any) => {
                return {
                   ...menuRow,
-                  links: {
-                     ...menuRow.links,
+                  links: menuRow.links?.map((linkItem: any) => ({
+                     ...linkItem,
                      nestedLinks:
-                        menuRow.links.id === link.id
+                        link.id === linkItem.id
                            ? updatedArray
-                           : menuRow.nestedLinks,
-                  },
+                           : linkItem.nestedLinks,
+                  })),
                };
             });
 
@@ -377,7 +362,7 @@ function SideMenuSectionLink({ link, setMenu }: { link: any; setMenu: any }) {
 
    return (
       <div
-         className="relative group"
+         className="relative group/section"
          ref={setNodeRef}
          style={
             {
@@ -390,25 +375,20 @@ function SideMenuSectionLink({ link, setMenu }: { link: any; setMenu: any }) {
          {...attributes}
       >
          <div
-            className={clsx(
-               "touch-none absolute hidden group-hover:block -left-1.5 top-1 cursor-grab",
-            )}
+            className="touch-none hidden absolute group-hover/section:block -left-1 top-1.5 cursor-grab 
+                  hover:bg-zinc-200 dark:hover:bg-dark500 rounded py-1 px-0.5"
             aria-label="Drag to reorder"
             ref={setActivatorNodeRef}
             {...listeners}
          >
-            <Icon
-               name="grip-vertical"
-               title="Drag to reorder"
-               size={14}
-               className="dark:text-zinc-500"
-            />
+            <Icon name="grip-vertical" title="Drag to reorder" size={14} />
          </div>
          {link.nestedLinks && link.nestedLinks.length > 0 ? (
             <>
                <button
                   onClick={() => setSection(!isSectionOpen)}
-                  className="flex items-center gap-2 rounded-lg dark:hover:bg-dark350 p-2 py-1.5 px-2 w-full text-left"
+                  className="flex items-center gap-2 rounded-lg dark:hover:bg-dark350 group-hover/section:pl-4
+                   p-2 py-1.5 px-2 w-full text-left"
                >
                   <Avatar
                      initials={link.name.charAt(0)}
@@ -460,7 +440,7 @@ function SideMenuSectionLink({ link, setMenu }: { link: any; setMenu: any }) {
                className={({ isActive }) =>
                   clsx(
                      isActive && "bg-zinc-100 dark:bg-dark350",
-                     "flex items-center gap-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-dark350 py-1.5 px-2",
+                     "flex items-center gap-2 rounded-lg hover:bg-zinc-100 group-hover/section:pl-4 dark:hover:bg-dark350 py-1.5 px-2",
                   )
                }
             >
