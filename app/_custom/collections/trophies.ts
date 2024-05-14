@@ -39,6 +39,21 @@ export const Trophies: CollectionConfig = {
          relationTo: "trophies",
       },
       {
+         name: "rewards",
+         type: "array",
+         fields: [
+            {
+               name: "item",
+               type: "relationship",
+               relationTo: "items",
+            },
+            {
+               name: "qty",
+               type: "number",
+            }
+         ]
+      },
+      {
          name: "checksum",
          type: "text",
          required: true,
