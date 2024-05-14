@@ -21,10 +21,6 @@ export const TrophyGroups: CollectionConfig = {
          type: "text",
       },
       {
-         name: "slug",
-         type: "text",
-      },
-      {
          name: "name",
          type: "text",
       },

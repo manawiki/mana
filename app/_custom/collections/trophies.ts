@@ -21,10 +21,6 @@ export const Trophies: CollectionConfig = {
          type: "text",
       },
       {
-         name: "slug",
-         type: "text",
-      },
-      {
          name: "name",
          type: "text",
       },
