@@ -34,6 +34,10 @@ export const SonataEffects: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "color",
+         type: "text",
+      },
+      {
          name: "effects",
          type: "array",
          fields: [
