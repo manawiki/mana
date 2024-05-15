@@ -138,11 +138,12 @@ export function SideMenuSection({
                   items={menuSection.links}
                   strategy={verticalListSortingStrategy}
                >
-                  {menuSection.links?.map((link: any) => (
+                  {menuSection.links?.map((link: any, index: number) => (
                      <SideMenuLink
                         key={link.id}
                         link={link}
                         setMenu={setMenu}
+                        index={index}
                      />
                   ))}
                </SortableContext>

@@ -25,8 +25,17 @@ import {
    DropdownMenu,
    DropdownItem,
 } from "~/components/Dropdown";
+import { nanoid } from "nanoid";
 
-export function SideMenuLink({ link, setMenu }: { link: any; setMenu: any }) {
+export function SideMenuLink({
+   link,
+   setMenu,
+   index,
+}: {
+   link: any;
+   setMenu: any;
+   index?: number;
+}) {
    const { pathname } = useLocation();
 
    const nestedLinkActive = link?.nestedLinks?.find(
@@ -113,29 +122,61 @@ export function SideMenuLink({ link, setMenu }: { link: any; setMenu: any }) {
          >
             {/* Insert top */}
             <div className="-top-[1px] left-0 w-full h-2 rounded-t-lg absolute opacity-0 hover:opacity-100">
-               <div className="px-0.5 justify-between flex w-full items-center -mt-1.5 rounded-t">
-                  <div className="rounded-full dark:bg-black size-3 flex items-center justify-center">
+               <button
+                  type="button"
+                  onClick={() =>
+                     setMenu((existingMenuItems: any[]) => {
+                        const updatedMenu = existingMenuItems?.map(
+                           (menuRow: any) => {
+                              const getLink = menuRow?.links?.find(
+                                 (x: any) => x.id === link.id,
+                              );
+                              if (getLink) {
+                                 const newItem = {
+                                    id: nanoid(),
+                                    name: "New Link",
+                                    path: "/link",
+                                    icon: "",
+                                    nestedLinks: [],
+                                 };
+                                 const newMenuItems = [...menuRow?.links];
+                                 //@ts-ignore
+                                 newMenuItems.splice(index, 0, newItem);
+                                 return {
+                                    ...menuRow,
+                                    links: newMenuItems,
+                                 };
+                              }
+                              return { ...menuRow };
+                           },
+                        );
+                        return updatedMenu;
+                     })
+                  }
+                  className="px-0.5 justify-between flex w-full items-center -mt-1.5 rounded-t"
+               >
+                  <div className="rounded-full border dark:border-transparent bg-white border-zinc-300 dark:bg-black size-3 flex items-center justify-center">
                      <Icon
                         size={10}
                         name="chevron-up"
-                        className="text-white -mt-[1px]"
+                        className="dark:text-white text-light -mt-[1px]"
                         title="Add above"
                      />
                   </div>
-                  <div className="text-[10px] border-t border-dashed dark:border-zinc-500 flex-grow" />
-                  <div className="border dark:border-zinc-600 rounded-full dark:bg-dark500 p-0.5">
+                  <div className="text-[10px] border-t border-dashed border-zinc-300 dark:border-zinc-500 flex-grow" />
+                  <div className="border bg-zinc-50 border-zinc-300 dark:border-zinc-600 rounded-full dark:bg-dark500 p-0.5">
                      <Icon size={8} name="plus" title="Add above" />
                   </div>
-                  <div className="text-[10px] border-t border-dashed dark:border-zinc-500 flex-grow" />
-                  <div className="rounded-full dark:bg-black size-3 flex items-center justify-center">
+                  <div className="text-[10px] border-t border-dashed border-zinc-300 dark:border-zinc-500 flex-grow" />
+                  <div className="rounded-full border dark:border-transparent bg-white border-zinc-300 dark:bg-black size-3 flex items-center justify-center">
                      <Icon
                         size={10}
                         name="chevron-up"
-                        className="text-white -mt-[1px]"
+                        className="dark:text-white text-light -mt-[1px]"
                         title="Add above"
                      />
                   </div>
-               </div>
+               </button>
             </div>
             {link.nestedLinks && link.nestedLinks.length > 0 ? (
                <button
@@ -234,29 +275,60 @@ export function SideMenuLink({ link, setMenu }: { link: any; setMenu: any }) {
             </div>
             {/* Insert bottom */}
             <div className="-bottom-[1px] left-0 w-full h-2 rounded-t-lg absolute opacity-0 hover:opacity-100">
-               <div className="px-0.5 justify-between flex w-full items-center -mb-1.5 rounded-t">
-                  <div className="rounded-full dark:bg-black size-3 flex items-center justify-center">
+               <button
+                  className="px-0.5 justify-between flex w-full items-center -mb-1.5 rounded-t"
+                  onClick={() =>
+                     setMenu((existingMenuItems: any[]) => {
+                        const updatedMenu = existingMenuItems?.map(
+                           (menuRow: any) => {
+                              const getLink = menuRow?.links?.find(
+                                 (x: any) => x.id === link.id,
+                              );
+                              if (getLink) {
+                                 const newItem = {
+                                    id: nanoid(),
+                                    name: "New Link",
+                                    path: "/link",
+                                    icon: "",
+                                    nestedLinks: [],
+                                 };
+                                 const newMenuItems = [...menuRow?.links];
+                                 //@ts-ignore
+                                 newMenuItems.splice(index + 1, 0, newItem);
+                                 return {
+                                    ...menuRow,
+                                    links: newMenuItems,
+                                 };
+                              }
+                              return { ...menuRow };
+                           },
+                        );
+                        return updatedMenu;
+                     })
+                  }
+               >
+                  <div className="rounded-full border dark:border-transparent bg-white border-zinc-300 dark:bg-black size-3 flex items-center justify-center">
                      <Icon
                         size={10}
                         name="chevron-down"
-                        className="text-white -mb-[1px]"
+                        className="dark:text-white text-light -mb-[1px]"
                         title="Add above"
                      />
                   </div>
                   <div className="text-[10px] border-t border-dashed dark:border-zinc-500 flex-grow" />
-                  <div className="border dark:border-zinc-600 rounded-full dark:bg-dark500 dark:hover:bg-zinc-500 p-0.5">
+                  <div className="border bg-zinc-50 border-zinc-300 dark:border-zinc-600 rounded-full dark:bg-dark500 p-0.5">
                      <Icon size={8} name="plus" title="Add above" />
                   </div>
                   <div className="text-[10px] border-t border-dashed dark:border-zinc-500 flex-grow" />
-                  <div className="rounded-full dark:bg-black size-3 flex items-center justify-center">
+                  <div className="rounded-full border dark:border-transparent bg-white border-zinc-300 dark:bg-black size-3 flex items-center justify-center">
                      <Icon
                         size={10}
                         name="chevron-down"
-                        className="text-white -mb-[1px]"
+                        className="dark:text-white text-light -mb-[1px]"
                         title="Add above"
                      />
                   </div>
-               </div>
+               </button>
             </div>
          </div>
          {isSectionOpen && (
