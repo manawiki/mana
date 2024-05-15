@@ -16,6 +16,7 @@ import { SonataEffects } from "./sonata-effects";
 import { Trophies } from "./trophies";
 import { TrophyCategories } from "./trophy-categories";
 import { TrophyGroups } from "./trophy-groups";
+import { Tutorials } from "./tutorials";
 import { WeaponCurves } from "./weapon-curves";
 import { WeaponTypes } from "./weapon-types";
 import { Weapons } from "./weapons";
@@ -39,6 +40,7 @@ export const CustomCollections = [
    Trophies,
    TrophyCategories,
    TrophyGroups,
+   Tutorials,
    WeaponCurves,
    WeaponTypes,
    Weapons
