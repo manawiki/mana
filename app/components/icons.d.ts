@@ -1,4 +1,6 @@
 export type IconName =
+  | "list-tree"
+  | "ellipsis"
   | "key"
   | "dollar-sign"
   | "square-pen"

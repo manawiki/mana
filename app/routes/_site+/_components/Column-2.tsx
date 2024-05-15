@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { Icon } from "~/components/Icon";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
-import { SideMenu } from "./SideMenu";
+import { SideMenu } from "./sidemenu/SideMenu";
 
 export function ColumnTwo() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};

@@ -77,9 +77,6 @@ export function DropdownMenu({
 
                // Shadows
                "shadow-lg ring-1 ring-zinc-950/10 dark:ring-inset dark:ring-white/10",
-
-               // Define grid at the menu level if subgrid is supported
-               "supports-[grid-template-columns:subgrid]:grid supports-[grid-template-columns:subgrid]:grid-cols-[auto_1fr_1.5rem_0.5rem_auto]",
             )}
          />
       </HeadlessTransition>
@@ -100,7 +97,7 @@ export function DropdownItem(props: DropdownItemProps) {
             props.className,
 
             // Base styles
-            "group cursor-default rounded-lg px-3.5 py-2.5 focus:outline-none tablet:px-3 tablet:py-1.5",
+            "group cursor-pointer rounded-lg px-3.5 py-2.5 focus:outline-none tablet:px-3 tablet:py-1.5 block w-full",
 
             // Text styles
             "text-left text-base/6 tablet:text-sm/6 forced-colors:text-[CanvasText]",
@@ -115,11 +112,7 @@ export function DropdownItem(props: DropdownItemProps) {
             "forced-color-adjust-none forced-colors:data-[focus]:bg-[Highlight] forced-colors:data-[focus]:text-[HighlightText] forced-colors:[&>[data-slot=icon]]:data-[focus]:text-[HighlightText]",
 
             // Use subgrid when available but fallback to an explicit grid layout if not
-            "col-span-full grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] items-center supports-[grid-template-columns:subgrid]:grid-cols-subgrid",
-
-            // Icon
-            "[&>[data-slot=icon]]:col-start-1 [&>[data-slot=icon]]:row-start-1 [&>[data-slot=icon]]:mr-2.5 [&>[data-slot=icon]]:size-5 tablet:[&>[data-slot=icon]]:mr-2 [&>[data-slot=icon]]:tablet:size-4",
-            "[&>[data-slot=icon]]:text-zinc-500 [&>[data-slot=icon]]:data-[focus]:text-white [&>[data-slot=icon]]:dark:text-zinc-500 [&>[data-slot=icon]]:data-[focus]:dark:text-white",
+            "items-center flex gap-2.5",
          )}
       />
    );
@@ -144,16 +137,7 @@ export function DropdownSection({
    className,
    ...props
 }: HeadlessMenuSectionProps) {
-   return (
-      <HeadlessMenuSection
-         {...props}
-         className={clsx(
-            className,
-            // Define grid at the section level instead of the item level if subgrid is supported
-            "col-span-full supports-[grid-template-columns:subgrid]:grid supports-[grid-template-columns:subgrid]:grid-cols-[auto_1fr_1.5rem_0.5rem_auto]",
-         )}
-      />
-   );
+   return <HeadlessMenuSection {...props} className={clsx(className)} />;
 }
 
 export function DropdownHeading({
@@ -165,7 +149,7 @@ export function DropdownHeading({
          {...props}
          className={clsx(
             className,
-            "col-span-full grid grid-cols-[1fr,auto] gap-x-12 px-3.5 pb-1 pt-2 text-sm/5 font-medium text-zinc-500 tablet:px-3 tablet:text-xs/5 dark:text-zinc-400",
+            "px-3.5 pb-1 pt-2 text-sm/5 font-medium text-zinc-500 tablet:px-3 tablet:text-xs/5 dark:text-zinc-400",
          )}
       />
    );
@@ -180,7 +164,7 @@ export function DropdownSeparator({
          {...props}
          className={clsx(
             className,
-            "col-span-full mx-3.5 my-1 h-px border-0 bg-zinc-950/5 tablet:mx-3 dark:bg-white/10 forced-colors:bg-[CanvasText]",
+            "mx-3.5 my-1 h-px border-0 bg-zinc-950/5 tablet:mx-3 dark:bg-white/10 forced-colors:bg-[CanvasText]",
          )}
       />
    );
@@ -191,7 +175,7 @@ export function DropdownLabel({ className, ...props }: HeadlessLabelProps) {
       <HeadlessLabel
          {...props}
          data-slot="label"
-         className={clsx(className, "col-start-2 row-start-1")}
+         className={clsx(className)}
          {...props}
       />
    );
@@ -207,7 +191,7 @@ export function DropdownDescription({
          {...props}
          className={clsx(
             className,
-            "col-span-2 col-start-2 row-start-2 text-sm/5 text-zinc-500 group-data-[focus]:text-white tablet:text-xs/5 dark:text-zinc-400 forced-colors:group-data-[focus]:text-[HighlightText]",
+            "text-sm/5 text-zinc-500 group-data-[focus]:text-white tablet:text-xs/5 dark:text-zinc-400 forced-colors:group-data-[focus]:text-[HighlightText]",
          )}
       />
    );
