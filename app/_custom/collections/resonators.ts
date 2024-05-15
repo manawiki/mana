@@ -121,6 +121,40 @@ export const Resonators: CollectionConfig = {
          ],
       },
       {
+         name: "skill_tree",
+         type: "relationship",
+         relationTo: "resonator-skill-trees",
+         hasMany: true,
+      },
+      {
+         name: "birthday",
+         type: "text",
+      },
+      {
+         name: "gender",
+         type: "text",
+      },
+      {
+         name: "birthplace",
+         type: "text",
+      },
+      {
+         name: "affiliation",
+         type: "text",
+      },
+      {
+         name: "resonance_power",
+         type: "text",
+      },
+      {
+         name: "resonance_eval_report",
+         type: "text",
+      },
+      {
+         name: "overclock_diagnostic_report",
+         type: "text",
+      },
+      {
          name: "stories",
          type: "array",
          fields: [
