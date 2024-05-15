@@ -2,6 +2,7 @@ import { Attributes } from "./attributes";
 import { EchoClasses } from "./echo-classes";
 import { EchoSkills } from "./echo-skills";
 import { Echoes } from "./echoes";
+import { EchoMainSubStats } from "./echo-main-sub-stats";
 import { Elements } from "./elements";
 import { ItemBagSlots } from "./item-bag-slots";
 import { ItemCategories } from "./item-categories";
@@ -26,6 +27,7 @@ export const CustomCollections = [
    EchoClasses,
    EchoSkills,
    Echoes,
+   EchoMainSubStats,
    Elements,
    ItemBagSlots,
    ItemCategories,
@@ -50,7 +52,7 @@ export const CustomSearchCollections = [
    "items",
    "trophies",
    "weapons",
-   "echoes"
+   "echoes",
 ];
 
 export const CustomDefaultPriorities = {

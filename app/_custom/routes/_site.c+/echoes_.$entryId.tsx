@@ -19,95 +19,130 @@ import { Items } from "../../collections/items";
 import { Main } from "~/_custom/components/echoes/Main";
 import { Skill } from "~/_custom/components/echoes/Skill";
 import { Sonata } from "~/_custom/components/echoes/Sonata";
+import { Stats } from "~/_custom/components/echoes/Stats";
 //import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
 
 // Loader definition - loads Entry data!
 export async function loader({
-  context: { payload, user },
-  params,
-  request,
+   context: { payload, user },
+   params,
+   request,
 }: LoaderFunctionArgs) {
-  const { entry } = await fetchEntry({
-    payload,
-    params,
-    request,
-    user,
-    gql: {
-      query: QUERY,
-    },
-  });
-  return json({
-    entry,
-  });
+   const fetchEchoData = fetchEntry({
+      payload,
+      params,
+      request,
+      user,
+      gql: {
+         query: QUERY,
+      },
+   });
+   const fetchStatsData = fetchEntry({
+      payload,
+      params,
+      request,
+      user,
+      gql: {
+         query: STAT_QUERY,
+      },
+   });
+
+   const [{ entry }, data] = await Promise.all([fetchEchoData, fetchStatsData]);
+
+   return json({
+      entry,
+      StatsData: data.entry?.data?.EchoMainSubStats?.docs,
+   });
 }
 
 const SECTIONS = {
-  main: Main,
-  // gallery: ImageGallery,
+   main: Main,
+   // gallery: ImageGallery,
 };
 
 export default function EntryPage() {
-  const { entry } = useLoaderData<typeof loader>();
-  const char = entry?.data?.Echo as EchoType;
-  // console.log(char);
+   const { entry, StatsData } = useLoaderData<typeof loader>();
+   const char = entry?.data?.Echo as EchoType;
+   const stats = StatsData;
+   console.log(stats);
 
-  return (
-    <>
-      {/* <Entry customComponents={SECTIONS} customData={char} /> */}
-      <Entry>
-        <Main data={char} />
-        <Skill data={char} />
-        <Sonata data={char} />
-      </Entry>
-    </>
-  );
+   return (
+      <>
+         {/* <Entry customComponents={SECTIONS} customData={char} /> */}
+         <Entry>
+            <Main data={char} />
+            <Skill data={char} />
+            <Sonata data={char} />
+            <Stats data={stats} />
+         </Entry>
+      </>
+   );
 }
 
 const QUERY = gql`
-  query Echo($entryId: String!) {
-    Echo(id: $entryId) {
-      id
-      name
-      slug
-      rarity {
-        id
-        color
+   query Echo($entryId: String!) {
+      Echo(id: $entryId) {
+         id
+         name
+         slug
+         rarity {
+            id
+            color
+         }
+         icon {
+            url
+         }
+         element {
+            id
+            name
+            icon {
+               url
+            }
+         }
+         class {
+            id
+            name
+            cost
+         }
+         skill {
+            desc
+            icon {
+               url
+            }
+            cd
+            params
+         }
+         sonata_effect_pool {
+            id
+            name
+            color
+            icon {
+               url
+            }
+            effects {
+               pieces
+               effect
+               params
+            }
+         }
       }
-      icon {
-        url
+   }
+`;
+
+const STAT_QUERY = gql`
+   query EchoMainSubStats {
+      EchoMainSubStats {
+         docs {
+            id
+            name
+            stats {
+               id
+               name
+               icon {
+                  url
+               }
+            }
+         }
       }
-      element {
-        id
-        name
-        icon {
-          url
-        }
-      }
-      class {
-        id
-        name
-        cost
-      }
-      skill {
-        desc
-        icon {
-          url
-        }
-        cd
-        params
-      }
-      sonata_effect_pool {
-        id
-        name
-        icon {
-          url
-        }
-        effects {
-          pieces
-          effect
-          params
-        }
-      }
-    }
-  }
+   }
 `;
