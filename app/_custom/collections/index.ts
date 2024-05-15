@@ -7,8 +7,11 @@ import { ItemBagSlots } from "./item-bag-slots";
 import { ItemCategories } from "./item-categories";
 import { Items } from "./items";
 import { Rarities } from "./rarities";
-import { Resonators } from "./resonators";
 import { ResonatorCurves } from "./resonator-curves";
+import { ResonatorSkillTrees } from "./resonator-skill-trees";
+import { ResonatorSkillTypes } from "./resonator-skill-types";
+import { ResonatorSkills } from "./resonator-skills";
+import { Resonators } from "./resonators";
 import { SonataEffects } from "./sonata-effects";
 import { Trophies } from "./trophies";
 import { TrophyCategories } from "./trophy-categories";
@@ -28,6 +31,9 @@ export const CustomCollections = [
    Items,
    Rarities,
    ResonatorCurves,
+   ResonatorSkillTrees,
+   ResonatorSkillTypes,
+   ResonatorSkills,
    Resonators,
    SonataEffects,
    Trophies,
@@ -35,7 +41,7 @@ export const CustomCollections = [
    TrophyGroups,
    WeaponCurves,
    WeaponTypes,
-   Weapons,
+   Weapons
 ];
 
 export const CustomSearchCollections = [
