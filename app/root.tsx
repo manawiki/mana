@@ -104,14 +104,9 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 ];
 
 export const links: LinksFunction = () => [
+   { rel: "preconnect", href: "https://static.mana.wiki" },
+
    //preload css makes it nonblocking to html renders
-   {
-      rel: "preload",
-      href: "/fonts/Nunito_Sans/NunitoSans-Regular.woff2",
-      as: "font",
-      type: "font/woff2",
-      crossOrigin: "anonymous",
-   },
    { rel: "preload", href: fonts, as: "style" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
@@ -122,9 +117,13 @@ export const links: LinksFunction = () => [
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
 
-   //add dns-prefetch as fallback support for older browsers
-   { rel: "preconnect", href: "https://static.mana.wiki" },
-   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+   {
+      rel: "preload",
+      href: "/fonts/Nunito_Sans/NunitoSans-Regular.woff2",
+      as: "font",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+   },
 
    ...(process.env.NODE_ENV === "development"
       ? [{ rel: "stylesheet", href: rdtStylesheet }]
@@ -252,11 +251,11 @@ function App() {
 let AppExport = withMetronome(App);
 
 // Toggle Remix Dev Tools
-if (process.env.NODE_ENV === "development") {
-   const { withDevTools } = require("remix-development-tools");
+// if (process.env.NODE_ENV === "development") {
+//    const { withDevTools } = require("remix-development-tools");
 
-   AppExport = withDevTools(AppExport);
-}
+//    AppExport = withDevTools(AppExport);
+// }
 
 export default AppExport;
 
