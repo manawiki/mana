@@ -8,6 +8,7 @@ import { ItemBagSlots } from "./item-bag-slots";
 import { ItemCategories } from "./item-categories";
 import { Items } from "./items";
 import { Monsters } from "./monsters";
+import { Namecards } from "./namecards";
 import { Rarities } from "./rarities";
 import { ResonatorCurves } from "./resonator-curves";
 import { ResonatorSkillTrees } from "./resonator-skill-trees";
@@ -34,6 +35,7 @@ export const CustomCollections = [
    ItemCategories,
    Items,
    Monsters,
+   Namecards,
    Rarities,
    ResonatorCurves,
    ResonatorSkillTrees,
