@@ -64,7 +64,6 @@ export default function EntryPage() {
    const { entry, StatsData } = useLoaderData<typeof loader>();
    const char = entry?.data?.Echo as EchoType;
    const stats = StatsData;
-   console.log(stats);
 
    return (
       <>

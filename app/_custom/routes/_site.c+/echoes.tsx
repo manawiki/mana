@@ -17,21 +17,36 @@ export async function loader({
    context: { payload },
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const fetchEchoList = fetchList({
       request,
       gql: {
-         query: QUERY_WEAPONS,
+         query: QUERY_ECHOES,
+      },
+      payload,
+   });
+   const fetchSonataList = fetchList({
+      request,
+      gql: {
+         query: QUERY_SONATA_EFFECTS,
       },
       payload,
    });
 
-   return json({ weapons: list?.data?.weapons?.docs });
+   const [{ list }, sonatadata] = await Promise.all([
+      fetchEchoList,
+      fetchSonataList,
+   ]);
+
+   return json({
+      echoes: list?.data?.echoes?.docs,
+      sonatas: sonatadata?.list?.data?.sonataEffects?.docs,
+   });
 }
 
 export default function HomePage() {
-   const { weapons } = useLoaderData<typeof loader>();
+   const { echoes, sonatas } = useLoaderData<typeof loader>();
 
-   return <WeaponList chars={weapons} />;
+   return <EchoList chars={echoes} sonatalist={sonatas} />;
 }
 
 type FilterTypes = {
@@ -44,9 +59,10 @@ type FilterOptionType = {
    name: string;
    id: string;
    icon?: string;
+   color?: string;
 };
 
-const WeaponList = ({ chars }: any) => {
+const EchoList = ({ chars, sonatalist }: any) => {
    const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("id");
    const [search, setSearch] = useState("");
@@ -60,48 +76,68 @@ const WeaponList = ({ chars }: any) => {
    // All Filter Options listed individually atm to control order filter options appear in
    const rarities = [
       {
+         id: "0",
+         name: "Common",
+      },
+      {
          id: "1",
-         name: "1",
+         name: "Elite",
       },
       {
          id: "2",
-         name: "2",
+         name: "Overlord",
       },
       {
          id: "3",
-         name: "3",
-      },
-      {
-         id: "4",
-         name: "4",
-      },
-      {
-         id: "5",
-         name: "5",
+         name: "Calamity",
       },
    ] as FilterOptionType[];
-   const types = [
+   const elements = [
+      {
+         id: "0",
+         name: "Physical",
+         icon: "https://static.mana.wiki/wuwa/T_IconElementZero1_UI.png",
+      },
       {
          id: "1",
-         name: "Broadblade",
+         name: "Glacio",
+         icon: "https://static.mana.wiki/wuwa/T_IconElementIce1_UI.png",
       },
       {
          id: "2",
-         name: "Sword",
+         name: "Fusion",
+         icon: "https://static.mana.wiki/wuwa/T_IconElementFire1_UI.png",
       },
       {
          id: "3",
-         name: "Pistols",
+         name: "Electro",
+         icon: "https://static.mana.wiki/wuwa/T_IconElementThunder1_UI.png",
       },
       {
          id: "4",
-         name: "Gauntlets",
+         name: "Aero",
+         icon: "https://static.mana.wiki/wuwa/T_IconElementWind1_UI.png",
       },
       {
          id: "5",
-         name: "Rectifier",
+         name: "Spectro",
+         icon: "https://static.mana.wiki/wuwa/T_IconElementLight1_UI.png",
+      },
+      {
+         id: "6",
+         name: "Havoc",
+         icon: "https://static.mana.wiki/wuwa/T_IconElementDark1_UI.png",
       },
    ] as FilterOptionType[];
+
+   const sonatas = sonatalist?.map((sl: any) => {
+      return {
+         id: sl?.id,
+         name: sl?.name,
+         icon: sl?.icon?.url,
+         color: sl?.color,
+      };
+   }) as FilterOptionType[];
 
    // const camps = chars.map((c) => {
    //    return c?.camp;
@@ -113,10 +149,11 @@ const WeaponList = ({ chars }: any) => {
    const filterOptions = [
       {
          name: "Rarity",
-         field: "rarity",
+         field: "class",
          options: rarities,
       },
-      { name: "Types", field: "type", options: types },
+      { name: "Elements", field: "element", options: elements },
+      { name: "Sonatas", field: "sonata_effect_pool", options: sonatas },
    ];
 
    // var pathlist = filterUnique(chars.map((c: any) => c.path));
@@ -131,10 +168,15 @@ const WeaponList = ({ chars }: any) => {
       var showEntry = filters
          .map((filt) => {
             var matches = 0;
-            if (char[filt.field]?.id) {
-               matches = char[filt.field]?.id == filt.id ? 0 : 1;
+            if (Array.isArray(char[filt.field])) {
+               const charids = char[filt.field]?.map((cff) => cff.id);
+               matches = charids.includes(filt.id) ? 0 : 1;
             } else {
-               matches = char[filt.field] == filt.id ? 0 : 1;
+               if (char[filt.field]?.id) {
+                  matches = char[filt.field]?.id == filt.id ? 0 : 1;
+               } else {
+                  matches = char[filt.field] == filt.id ? 0 : 1;
+               }
             }
             return matches;
          })
@@ -159,15 +201,15 @@ const WeaponList = ({ chars }: any) => {
                   <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
                      {cat.name}
                   </div>
-                  <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
+                  <div className="items-center justify-between gap-3 grid max-laptop:grid-cols-4 grid-cols-7 flex">
                      {cat.options.map((opt) => (
                         <div
                            key={opt.id}
-                           className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
+                           className={`flex flex-col items-center bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
                               filters.find(
                                  (a) => a.id == opt.id && a.field == cat.field,
                               )
-                                 ? `bg-zinc-50 dark:bg-zinc-500/10`
+                                 ? `bg-zinc-100 dark:bg-zinc-500/10`
                                  : ``
                            }`}
                            onClick={(event) => {
@@ -196,16 +238,38 @@ const WeaponList = ({ chars }: any) => {
                            }}
                         >
                            {opt?.icon && (
-                              <div className="mx-auto h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
-                                 <Image
-                                    className="mx-auto"
-                                    alt="Icon"
-                                    options="height=60"
-                                    url={opt.icon}
-                                 />
-                              </div>
+                              <>
+                                 {opt?.color ? (
+                                    <div className="flex rounded-full w-fit items-center justify-center bg-zinc-800 dark:bg-transparent ">
+                                       <div
+                                          style={{
+                                             "border-color": `#${opt?.color}`,
+                                             "background-color": `#${opt?.color}44`,
+                                          }}
+                                          className="flex h-9 w-9 items-center justify-center rounded-full border-2"
+                                       >
+                                          <Image
+                                             options="aspect_ratio=1:1&height=80&width=80"
+                                             className="object-contain"
+                                             url={opt.icon}
+                                             alt={opt.name}
+                                             loading="lazy"
+                                          />
+                                       </div>
+                                    </div>
+                                 ) : (
+                                    <div className="mx-auto h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
+                                       <Image
+                                          className="mx-auto"
+                                          alt="Icon"
+                                          options="height=60"
+                                          url={opt.icon}
+                                       />
+                                    </div>
+                                 )}
+                              </>
                            )}
-                           <div className="text-1 truncate pt-0.5 text-center text-xs">
+                           <div className="text-1 pt-0.5 text-center text-[10px]">
                               {opt.name}
                            </div>
                         </div>
@@ -261,7 +325,7 @@ const WeaponList = ({ chars }: any) => {
          </div>
 
          {/* Toggle Show Description */}
-         <button
+         {/* <button
             type="button"
             className={`border-color-sub shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm 
                font-bold underline decoration-zinc-500 underline-offset-2 shadow-sm ${
@@ -270,7 +334,7 @@ const WeaponList = ({ chars }: any) => {
             onClick={() => setShowDesc(!showDesc)}
          >
             Click to toggle full descriptions (R5)
-         </button>
+         </button> */}
 
          {/* List with applied sorting */}
          <div
@@ -326,7 +390,7 @@ const EntryWithDescription = ({ char }: any) => {
          <Link
             className="bg-2-sub border-color-sub shadow-1 relative mb-2.5 flex rounded-lg border shadow-sm"
             prefetch="intent"
-            to={`/c/weapons/${cid}`}
+            to={`/c/characters/${cid}`}
          >
             <div className="relative rounded-md p-3">
                {/* Icon */}
@@ -381,38 +445,83 @@ const EntryWithDescription = ({ char }: any) => {
 };
 
 const EntryIconOnly = ({ char }: any) => {
-   const pathsmall = char?.path?.icon?.url;
+   const elemicon = char?.element?.icon?.url;
    const rarityurl = char?.rarity?.icon?.url;
    const raritynum = char?.rarity?.display_number;
    const cid = char?.id;
+   const sonatas = char?.sonata_effect_pool;
+   const cost = char?.class?.cost;
 
    return (
       <>
          <Link
             prefetch="intent"
             className="shadow-1 bg-2-sub border-color-sub rounded-lg border p-1 shadow-sm"
-            to={`/c/weapons/${cid}`}
+            to={`/c/echoes/${cid}`}
          >
             {/* Icon */}
             <div className="relative inline-block h-28 w-28">
                {/* Path + Path Name ? */}
-               {pathsmall ? (
+               {elemicon ? (
+                  <>
+                     <div className="absolute -right-1 bottom-0 z-20 h-6 w-7 rounded-sm bg-gray-800 bg-opacity-90 text-white text-center">
+                        {cost}
+                     </div>
+                  </>
+               ) : null}
+
+               {/* Cost ? */}
+               {elemicon ? (
                   <>
                      <div className="absolute -right-1 top-0 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
                         <Image
                            alt="Icon"
                            className="relative inline-block object-contain"
-                           url={pathsmall}
+                           url={elemicon}
                         />
                      </div>
                   </>
                ) : null}
 
+               {/* Sonatas ? */}
+               {sonatas?.length > 0 ? (
+                  <>
+                     <div className="absolute -left-1 top-0 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
+                        {sonatas?.map((son: any) => {
+                           const sonata_color = son?.color;
+                           const sonata_icon = son?.icon?.url;
+
+                           return (
+                              <>
+                                 <div className="block bg-zinc-800 dark:bg-transparent rounded-full mb-1">
+                                    <div
+                                       style={{
+                                          "border-color": `#${sonata_color}`,
+                                          "background-color": `#${sonata_color}44`,
+                                       }}
+                                       className="flex h-7 w-7 items-center justify-center rounded-full border-2"
+                                    >
+                                       <Image
+                                          options="aspect_ratio=1:1&height=80&width=80"
+                                          className="object-contain"
+                                          url={sonata_icon}
+                                          alt={"SonataIcon"}
+                                          loading="lazy"
+                                       />
+                                    </div>
+                                 </div>
+                              </>
+                           );
+                        })}
+                     </div>
+                  </>
+               ) : null}
+
                {/* Rarity */}
-               <div
+               {/* <div
                   style={{ "border-color": `#${char.rarity?.color}` }}
                   className="absolute -bottom-2 w-full transform border-b-4"
-               ></div>
+               ></div> */}
 
                <Image
                   options="height=150"
@@ -430,29 +539,57 @@ const EntryIconOnly = ({ char }: any) => {
    );
 };
 
-const QUERY_WEAPONS = `
+const QUERY_ECHOES = `
   query {
-    weapons: Weapons(limit: 500) {
+    echoes: Echoes(limit: 1000) {
       docs {
          id
          name
-         desc
          slug
-         rarity {
+         class {
             id
-            color
+            name
+            cost
+         }
+         element {
+            id
+            name
+            icon {
+               url
+            }
          }
          icon {
             url
          }
-         type {
+         skill {
+            desc
+            params
+         }
+         sonata_effect_pool {
             id
             name
+            icon {
+               url
+            }
+            color
          }
-         skill_name
-         skill_desc
-         skill_params
       }
     }
   }
+`;
+
+const QUERY_SONATA_EFFECTS = `
+query {
+   sonataEffects: SonataEffects(limit: 1000, sort:"id") {
+     docs {
+        id
+        name
+        slug
+        color
+        icon {
+           url
+        }
+      }
+   }
+ }
 `;
