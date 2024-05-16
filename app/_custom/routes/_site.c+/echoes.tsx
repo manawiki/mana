@@ -77,19 +77,19 @@ const EchoList = ({ chars, sonatalist }: any) => {
    const rarities = [
       {
          id: "0",
-         name: "Common",
+         name: "Common (1)",
       },
       {
          id: "1",
-         name: "Elite",
+         name: "Elite (3)",
       },
       {
          id: "2",
-         name: "Overlord",
+         name: "Overlord (4)",
       },
       {
          id: "3",
-         name: "Calamity",
+         name: "Calamity (4)",
       },
    ] as FilterOptionType[];
    const elements = [
@@ -390,7 +390,7 @@ const EntryWithDescription = ({ char }: any) => {
          <Link
             className="bg-2-sub border-color-sub shadow-1 relative mb-2.5 flex rounded-lg border shadow-sm"
             prefetch="intent"
-            to={`/c/characters/${cid}`}
+            to={`/c/echoes/${cid}`}
          >
             <div className="relative rounded-md p-3">
                {/* Icon */}
