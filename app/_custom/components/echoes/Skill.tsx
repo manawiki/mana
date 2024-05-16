@@ -63,7 +63,7 @@ export function Skill({ data: full }: { data: any }) {
 
          {/* Description */}
          <div className="my-2 flex items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-lg shadow-sm shadow-1 border border-color-sub py-1">
-            <div className="flex w-24 items-center justify-center rounded-md border-2 bg-zinc-600 dark:bg-transparent dark:border-zinc-500">
+            <div className="flex w-24 min-w-12 items-center justify-center rounded-md border-2 bg-zinc-600 dark:bg-transparent dark:border-zinc-500">
                <Image
                   options="aspect_ratio=1:1&height=80&width=80"
                   className="object-contain"
