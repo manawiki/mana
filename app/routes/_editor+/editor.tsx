@@ -25,7 +25,6 @@ export function ManaEditor({
    entryId,
    collectionEntity,
    collectionSlug,
-   isDemo,
 }: {
    fetcher?: FetcherWithComponents<unknown>;
    defaultValue: unknown[];
@@ -35,7 +34,6 @@ export function ManaEditor({
    entryId?: string;
    collectionEntity?: string;
    collectionSlug?: keyof Config["collections"];
-   isDemo?: boolean;
 }) {
    const editor = useEditor();
 
@@ -46,7 +44,7 @@ export function ManaEditor({
    const debouncedValue = useDebouncedValue(value, 1000);
 
    useEffect(() => {
-      if (!isMount && !isDemo) {
+      if (!isMount) {
          fetcher?.submit(
             //@ts-ignore
             {

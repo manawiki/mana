@@ -47,6 +47,7 @@ export async function loader({
    const publishedPosts = await fetchPublishedPosts({
       q,
       payload,
+      page,
       siteSlug,
       user,
    });

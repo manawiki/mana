@@ -119,8 +119,6 @@ const WeaponList = ({ chars }: any) => {
       { name: "Types", field: "type", options: types },
    ];
 
-   console.log(filters);
-
    // var pathlist = filterUnique(chars.map((c: any) => c.path));
 
    // Sort entries
@@ -328,7 +326,7 @@ const EntryWithDescription = ({ char }: any) => {
          <Link
             className="bg-2-sub border-color-sub shadow-1 relative mb-2.5 flex rounded-lg border shadow-sm"
             prefetch="intent"
-            to={`/c/characters/${cid}`}
+            to={`/c/weapons/${cid}`}
          >
             <div className="relative rounded-md p-3">
                {/* Icon */}

@@ -8,7 +8,6 @@ export function PublishedPostRow({ post }: { post: Post }) {
       <>
          <Link
             className="relative block py-4 group"
-            prefetch="intent"
             to={`/p/${post.slug}`}
             key={post.id}
          >
