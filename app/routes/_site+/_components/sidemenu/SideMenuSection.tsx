@@ -97,26 +97,12 @@ export function SideMenuSection({
          {...attributes}
          className="px-2 pt-4"
       >
-         <div className="pl-2 pr-1 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
+         <div className="pl-2 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
             <input
                type="text"
                className="text-sm bg-transparent focus:outline-none dark:focus:bg-dark350 focus:bg-white p-0.5 rounded"
                defaultValue={menuSection.name}
             />
-            <Tooltip placement="top" setDelay={500}>
-               <TooltipTrigger
-                  title="Add menu link"
-                  className="flex items-center justify-center group"
-               >
-                  <Icon
-                     name="plus"
-                     title="Add menu link"
-                     className="text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-500 dark:group-hover:text-zinc-400"
-                     size={16}
-                  />
-               </TooltipTrigger>
-               <TooltipContent>Add menu link</TooltipContent>
-            </Tooltip>
             <div
                className="touch-none hidden group-hover:block -left-1.5 top-0 cursor-grab hover:bg-zinc-200 dark:hover:bg-dark500 rounded py-1 px-0.5"
                aria-label="Drag to reorder"
