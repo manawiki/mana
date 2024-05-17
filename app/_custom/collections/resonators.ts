@@ -181,7 +181,7 @@ export const Resonators: CollectionConfig = {
                type: "text",
             },
             {
-               name: "vo_cn",
+               name: "vo_zh",
                type: "upload",
                relationTo: "images",
             },
