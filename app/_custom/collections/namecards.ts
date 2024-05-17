@@ -34,6 +34,11 @@ export const Namecards: CollectionConfig = {
          type: "text",
       },
       {
+         name: "rarity",
+         type: "relationship",
+         relationTo: "rarities",
+      },
+      {
          name: "desc",
          type: "text",
       },
@@ -44,6 +49,10 @@ export const Namecards: CollectionConfig = {
       },
       {
          name: "fight_desc",
+         type: "text",
+      },
+      {
+         name: "obtain_desc",
          type: "text",
       },
       {
