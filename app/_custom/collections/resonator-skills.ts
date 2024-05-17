@@ -33,6 +33,10 @@ export const ResonatorSkills: CollectionConfig = {
          type: "text",
       },
       {
+         name: "params",
+         type: "json",
+      },
+      {
          name: "icon",
          type: "relationship",
          relationTo: "images",
