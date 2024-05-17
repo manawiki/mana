@@ -6,10 +6,12 @@ import type { Item } from "payload/generated-custom-types";
 import type { Resonator as ResonatorType } from "payload/generated-custom-types";
 import { Image } from "~/components/Image";
 import { H2 } from "~/components/Headers";
+import { Icon } from "~/components/Icon";
 
 export function Skill({ data: full }: { data: any }) {
   const char = full.Resonator;
 
+  const [showBonus, setShowBonus] = useState(false);
   // Separate SKILL nodes, PASSIVE nodes, and BONUS nodes!
   // Will list Skill, then passive, then bonus nodes.
 
@@ -35,10 +37,39 @@ export function Skill({ data: full }: { data: any }) {
         <PassiveNode node={snode} />
       ))}
 
-      <H2 text="Bonus Nodes" />
-      {bonus_nodes.map((snode: any) => (
-        <BonusNode node={snode} />
-      ))}
+      <Disclosure>
+        {({ open }) => (
+          <>
+            {/* Make sure rounded appearance changes depending on accordion collapse state */}
+            <Disclosure.Button
+              className={`${
+                open ? "rounded-t-lg" : "rounded-lg"
+              } bg-2-sub border-color-sub shadow-1 mt-2 flex w-full items-center border px-4 py-3 font-bold shadow-sm`}
+            >
+              {/* Accordion Title here */}
+              Bonus Nodes
+              {/* Render the up/down triangle caret for accordion */}
+              <div
+                className={`${
+                  open
+                    ? "rotate-180 transform font-bold text-gray-600 "
+                    : "text-gray-400"
+                } ml-auto inline-block `}
+              >
+                <Icon name="chevron-down" className="text-zinc-500" size={28} />
+              </div>
+            </Disclosure.Button>
+            <Disclosure.Panel className="mb-3">
+              {/* Accordion contents */}
+              <div className="laptop:grid laptop:grid-cols-2 laptop:gap-x-2 border border-color-sub rounded-b-lg">
+                {bonus_nodes.map((snode: any) => (
+                  <BonusNode node={snode} />
+                ))}
+              </div>
+            </Disclosure.Panel>
+          </>
+        )}
+      </Disclosure>
     </>
   );
 }
@@ -53,28 +84,30 @@ const BonusNode = ({ node }: any) => {
   return (
     <>
       {/* Header with Skill Icon and Name */}
-      <div className="mt-2 flex items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-t-lg shadow-sm shadow-1 border border-color-sub py-2 ">
-        <div className="">
-          {" "}
-          <div className="flex h-8 w-8 rounded-full bg-zinc-700 dark:bg-zinc-800">
-            <Image
-              options="aspect_ratio=1:1&height=80&width=80"
-              className="object-contain"
-              url={icon}
-              alt={name}
-              loading="lazy"
-            />
+      <div>
+        <div className="mt-2 flex items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-t-lg shadow-sm shadow-1 border border-color-sub py-2 ">
+          <div className="">
+            {" "}
+            <div className="flex h-8 w-8 rounded-full bg-zinc-700 dark:bg-zinc-800">
+              <Image
+                options="aspect_ratio=1:1&height=80&width=80"
+                className="object-contain"
+                url={icon}
+                alt={name}
+                loading="lazy"
+              />
+            </div>
           </div>
+          <div className="font-bold text-xl">{name}</div>
         </div>
-        <div className="font-bold text-xl">{name}</div>
-      </div>
-      {/* Description */}
-      <div className="mb-2 items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-b-lg shadow-sm shadow-1 border border-color-sub py-2 wuwa-skill-description leading-7">
-        <div className="" dangerouslySetInnerHTML={{ __html: desc }}></div>
-        <div className="text-center">
-          {upgrade_costs?.map((mat, key) => (
-            <ItemQtyFrame mat={mat} key={key} />
-          ))}
+        {/* Description */}
+        <div className="items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-b-lg shadow-sm shadow-1 border border-color-sub py-2 wuwa-skill-description leading-7">
+          <div className="" dangerouslySetInnerHTML={{ __html: desc }}></div>
+          <div className="text-center">
+            {upgrade_costs?.map((mat, key) => (
+              <ItemQtyFrame mat={mat} key={key} />
+            ))}
+          </div>
         </div>
       </div>
     </>
@@ -87,6 +120,12 @@ const PassiveNode = ({ node }: any) => {
   desc = desc.replace(/(<br\s*\/?>){2,}/gi, "<br/>");
   const type = node?.resonator_skill?.type?.name;
   const upgrade_costs = node?.unlock_costs;
+  const params = node?.resonator_skill?.params;
+
+  var dispdesc = desc;
+  params?.map((par: any, i: any) => {
+    dispdesc = dispdesc?.replace("{" + i + "}", par);
+  });
 
   return (
     <>
@@ -112,7 +151,7 @@ const PassiveNode = ({ node }: any) => {
         <div className="text-gray-600 dark:text-gray-400">{type}</div>
       </div>
       <div className="mb-2 items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-b-lg shadow-sm shadow-1 border border-color-sub py-2 wuwa-skill-description leading-7">
-        <div className="" dangerouslySetInnerHTML={{ __html: desc }}></div>
+        <div className="" dangerouslySetInnerHTML={{ __html: dispdesc }}></div>
         <div className="text-center">
           {upgrade_costs?.map((mat, key) => (
             <ItemQtyFrame mat={mat} key={key} />
@@ -136,6 +175,13 @@ const SkillNode = ({ node }: any) => {
   const upgrade_costs = node?.resonator_skill?.upgrade_costs;
 
   const tableformat = "border border-color-sub";
+
+  const params = node?.resonator_skill?.params;
+
+  var dispdesc = desc;
+  params?.map((par: any, i: any) => {
+    dispdesc = dispdesc?.replace("{" + i + "}", par);
+  });
 
   return (
     <>
@@ -189,7 +235,7 @@ const SkillNode = ({ node }: any) => {
         <>
           <div
             className="mb-2 items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-b-lg shadow-sm shadow-1 border border-color-sub py-2 wuwa-skill-description leading-7"
-            dangerouslySetInnerHTML={{ __html: desc }}
+            dangerouslySetInnerHTML={{ __html: dispdesc }}
           ></div>
         </>
       ) : (
@@ -316,3 +362,19 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
     </div>
   );
 };
+
+// =====================================
+// For rendering Down Icon
+// =====================================
+export const CaretDownIcon = (props: any) => (
+  <svg
+    className={props.class}
+    width={props.w}
+    height={props.h}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path fill="currentColor" d="M20 8H4L12 16L20 8Z"></path>
+  </svg>
+);

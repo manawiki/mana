@@ -20,11 +20,11 @@ import { Main } from "~/_custom/components/resonators/Main";
 import { Skill } from "~/_custom/components/resonators/Skill";
 import { ResonanceChain } from "~/_custom/components/resonators/ResonanceChain";
 import { Ascension } from "~/_custom/components/resonators/Ascension";
-//import { Profile } from "~/_custom/components/resonators/Profile";
-//import { Story } from "~/_custom/components/resonators/Story";
-//import { VoiceLines } from "~/_custom/components/resonators/VoiceLines";
-//import { Gallery } from "~/_custom/components/resonators/Gallery";
-//import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
+import { TotalMaterialCost } from "~/_custom/components/resonators/TotalMaterialCost";
+import { Profile } from "~/_custom/components/resonators/Profile";
+import { Story } from "~/_custom/components/resonators/Story";
+import { VoiceLines } from "~/_custom/components/resonators/VoiceLines";
+import { Gallery } from "~/_custom/components/resonators/Gallery";
 
 // Loader definition - loads Entry data!
 export async function loader({
@@ -83,10 +83,11 @@ export default function EntryPage() {
         <Skill data={char} />
         <ResonanceChain data={char} />
         <Ascension data={char} />
-        {/* <Gallery data={char} /> */}
-        {/* <Profile data={char} /> */}
-        {/* <Story data={char} /> */}
-        {/* <VoiceLines data={char} /> */}
+        <TotalMaterialCost data={char} />
+        <Gallery data={char} />
+        <Profile data={char} />
+        <Story data={char} />
+        <VoiceLines data={char} />
       </Entry>
     </>
   );
@@ -183,6 +184,7 @@ const ResonatorQuery = gql`
           slug
           name
           desc
+          params
           icon {
             url
           }
@@ -231,16 +233,16 @@ const ResonatorQuery = gql`
       quotes {
         title
         content
-        vo_cn {
+        vo_zh {
           url
         }
-        vo_jp {
+        vo_ja {
           url
         }
         vo_en {
           url
         }
-        vo_kr {
+        vo_ko {
           url
         }
       }

@@ -10,6 +10,8 @@ export function Ascension({ data: full }: { data: any }) {
   const char = full.Resonator;
   const tableformat = "border border-color-sub";
 
+  const asc_cost = char.ascension_costs?.sort((a, b) => a.level - b.level);
+
   return (
     <>
       <H2 text="Ascension Cost" />
@@ -44,7 +46,7 @@ export function Ascension({ data: full }: { data: any }) {
           </tr>
         </thead>
         <tbody>
-          {char.ascension_costs?.map((promo, index) => {
+          {asc_cost?.map((promo, index) => {
             return (
               <>
                 {promo.items?.length > 0 ? (
