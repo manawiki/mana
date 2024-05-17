@@ -52,8 +52,10 @@ export const Namecards: CollectionConfig = {
          type: "text",
       },
       {
-         name: "obtain_desc",
-         type: "text",
+         name: "obtain_data",
+         type: "relationship",
+         relationTo: "obtain-datas",
+         hasMany: true,
       },
       {
          name: "checksum",

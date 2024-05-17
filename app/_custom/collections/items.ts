@@ -53,6 +53,12 @@ export const Items: CollectionConfig = {
          type: "text",
       },
       {
+         name: "obtain_data",
+         type: "relationship",
+         relationTo: "obtain-datas",
+         hasMany: true,
+      },
+      {
          name: "checksum",
          type: "text",
          required: true,
