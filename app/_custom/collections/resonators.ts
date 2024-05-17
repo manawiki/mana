@@ -186,7 +186,7 @@ export const Resonators: CollectionConfig = {
                relationTo: "images",
             },
             {
-               name: "vo_jp",
+               name: "vo_ja",
                type: "upload",
                relationTo: "images",
             },
@@ -196,7 +196,7 @@ export const Resonators: CollectionConfig = {
                relationTo: "images",
             },
             {
-               name: "vo_kr",
+               name: "vo_ko",
                type: "upload",
                relationTo: "images",
             },
