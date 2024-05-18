@@ -40,7 +40,7 @@ export const SynthesisRecipes: CollectionConfig = {
                relationTo: "items",
             },
             {
-               name: "quantity",
+               name: "cnt",
                type: "number",
             },
          ],

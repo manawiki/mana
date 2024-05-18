@@ -40,7 +40,7 @@ export const CookingRecipes: CollectionConfig = {
                relationTo: "items",
             },
             {
-               name: "quantity",
+               name: "cnt",
                type: "number",
             },
          ],
