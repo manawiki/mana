@@ -119,7 +119,7 @@ export const Weapons: CollectionConfig = {
          ],
       },
       {
-         name: "forge_items",
+         name: "craft_items",
          type: "array",
          fields: [
             {
