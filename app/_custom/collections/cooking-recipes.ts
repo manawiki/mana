@@ -33,7 +33,7 @@ export const CookingRecipes: CollectionConfig = {
       {
          name: "cooking_items",
          type: "array",
-         fields: [
+         values: [
             {
                name: "item",
                type: "relationship",
