@@ -59,15 +59,21 @@ export const CustomCollections = [
 ];
 
 export const CustomSearchCollections = [
+   "echoes",
    "items",
+   "monsters",
+   "namecards",
+   "resonators",
    "trophies",
    "weapons",
-   "echoes",
 ];
 
 export const CustomDefaultPriorities = {
-   weapons: 90,
-   echoes: 80,
-   items: 70,
-   trophies: 60,
+   echoes: 70,
+   items: 60,
+   monsters: 40,
+   namecards: 30,
+   resonators: 90,
+   trophies: 50,
+   weapons: 80,
 };
