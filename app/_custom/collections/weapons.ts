@@ -39,6 +39,11 @@ export const Weapons: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "craftable",
+         type: "checkbox",
+         defaultValue: false,
+      },
+      {
          name: "rarity",
          type: "relationship",
          relationTo: "rarities",
