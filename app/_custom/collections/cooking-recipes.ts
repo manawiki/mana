@@ -33,7 +33,7 @@ export const CookingRecipes: CollectionConfig = {
       {
          name: "cooking_items",
          type: "array",
-         values: [
+         fields: [
             {
                name: "item",
                type: "relationship",
@@ -48,7 +48,7 @@ export const CookingRecipes: CollectionConfig = {
       {
          name: "special_dishes",
          type: "array",
-         values: [
+         fields: [
             {
                name: "resonator",
                type: "relationship",
