@@ -48,7 +48,7 @@ export const Trophies: CollectionConfig = {
                relationTo: "items",
             },
             {
-               name: "qty",
+               name: "cnt",
                type: "number",
             }
          ]
