@@ -46,10 +46,20 @@ export const CookingRecipes: CollectionConfig = {
          ],
       },
       {
-         name: "resonators",
-         type: "relationship",
-         relationTo: "resonators",
-         hasMany: true,
+         name: "special_dishes",
+         type: "array",
+         values: [
+            {
+               name: "resonator",
+               type: "relationship",
+               relationTo: "resonators",
+            },
+            {
+               name: "item",
+               type: "relationship",
+               relationTo: "items",
+            }
+         ]
       },
       {
          name: "checksum",
