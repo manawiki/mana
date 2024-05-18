@@ -119,6 +119,21 @@ export const Weapons: CollectionConfig = {
          ],
       },
       {
+         name: "forge_items",
+         type: "array",
+         fields: [
+            {
+               name: "item",
+               type: "relationship",
+               relationTo: "items",
+            },
+            {
+               name: "cnt",
+               type: "number",
+            },
+         ],
+      },
+      {
          name: "checksum",
          type: "text",
          required: true,
