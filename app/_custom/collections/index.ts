@@ -1,4 +1,5 @@
 import { Attributes } from "./attributes";
+import { CookingRecipes } from "./cooking-recipes";
 import { EchoClasses } from "./echo-classes";
 import { EchoSkills } from "./echo-skills";
 import { Echoes } from "./echoes";
@@ -17,6 +18,7 @@ import { ResonatorSkillTypes } from "./resonator-skill-types";
 import { ResonatorSkills } from "./resonator-skills";
 import { Resonators } from "./resonators";
 import { SonataEffects } from "./sonata-effects";
+import { SynthesisRecipes } from "./synthesis-recipes";
 import { Trophies } from "./trophies";
 import { TrophyCategories } from "./trophy-categories";
 import { TrophyGroups } from "./trophy-groups";
@@ -27,6 +29,7 @@ import { Weapons } from "./weapons";
 
 export const CustomCollections = [
    Attributes,
+   CookingRecipes,
    EchoClasses,
    EchoSkills,
    Echoes,
@@ -45,6 +48,7 @@ export const CustomCollections = [
    ResonatorSkills,
    Resonators,
    SonataEffects,
+   SynthesisRecipes,
    Trophies,
    TrophyCategories,
    TrophyGroups,
