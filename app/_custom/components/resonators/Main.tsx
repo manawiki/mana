@@ -18,7 +18,7 @@ export function Main({ data: full }: { data: any }) {
   const displevel = curves[level].level;
   const dispasc = curves[level].lb_lv;
 
-  const mainImage = char?.splash?.url;
+  const mainImage = char?.card_img?.url;
   const mainName = char?.name;
   const mainDesc = char?.intro;
   const mainStatDisplay = [

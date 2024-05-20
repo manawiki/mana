@@ -247,7 +247,19 @@ const ResonatorQuery = gql`
         }
       }
 
-      splash {
+      card_img {
+        url
+      }
+      gacha_splash_bg {
+        url
+      }
+      gacha_splash_fg {
+        url
+      }
+      gacha_splash_full {
+        url
+      }
+      gacha_share_img {
         url
       }
     }

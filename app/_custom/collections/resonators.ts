@@ -57,7 +57,27 @@ export const Resonators: CollectionConfig = {
          relationTo: "weapon-types",
       },
       {
-         name: "splash",
+         name: "card_img",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "gacha_splash_bg",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "gacha_splash_fg",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "gacha_splash_full",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "gacha_share_img",
          type: "upload",
          relationTo: "images",
       },

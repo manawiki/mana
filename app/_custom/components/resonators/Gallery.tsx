@@ -15,16 +15,32 @@ export function Gallery({ data: full }: { data: any }) {
       url: char?.icon?.url,
     },
     {
-      name: "Splash",
-      url: char?.splash?.url,
+      name: "Card",
+      url: char?.card_img?.url,
     },
+    {
+      name: "Gacha Full",
+      url: char?.gacha_splash_full?.url,
+    },
+    {
+      name: "Gacha Background",
+      url: char?.gacha_splash_bg?.url,
+    },
+    {
+      name: "Gacha Foreground",
+      url: char?.gacha_splash_fg?.url,
+    },
+    {
+      name: "Gacha Share",
+      url: char?.gacha_share_img?.url,
+    }
   ];
 
   return (
     <>
       <H2 text="Image Gallery" />
       <div className="mb-3 grid w-full grid-cols-3 gap-3">
-        {gallery_items.map((g, i) => {
+        {gallery_items.filter(i => i.url !== undefined).map((g, i) => {
           return (
             <>
               <div
