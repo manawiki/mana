@@ -110,8 +110,9 @@ const WeaponQuery = gql`
           icon {
             url
           }
+          percent
         }
-        percent
+        ratio
         value
       }
       skill_name

@@ -31,19 +31,11 @@ export const Attributes: CollectionConfig = {
       },
       {
          name: "percent",
-         type: "select",
-         options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-         ],
+         type: "checkbox",
       },
       {
          name: "visible",
-         type: "select",
-         options: [
-            { label: "Yes", value: "yes" },
-            { label: "No", value: "no" },
-         ],
+         type: "checkbox",
       },
       {
          name: "base",

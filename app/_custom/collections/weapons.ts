@@ -72,12 +72,8 @@ export const Weapons: CollectionConfig = {
                type: "number",
             },
             {
-               name: "percent",
-               type: "select",
-               options: [
-                  { label: "Yes", value: "yes" },
-                  { label: "No", value: "no" },
-               ],
+               name: "ratio",
+               type: "checkbox",
             },
             {
                name: "curve",

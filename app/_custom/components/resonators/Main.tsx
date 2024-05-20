@@ -58,7 +58,7 @@ export function Main({ data: full }: { data: any }) {
         </section>
         <section>
           <div
-            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg 
+            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
           >
             {mainStatDisplay?.map((row) => (
@@ -133,7 +133,7 @@ export function Main({ data: full }: { data: any }) {
                     </div>
                     <div className="text-sm font-semibold">
                       <span className="inline-block align-middle">
-                        {attr_perc == "yes"
+                        {attr_perc
                           ? Math.floor(attr_val) / 100 + "%"
                           : Math.floor(attr_val)}
                       </span>

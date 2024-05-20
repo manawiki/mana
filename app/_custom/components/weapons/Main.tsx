@@ -49,7 +49,7 @@ export function Main({ data: full }: { data: any }) {
         </section>
         <section>
           <div
-            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg 
+            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
           >
             {mainStatDisplay?.map((row) => (
@@ -79,13 +79,19 @@ export function Main({ data: full }: { data: any }) {
             {mainAttributes?.map((attr: any, aindex: any) => {
               const attr_icon = attr?.icon?.url;
               const attr_name = attr?.attribute?.name;
-              const attr_val =
+              let attr_val =
                 (attr?.value *
                   curves.find((c: any) => c.id == aindex + 1)?.values?.[level]
                     ?.value) /
                 10000;
 
-              const attr_perc = attr?.percent;
+              if (attr?.ratio) {
+                attr_val = Math.floor(attr_val * 1000) / 10;
+              } else if (attr?.attribute?.percent) {
+                attr_val = Math.floor(attr_val / 100);
+              }
+
+              const is_perc = attr?.ratio || attr?.attribute?.percent;
 
               return (
                 <>
@@ -110,9 +116,9 @@ export function Main({ data: full }: { data: any }) {
                     </div>
                     <div className="text-sm font-semibold">
                       <span className="inline-block align-middle">
-                        {attr_perc == "yes"
-                          ? Math.floor(attr_val * 1000) / 10 + "%"
-                          : Math.floor(attr_val)}
+                        {is_perc
+                          ? attr_val + "%"
+                          : attr_val}
                       </span>
                     </div>
                   </div>
