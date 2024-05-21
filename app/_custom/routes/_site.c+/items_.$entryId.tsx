@@ -132,7 +132,6 @@ export default function EntryPage() {
     Synthesis: synthesisData,
     SynthesisIngredient: synthesisIngredientData,
   };
-  console.log(char);
 
   return (
     <>
