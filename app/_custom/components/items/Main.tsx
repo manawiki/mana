@@ -3,7 +3,9 @@ import { Disclosure } from "@headlessui/react";
 import { Image } from "~/components/Image";
 import { useState } from "react";
 
-export function Main({ data: char }: { data: ItemType }) {
+export function Main({ data: fulldata }: { data: ItemType }) {
+  const char = fulldata.Item;
+
   const mainImage = char?.icon?.url;
   const mainName = char?.name;
   const mainDesc = char?.desc;

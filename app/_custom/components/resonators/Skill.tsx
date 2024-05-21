@@ -87,7 +87,6 @@ const BonusNode = ({ node }: any) => {
       <div>
         <div className="mt-2 flex items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-t-lg shadow-sm shadow-1 border border-color-sub py-2 ">
           <div className="">
-            {" "}
             <div className="flex h-8 w-8 rounded-full bg-zinc-700 dark:bg-zinc-800">
               <Image
                 options="aspect_ratio=1:1&height=80&width=80"
@@ -121,6 +120,7 @@ const PassiveNode = ({ node }: any) => {
   const type = node?.resonator_skill?.type?.name;
   const upgrade_costs = node?.unlock_costs;
   const params = node?.resonator_skill?.params;
+  const icon = node?.resonator_skill?.icon?.url;
 
   var dispdesc = desc;
   params?.map((par: any, i: any) => {
@@ -129,29 +129,33 @@ const PassiveNode = ({ node }: any) => {
 
   return (
     <>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `<style>
-                                div.wuwa-skill-description > span {
-                                   background-color: rgba(0,0,0,.8);
-                                   padding-top: 2px;
-                                   padding-right: 4px;
-                                   padding-left: 4px;
-                                   padding-bottom: 1px;
-                                   margin-right: 2px;
-                                   margin-left: 2px;
-                                   border-radius: 3px;
-                                }
-                             </style>`,
-        }}
-      ></div>
       {/* Name */}
       <div className="mt-2 flex items-center justify-between gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-t-lg shadow-sm shadow-1 border border-color-sub py-2 ">
-        <div className="font-bold text-2xl">{name}</div>
+        <div className="flex gap-2 items-center">
+          {icon ? (
+            <>
+              <div className="flex h-12 w-12 rounded-full bg-zinc-700 dark:bg-zinc-800">
+                <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
+                  className="object-contain"
+                  url={icon}
+                  alt={name}
+                  loading="lazy"
+                />
+              </div>
+            </>
+          ) : null}
+
+          <div className="font-bold text-2xl">{name}</div>
+        </div>
+
         <div className="text-gray-600 dark:text-gray-400">{type}</div>
       </div>
-      <div className="mb-2 items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-b-lg shadow-sm shadow-1 border border-color-sub py-2 wuwa-skill-description leading-7">
-        <div className="" dangerouslySetInnerHTML={{ __html: dispdesc }}></div>
+      <div className="mb-2 items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-b-lg shadow-sm shadow-1 border border-color-sub py-2 wuwa-skill-description leading-7 ">
+        <div
+          className="dark:brightness-100 brightness-75"
+          dangerouslySetInnerHTML={{ __html: dispdesc }}
+        ></div>
         <div className="text-center">
           {upgrade_costs?.map((mat, key) => (
             <ItemQtyFrame mat={mat} key={key} />
@@ -173,6 +177,7 @@ const SkillNode = ({ node }: any) => {
   const details = node?.resonator_skill?.details;
   const maxlv = node?.resonator_skill?.max_lv;
   const upgrade_costs = node?.resonator_skill?.upgrade_costs;
+  const icon = node?.resonator_skill?.icon?.url;
 
   const tableformat = "border border-color-sub";
 
@@ -185,25 +190,25 @@ const SkillNode = ({ node }: any) => {
 
   return (
     <>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `<style>
-                                div.wuwa-skill-description > span {
-                                   background-color: rgba(0,0,0,.8);
-                                   padding-top: 2px;
-                                   padding-right: 4px;
-                                   padding-left: 4px;
-                                   padding-bottom: 1px;
-                                   margin-right: 2px;
-                                   margin-left: 2px;
-                                   border-radius: 3px;
-                                }
-                             </style>`,
-        }}
-      ></div>
       {/* Name */}
       <div className="mt-2 flex items-center justify-between gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-t-lg shadow-sm shadow-1 border border-color-sub py-2 ">
-        <div className="font-bold text-2xl">{name}</div>
+        <div className="flex gap-2 items-center">
+          {icon ? (
+            <>
+              <div className="flex h-12 w-12 rounded-full bg-zinc-700 dark:bg-zinc-800">
+                <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
+                  className="object-contain"
+                  url={icon}
+                  alt={name}
+                  loading="lazy"
+                />
+              </div>
+            </>
+          ) : null}
+          <div className="font-bold text-2xl">{name}</div>
+        </div>
+
         <div className="text-gray-600 dark:text-gray-400">{type}</div>
       </div>
       {/* Description or Stats/Materials Tab Selector */}
@@ -233,10 +238,12 @@ const SkillNode = ({ node }: any) => {
       {/* Description - Show only on disp false*/}
       {!disp ? (
         <>
-          <div
-            className="mb-2 items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-b-lg shadow-sm shadow-1 border border-color-sub py-2 wuwa-skill-description leading-7"
-            dangerouslySetInnerHTML={{ __html: dispdesc }}
-          ></div>
+          <div className="mb-2 items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-b-lg shadow-sm shadow-1 border border-color-sub py-2 wuwa-skill-description leading-7 ">
+            <div
+              className="dark:brightness-100 brightness-75"
+              dangerouslySetInnerHTML={{ __html: dispdesc }}
+            ></div>
+          </div>
         </>
       ) : (
         <>
