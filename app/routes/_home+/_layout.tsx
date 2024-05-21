@@ -19,7 +19,7 @@ export default function IndexLayout() {
 function Header() {
    return (
       <header className="z-50 w-full absolute">
-         <div className="mx-auto max-w-4xl p-4 flex items-center justify-between w-full">
+         <div className="mx-auto max-w-5xl p-4 flex items-center justify-between w-full">
             <Link className="block text-white" to="/" aria-label="Mana Wiki">
                <LogoFull />
             </Link>
