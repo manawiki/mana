@@ -11,8 +11,6 @@ export function Main({ data: full }: { data: any }) {
     (a, b) => a.level - b.level || a.lb_lv - b.lb_lv
   );
 
-  console.log(char);
-
   const [level, setLevel] = useState(0);
 
   const displevel = curves[level].level;

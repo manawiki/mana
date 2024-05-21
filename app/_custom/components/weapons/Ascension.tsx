@@ -10,7 +10,6 @@ export function Ascension({ data: full }: { data: any }) {
   const char = full.Weapon;
   const tableformat = "border border-color-sub";
 
-  console.log(char.ascension_costs);
   return (
     <>
       <H2 text="Ascension Cost" />

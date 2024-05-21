@@ -13,22 +13,6 @@ export function ResonanceChain({ data: full }: { data: any }) {
         <>
           <H2 text="Resonance Chain" />
           <div
-            dangerouslySetInnerHTML={{
-              __html: `<style>
-                                div.wuwa-skill-description > span {
-                                   background-color: rgba(0,0,0,.8);
-                                   padding-top: 2px;
-                                   padding-right: 4px;
-                                   padding-left: 4px;
-                                   padding-bottom: 1px;
-                                   margin-right: 2px;
-                                   margin-left: 2px;
-                                   border-radius: 3px;
-                                }
-                             </style>`,
-            }}
-          ></div>
-          <div
             className="bg-2-sub divide-color-sub border-color-sub shadow-1 mb-4 
       divide-y overflow-hidden rounded-lg border shadow"
           >
@@ -58,7 +42,7 @@ export function ResonanceChain({ data: full }: { data: any }) {
                     </div>
                     {/* Description */}
                     <div
-                      className="pt-2 text-sm wuwa-skill-description"
+                      className="pt-2 text-sm wuwa-resonance-chain-description dark:brightness-100 brightness-75"
                       dangerouslySetInnerHTML={{
                         __html: r_desc ?? "",
                       }}

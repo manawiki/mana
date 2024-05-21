@@ -25,6 +25,7 @@ import { Profile } from "~/_custom/components/resonators/Profile";
 import { Story } from "~/_custom/components/resonators/Story";
 import { VoiceLines } from "~/_custom/components/resonators/VoiceLines";
 import { Gallery } from "~/_custom/components/resonators/Gallery";
+import { Specialty } from "~/_custom/components/resonators/Specialty";
 
 // Loader definition - loads Entry data!
 export async function loader({
@@ -52,14 +53,26 @@ export async function loader({
     },
   });
 
-  const [{ entry }, data] = await Promise.all([
+  const fetchRecipeData = fetchEntry({
+    payload,
+    params,
+    request,
+    user,
+    gql: {
+      query: RecipeQuery,
+    },
+  });
+
+  const [{ entry }, data, data2] = await Promise.all([
     fetchResonatorData,
     fetchCurveData,
+    fetchRecipeData,
   ]);
 
   return json({
     entry,
     curveData: data?.entry?.data?.ResonatorCurves?.docs,
+    recipeData: data2?.entry?.data?.CookingRecipes?.docs,
   });
 }
 
@@ -69,10 +82,11 @@ const SECTIONS = {
 };
 
 export default function EntryPage() {
-  const { entry, curveData } = useLoaderData<typeof loader>();
+  const { entry, curveData, recipeData } = useLoaderData<typeof loader>();
   var char = {
     Resonator: entry.data.Resonator,
     Curves: curveData,
+    Recipes: recipeData,
   };
 
   return (
@@ -84,6 +98,7 @@ export default function EntryPage() {
         <ResonanceChain data={char} />
         <Ascension data={char} />
         <TotalMaterialCost data={char} />
+        <Specialty data={char} />
         <Gallery data={char} />
         <Profile data={char} />
         <Story data={char} />
@@ -108,6 +123,7 @@ const ResonatorQuery = gql`
       icon {
         url
       }
+
       element {
         id
         name
@@ -280,6 +296,44 @@ const CurveQuery = gql`
         lb_lv
         ratios {
           value
+        }
+      }
+    }
+  }
+`;
+
+const RecipeQuery = gql`
+  query CookingRecipes($entryId: JSON!) {
+    CookingRecipes(where: { special_dishes__resonator: { equals: $entryId } }) {
+      docs {
+        id
+        result_item {
+          id
+          name
+          icon {
+            url
+          }
+          rarity {
+            id
+            color
+          }
+        }
+        special_dishes {
+          resonator {
+            id
+            name
+          }
+          item {
+            id
+            name
+            icon {
+              url
+            }
+            rarity {
+              id
+              color
+            }
+          }
         }
       }
     }

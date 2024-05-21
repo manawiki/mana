@@ -4,23 +4,16 @@ import { Image } from "~/components/Image";
 import { useState } from "react";
 
 export function Main({ data: fulldata }: { data: ItemType }) {
-  const char = fulldata.Item;
+  const char = fulldata;
 
   const mainImage = char?.icon?.url;
+  const mainBanner = char?.image?.url;
   const mainName = char?.name;
   const mainDesc = char?.desc;
   const mainStatDisplay = [
     {
       label: "Rarity",
       value: char.rarity?.id,
-    },
-    {
-      label: "Bag Slot",
-      value: char.bag_slot?.name,
-    },
-    {
-      label: "Category",
-      value: char.category?.name,
     },
   ];
 
@@ -43,6 +36,17 @@ export function Main({ data: fulldata }: { data: ItemType }) {
             className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg 
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
           >
+            <div className="flex items-center justify-center shadow-sm shadow-1 dark:bg-dark350 bg-zinc-50 h-full p-3">
+              <Image
+                height={280}
+                className="object-contain"
+                url={
+                  mainBanner ?? "https://static.mana.wiki/zzz/Run2_00016.png"
+                }
+                options="height=280"
+                alt={mainName ?? "Icon"}
+              />
+            </div>
             {mainStatDisplay?.map((row) => (
               <div className="px-3 py-2 justify-between flex items-center gap-2">
                 <div className="flex items-center gap-2">
@@ -68,9 +72,11 @@ export function Main({ data: fulldata }: { data: ItemType }) {
             ))}
 
             {/* Description */}
-            <div className="px-3 py-2 justify-between flex items-center gap-2 text-sm">
-              {mainDesc}
-            </div>
+            {mainDesc == "" ? null : (
+              <div className="px-3 py-2 justify-between flex items-center gap-2 text-sm">
+                {mainDesc}
+              </div>
+            )}
           </div>
         </section>
       </div>
