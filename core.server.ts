@@ -14,7 +14,7 @@ import invariant from "tiny-invariant";
 import { settings } from "./app/config";
 
 // patch in Remix runtime globals
-installGlobals();
+installGlobals({ nativeFetch: true });
 require("dotenv").config();
 sourceMapSupport.install();
 
