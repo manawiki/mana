@@ -226,6 +226,11 @@ const ResonatorQuery = gql`
       affiliation
       resonance_power
       resonance_eval_report
+      overclock_diagnostic_report
+      vo_en
+      vo_ja
+      vo_ko
+      vo_zh
       stories {
         title
         content

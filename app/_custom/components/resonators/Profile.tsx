@@ -10,6 +10,10 @@ export function Profile({ data: full }: { data: any }) {
     { name: "Birthplace", value: char.birthplace },
     { name: "Affiliation", value: char.affiliation },
     { name: "Resonance Power", value: char.resonance_power },
+    { name: "English Voice", value: char.vo_en },
+    { name: "Japanese Voice", value: char.vo_ja },
+    { name: "Korean Voice", value: char.vo_ko },
+    { name: "Chinese Voice", value: char.vo_zh },
   ];
 
   const longdata = [

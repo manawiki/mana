@@ -175,6 +175,22 @@ export const Resonators: CollectionConfig = {
          type: "text",
       },
       {
+         name: "vo_zh",
+         type: "text",
+      },
+      {
+         name: "vo_ja",
+         type: "text",
+      },
+      {
+         name: "vo_ko",
+         type: "text",
+      },
+      {
+         name: "vo_en",
+         type: "text",
+      },
+      {
          name: "stories",
          type: "array",
          fields: [
