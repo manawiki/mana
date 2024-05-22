@@ -1989,10 +1989,10 @@
   resolved "https://registry.yarnpkg.com/@one-ini/wasm/-/wasm-0.1.1.tgz#6013659736c9dbfccc96e8a9c2b3de317df39323"
   integrity sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==
 
-"@payloadcms/bundler-vite@0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@payloadcms/bundler-vite/-/bundler-vite-0.1.6.tgz#412629274886435a84b0e2f047726889f528fa63"
-  integrity sha512-7VOREVMLJGQX6sjSowGRIZhIlZW9t9fgwYv7FH0VdCyztvZfiNsTcpQ0He8V3YbCYUmjlFGiTgtv1zirrkYSEw==
+"@payloadcms/bundler-vite@0.1.7":
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@payloadcms/bundler-vite/-/bundler-vite-0.1.7.tgz#8b8fc0280058d5ef6cb29dec774bcf1513f679eb"
+  integrity sha512-ld9VIi20brY0Vme4URnqFhKzpF3g5TGJ8vcnh46Jlkci73FWThG9ARMxB9WrvtFt/tRcAU64w9hMEohKQ0MLQg==
   dependencies:
     "@rollup/plugin-image" "^3.0.2"
     "@vitejs/plugin-react" "^4.0.4"
@@ -2003,10 +2003,10 @@
     vite "^4.4.9"
     vite-plugin-virtual "^0.2.0"
 
-"@payloadcms/db-mongodb@1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@payloadcms/db-mongodb/-/db-mongodb-1.4.3.tgz#53ec961d94b694521b7f89f24216611c8f7ff812"
-  integrity sha512-EOqxE8XOuICkxBqCwPkAj/NiIT5GxbYG7uocUGNvw5icZkZSAT88YD4dipZISP4Ft8QQ7EUJsjqeRali8oLtCw==
+"@payloadcms/db-mongodb@1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@payloadcms/db-mongodb/-/db-mongodb-1.5.1.tgz#b44f314518d3bf73990c6f84afafcd5daafd6693"
+  integrity sha512-llaVGLqHkBaRvMuPG0hNdXUQ0UBfzCxujAc2N9ZtNGru7+PIyxsjVbhvgflcybuFHX12BDgOD1uvTUWfa/MgiA==
   dependencies:
     bson-objectid "2.0.4"
     deepmerge "4.3.1"
@@ -2025,15 +2025,14 @@
   dependencies:
     range-parser "^1.2.1"
 
-"@payloadcms/richtext-slate@1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@payloadcms/richtext-slate/-/richtext-slate-1.4.0.tgz#3ad112be41bd007da69b0e7fe66d07329fb07a37"
-  integrity sha512-nIQmo/q5ZeRylSXuUEn6DHgDXgye/SjMZ3HNPKhyEDe1ziiCvqpgb9CJ9m1DgPg1eDqh2OYxCUHipC21k0X0jw==
+"@payloadcms/richtext-slate@1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@payloadcms/richtext-slate/-/richtext-slate-1.5.2.tgz#3611923b7a1d62882a10b2df3508f98cb8a11dbf"
+  integrity sha512-0rq9zgOhpPHO5kcFlajld3h5beww6jjYwHZH5sxgtuen3bz6pepIr3agg650R/aE1+sfez0NdpwoB0gb7FX03g==
   dependencies:
     "@faceless-ui/modal" "2.0.1"
     i18next "22.5.1"
     is-hotkey "0.2.0"
-    react "18.2.0"
     react-i18next "11.18.6"
     slate "0.91.4"
     slate-history "0.86.0"
@@ -9739,10 +9738,10 @@ payload-query@^1.0.2:
   dependencies:
     ts-powertools "0.0.3"
 
-payload@2.11.2:
-  version "2.11.2"
-  resolved "https://registry.yarnpkg.com/payload/-/payload-2.11.2.tgz#d774a4736d6a5ab0fea4d4c555dd825ce534c1e2"
-  integrity sha512-UaruSsw7nFOzLurBjPWIHiDzGuTIGEK5UrEEfHagJnYe6xUP3/cg44qD+RQNb5D1FkV7x/B+ha8Ci7YVdz9eAA==
+payload@2.18.3:
+  version "2.18.3"
+  resolved "https://registry.yarnpkg.com/payload/-/payload-2.18.3.tgz#cc9e8d5d8b6d3d34ddd20cdff796ecdac6464378"
+  integrity sha512-J+8GnnN7pxG17y4rosedQCE46f8ZaxJEY0f+We3lwUVUvzPM2EhvmUg+38V2PaxtR8MSSkPBCeOuGQjx1BAENQ==
   dependencies:
     "@date-io/date-fns" "2.16.0"
     "@dnd-kit/core" "6.0.8"
@@ -9810,11 +9809,11 @@ payload@2.11.2:
     process "0.11.10"
     qs "6.11.2"
     qs-middleware "1.0.3"
-    react "18.2.0"
+    react "^18.0.0"
     react-animate-height "2.1.2"
     react-datepicker "4.16.0"
     react-diff-viewer-continued "3.2.6"
-    react-dom "18.2.0"
+    react-dom "^18.0.0"
     react-helmet "6.1.0"
     react-i18next "11.18.6"
     react-image-crop "10.1.8"
@@ -10422,7 +10421,15 @@ react-diff-viewer-continued@^3.3.1:
     memoize-one "^6.0.0"
     prop-types "^15.8.1"
 
-react-dom@18.2.0, react-dom@^18.2.0:
+react-dom@^18.0.0:
+  version "18.3.1"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.1.tgz#c2265d79511b57d479b3dd3fdfa51536494c5cb4"
+  integrity sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==
+  dependencies:
+    loose-envify "^1.1.0"
+    scheduler "^0.23.2"
+
+react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
@@ -10636,7 +10643,14 @@ react-zorm@^0.9.0:
   resolved "https://registry.yarnpkg.com/react-zorm/-/react-zorm-0.9.0.tgz#bb696ed0917bcbec3d1857309dbad5c4577a018c"
   integrity sha512-esuEiNUuj+JfI4Lz5o36KgT2JNN/NTNeO/70FghbRSBjCxRKeEtjO4KXP7SOMzbOa6rhOFNiP+goPXOUTLG/pw==
 
-react@18.2.0, react@^18.2.0:
+react@^18.0.0:
+  version "18.3.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"
+  integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
+  dependencies:
+    loose-envify "^1.1.0"
+
+react@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz#555bd98592883255fa00de14f1151a917b5d77d5"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -11058,6 +11072,13 @@ scheduler@0.23.0, scheduler@^0.23.0:
   version "0.23.0"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
   integrity sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==
+  dependencies:
+    loose-envify "^1.1.0"
+
+scheduler@^0.23.2:
+  version "0.23.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.2.tgz#414ba64a3b282892e944cf2108ecc078d115cdc3"
+  integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==
   dependencies:
     loose-envify "^1.1.0"
 
