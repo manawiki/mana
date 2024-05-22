@@ -20,6 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { SideMenuSectionNestedLink } from "./SideMenuSectionNestedLink";
 import { nanoid } from "nanoid";
+import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 
 export function SideMenuLink({
    link,
@@ -35,6 +36,8 @@ export function SideMenuLink({
    const nestedLinkActive = link?.nestedLinks?.find(
       (x: any) => x.path === pathname,
    );
+
+   const hasNestedLinks = link?.nestedLinks?.length > 0;
 
    const [isSectionOpen, setSection] = useState(nestedLinkActive ?? false);
 
@@ -125,63 +128,41 @@ export function SideMenuLink({
             }}
          >
             {/* Insert top */}
-            <div className="-top-[1px] left-0 w-full h-2 rounded-t-lg absolute opacity-0 hover:opacity-100">
-               <button
-                  type="button"
-                  onClick={() =>
-                     setMenu((existingMenuItems: any[]) => {
-                        const updatedMenu = existingMenuItems?.map(
-                           (menuRow: any) => {
-                              const getLink = menuRow?.links?.find(
-                                 (x: any) => x.id === link.id,
-                              );
-                              if (getLink) {
-                                 const newItem = {
-                                    id: nanoid(),
-                                    name: "Untitled",
-                                    path: "/link",
-                                    icon: "",
-                                    nestedLinks: [],
-                                 };
-                                 const newMenuItems = [...menuRow?.links];
-                                 //@ts-ignore
-                                 newMenuItems.splice(index, 0, newItem);
-                                 return {
-                                    ...menuRow,
-                                    links: newMenuItems,
-                                 };
-                              }
-                              return { ...menuRow };
-                           },
-                        );
-                        return updatedMenu;
-                     })
-                  }
-                  className="px-0.5 justify-between flex w-full items-center -mt-1.5 rounded-t"
-               >
-                  <div className="rounded-full border dark:border-transparent bg-white border-zinc-300 dark:bg-black size-3 flex items-center justify-center">
-                     <Icon
-                        size={10}
-                        name="chevron-up"
-                        className="dark:text-white text-light -mt-[1px]"
-                        title="Add above"
-                     />
-                  </div>
-                  <div className="text-[10px] border-t border-dashed border-zinc-300 dark:border-zinc-500 flex-grow" />
-                  <div className="border bg-zinc-50 border-zinc-300 dark:border-zinc-600 rounded-full dark:bg-dark500 p-0.5">
-                     <Icon size={8} name="plus" title="Add above" />
-                  </div>
-                  <div className="text-[10px] border-t border-dashed border-zinc-300 dark:border-zinc-500 flex-grow" />
-                  <div className="rounded-full border dark:border-transparent bg-white border-zinc-300 dark:bg-black size-3 flex items-center justify-center">
-                     <Icon
-                        size={10}
-                        name="chevron-up"
-                        className="dark:text-white text-light -mt-[1px]"
-                        title="Add above"
-                     />
-                  </div>
-               </button>
-            </div>
+            <button
+               type="button"
+               className="justify-center flex w-full items-start left-0 top-0 h-2 absolute opacity-0 hover:opacity-100"
+               onClick={() =>
+                  setMenu((existingMenuItems: any[]) => {
+                     const updatedMenu = existingMenuItems?.map(
+                        (menuRow: any) => {
+                           const getLink = menuRow?.links?.find(
+                              (x: any) => x.id === link.id,
+                           );
+                           if (getLink) {
+                              const newItem = {
+                                 id: nanoid(),
+                                 name: "Untitled",
+                                 path: "/link",
+                                 icon: "",
+                                 nestedLinks: [],
+                              };
+                              const newMenuItems = [...menuRow?.links];
+                              //@ts-ignore
+                              newMenuItems.splice(index, 0, newItem);
+                              return {
+                                 ...menuRow,
+                                 links: newMenuItems,
+                              };
+                           }
+                           return { ...menuRow };
+                        },
+                     );
+                     return updatedMenu;
+                  })
+               }
+            >
+               <div className="dark:bg-zinc-500 bg-zinc-400 flex items-center justify-center h-0.5 rounded-b-sm w-4/5"></div>
+            </button>
             {link.nestedLinks && link.nestedLinks.length > 0 ? (
                editMode ? (
                   <div>
@@ -414,61 +395,101 @@ export function SideMenuLink({
                )}
             </div>
             {/* Insert bottom */}
-            <div className="-bottom-[1px] left-0 w-full h-2 rounded-t-lg absolute opacity-0 hover:opacity-100">
-               <button
-                  className="px-0.5 justify-between flex w-full items-center -mb-1.5 rounded-t"
-                  onClick={() =>
-                     setMenu((existingMenuItems: any[]) => {
-                        const updatedMenu = existingMenuItems?.map(
-                           (menuRow: any) => {
-                              const getLink = menuRow?.links?.find(
-                                 (x: any) => x.id === link.id,
+            <div className="justify-center flex w-full items-end left-0 bottom-0 h-2 absolute opacity-0 hover:opacity-100 px-4 gap-3">
+               <Tooltip placement="bottom">
+                  <TooltipTrigger
+                     type="button"
+                     asChild
+                     onClick={() =>
+                        setMenu((existingMenuItems: any[]) => {
+                           const updatedMenu = existingMenuItems?.map(
+                              (menuRow: any) => {
+                                 const getLink = menuRow?.links?.find(
+                                    (x: any) => x.id === link.id,
+                                 );
+                                 if (getLink) {
+                                    const newItem = {
+                                       id: nanoid(),
+                                       name: "Untitled",
+                                       path: "/link",
+                                       icon: "",
+                                       nestedLinks: [],
+                                    };
+                                    const newMenuItems = [...menuRow?.links];
+                                    //@ts-ignore
+                                    newMenuItems.splice(index + 1, 0, newItem);
+                                    return {
+                                       ...menuRow,
+                                       links: newMenuItems,
+                                    };
+                                 }
+                                 return { ...menuRow };
+                              },
+                           );
+                           return updatedMenu;
+                        })
+                     }
+                  >
+                     <div className="dark:bg-zinc-500 bg-zinc-400 flex items-center justify-center h-0.5 rounded-t-sm w-4/5" />
+                  </TooltipTrigger>
+                  <TooltipContent>Insert below</TooltipContent>
+               </Tooltip>
+               {!hasNestedLinks && !editMode && (
+                  <Tooltip placement="bottom">
+                     <TooltipTrigger
+                        type="button"
+                        asChild
+                        onClick={() =>
+                           setMenu((existingMenuItems: any[]) => {
+                              const updatedMenu = existingMenuItems?.map(
+                                 (menuRow: any) => {
+                                    const getLink = menuRow?.links?.find(
+                                       //@ts-ignore
+                                       (x: any) => x.id === link.id,
+                                    );
+                                    if (getLink) {
+                                       const newNestedLink = {
+                                          id: nanoid(),
+                                          name: "Untitled",
+                                          path: "/",
+                                          icon: "",
+                                       };
+                                       const newNestedLinks = [
+                                          ...(getLink?.nestedLinks || []),
+                                       ];
+                                       newNestedLinks.splice(
+                                          //@ts-ignore
+                                          index + 1,
+                                          0,
+                                          newNestedLink,
+                                       ); // insert newNestedLink at index
+
+                                       return {
+                                          ...menuRow,
+                                          links: menuRow?.links?.map(
+                                             (linkItem: any) =>
+                                                linkItem.id === link.id
+                                                   ? {
+                                                        ...linkItem,
+                                                        nestedLinks:
+                                                           newNestedLinks,
+                                                     }
+                                                   : linkItem,
+                                          ),
+                                       };
+                                    }
+                                    return { ...menuRow };
+                                 },
                               );
-                              if (getLink) {
-                                 const newItem = {
-                                    id: nanoid(),
-                                    name: "Untitled",
-                                    path: "/link",
-                                    icon: "",
-                                    nestedLinks: [],
-                                 };
-                                 const newMenuItems = [...menuRow?.links];
-                                 //@ts-ignore
-                                 newMenuItems.splice(index + 1, 0, newItem);
-                                 return {
-                                    ...menuRow,
-                                    links: newMenuItems,
-                                 };
-                              }
-                              return { ...menuRow };
-                           },
-                        );
-                        return updatedMenu;
-                     })
-                  }
-               >
-                  <div className="rounded-full border dark:border-transparent bg-white border-zinc-300 dark:bg-black size-3 flex items-center justify-center">
-                     <Icon
-                        size={10}
-                        name="chevron-down"
-                        className="dark:text-white text-light -mb-[1px]"
-                        title="Add above"
-                     />
-                  </div>
-                  <div className="text-[10px] border-t border-dashed dark:border-zinc-500 flex-grow" />
-                  <div className="border bg-zinc-50 border-zinc-300 dark:border-zinc-600 rounded-full dark:bg-dark500 p-0.5">
-                     <Icon size={8} name="plus" title="Add above" />
-                  </div>
-                  <div className="text-[10px] border-t border-dashed dark:border-zinc-500 flex-grow" />
-                  <div className="rounded-full border dark:border-transparent bg-white border-zinc-300 dark:bg-black size-3 flex items-center justify-center">
-                     <Icon
-                        size={10}
-                        name="chevron-down"
-                        className="dark:text-white text-light -mb-[1px]"
-                        title="Add above"
-                     />
-                  </div>
-               </button>
+                              return updatedMenu;
+                           })
+                        }
+                     >
+                        <div className="dark:bg-zinc-600 bg-zinc-500 flex items-center justify-center h-0.5 rounded-t-sm w-1/5" />
+                     </TooltipTrigger>
+                     <TooltipContent>Add nested link</TooltipContent>
+                  </Tooltip>
+               )}
             </div>
          </div>
          {isSectionOpen && (
