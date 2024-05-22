@@ -5,6 +5,9 @@ import { Icon } from "~/components/Icon";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
 import { SideMenu } from "./sidemenu/SideMenu";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
+import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
 
 export function ColumnTwo() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
@@ -26,8 +29,8 @@ export function ColumnTwo() {
                         clsx(
                            isActive
                               ? "bg-zinc-200/40 dark:bg-dark350"
-                              : "hover:dark:bg-dark350 hover:bg-zinc-200/40",
-                           "flex items-center gap-3 text-1 max-desktop:justify-center p-1.5 rounded-lg relative group",
+                              : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
+                           "flex items-center gap-3 max-desktop:justify-center p-1.5 rounded-lg relative group",
                         )
                      }
                      to="/"
@@ -38,7 +41,7 @@ export function ColumnTwo() {
                               className={clsx(
                                  isActive
                                     ? "dark:bg-blue-900 bg-blue-200"
-                                    : "dark:bg-dark450 bg-zinc-200",
+                                    : "dark:bg-dark450 bg-zinc-200/50",
                                  "size-6  rounded-md flex items-center justify-center dark:group-hover:bg-blue-900 group-hover:bg-blue-200",
                               )}
                            >
@@ -65,8 +68,8 @@ export function ColumnTwo() {
                         clsx(
                            isActive
                               ? "bg-zinc-200/40 dark:bg-dark350"
-                              : "hover:dark:bg-dark350 hover:bg-zinc-200/40",
-                           "flex items-center gap-3 text-1 max-desktop:justify-center p-1.5 rounded-lg relative group",
+                              : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
+                           "flex items-center gap-3 max-desktop:justify-center p-1.5 rounded-lg relative group",
                         )
                      }
                      to="/collections"
@@ -77,7 +80,7 @@ export function ColumnTwo() {
                               className={clsx(
                                  isActive
                                     ? "dark:bg-yellow-900 bg-yellow-200"
-                                    : "dark:bg-dark450 bg-zinc-200",
+                                    : "dark:bg-dark450 bg-zinc-200/50",
                                  "size-6  rounded-md flex items-center justify-center dark:group-hover:bg-yellow-900 group-hover:bg-yellow-200",
                               )}
                            >
@@ -88,7 +91,7 @@ export function ColumnTwo() {
                                  className={clsx(
                                     isActive
                                        ? "dark:text-yellow-300 text-yellow-600"
-                                       : "dark:text-zinc-300 text-zinc-500 group-hover:dark:text-yellow-300 group-hover:text-yellow-500",
+                                       : "dark:text-zinc-300 text-zinc-500 group-hover:dark:text-yellow-300 group-hover:text-yellow-600",
                                  )}
                               />
                            </div>
@@ -104,8 +107,8 @@ export function ColumnTwo() {
                         clsx(
                            isActive
                               ? "bg-zinc-200/40 dark:bg-dark350"
-                              : "hover:dark:bg-dark350 hover:bg-zinc-200/40",
-                           "flex items-center gap-3 text-1 max-desktop:justify-center p-1.5 rounded-lg relative group",
+                              : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
+                           "flex items-center gap-3 max-desktop:justify-center p-1.5 rounded-lg relative group",
                         )
                      }
                      to="/posts"
@@ -116,7 +119,7 @@ export function ColumnTwo() {
                               className={clsx(
                                  isActive
                                     ? "dark:bg-emerald-900 bg-emerald-200"
-                                    : "dark:bg-dark450 bg-zinc-200",
+                                    : "dark:bg-dark450 bg-zinc-200/50",
                                  "size-6  rounded-md flex items-center justify-center dark:group-hover:bg-emerald-900 group-hover:bg-emerald-200",
                               )}
                            >
@@ -127,7 +130,7 @@ export function ColumnTwo() {
                                  className={clsx(
                                     isActive
                                        ? "dark:text-emerald-300 text-emerald-600"
-                                       : "dark:text-zinc-300 text-zinc-500 group-hover:dark:text-emerald-300 group-hover:text-emerald-500",
+                                       : "dark:text-zinc-300 text-zinc-500 group-hover:dark:text-emerald-300 group-hover:text-emerald-600",
                                  )}
                               />
                            </div>
@@ -144,8 +147,8 @@ export function ColumnTwo() {
                         clsx(
                            isActive
                               ? "bg-zinc-200/40 dark:bg-dark350"
-                              : "hover:dark:bg-dark350 hover:bg-zinc-200/40",
-                           "flex items-center gap-3 text-1 max-desktop:justify-center p-1.5 rounded-lg relative group",
+                              : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
+                           "flex items-center gap-3 max-desktop:justify-center p-1.5 rounded-lg relative group",
                         )
                      }
                      to="/community"
@@ -156,7 +159,7 @@ export function ColumnTwo() {
                               className={clsx(
                                  isActive
                                     ? "dark:bg-purple-900 bg-purple-200"
-                                    : "dark:bg-dark450 bg-zinc-200",
+                                    : "dark:bg-dark450 bg-zinc-200/50",
                                  "size-6  rounded-md flex items-center justify-center dark:group-hover:bg-purple-900 group-hover:bg-purple-200",
                               )}
                            >
@@ -178,7 +181,12 @@ export function ColumnTwo() {
                      )}
                   </NavLink>
                </div>
-               <SideMenu site={site} />
+               <AdminOrStaffOrOwner>
+                  <SideMenu site={site} />
+               </AdminOrStaffOrOwner>
+               <NotAdminOrStaffOrOwner>
+                  <ViewSideMenu site={site} />
+               </NotAdminOrStaffOrOwner>
             </div>
          </div>
       </section>

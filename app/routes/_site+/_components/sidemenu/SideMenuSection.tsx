@@ -100,7 +100,7 @@ export function SideMenuSection({
          <div className="pl-2 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
             <input
                type="text"
-               className="text-sm bg-transparent focus:outline-none dark:focus:bg-dark350 focus:bg-white p-0.5 rounded"
+               className="text-sm bg-transparent font-semibold focus:outline-none dark:focus:bg-dark350 focus:bg-white p-0.5 rounded"
                defaultValue={menuSection.name}
             />
             <div

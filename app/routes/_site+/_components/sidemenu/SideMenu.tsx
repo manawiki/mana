@@ -19,9 +19,15 @@ import {
 import { SideMenuSection } from "./SideMenuSection";
 import { Button } from "~/components/Button";
 import { nanoid } from "nanoid";
+import { useFetcher } from "@remix-run/react";
+import { isAdding } from "~/utils/form";
 
 export function SideMenu({ site }: { site: Site }) {
+   const fetcher = useFetcher();
+
    const [activeId, setActiveId] = useState<string | null>(null);
+
+   const savingMenu = isAdding(fetcher, "saveMenu");
 
    const activeSection = site?.menu?.find(
       (x) => "id" in x && x.id === activeId,
@@ -35,7 +41,7 @@ export function SideMenu({ site }: { site: Site }) {
 
    const [menus, setMenu] = useState(site?.menu);
 
-   const isChanged = menus !== site?.menu;
+   const isChanged = JSON.stringify(menus) !== JSON.stringify(site?.menu);
 
    function handleDragEnd(event: DragEndEvent) {
       const { active, over } = event;
@@ -87,14 +93,33 @@ export function SideMenu({ site }: { site: Site }) {
                <div className="pl-2 pt-3">
                   <div className="grid grid-cols-2 gap-3">
                      <Button
+                        onClick={() => setMenu(site?.menu)}
                         className="!py-1 !px-2 text-xs"
                         color="zinc"
-                        onClick={() => setMenu(site?.menu)}
                      >
                         Cancel
                      </Button>
-                     <Button className="!py-1 !px-2 text-xs" color="green">
-                        Save
+                     <Button
+                        disabled={savingMenu}
+                        type="submit"
+                        onClick={() => {
+                           return fetcher.submit(
+                              //@ts-ignore
+                              {
+                                 intent: "saveMenu",
+                                 siteMenu: JSON.stringify(menus),
+                                 siteId: site.id,
+                              },
+                              {
+                                 method: "POST",
+                                 action: "/settings/site",
+                              },
+                           );
+                        }}
+                        className="!py-1 !px-2 text-xs"
+                        color="green"
+                     >
+                        {savingMenu ? "Saving..." : "Save"}
                      </Button>
                   </div>
                </div>
@@ -109,11 +134,12 @@ export function SideMenu({ site }: { site: Site }) {
                            ...existingMenuItems,
                            {
                               id: nanoid(),
-                              name: "New Section",
-                              links: [{ id: nanoid(), name: "yoo" }],
+                              name: "Untitled",
+                              links: [
+                                 { id: nanoid(), name: "Untitled", path: "/" },
+                              ],
                            },
                         ];
-                        console.log(newMenuSection);
                         return newMenuSection;
                      })
                   }

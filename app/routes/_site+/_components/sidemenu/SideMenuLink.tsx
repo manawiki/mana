@@ -143,7 +143,7 @@ export function SideMenuLink({
                                     const newItem = {
                                        id: nanoid(),
                                        name: "Untitled",
-                                       path: "/link",
+                                       path: "/",
                                        icon: "",
                                        nestedLinks: [],
                                     };
@@ -420,7 +420,7 @@ export function SideMenuLink({
                                     const newItem = {
                                        id: nanoid(),
                                        name: "Untitled",
-                                       path: "/link",
+                                       path: "/",
                                        icon: "",
                                        nestedLinks: [],
                                     };
