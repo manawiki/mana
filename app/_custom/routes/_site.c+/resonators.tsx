@@ -24,18 +24,29 @@ export async function loader({
     },
     payload,
   });
+  const fetchElementList = fetchList({
+    request,
+    gql: {
+      query: QUERY_ELEMENTS,
+    },
+    payload,
+  });
 
-  const [{ list }] = await Promise.all([fetchResonatorList]);
+  const [{ list }, element] = await Promise.all([
+    fetchResonatorList,
+    fetchElementList,
+  ]);
 
   return json({
     resonators: list?.data?.resonators?.docs,
+    elements: element?.list?.data?.elements?.docs,
   });
 }
 
 export default function HomePage() {
-  const { resonators } = useLoaderData<typeof loader>();
+  const { resonators, elements } = useLoaderData<typeof loader>();
 
-  return <EchoList chars={resonators} />;
+  return <ResonatorList chars={resonators} elementlist={elements} />;
 }
 
 type FilterTypes = {
@@ -51,7 +62,7 @@ type FilterOptionType = {
   color?: string;
 };
 
-const EchoList = ({ chars, sonatalist }: any) => {
+const ResonatorList = ({ chars, elementlist }: any) => {
   const [filters, setFilters] = useState<FilterTypes[]>([]);
   const [sort, setSort] = useState("id");
   const [search, setSearch] = useState("");
@@ -61,6 +72,8 @@ const EchoList = ({ chars, sonatalist }: any) => {
     { name: "ID", field: "id" },
     { name: "Name", field: "name" },
   ];
+
+  const elemfilter = elementlist.sort((a, b) => a.id - b.id);
 
   // All Filter Options listed individually atm to control order filter options appear in
   const rarities = [
@@ -73,43 +86,14 @@ const EchoList = ({ chars, sonatalist }: any) => {
       name: "5",
     },
   ] as FilterOptionType[];
-  const elements = [
-    {
-      id: "0",
-      name: "Physical",
-      icon: "https://static.mana.wiki/wuwa/T_IconElementZero1_UI.png",
-    },
-    {
-      id: "1",
-      name: "Glacio",
-      icon: "https://static.mana.wiki/wuwa/T_IconElementIce1_UI.png",
-    },
-    {
-      id: "2",
-      name: "Fusion",
-      icon: "https://static.mana.wiki/wuwa/T_IconElementFire1_UI.png",
-    },
-    {
-      id: "3",
-      name: "Electro",
-      icon: "https://static.mana.wiki/wuwa/T_IconElementThunder1_UI.png",
-    },
-    {
-      id: "4",
-      name: "Aero",
-      icon: "https://static.mana.wiki/wuwa/T_IconElementWind1_UI.png",
-    },
-    {
-      id: "5",
-      name: "Spectro",
-      icon: "https://static.mana.wiki/wuwa/T_IconElementLight1_UI.png",
-    },
-    {
-      id: "6",
-      name: "Havoc",
-      icon: "https://static.mana.wiki/wuwa/T_IconElementDark1_UI.png",
-    },
-  ] as FilterOptionType[];
+  const elements = elemfilter?.map((elem: any) => {
+    return {
+      id: elem.id,
+      name: elem.name,
+      icon: elem.icon?.url,
+    };
+  }) as FilterOptionType[];
+
   const weapons = [
     {
       id: "1",
@@ -427,6 +411,20 @@ const QUERY_RESONATORS = `
             id
             name
          }
+      }
+    }
+  }
+`;
+
+const QUERY_ELEMENTS = `
+  query {
+    elements: Elements(limit: 1000) {
+      docs {
+        id
+        name
+        icon {
+          url
+        }
       }
     }
   }
