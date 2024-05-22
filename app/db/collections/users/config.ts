@@ -142,6 +142,7 @@ export const Users: CollectionConfig = {
          name: "sites",
          type: "relationship",
          relationTo: "sites",
+         maxDepth: 2,
          hasMany: true,
          access: {
             read: isStaffOrSelfFieldLevel,
