@@ -11,7 +11,6 @@ import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
 import { settings } from "./app/config";
-import { PayloadRequest } from "payload/types";
 
 // patch in Remix runtime globals
 installGlobals({ nativeFetch: true });
@@ -163,30 +162,27 @@ startCore();
 
 // Create a request handler for production
 function createProductionRequestHandler(): RequestHandler {
-   function getLoadContext(req: PayloadRequest, res: Response) {
-      const userData = req.user
-         ? {
-              id: req?.user?.id,
-              roles: req?.user?.roles,
-              username: req?.user?.username,
-              avatar: {
-                 id: req?.user?.avatar?.id,
-                 url: req?.user?.avatar?.url,
-              },
-           }
-         : undefined;
-      return {
-         payload: req.payload,
-         user: req?.user && userData,
-         res,
-      };
-   }
-
    return createRequestHandler({
       build,
       mode: process.env.NODE_ENV,
-      // @ts-ignore
-      getLoadContext,
+      getLoadContext(req, res) {
+         const userData = req.user
+            ? {
+                 id: req?.user?.id,
+                 roles: req?.user?.roles,
+                 username: req?.user?.username,
+                 avatar: {
+                    id: req?.user?.avatar?.id,
+                    url: req?.user?.avatar?.url,
+                 },
+              }
+            : undefined;
+         return {
+            payload: req.payload,
+            user: userData,
+            res,
+         };
+      },
    });
 }
 
@@ -218,7 +214,7 @@ function createDevRequestHandler(): RequestHandler {
       try {
          return createRequestHandler({
             build,
-            mode: "development",
+            mode: process.env.NODE_ENV,
             getLoadContext(req, res) {
                const userData = req.user
                   ? {
@@ -237,7 +233,6 @@ function createDevRequestHandler(): RequestHandler {
                   res,
                };
             },
-            // @ts-ignore
          })(req, res, next);
       } catch (error) {
          next(error);
