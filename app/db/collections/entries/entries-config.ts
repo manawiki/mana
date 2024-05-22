@@ -55,9 +55,9 @@ export const Entries: CollectionConfig = {
          name: "author",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 2,
          required: true,
          defaultValue: ({ user }: { user: User }) => user?.id,
-         maxDepth: 2,
       },
       {
          name: "icon",

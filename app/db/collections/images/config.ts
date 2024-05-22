@@ -27,12 +27,13 @@ export const Images: CollectionConfig = {
          name: "createdBy",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 1,
          required: true,
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
+            read: isStaffFieldLevel,
             update: isStaffFieldLevel,
          },
-         maxDepth: 1,
       },
       {
          name: "site",
