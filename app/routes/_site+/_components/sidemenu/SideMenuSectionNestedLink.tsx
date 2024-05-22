@@ -106,7 +106,10 @@ export function SideMenuSectionNestedLink({
                      })
                   }
                >
-                  <div className="dark:bg-zinc-500 bg-zinc-400 flex items-center justify-center h-0.5 rounded-b-sm w-4/5"></div>
+                  <div className="size-3 rounded-full flex items-center justify-center dark:bg-dark500 bg-white border dark:border-transparent absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                     <Icon name="plus" title="Add menu above" size={8} />
+                  </div>
+                  <div className="dark:bg-dark450 bg-zinc-300 flex items-center justify-center h-0.5 rounded-b-sm w-4/5"></div>
                </TooltipTrigger>
                <TooltipContent>Add menu above</TooltipContent>
             </Tooltip>
@@ -347,7 +350,10 @@ export function SideMenuSectionNestedLink({
                      })
                   }
                >
-                  <div className="dark:bg-zinc-500 bg-zinc-400 flex items-center justify-center h-0.5 rounded-t-sm w-4/5"></div>
+                  <div className="size-3 rounded-full flex items-center justify-center dark:bg-dark500 bg-white border dark:border-transparent absolute -bottom-2.5 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                     <Icon name="plus" title="Add menu below" size={8} />
+                  </div>
+                  <div className="dark:bg-dark450 bg-zinc-300 flex items-center justify-center h-0.5 rounded-t-sm w-4/5"></div>
                </TooltipTrigger>
                <TooltipContent>Add menu below</TooltipContent>
             </Tooltip>

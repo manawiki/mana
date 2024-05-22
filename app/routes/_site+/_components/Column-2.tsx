@@ -18,112 +18,115 @@ export function ColumnTwo() {
             scrollbar-thumb-zinc-200 scrollbar-track-zinc-50 scrollbar"
          >
             <div className="flex-grow">
-               <NavLink
-                  prefetch="intent"
-                  end
-                  className={({ isActive }) =>
-                     clsx(
-                        isActive
-                           ? "bg-zinc-100/80 text-zinc-600 dark:bg-bg3Dark/35 dark:text-zinc-300"
-                           : "hover:dark:bg-bg3Dark/35 hover:bg-zinc-100/80",
-                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2 relative border-b border-zinc-200/50 dark:border-zinc-700/40",
-                     )
-                  }
-                  to="/"
-               >
-                  {({ isActive, isPending }) => (
+               <div className="space-y-0.5 m-2.5 mb-0">
+                  <NavLink
+                     prefetch="intent"
+                     end
+                     className={({ isActive }) =>
+                        clsx(
+                           isActive
+                              ? "bg-blue-50 dark:bg-blue-950/50"
+                              : "hover:dark:bg-blue-950/30 hover:bg-blue-50",
+                           "flex items-center gap-3 text-1 max-desktop:justify-center p-1.5 rounded-lg relative",
+                        )
+                     }
+                     to="/"
+                  >
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {(isActive || isPending) && (
-                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-500 bg-zinc-400" />
-                        )}
-                        <div className="max-desktop:hidden flex-grow font-bold text-sm">
-                           Home
-                        </div>
-                        <div className="p-[9px] flex items-center justify-center">
+                        <div className="size-[21px] dark:bg-blue-900 bg-blue-200 rounded-md flex items-center justify-center">
                            <Icon
                               name="home"
                               title="Home"
-                              size={14}
-                              className={clsx(
-                                 isActive || isPending
-                                    ? "dark:text-zinc-300 text-zinc-500"
-                                    : "text-zinc-400 dark:text-zinc-500",
-                              )}
+                              size={12}
+                              className="dark:text-blue-300 text-blue-500"
                            />
                         </div>
-                     </div>
-                  )}
-               </NavLink>
-               <NavLink
-                  prefetch="intent"
-                  className={({ isActive }) =>
-                     clsx(
-                        isActive
-                           ? "bg-zinc-100/80 dark:bg-bg3Dark/35"
-                           : "hover:dark:bg-bg3Dark/35 hover:bg-zinc-100/80",
-                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2 relative border-b border-zinc-200/50 dark:border-zinc-700/40",
-                     )
-                  }
-                  to="/posts"
-               >
-                  {({ isActive, isPending }) => (
-                     <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {(isActive || isPending) && (
-                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-500 bg-zinc-400" />
-                        )}
-                        <div className="max-desktop:hidden flex-grow font-bold text-sm">
-                           Posts
-                        </div>
-                        <div className="p-[9px] flex items-center justify-center">
-                           <Icon
-                              name="pen-square"
-                              title="Posts"
-                              size={14}
-                              className={clsx(
-                                 isActive || isPending
-                                    ? "dark:text-zinc-400 text-zinc-500"
-                                    : "text-zinc-400 dark:text-zinc-500",
-                              )}
-                           />
+                        <div className="max-desktop:hidden flex-grow font-semibold text-xs">
+                           Home
                         </div>
                      </div>
-                  )}
-               </NavLink>
-               <NavLink
-                  prefetch="intent"
-                  className={({ isActive }) =>
-                     clsx(
-                        isActive
-                           ? "bg-zinc-100/80 dark:bg-bg3Dark/35"
-                           : "hover:dark:bg-bg3Dark/35 hover:bg-zinc-100/80",
-                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2 relative border-b border-zinc-200/50 dark:border-zinc-700/40",
-                     )
-                  }
-                  to="/collections"
-               >
-                  {({ isActive, isPending }) => (
+                  </NavLink>
+                  <NavLink
+                     prefetch="intent"
+                     className={({ isActive }) =>
+                        clsx(
+                           isActive
+                              ? "bg-yellow-50 dark:bg-yellow-950/40"
+                              : "hover:dark:bg-yellow-950/30 hover:bg-yellow-50",
+                           "flex items-center gap-3 text-1 max-desktop:justify-center p-1.5 rounded-lg relative",
+                        )
+                     }
+                     to="/collections"
+                  >
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {(isActive || isPending) && (
-                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-500 bg-zinc-400" />
-                        )}
-                        <div className="max-desktop:hidden flex-grow text-sm font-bold">
-                           Collections
-                        </div>
-                        <div className="p-[9px] flex items-center justify-center">
+                        <div className="size-[21px] dark:bg-yellow-900 bg-yellow-200 rounded-md flex items-center justify-center">
                            <Icon
                               name="database"
                               title="Collections"
-                              size={14}
-                              className={clsx(
-                                 isActive || isPending
-                                    ? "dark:text-zinc-400 text-zinc-500"
-                                    : "text-zinc-400 dark:text-zinc-500",
-                              )}
+                              size={12}
+                              className="dark:text-yellow-500 text-yellow-600"
                            />
                         </div>
+                        <div className="max-desktop:hidden flex-grow font-semibold text-xs">
+                           Collections
+                        </div>
                      </div>
-                  )}
-               </NavLink>
+                  </NavLink>
+                  <NavLink
+                     prefetch="intent"
+                     className={({ isActive }) =>
+                        clsx(
+                           isActive
+                              ? "bg-emerald-50 dark:bg-emerald-950/40"
+                              : "hover:dark:bg-emerald-950/30 hover:bg-emerald-50",
+                           "flex items-center gap-3 text-1 max-desktop:justify-center p-1.5 rounded-lg relative",
+                        )
+                     }
+                     to="/posts"
+                  >
+                     <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
+                        <div className="size-[21px] dark:bg-emerald-900 bg-emerald-200 rounded-md flex items-center justify-center">
+                           <Icon
+                              name="square-pen"
+                              title="Posts"
+                              size={11}
+                              className="dark:text-emerald-500 text-emerald-600"
+                           />
+                        </div>
+                        <div className="max-desktop:hidden flex-grow font-semibold text-xs">
+                           Posts
+                        </div>
+                     </div>
+                  </NavLink>
+                  <NavLink
+                     prefetch="intent"
+                     end
+                     className={({ isActive }) =>
+                        clsx(
+                           isActive
+                              ? "bg-purple-50 dark:bg-purple-950/10"
+                              : "hover:dark:bg-purple-950/20 hover:bg-purple-50",
+                           "flex items-center gap-3 text-1 max-desktop:justify-center p-1.5 rounded-lg relative",
+                        )
+                     }
+                     to="/community"
+                  >
+                     <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
+                        <div className="size-[21px] dark:bg-purple-900 bg-purple-200 rounded-md flex items-center justify-center">
+                           <Icon
+                              name="message-circle"
+                              title="Community"
+                              size={12}
+                              className="dark:text-purple-400 text-purple-500"
+                           />
+                        </div>
+                        <div className="max-desktop:hidden flex-grow font-semibold text-xs">
+                           Community
+                        </div>
+                     </div>
+                  </NavLink>
+               </div>
+               <div className="rounded-full bg-zinc-200 dark:bg-dark400 h-[1px] mx-4 mt-3" />
                <SideMenu site={site} />
             </div>
          </div>
