@@ -128,41 +128,51 @@ export function SideMenuLink({
             }}
          >
             {/* Insert top */}
-            <button
-               type="button"
-               className="justify-center flex w-full items-start left-0 top-0 h-2 absolute opacity-0 hover:opacity-100"
-               onClick={() =>
-                  setMenu((existingMenuItems: any[]) => {
-                     const updatedMenu = existingMenuItems?.map(
-                        (menuRow: any) => {
-                           const getLink = menuRow?.links?.find(
-                              (x: any) => x.id === link.id,
+            <div className="justify-center flex w-full items-start left-0 -top-1 h-2 absolute opacity-0 hover:opacity-100 px-4 gap-3">
+               <Tooltip placement="top">
+                  <TooltipTrigger
+                     type="button"
+                     onClick={() =>
+                        setMenu((existingMenuItems: any[]) => {
+                           const updatedMenu = existingMenuItems?.map(
+                              (menuRow: any) => {
+                                 const getLink = menuRow?.links?.find(
+                                    (x: any) => x.id === link.id,
+                                 );
+                                 if (getLink) {
+                                    const newItem = {
+                                       id: nanoid(),
+                                       name: "Untitled",
+                                       path: "/link",
+                                       icon: "",
+                                       nestedLinks: [],
+                                    };
+                                    const newMenuItems = [...menuRow?.links];
+                                    //@ts-ignore
+                                    newMenuItems.splice(index, 0, newItem);
+                                    return {
+                                       ...menuRow,
+                                       links: newMenuItems,
+                                    };
+                                 }
+                                 return { ...menuRow };
+                              },
                            );
-                           if (getLink) {
-                              const newItem = {
-                                 id: nanoid(),
-                                 name: "Untitled",
-                                 path: "/link",
-                                 icon: "",
-                                 nestedLinks: [],
-                              };
-                              const newMenuItems = [...menuRow?.links];
-                              //@ts-ignore
-                              newMenuItems.splice(index, 0, newItem);
-                              return {
-                                 ...menuRow,
-                                 links: newMenuItems,
-                              };
-                           }
-                           return { ...menuRow };
-                        },
-                     );
-                     return updatedMenu;
-                  })
-               }
-            >
-               <div className="dark:bg-zinc-500 bg-zinc-400 flex items-center justify-center h-0.5 rounded-b-sm w-4/5"></div>
-            </button>
+                           return updatedMenu;
+                        })
+                     }
+                  >
+                     <div
+                        className="size-3 rounded-full flex items-center justify-center dark:bg-dark500 bg-white border dark:border-transparent 
+                        absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+                     >
+                        <Icon name="plus" title="Insert Below" size={9} />
+                     </div>
+                     <div className="dark:bg-dark450 bg-zinc-300 flex items-center justify-center h-0.5 rounded-b w-4/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/" />
+                  </TooltipTrigger>
+                  <TooltipContent>Insert above</TooltipContent>
+               </Tooltip>
+            </div>
             {link.nestedLinks && link.nestedLinks.length > 0 ? (
                editMode ? (
                   <div>
@@ -395,11 +405,10 @@ export function SideMenuLink({
                )}
             </div>
             {/* Insert bottom */}
-            <div className="justify-center flex w-full items-end left-0 bottom-0 h-2 absolute opacity-0 hover:opacity-100 px-4 gap-3">
+            <div className="justify-center flex w-full items-end left-0 -bottom-0.5 h-2 absolute opacity-0 hover:opacity-100 px-4 gap-3">
                <Tooltip placement="bottom">
                   <TooltipTrigger
                      type="button"
-                     asChild
                      onClick={() =>
                         setMenu((existingMenuItems: any[]) => {
                            const updatedMenu = existingMenuItems?.map(
@@ -430,14 +439,19 @@ export function SideMenuLink({
                         })
                      }
                   >
-                     <div className="dark:bg-zinc-500 bg-zinc-400 flex items-center justify-center h-0.5 rounded-t-sm w-4/5" />
+                     <div className="size-3 rounded-full flex items-center justify-center dark:bg-dark500 bg-white border dark:border-transparent absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                        <Icon name="plus" title="Insert Below" size={9} />
+                     </div>
+                     <div className="dark:bg-dark450 bg-zinc-300 flex items-center justify-center h-0.5 rounded-t w-4/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/" />
                   </TooltipTrigger>
                   <TooltipContent>Insert below</TooltipContent>
                </Tooltip>
+               {/* Insert nested menu */}
                {!hasNestedLinks && !editMode && (
                   <Tooltip placement="bottom">
                      <TooltipTrigger
                         type="button"
+                        className="group"
                         asChild
                         onClick={() =>
                            setMenu((existingMenuItems: any[]) => {
@@ -481,11 +495,23 @@ export function SideMenuLink({
                                     return { ...menuRow };
                                  },
                               );
+                              setSection(true);
                               return updatedMenu;
                            })
                         }
                      >
-                        <div className="dark:bg-zinc-600 bg-zinc-500 flex items-center justify-center h-0.5 rounded-t-sm w-1/5" />
+                        <div className="size-3 flex items-center justify-center  absolute right-4 top-[3px] z-10">
+                           <Icon
+                              name="corner-down-left"
+                              title="Insert Nested Link"
+                              className="text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-500 dark:group-hover:text-zinc-400"
+                              size={9}
+                           />
+                        </div>
+                        <div
+                           className="dark:bg-zinc-600 bg-zinc-400 group-hover:dark:bg-zinc-500 group-hover:bg-zinc-500 
+                           flex items-center justify-center h-0.5 rounded-tr-full w-7 absolute right-2 bottom-0.5"
+                        />
                      </TooltipTrigger>
                      <TooltipContent>Add nested link</TooltipContent>
                   </Tooltip>
@@ -493,7 +519,7 @@ export function SideMenuLink({
             </div>
          </div>
          {isSectionOpen && (
-            <div className="pl-1 space-y-0.5">
+            <div className="pl-1.5 ml-2 space-y-0.5 border-l-2 border-dotted dark:border-dark450 my-1.5">
                <DndContext
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}

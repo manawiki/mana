@@ -81,49 +81,54 @@ export function SideMenu({ site }: { site: Site }) {
                )}
             </DragOverlay>
          </DndContext>
-         {isChanged && (
-            <div className="border-t border-color ml-5 mt-4 pt-3 pr-2">
-               <div className="grid grid-cols-2 gap-3">
-                  <Button
-                     className="!py-1 !px-2 text-xs"
-                     color="zinc"
-                     onClick={() => setMenu(site?.menu)}
-                  >
-                     Cancel
-                  </Button>
-                  <Button className="!py-1 !px-2 text-xs" color="green">
-                     Save
-                  </Button>
+         {/* Menu controls */}
+         <div className="fixed bottom-0 desktop:w-[214px] backdrop-blur-lg pl-2">
+            {isChanged && (
+               <div className="pl-2 pt-3">
+                  <div className="grid grid-cols-2 gap-3">
+                     <Button
+                        className="!py-1 !px-2 text-xs"
+                        color="zinc"
+                        onClick={() => setMenu(site?.menu)}
+                     >
+                        Cancel
+                     </Button>
+                     <Button className="!py-1 !px-2 text-xs" color="green">
+                        Save
+                     </Button>
+                  </div>
                </div>
+            )}
+            <div className="mt-3 pb-3 flex items-center">
+               <button
+                  onClick={() =>
+                     //@ts-ignore
+                     setMenu((existingMenuItems) => {
+                        const newMenuSection = [
+                           //@ts-ignore
+                           ...existingMenuItems,
+                           {
+                              id: nanoid(),
+                              name: "New Section",
+                              links: [{ id: nanoid(), name: "yoo" }],
+                           },
+                        ];
+                        console.log(newMenuSection);
+                        return newMenuSection;
+                     })
+                  }
+                  className="flex items-center justify-center gap-1.5 dark:hover:bg-dark350 hover:bg-zinc-100 rounded-lg py-2 px-2.5"
+               >
+                  <Icon
+                     name="list-plus"
+                     className="text-zinc-400 dark:text-zinc-600"
+                     size={16}
+                  />
+                  <span className="text-xs text-1 hidden desktop:block">
+                     Add Menu Section
+                  </span>
+               </button>
             </div>
-         )}
-         <div className="border-t border-color ml-5 mt-3 pt-2 pr-2 flex items-center">
-            <button
-               onClick={() =>
-                  //@ts-ignore
-                  setMenu((existingMenuItems) => {
-                     const newMenuSection = [
-                        //@ts-ignore
-                        ...existingMenuItems,
-                        {
-                           id: nanoid(),
-                           name: "New Section",
-                           links: [{ id: nanoid(), name: "yoo" }],
-                        },
-                     ];
-                     console.log(newMenuSection);
-                     return newMenuSection;
-                  })
-               }
-               className="flex items-center justify-center gap-1.5 mt-2 mr-1"
-            >
-               <Icon
-                  name="list-plus"
-                  className="text-zinc-400 dark:text-zinc-500"
-                  size={16}
-               />
-               <span className="text-xs text-1">Add Menu Section</span>
-            </button>
          </div>
       </>
    );
