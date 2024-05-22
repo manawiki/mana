@@ -17,6 +17,7 @@ import { Items } from "../../collections/items";
 
 // Custom Component Imports
 import { Main } from "~/_custom/components/items/Main";
+import { Obtain } from "~/_custom/components/items/Obtain";
 import { Cooking } from "~/_custom/components/items/Cooking";
 import { Synthesis } from "~/_custom/components/items/Synthesis";
 //import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
@@ -138,6 +139,7 @@ export default function EntryPage() {
       {/* <Entry customComponents={SECTIONS} customData={char} /> */}
       <Entry>
         <Main data={char} />
+        <Obtain data={char} />
         <Cooking data={char} />
         <Synthesis data={char} />
       </Entry>
@@ -161,6 +163,9 @@ const QUERY = gql`
       }
       category {
         name
+      }
+      obtain_data {
+        desc
       }
       icon {
         url

@@ -16,7 +16,7 @@ import type { Item as ItemType } from "~/db/payload-custom-types";
 import { Items } from "../../collections/items";
 
 // Custom Component Imports
-import { Main } from "~/_custom/components/namecards/Main";
+import { Main } from "~/_custom/components/monsters/Main";
 //import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
 
 // Loader definition - loads Entry data!
@@ -49,7 +49,7 @@ const SECTIONS = {
 
 export default function EntryPage() {
   const { entry } = useLoaderData<typeof loader>();
-  var char = entry.data.Namecard;
+  var char = entry.data.Monster;
   return (
     <>
       {/* <Entry customComponents={SECTIONS} customData={char} /> */}
@@ -61,23 +61,13 @@ export default function EntryPage() {
 }
 
 const QUERY = gql`
-  query Namecard($entryId: String!) {
-    Namecard(id: $entryId) {
+  query Monster($entryId: String!) {
+    Monster(id: $entryId) {
       id
       name
       slug
       desc
       fight_desc
-      rarity {
-        id
-        color
-      }
-      obtain_data {
-        desc
-      }
-      image {
-        url
-      }
       icon {
         url
       }
