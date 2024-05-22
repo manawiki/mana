@@ -1,7 +1,6 @@
 import * as path from "node:path";
 
-import { createRequestHandler } from "@metronome-sh/express";
-import type { RequestHandler } from "@remix-run/express";
+import { createRequestHandler, type RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";
@@ -12,6 +11,7 @@ import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
 import { settings } from "./app/config";
+import { PayloadRequest } from "payload/types";
 
 // patch in Remix runtime globals
 installGlobals({ nativeFetch: true });
@@ -163,7 +163,7 @@ startCore();
 
 // Create a request handler for production
 function createProductionRequestHandler(): RequestHandler {
-   function getLoadContext(req: any, res: any) {
+   function getLoadContext(req: PayloadRequest, res: Response) {
       const userData = req.user
          ? {
               id: req?.user?.id,
@@ -185,6 +185,7 @@ function createProductionRequestHandler(): RequestHandler {
    return createRequestHandler({
       build,
       mode: process.env.NODE_ENV,
+      // @ts-ignore
       getLoadContext,
    });
 }
@@ -236,6 +237,7 @@ function createDevRequestHandler(): RequestHandler {
                   res,
                };
             },
+            // @ts-ignore
          })(req, res, next);
       } catch (error) {
          next(error);
