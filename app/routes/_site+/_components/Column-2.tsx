@@ -37,7 +37,7 @@ export function ColumnTwo() {
                         to="/"
                      >
                         {({ isActive }) => (
-                           <div className="flex items-center desktop:gap-3.5 w-full max-desktop:justify-center">
+                           <div className="flex items-center desktop:gap-3 w-full max-desktop:justify-center">
                               <div
                                  className={clsx(
                                     isActive
@@ -76,7 +76,7 @@ export function ColumnTwo() {
                         to="/collections"
                      >
                         {({ isActive }) => (
-                           <div className="flex items-center desktop:gap-3.5 w-full max-desktop:justify-center">
+                           <div className="flex items-center desktop:gap-3 w-full max-desktop:justify-center">
                               <div
                                  className={clsx(
                                     isActive
@@ -115,7 +115,7 @@ export function ColumnTwo() {
                         to="/posts"
                      >
                         {({ isActive }) => (
-                           <div className="flex items-center desktop:gap-3.5 w-full max-desktop:justify-center">
+                           <div className="flex items-center desktop:gap-3 w-full max-desktop:justify-center">
                               <div
                                  className={clsx(
                                     isActive
@@ -155,7 +155,7 @@ export function ColumnTwo() {
                         to="/community"
                      >
                         {({ isActive }) => (
-                           <div className="flex items-center desktop:gap-3.5 w-full max-desktop:justify-center">
+                           <div className="flex items-center desktop:gap-3 w-full max-desktop:justify-center">
                               <div
                                  className={clsx(
                                     isActive

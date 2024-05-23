@@ -48,7 +48,7 @@ function ViewSideMenuLink({ link }: { link: any }) {
             >
                <div className="flex items-center gap-2 truncate">
                   <Avatar
-                     initials={link.name.charAt(0)}
+                     initials={!link.icon && link.name.charAt(0)}
                      className="size-6 flex-none"
                      src={link.icon}
                      options="aspect_ratio=1:1&height=120&width=120"
@@ -74,7 +74,7 @@ function ViewSideMenuLink({ link }: { link: any }) {
                to={link.path}
             >
                <Avatar
-                  initials={link.name.charAt(0)}
+                  initials={!link.icon && link.name.charAt(0)}
                   className="size-6 flex-none"
                   src={link.icon}
                   options="aspect_ratio=1:1&height=120&width=120"
@@ -100,7 +100,7 @@ function ViewSideMenuLink({ link }: { link: any }) {
                         {linkRow.name}
                      </span>
                      <Avatar
-                        initials={linkRow.name.charAt(0)}
+                        initials={!linkRow.icon && linkRow.name.charAt(0)}
                         src={linkRow.icon}
                         className="size-6 flex-none group-hover/nestedLink:hidden"
                         options="aspect_ratio=1:1&height=120&width=120"
