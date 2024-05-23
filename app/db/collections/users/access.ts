@@ -3,35 +3,38 @@ import type { Access, FieldAccess } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-export const isLoggedIn: Access = ({ req: { user } }) => {
-   // Return true if user is logged in, false if not
+// Return true if user is logged in, false if not
+export const isLoggedIn: Access<User, User> = ({ req: { user } }) => {
    return Boolean(user);
 };
 
-export const isStaff: Access = ({ req: { user } }) => {
-   // Return true or false based on if the user has a staff role
+// Return true if the user has a mana staff role
+export const isStaff: Access<User, User> = ({ req: { user } }) => {
    return Boolean(user?.roles?.includes("staff"));
 };
 
-export const isStaffFieldLevel: FieldAccess<{ id: string }, unknown, User> = ({
+// This work because the document id here is the user being accessed
+export const isSelf: Access<User, User> = ({ req: { user }, id }) => {
+   return user?.id === id;
+};
+
+export const isStaffOrSelf: Access<User, User> = (props) =>
+   isStaff(props) || isSelf(props);
+
+export const isStaffFieldLevel: FieldAccess<User, User, User> = ({
    req: { user },
 }) => {
-   // Return true or false based on if the user has an staff role
    return Boolean(user?.roles?.includes("staff"));
 };
 
-export const isStaffOrSelf: Access = ({ req: { user } }) => {
-   if (user) {
-      if (user?.roles?.includes("staff")) {
-         return true;
-      }
-      // If any other type of user, only provide access to themselves
-      return {
-         id: {
-            equals: user.id,
-         },
-      };
-   }
-   // Reject everyone else
-   return false;
+//Field level types, main difference here is you need to get the user.id from doc instead
+export const isSelfFieldLevel: FieldAccess<User, unknown, User> = ({
+   req,
+   doc,
+}) => {
+   return req.user?.id === doc?.id;
 };
+
+export const isStaffOrSelfFieldLevel: FieldAccess<User, unknown, User> = (
+   props,
+) => isStaffFieldLevel(props) || isSelfFieldLevel(props);

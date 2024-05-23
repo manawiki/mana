@@ -113,7 +113,6 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                </LoggedIn>
                <LoggedOut>
                   <div className="flex items-center justify-center flex-col gap-3 pb-1">
-                     <DarkModeToggle />
                      <Link
                         to={`/login?redirectTo=${location.pathname}`}
                         className="border-2 border-zinc-300 dark:border-zinc-700 transition duration-300 

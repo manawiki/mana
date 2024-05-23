@@ -25,7 +25,7 @@ export async function loader({
 
    if (result) {
       return redirectWithSuccess(
-         `/login?email=${email}`,
+         email ? `/login?email=${encodeURIComponent(email)}` : "/login",
          "Your email has been verified. You can now login.",
       );
    }

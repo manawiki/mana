@@ -7,8 +7,11 @@ import { AdUnit } from "~/routes/_site+/_components/Ramp";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
 import { Contributors } from "./Contributors";
-import { PinnedList, PrimaryMenuLinks } from "./Menu";
+import { PrimaryMenuLinks } from "./Menu";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
+import { LogoText } from "~/components/Logo";
+import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
+import { DarkModeToggle } from "../action+/theme-toggle";
 
 export function ColumnFour() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
@@ -17,7 +20,7 @@ export function ColumnFour() {
       <section className="relative laptop:z-30 laptop:block max-laptop:bg-2-sub">
          <div
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 no-scrollbar 
-            h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px]"
+            h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px] justify-between"
          >
             <div className="laptop:h-full flex flex-col bg-zinc-50 dark:bg-bg2Dark">
                {/* Mobile */}
@@ -26,7 +29,6 @@ export function ColumnFour() {
                   max-laptop:max-w-[728px] mx-auto w-full"
                >
                   <PrimaryMenuLinks site={site} />
-                  <PinnedList site={site} />
                </section>
                <div className="relative max-laptop:border-t max-laptop:border-color dark:border-zinc-700/50">
                   <div className="sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark">
@@ -178,6 +180,40 @@ export function ColumnFour() {
                         </div>
                      </section>
                   )}
+               </div>
+            </div>
+            <div
+               className="bg-gradient-to-b max-laptop:dark:to-bg3Dark max-laptop:dark:from-bg3Dark max-laptop:to-white 
+               max-laptop:from-white dark:from-bg2Dark/80 dark:to-bg2Dark to-zinc-50 from-zinc-50/50 
+                p-4 laptop:pt-0 laptop:fixed bottom-0 laptop:w-[334px]"
+            >
+               <div
+                  className="border-t border-dotted justify-between border-zinc-200 dark:border-zinc-700 w-full flex items-center pt-4
+               max-laptop:max-w-[728px] mx-auto"
+               >
+                  {!site.isWhiteLabel && (
+                     <Link
+                        to="https://mana.wiki"
+                        className="flex items-center gap-1.5 justify-start laptop:justify-end group"
+                     >
+                        <span className="dark:text-zinc-500 text-zinc-400 text-xs">
+                           Powered by
+                        </span>
+                        <LogoText className="w-9 text-1 group-hover:dark:text-zinc-300 group-hover:text-zinc-600" />
+                     </Link>
+                  )}
+                  <div className="flex items-center gap-4 text-xs text-1">
+                     <DarkModeToggle className="!size-3.5" />
+                     <LoggedOut>
+                        <Link
+                           className="dark:text-zinc-300 bg-zinc-200 text-zinc-600 hover:bg-zinc-300 hover:text-zinc-700
+                         dark:hover:text-white rounded-full dark:bg-dark450 px-2.5 py-1 dark:hover:bg-dark500"
+                           to="/join"
+                        >
+                           Sign up
+                        </Link>
+                     </LoggedOut>
+                  </div>
                </div>
             </div>
          </div>

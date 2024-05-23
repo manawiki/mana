@@ -69,7 +69,7 @@ export function CustomDBFilters({ collection }: { collection: Collection }) {
                         Sort by
                      </div>
                      <div className="grid grid-cols-2 gap-3">
-                        {collection.sortGroups?.map((sortItem) => {
+                        {collection?.sortGroups?.map((sortItem) => {
                            const isActiveSort =
                               filterQuery?.sort === sortItem.value ||
                               filterQuery?.sort === `-${sortItem.value}`;
@@ -121,7 +121,7 @@ export function CustomDBFilters({ collection }: { collection: Collection }) {
                         })}
                      </div>
                   </div>
-                  {collection.filterGroups?.map((filter) => (
+                  {collection?.filterGroups?.map((filter) => (
                      <div key={filter.filterKey}>
                         <div className="pb-2 text-sm font-bold text-1">
                            {filter.label}

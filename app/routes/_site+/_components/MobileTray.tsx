@@ -6,7 +6,7 @@ import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
 import { useWindowDimensions } from "~/utils/useWindowDimensions";
 
-import { PinnedList, PrimaryMenuLinks } from "./Menu";
+import { PrimaryMenuLinks } from "./Menu";
 
 export const MobileTray = ({
    children,
@@ -150,7 +150,6 @@ export const MenuTrayContent = ({
       <menu className="flex flex-col h-full">
          <div className="flex-grow">
             <PrimaryMenuLinks site={site} onOpenChange={onOpenChange} />
-            <PinnedList site={site} onOpenChange={onOpenChange} />
          </div>
       </menu>
    );

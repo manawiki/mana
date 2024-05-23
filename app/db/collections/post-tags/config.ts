@@ -18,12 +18,12 @@ export const PostTags: CollectionConfig = {
          name: "createdBy",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 0,
          required: true,
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },
-         maxDepth: 0,
       },
       {
          name: "slug",
