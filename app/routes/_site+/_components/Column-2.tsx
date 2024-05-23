@@ -182,7 +182,9 @@ export function ColumnTwo() {
                         )}
                      </NavLink>
                   </div>
-                  <div className="border-dotted border-t-2 border-zinc-200/80 dark:border-zinc-700 mx-4" />
+                  {site.menu && site.menu.length > 0 && (
+                     <div className="border-dotted border-t-2 border-zinc-200/80 dark:border-zinc-700 mx-4" />
+                  )}
                </div>
                <div className="pt-[176px]">
                   <AdminOrStaffOrOwner>
