@@ -26,7 +26,6 @@ export function SideMenuSection({
    setMenu: any;
 }) {
    const [activeId, setActiveId] = useState<string | null>(null);
-   const [isChanged, setIsChanged] = useState(false);
 
    const activeSection = menuSection?.links?.find(
       (x: any) => "id" in x && x.id === activeId,
@@ -66,8 +65,6 @@ export function SideMenuSection({
             });
             return updatedMenu;
          });
-
-         setIsChanged(true);
       }
       setActiveId(null);
    }
@@ -100,8 +97,25 @@ export function SideMenuSection({
          <div className="pl-2 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
             <input
                type="text"
+               placeholder="Section Name"
+               value={menuSection.name}
+               onChange={(e) => {
+                  setMenu((existingMenuItems: any) => {
+                     const updatedMenu = existingMenuItems?.map(
+                        (menuRow: any) => {
+                           return {
+                              ...menuRow,
+                              name:
+                                 menuSection.id === menuRow.id
+                                    ? e.target.value
+                                    : menuRow.name,
+                           };
+                        },
+                     );
+                     return updatedMenu;
+                  });
+               }}
                className="text-sm bg-transparent font-semibold focus:outline-none dark:focus:bg-dark350 focus:bg-white p-0.5 rounded"
-               defaultValue={menuSection.name}
             />
             <div
                className="touch-none hidden group-hover:block -left-1.5 top-0 cursor-grab hover:bg-zinc-200 dark:hover:bg-dark500 rounded py-1 px-0.5"
