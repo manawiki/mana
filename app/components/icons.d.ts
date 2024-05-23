@@ -1,4 +1,7 @@
 export type IconName =
+  | "corner-down-left"
+  | "list-tree"
+  | "ellipsis"
   | "key"
   | "dollar-sign"
   | "square-pen"
