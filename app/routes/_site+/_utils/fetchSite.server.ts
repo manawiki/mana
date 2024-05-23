@@ -100,6 +100,7 @@ const QUERY = gql`
          totalEntries
          totalPosts
          trendingPages
+         isWhiteLabel
          banner {
             id
             url

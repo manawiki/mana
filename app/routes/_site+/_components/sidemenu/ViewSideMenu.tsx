@@ -88,6 +88,7 @@ function ViewSideMenuLink({ link }: { link: any }) {
             <div className="pl-1.5 ml-2 space-y-0.5 border-l-2 border-dotted dark:border-dark450 my-1.5">
                {link.nestedLinks?.map((linkRow: any) => (
                   <Link
+                     key={linkRow.id}
                      to={linkRow.path}
                      className={clsx(
                         pathname === linkRow.path &&

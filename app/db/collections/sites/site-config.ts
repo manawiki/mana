@@ -30,7 +30,6 @@ export const Sites: CollectionConfig = {
          name: "about",
          type: "text",
       },
-
       {
          name: "isPublic",
          type: "checkbox",
@@ -149,6 +148,15 @@ export const Sites: CollectionConfig = {
          maxDepth: 2,
          access: {
             update: canUpdateSiteRolesField,
+         },
+      },
+      {
+         name: "isWhiteLabel",
+         type: "checkbox",
+         label: "White Label",
+         defaultValue: false,
+         access: {
+            update: isStaffFieldLevel,
          },
       },
       {
