@@ -165,7 +165,9 @@ export function SideMenuSectionNestedLink({
                         {nestedSection.name}
                      </span>
                      <Avatar
-                        initials={nestedSection.name.charAt(0)}
+                        initials={
+                           !nestedSection.icon && nestedSection.name.charAt(0)
+                        }
                         src={nestedSection.icon}
                         className="size-6 flex-none group-hover/nestedLink:hidden"
                         options="aspect_ratio=1:1&height=120&width=120"

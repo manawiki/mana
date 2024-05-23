@@ -220,7 +220,7 @@ export function SideMenuLink({
                   >
                      <div className="flex items-center gap-2 truncate">
                         <Avatar
-                           initials={link.name.charAt(0)}
+                           initials={!link.icon && link.name.charAt(0)}
                            className="size-6 flex-none"
                            src={link.icon}
                            options="aspect_ratio=1:1&height=120&width=120"
@@ -280,7 +280,7 @@ export function SideMenuLink({
             ) : (
                <Link className="flex items-center gap-2" to={link.path}>
                   <Avatar
-                     initials={link.name.charAt(0)}
+                     initials={!link.icon && link.name.charAt(0)}
                      className="size-6 flex-none"
                      src={link.icon}
                      options="aspect_ratio=1:1&height=120&width=120"
