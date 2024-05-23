@@ -31,7 +31,7 @@ export function ColumnFour() {
                   <PrimaryMenuLinks site={site} />
                </section>
                <div className="relative max-laptop:border-t max-laptop:border-color dark:border-zinc-700/50">
-                  <div className="sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark">
+                  <div className="laptop:sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark relative">
                      <div className="max-laptop:max-w-[760px] mx-auto">
                         <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
                            <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
@@ -113,20 +113,6 @@ export function ColumnFour() {
                               enableAds={site.enableAds}
                            />
                         </div>
-                        {site?.trendingPages &&
-                           //@ts-ignore
-                           site?.trendingPages.length > 0 && (
-                              <div className="flex items-center gap-1.5 ml-4 py-4 relative z-20">
-                                 <Icon
-                                    name="flame"
-                                    className="dark:text-zinc-400 text-zinc-500"
-                                    size={16}
-                                 />
-                                 <span className="text-sm text-1 font-bold">
-                                    Trending
-                                 </span>
-                              </div>
-                           )}
                      </div>
                      <span
                         className="bg-gradient-to-t dark:from-bg3Dark dark:laptop:from-bg2Dark dark:to-transparent 
@@ -137,12 +123,25 @@ export function ColumnFour() {
                            w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
                            pattern-size-2 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
                      />
+                     {/* @ts-ignore */}
+                     {site?.trendingPages && site?.trendingPages.length > 0 && (
+                        <div className="flex items-center gap-1.5 pt-4 pb-3 relative z-20 max-laptop:max-w-[760px] mx-auto pl-4">
+                           <Icon
+                              name="flame"
+                              className="dark:text-zinc-400 text-zinc-500"
+                              size={16}
+                           />
+                           <span className="text-sm text-1 font-bold">
+                              Trending
+                           </span>
+                        </div>
+                     )}
                   </div>
                   {/* @ts-ignore */}
                   {site?.trendingPages && site?.trendingPages.length > 0 && (
                      <section className="max-laptop:bg-3">
-                        <div className="max-laptop:max-w-[760px] mx-auto pl-4 tablet:px-4 laptop:pl-5 laptop:pr-0">
-                           <div className="divide-y divide-color dark:divide-zinc-700/40 border-y border-color dark:border-zinc-700/40 font-semibold">
+                        <div className="max-laptop:max-w-[760px] mx-auto pl-4 tablet:px-4 laptop:pl-5 laptop:pr-0 laptop:pb-[56px]">
+                           <div className="divide-y divide-color dark:divide-zinc-700/40 border-t border-color dark:border-zinc-700/40 font-semibold">
                               {/* @ts-ignore */}
                               {site?.trendingPages?.map((row: any) => (
                                  <Link
@@ -182,11 +181,7 @@ export function ColumnFour() {
                   )}
                </div>
             </div>
-            <div
-               className="bg-gradient-to-b max-laptop:dark:to-bg3Dark max-laptop:dark:from-bg3Dark max-laptop:to-white 
-               max-laptop:from-white dark:from-bg2Dark/80 dark:to-bg2Dark to-zinc-50 from-zinc-50/50 
-                p-4 laptop:pt-0 laptop:fixed bottom-0 laptop:w-[334px]"
-            >
+            <div className="p-4 laptop:pt-0 laptop:fixed bottom-0 laptop:w-[334px] bg-3 laptop:bg-2">
                <div
                   className="border-t border-dotted justify-between border-zinc-200 dark:border-zinc-700 w-full flex items-center pt-4
                max-laptop:max-w-[728px] mx-auto"
