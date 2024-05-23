@@ -6,7 +6,7 @@ import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { useZorm } from "react-zorm";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
-import { z } from "zod";
+import { string, z } from "zod";
 import { zx } from "zodix";
 
 import { Button } from "~/components/Button";
@@ -319,12 +319,28 @@ export async function action({
    request,
 }: ActionFunctionArgs) {
    const { intent } = await zx.parseForm(request, {
-      intent: z.enum(["saveSettings", "addDomain"]),
+      intent: z.enum(["saveSettings", "addDomain", "saveMenu"]),
    });
 
    if (!user) throw redirect("/404", 404);
 
    switch (intent) {
+      case "saveMenu": {
+         const { siteId, siteMenu } = await zx.parseForm(request, {
+            siteId: z.string(),
+            siteMenu: z.string(),
+         });
+         await payload.update({
+            collection: "sites",
+            id: siteId,
+            data: {
+               menu: JSON.parse(siteMenu),
+            },
+            overrideAccess: false,
+            user,
+         });
+         return jsonWithSuccess(null, "Successfully updated menu");
+      }
       case "saveSettings": {
          const result = await getMultipleFormData({
             request,

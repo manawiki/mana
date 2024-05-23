@@ -233,7 +233,6 @@ export const Collections: CollectionConfig = {
                   },
                ],
             },
-
             {
                name: "subSections",
                type: "array",
