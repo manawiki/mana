@@ -2,7 +2,6 @@ import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 
 import { Partytown } from "@builder.io/partytown/react";
-import { withMetronome } from "@metronome-sh/react";
 import type {
    MetaFunction,
    LinksFunction,
@@ -248,8 +247,6 @@ function App() {
    );
 }
 
-let AppExport = withMetronome(App);
-
 // Toggle Remix Dev Tools
 // if (process.env.NODE_ENV === "development") {
 //    const { withDevTools } = require("remix-development-tools");
@@ -257,7 +254,7 @@ let AppExport = withMetronome(App);
 //    AppExport = withDevTools(AppExport);
 // }
 
-export default AppExport;
+export default App;
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();

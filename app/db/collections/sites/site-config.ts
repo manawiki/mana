@@ -134,8 +134,8 @@ export const Sites: CollectionConfig = {
          name: "admins",
          type: "relationship",
          relationTo: "users",
-         hasMany: true,
          maxDepth: 2,
+         hasMany: true,
          access: {
             update: canUpdateSiteRolesField,
          },
@@ -144,8 +144,8 @@ export const Sites: CollectionConfig = {
          name: "contributors",
          type: "relationship",
          relationTo: "users",
-         hasMany: true,
          maxDepth: 2,
+         hasMany: true,
          access: {
             update: canUpdateSiteRolesField,
          },
@@ -300,6 +300,7 @@ export const Sites: CollectionConfig = {
          name: "owner",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 2,
          hasMany: false,
          access: {
             update: isStaffFieldLevel,
