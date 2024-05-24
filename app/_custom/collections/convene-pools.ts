@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/access";
 
-export const ConveneTypes: CollectionConfig = {
-   slug: "convene-types",
-   labels: { singular: "convene-type", plural: "convene-types" },
+export const ConvenePools: CollectionConfig = {
+   slug: "convene-pools",
+   labels: { singular: "convene-pool", plural: "convene-pools" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
