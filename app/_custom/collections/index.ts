@@ -1,4 +1,6 @@
 import { Attributes } from "./attributes";
+import { ConvenePools } from "./convene-pools";
+import { ConveneTypes } from "./convene-types";
 import { CookingRecipes } from "./cooking-recipes";
 import { EchoClasses } from "./echo-classes";
 import { EchoSkills } from "./echo-skills";
@@ -11,6 +13,8 @@ import { Items } from "./items";
 import { Monsters } from "./monsters";
 import { Namecards } from "./namecards";
 import { ObtainDatas } from "./obtain-datas";
+import { QuestTypes } from "./quest-types";
+import { Quests } from "./quests";
 import { Rarities } from "./rarities";
 import { ResonatorCurves } from "./resonator-curves";
 import { ResonatorSkillTrees } from "./resonator-skill-trees";
@@ -29,6 +33,8 @@ import { Weapons } from "./weapons";
 
 export const CustomCollections = [
    Attributes,
+   ConvenePools,
+   ConveneTypes,
    CookingRecipes,
    EchoClasses,
    EchoSkills,
@@ -41,6 +47,8 @@ export const CustomCollections = [
    Monsters,
    Namecards,
    ObtainDatas,
+   QuestTypes,
+   Quests,
    Rarities,
    ResonatorCurves,
    ResonatorSkillTrees,
