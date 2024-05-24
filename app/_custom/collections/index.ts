@@ -13,8 +13,8 @@ import { Items } from "./items";
 import { Monsters } from "./monsters";
 import { Namecards } from "./namecards";
 import { ObtainDatas } from "./obtain-datas";
-import { QuestTypes } from "./quest-types";
-import { Quests } from "./quests";
+//import { QuestTypes } from "./quest-types";
+//import { Quests } from "./quests";
 import { Rarities } from "./rarities";
 import { ResonatorCurves } from "./resonator-curves";
 import { ResonatorSkillTrees } from "./resonator-skill-trees";
@@ -47,8 +47,8 @@ export const CustomCollections = [
    Monsters,
    Namecards,
    ObtainDatas,
-   QuestTypes,
-   Quests,
+   //QuestTypes,
+   //Quests,
    Rarities,
    ResonatorCurves,
    ResonatorSkillTrees,
