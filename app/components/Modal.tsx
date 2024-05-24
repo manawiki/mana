@@ -23,7 +23,7 @@ export function Modal({
             className="relative z-50"
          >
             <div className="h-full w-full">
-               <Transition.Child
+               <Transition
                   //backdrop transition
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -37,10 +37,10 @@ export function Modal({
                      className="fixed inset-0 bg-slate-600/70 dark:bg-black/70"
                      aria-hidden="true"
                   />
-               </Transition.Child>
+               </Transition>
                <div className="fixed inset-0 overflow-y-auto">
                   <div className="flex min-h-full items-center justify-center">
-                     <Transition.Child
+                     <Transition
                         //modal transition
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -53,7 +53,7 @@ export function Modal({
                         {/* Container to center the panel */}
                         {/* The actual dialog panel  */}
                         <Dialog.Panel>{children}</Dialog.Panel>
-                     </Transition.Child>
+                     </Transition>
                   </div>
                </div>
             </div>
