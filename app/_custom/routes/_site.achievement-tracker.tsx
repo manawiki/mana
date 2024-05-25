@@ -60,6 +60,34 @@ const AchievementTracker = (data: any) => {
     TrophyCategories: trophyCategories,
   };
 
+  const trophyById = trophies.reduce((acc: any, cur: any) => {
+    acc[cur.id] = cur;
+    return acc;
+  }, {});
+
+  const [localTrophies, setLocalTrophies] = useState(() => {
+    if (typeof window !== "undefined") { // correct?
+      const localData = localStorage.getItem("trophies");
+      return localData ? JSON.parse(localData) :
+        { ...trophies.reduce((acc: any, cur: any) => {
+          acc[cur.id] = false;
+          return acc;
+      }, {}) };
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("trophies", JSON.stringify(localTrophies));
+  }, [localTrophies]);
+
+  const getTrophy = (id: string) => {
+    return localTrophies[id];
+  }
+
+  const updateTrophy = (id: string) => {
+    setLocalTrophies({ ...localTrophies, [id]: !localTrophies[id] });
+  }
+
   const [currgid, setCurrgid] = useState("0");
   const [refresh, setRefresh] = useState(false);
 
@@ -108,6 +136,8 @@ const AchievementTracker = (data: any) => {
           >
             <Achievements
               data={fulldata}
+              getTrophy={getTrophy}
+              updateTrophy={updateTrophy}
               currgid={currgid}
               refresh={refresh}
               setRefresh={setRefresh}
@@ -163,11 +193,10 @@ function GroupList({
               className="shadow-1 border-color-sub relative inline-block overflow-hidden rounded-lg border text-center shadow-sm cursor-pointer"
             >
               <div
-                className={`${
-                  g.id == currgid
+                className={`${g.id == currgid
                     ? "bg-slate-600 dark:bg-slate-500"
                     : "bg-zinc-500 dark:bg-zinc-600"
-                } hover:bg-opacity-50 dark:hover:bg-opacity-50 relative flex w-full h-full items-center justify-between px-2 py-1 `}
+                  } hover:bg-opacity-50 dark:hover:bg-opacity-50 relative flex w-full h-full items-center justify-between px-2 py-1 `}
               >
                 <div className="relative flex-none h-8 w-8 text-center">
                   <Image
@@ -194,6 +223,8 @@ function GroupList({
 
 function Achievements({
   data,
+  getTrophy,
+  updateTrophy,
   currgid,
   refresh,
   setRefresh,
@@ -202,8 +233,6 @@ function Achievements({
   isMobile,
 }: any) {
   const trophies = data.Trophies;
-  console.log(trophies);
-
   return (
     <>
       {isMobile ? (
@@ -220,13 +249,7 @@ function Achievements({
         const [checked, setChecked] = useState(false);
 
         useEffect(() => {
-          //We're saving achievement to local stage, so read initial value from local state
-          setChecked(
-            JSON.parse(
-              localStorage.getItem("WuWa_manawiki_achievement-" + ac?.id) ??
-                "false"
-            )
-          );
+          setChecked(getTrophy(ac?.id));
         }, [ac?.id]);
 
         return (
@@ -239,16 +262,12 @@ function Achievements({
                       {/* Checkbox section */}
                       <div
                         className={`shadow-1 flex h-8 w-8 flex-none cursor-pointer items-center
-                    justify-center rounded-lg border shadow shadow-1 bg-white dark:bg-dark500 hover:bg-green-50 dark:hover:bg-dark400 ${
-                      checked
-                        ? "border-green-300 dark:border-green-800"
-                        : "border-zinc-200 dark:border-zinc-500"
-                    }`}
+                    justify-center rounded-lg border shadow shadow-1 bg-white dark:bg-dark500 hover:bg-green-50 dark:hover:bg-dark400 ${checked
+                            ? "border-green-300 dark:border-green-800"
+                            : "border-zinc-200 dark:border-zinc-500"
+                          }`}
                         onClick={() => {
-                          localStorage.setItem(
-                            "WuWa_manawiki_achievement-" + ac?.id,
-                            JSON.stringify(!checked)
-                          );
+                          updateTrophy(ac?.id);
 
                           const cgroupnum = parseInt(
                             localStorage.getItem(
@@ -256,20 +275,20 @@ function Achievements({
                             )
                           )
                             ? parseInt(
-                                localStorage.getItem(
-                                  "WuWa_manawiki_group-" + currgid
-                                )
+                              localStorage.getItem(
+                                "WuWa_manawiki_group-" + currgid
                               )
+                            )
                             : 0;
                           !checked
                             ? localStorage.setItem(
-                                "WuWa_manawiki_group-" + currgid,
-                                (cgroupnum + 1).toString()
-                              )
+                              "WuWa_manawiki_group-" + currgid,
+                              (cgroupnum + 1).toString()
+                            )
                             : localStorage.setItem(
-                                "WuWa_manawiki_group-" + currgid,
-                                (cgroupnum - 1).toString()
-                              );
+                              "WuWa_manawiki_group-" + currgid,
+                              (cgroupnum - 1).toString()
+                            );
 
                           setRefresh(!refresh);
                           setChecked(!checked);
