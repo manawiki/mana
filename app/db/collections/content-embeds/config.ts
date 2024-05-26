@@ -27,12 +27,12 @@ export const ContentEmbeds: CollectionConfig = {
          name: "author",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 2,
          required: true,
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },
-         maxDepth: 2,
       },
       {
          name: "relationId",

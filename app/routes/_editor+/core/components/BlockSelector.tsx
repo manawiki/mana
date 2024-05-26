@@ -17,9 +17,10 @@ import { BlockType } from "../types";
 type Props = {
    element: CustomElement;
    editor: Editor;
+   isSelectorOpen: boolean;
 };
 
-export function BlockSelector({ element, editor }: Props) {
+export function BlockSelector({ element, editor, isSelectorOpen }: Props) {
    function onInsertBelow(block: CustomElement) {
       //@ts-ignore
       const path = [ReactEditor.findPath(editor, element)[0] + 1];
@@ -146,29 +147,6 @@ export function BlockSelector({ element, editor }: Props) {
       {
          label: "Linking",
          items: [
-            // {
-            //    label: "Embed",
-            //    icon: (
-            //       <Icon
-            //          name="brackets"
-            //          title="Embed"
-            //          className="text-teal-500"
-            //          size={16}
-            //       />
-            //    ),
-            //    description: "Embed a page or post",
-            //    onSelect: () => {
-            //       onInsertBelow({
-            //          id: nanoid(),
-            //          type: BlockType.Embed,
-            //          postUrl: "",
-            //          imageUrl: "",
-            //          title: "",
-            //          description: "",
-            //          children: [{ text: "" }],
-            //       });
-            //    },
-            // },
             {
                label: "Group",
                icon: (
@@ -176,7 +154,7 @@ export function BlockSelector({ element, editor }: Props) {
                      name="layout-list"
                      title="Group"
                      className="text-yellow-500"
-                     size={12}
+                     size={14}
                   />
                ),
                description: "Embed collection data",
@@ -202,7 +180,7 @@ export function BlockSelector({ element, editor }: Props) {
                      name="rectangle-horizontal"
                      title="Tabs"
                      className="text-orange-500"
-                     size={12}
+                     size={14}
                   />
                ),
                description: "Group elements with tabs",
@@ -227,7 +205,98 @@ export function BlockSelector({ element, editor }: Props) {
                   });
                },
             },
-
+            {
+               label: "Table",
+               icon: (
+                  <Icon
+                     name="table"
+                     title="Table"
+                     className="text-teal-500"
+                     size={14}
+                  />
+               ),
+               description: "Format elements in a table",
+               onSelect: () => {
+                  onInsertBelow({
+                     type: BlockType.Table,
+                     id: nanoid(),
+                     tableLayout: "fixed",
+                     tableStyle: "default",
+                     children: [
+                        //@ts-ignore
+                        {
+                           type: BlockType.TableBody,
+                           children: [
+                              {
+                                 type: BlockType.TableRow,
+                                 children: [
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.TableContent,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.TableContent,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.TableContent,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                 ],
+                              },
+                              {
+                                 type: BlockType.TableRow,
+                                 children: [
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.TableContent,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.TableContent,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                    {
+                                       type: BlockType.TableCell,
+                                       children: [
+                                          {
+                                             type: BlockType.TableContent,
+                                             children: [{ text: "" }],
+                                          },
+                                       ],
+                                    },
+                                 ],
+                              },
+                           ],
+                        },
+                     ],
+                  });
+               },
+            },
             {
                label: "Two Column",
                icon: (
@@ -235,10 +304,10 @@ export function BlockSelector({ element, editor }: Props) {
                      name="columns"
                      title="Two Columns"
                      className="text-blue-500"
-                     size={12}
+                     size={14}
                   />
                ),
-               description: "Implement a two-column layout",
+               description: "Structure elements in two-columns",
                onSelect: () => {
                   onInsertBelow({
                      id: nanoid(),
@@ -252,53 +321,6 @@ export function BlockSelector({ element, editor }: Props) {
       {
          label: "Widgets",
          items: [
-            {
-               label: "Info Box",
-               icon: (
-                  <Icon
-                     name="rows"
-                     title="Info Box"
-                     className="text-pink-400"
-                     size={12}
-                  />
-               ),
-               description: "Add an infobox",
-               onSelect: () => {
-                  onInsertBelow({
-                     id: nanoid(),
-                     type: BlockType.InfoBox,
-                     children: [
-                        {
-                           id: nanoid(),
-                           type: BlockType.InfoBoxItem,
-                           children: [],
-                           infoBoxLeftContent: [
-                              {
-                                 id: nanoid(),
-                                 type: BlockType.Paragraph,
-                                 children: [
-                                    {
-                                       text: "--",
-                                    },
-                                 ],
-                              },
-                           ],
-                           infoBoxRightContent: [
-                              {
-                                 id: nanoid(),
-                                 type: BlockType.Paragraph,
-                                 children: [
-                                    {
-                                       text: "-",
-                                    },
-                                 ],
-                              },
-                           ],
-                        },
-                     ],
-                  });
-               },
-            },
             {
                label: "Toggle Block",
                icon: (
@@ -326,7 +348,7 @@ export function BlockSelector({ element, editor }: Props) {
                      name="calendar-clock"
                      title="Event Timeline"
                      className="text-emerald-500"
-                     size={12}
+                     size={14}
                   />
                ),
                description: "Events with a start and end date",
@@ -356,7 +378,7 @@ export function BlockSelector({ element, editor }: Props) {
                      name="coins"
                      title="Ad Unit"
                      className="text-amber-400"
-                     size={12}
+                     size={14}
                   />
                ),
                description: "Generate revenue with ads",
@@ -382,20 +404,22 @@ export function BlockSelector({ element, editor }: Props) {
 
    return (
       <>
-         <button
-            type="button"
-            onClick={() => setEditorTray(true)}
-            className="flex h-7 w-7 items-center justify-center focus:outline-none"
-            aria-label="Insert block below"
-         >
-            <Icon
-               name="plus"
-               className={`${
-                  isEditorTrayOpen ? "rotate-45" : ""
-               } transform transition duration-300 ease-in-out`}
-               size={16}
-            />
-         </button>
+         {!isSelectorOpen && (
+            <button
+               type="button"
+               onClick={() => setEditorTray(true)}
+               className="flex h-7 w-7 items-center justify-center focus:outline-none"
+               aria-label="Insert block below"
+            >
+               <Icon
+                  name="plus"
+                  className={`${
+                     isEditorTrayOpen ? "rotate-45" : ""
+                  } transform transition duration-300 ease-in-out`}
+                  size={16}
+               />
+            </button>
+         )}
          <MobileTray
             onOpenChange={setEditorTray}
             open={isEditorTrayOpen}
@@ -428,12 +452,6 @@ export function BlockSelector({ element, editor }: Props) {
                   ))}
                </FloatingDelayGroup>
             </div>
-            {/* <div className="border-color relative h-12 border-y text-sm">
-                                 <input
-                                    className="bg-2 h-full w-full px-4 focus:outline-none"
-                                    placeholder="Search..."
-                                 />
-                              </div> */}
             <div className="space-y-4 pt-2">
                {groups.map((group, indexGroup) => {
                   return (
@@ -441,35 +459,33 @@ export function BlockSelector({ element, editor }: Props) {
                         <div className="pb-2 pl-0.5 text-left text-xs font-bold">
                            {group?.label}
                         </div>
-                        <div className="space-y-3">
+                        <div className="space-y-2.5">
                            {groups[indexGroup]?.items?.map(
                               (item, indexItem) => {
                                  return (
                                     <button
-                                       className="border-color hover:shadow-1 shadow-1 flex cursor-pointer items-center w-full
-                                                          laptop:justify-start gap-2  rounded-xl border bg-zinc-50 p-3 group
-                                                 text-xs shadow-sm outline-none dark:border-zinc-600/40 dark:bg-dark400 dark:hover:bg-dark450"
+                                       className="border-color flex cursor-pointer items-center w-full shadow-zinc-100 hover:border-zinc-200
+                                                          laptop:justify-start gap-2.5 rounded-xl border bg-zinc-50 p-2.5 group dark:shadow-zinc-800
+                                                shadow-sm outline-none dark:border-zinc-600/40 dark:bg-dark400 dark:hover:bg-dark450"
                                        key={indexItem}
                                        onClick={() => {
                                           item.onSelect();
                                           setEditorTray(false);
                                        }}
                                     >
-                                       <div className="space-y-0.5">
-                                          <div className="flex items-center gap-2 pb-1">
-                                             {item.icon && (
-                                                <div
-                                                   className="flex h-5 w-5 border border-zinc-200 dark:border-transparent dark:group-hover:bg-dark500
-                                                                     bg-white items-center justify-center dark:bg-dark450 rounded"
-                                                >
-                                                   {item.icon}
-                                                </div>
-                                             )}
-                                             <div className="font-bold">
-                                                {item.label}
-                                             </div>
+                                       {item.icon && (
+                                          <div
+                                             className="flex size-8 border border-zinc-200 dark:border-transparent dark:group-hover:bg-dark500
+                                                                     bg-white items-center justify-center dark:bg-dark450 rounded-lg"
+                                          >
+                                             {item.icon}
                                           </div>
-                                          <div className="text-1 text-xs">
+                                       )}
+                                       <div className="space-y-0.5">
+                                          <div className="font-bold text-left text-xs">
+                                             {item.label}
+                                          </div>
+                                          <div className="text-1 text-[10px]">
                                              {item.description}
                                           </div>
                                        </div>

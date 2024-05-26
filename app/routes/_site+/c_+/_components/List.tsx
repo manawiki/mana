@@ -31,10 +31,12 @@ export type Section = {
 
 export function List({
    children,
-   RowComponent,
+   CellComponent,
+   cellContainerClass,
 }: {
    children?: ReactNode;
-   RowComponent?: unknown;
+   CellComponent?: any;
+   cellContainerClass?: string;
 }) {
    const { site } = useSiteLoaderData();
 
@@ -64,18 +66,20 @@ export function List({
             isChanged={isChanged}
          />
          <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
-            {!collection.customDatabase && <AddEntry />}
+            {!collection?.customDatabase && <AddEntry />}
             {collection?.filterGroups?.length != 0 &&
-               !collection.customListTemplate && (
+               !collection?.customListTemplate && (
                   <CustomDBFilters collection={collection} />
                )}
-            {!collection.customListTemplate && (
+            {children ? (
+               children
+            ) : (
                <CollectionListRows
                   entries={entries}
-                  rowComponent={RowComponent}
+                  CellComponent={CellComponent}
+                  cellContainerClass={cellContainerClass}
                />
             )}
-            {children}
          </div>
       </>
    );
