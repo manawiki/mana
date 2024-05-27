@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 
-import {
-   type ActionFunctionArgs,
-   json,
-   redirect,
-   unstable_parseMultipartFormData,
-} from "@remix-run/node";
+import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { Resizable } from "re-resizable";
@@ -24,7 +19,6 @@ import { isAdding, isProcessing } from "~/utils/form";
 import {
    getMultipleFormData,
    uploadImage,
-   uploadHandler,
 } from "~/utils/upload-handler.server";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
@@ -337,33 +331,30 @@ export async function action({
 
    switch (intent) {
       case "addBlockImage": {
-         const result = await unstable_parseMultipartFormData(
+         const result = await getMultipleFormData({
             request,
-            uploadHandler({ prefix: "blockImage" }),
-         );
-
-         console.log(result);
-
-         const image = result.get("image") as any as { filepath: string };
-         const siteId = result.get("siteId") as string | undefined;
-
-         try {
-            const { id, url } = await uploadImage({
-               payload,
-               image: image,
-               user,
-               siteId: siteId,
-            });
-            return jsonWithSuccess(
-               { id, url, isUpload: true },
-               "Image uploaded",
-            );
-         } catch (error) {
-            return json({
-               error: "Something went wrong...unable to add image.",
-            });
+            prefix: "blockImage",
+            schema: z.any(),
+         });
+         if (result.success) {
+            const { image, siteId } = result.data;
+            try {
+               const { id, url } = await uploadImage({
+                  payload,
+                  image: image,
+                  user,
+                  siteId: siteId,
+               });
+               return jsonWithSuccess(
+                  { id, url, isUpload: true },
+                  "Image uploaded",
+               );
+            } catch (error) {
+               return json({
+                  error: "Something went wrong...unable to add image.",
+               });
+            }
          }
-
          // Last resort error message
          return json({
             error: "Something went wrong...unable to add image.",

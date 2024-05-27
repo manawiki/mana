@@ -13,7 +13,7 @@ import type { ZodRawShape, ZodTypeAny } from "zod";
 import { ZodType, z } from "zod";
 
 //Insert file prefix and nanoid to avoid file name collision
-export const uploadHandler = ({ prefix }: { prefix: string }) =>
+const uploadHandler = ({ prefix }: { prefix: string }) =>
    unstable_composeUploadHandlers(
       unstable_createFileUploadHandler({
          maxPartSize: 20000000,
