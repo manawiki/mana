@@ -54,6 +54,7 @@ export function Alert({
                />
             </HeadlessTransitionChild>
             <HeadlessTransitionChild
+               as="div"
                className="fixed z-50 inset-0 w-screen overflow-y-auto pt-6 tablet:pt-0"
                enter="ease-out duration-100"
                enterFrom="opacity-0"
