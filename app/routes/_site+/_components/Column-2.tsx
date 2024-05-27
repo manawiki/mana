@@ -1,13 +1,12 @@
-import { NavLink, useLoaderData } from "@remix-run/react";
-import clsx from "clsx";
+import { useLoaderData } from "@remix-run/react";
 
-import { Icon } from "~/components/Icon";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
 import { SideMenu } from "./sidemenu/SideMenu";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
 import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
+import { PrimaryMenu } from "./PrimaryMenu";
 
 export function ColumnTwo() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
@@ -21,172 +20,13 @@ export function ColumnTwo() {
             scrollbar-thumb-zinc-200 scrollbar-track-zinc-50 scrollbar"
          >
             <div className="flex-grow">
-               <div className="pt-2.5 mb-0 fixed h-[174px] desktop:w-[229px] bg-2 z-10 flex flex-col justify-between">
-                  <div className="flex flex-col gap-0.5 px-2">
-                     <NavLink
-                        prefetch="intent"
-                        end
-                        className={({ isActive }) =>
-                           clsx(
-                              isActive
-                                 ? "bg-zinc-200/40 dark:bg-dark350"
-                                 : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
-                              "flex items-center gap-3 max-desktop:justify-center p-1.5 rounded-lg relative group",
-                           )
-                        }
-                        to="/"
-                     >
-                        {({ isActive }) => (
-                           <div className="flex items-center desktop:gap-3 w-full max-desktop:justify-center">
-                              <div
-                                 className={clsx(
-                                    isActive
-                                       ? "dark:bg-blue-900 bg-blue-200"
-                                       : "dark:bg-dark450 bg-zinc-200/50",
-                                    "size-6  rounded-md flex items-center justify-center dark:group-hover:bg-blue-900 group-hover:bg-blue-200",
-                                 )}
-                              >
-                                 <Icon
-                                    name="home"
-                                    title="Home"
-                                    size={12}
-                                    className={clsx(
-                                       isActive
-                                          ? "dark:text-blue-300 text-blue-500"
-                                          : "dark:text-zinc-300 text-zinc-500 group-hover:dark:text-blue-300 group-hover:text-blue-500",
-                                    )}
-                                 />
-                              </div>
-                              <div className="max-desktop:hidden flex-grow font-semibold text-sm">
-                                 Home
-                              </div>
-                           </div>
-                        )}
-                     </NavLink>
-                     <NavLink
-                        prefetch="intent"
-                        className={({ isActive }) =>
-                           clsx(
-                              isActive
-                                 ? "bg-zinc-200/40 dark:bg-dark350"
-                                 : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
-                              "flex items-center gap-3 max-desktop:justify-center p-1.5 rounded-lg relative group",
-                           )
-                        }
-                        to="/collections"
-                     >
-                        {({ isActive }) => (
-                           <div className="flex items-center desktop:gap-3 w-full max-desktop:justify-center">
-                              <div
-                                 className={clsx(
-                                    isActive
-                                       ? "dark:bg-yellow-900 bg-yellow-200"
-                                       : "dark:bg-dark450 bg-zinc-200/50",
-                                    "size-6  rounded-md flex items-center justify-center dark:group-hover:bg-yellow-900 group-hover:bg-yellow-200",
-                                 )}
-                              >
-                                 <Icon
-                                    name="database"
-                                    title="Collections"
-                                    size={12}
-                                    className={clsx(
-                                       isActive
-                                          ? "dark:text-yellow-300 text-yellow-600"
-                                          : "dark:text-zinc-300 text-zinc-500 group-hover:dark:text-yellow-300 group-hover:text-yellow-600",
-                                    )}
-                                 />
-                              </div>
-                              <div className="max-desktop:hidden flex-grow font-semibold text-sm">
-                                 Collections
-                              </div>
-                           </div>
-                        )}
-                     </NavLink>
-                     <NavLink
-                        prefetch="intent"
-                        className={({ isActive }) =>
-                           clsx(
-                              isActive
-                                 ? "bg-zinc-200/40 dark:bg-dark350"
-                                 : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
-                              "flex items-center gap-3 max-desktop:justify-center p-1.5 rounded-lg relative group",
-                           )
-                        }
-                        to="/posts"
-                     >
-                        {({ isActive }) => (
-                           <div className="flex items-center desktop:gap-3 w-full max-desktop:justify-center">
-                              <div
-                                 className={clsx(
-                                    isActive
-                                       ? "dark:bg-emerald-900 bg-emerald-200"
-                                       : "dark:bg-dark450 bg-zinc-200/50",
-                                    "size-6  rounded-md flex items-center justify-center dark:group-hover:bg-emerald-900 group-hover:bg-emerald-200",
-                                 )}
-                              >
-                                 <Icon
-                                    name="square-pen"
-                                    title="Posts"
-                                    size={11}
-                                    className={clsx(
-                                       isActive
-                                          ? "dark:text-emerald-300 text-emerald-600"
-                                          : "dark:text-zinc-300 text-zinc-500 group-hover:dark:text-emerald-300 group-hover:text-emerald-600",
-                                    )}
-                                 />
-                              </div>
-                              <div className="max-desktop:hidden flex-grow font-semibold text-sm">
-                                 Posts
-                              </div>
-                           </div>
-                        )}
-                     </NavLink>
-                     <NavLink
-                        prefetch="intent"
-                        end
-                        className={({ isActive }) =>
-                           clsx(
-                              isActive
-                                 ? "bg-zinc-200/40 dark:bg-dark350"
-                                 : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
-                              "flex items-center gap-3 max-desktop:justify-center p-1.5 rounded-lg relative group",
-                           )
-                        }
-                        to="/community"
-                     >
-                        {({ isActive }) => (
-                           <div className="flex items-center desktop:gap-3 w-full max-desktop:justify-center">
-                              <div
-                                 className={clsx(
-                                    isActive
-                                       ? "dark:bg-purple-900 bg-purple-200"
-                                       : "dark:bg-dark450 bg-zinc-200/50",
-                                    "size-6  rounded-md flex items-center justify-center dark:group-hover:bg-purple-900 group-hover:bg-purple-200",
-                                 )}
-                              >
-                                 <Icon
-                                    name="message-circle"
-                                    title="Community"
-                                    size={12}
-                                    className={clsx(
-                                       isActive
-                                          ? "dark:text-purple-300 text-purple-500"
-                                          : "dark:text-zinc-300 text-zinc-500 group-hover:dark:text-purple-300 group-hover:text-purple-500",
-                                    )}
-                                 />
-                              </div>
-                              <div className="max-desktop:hidden flex-grow font-semibold text-sm">
-                                 Community
-                              </div>
-                           </div>
-                        )}
-                     </NavLink>
-                  </div>
+               <div className="pt-2.5 mb-0 fixed h-[178px] w-[59px] desktop:w-[229px] bg-2 z-10 flex flex-col justify-between">
+                  <PrimaryMenu isSidebar />
                   {site.menu && site.menu.length > 0 && (
                      <div className="border-dotted border-t-2 border-zinc-200/80 dark:border-zinc-700 mx-4" />
                   )}
                </div>
-               <div className="pt-[176px]">
+               <div className="pt-[178px]">
                   <AdminOrStaffOrOwner>
                      <SideMenu site={site} />
                   </AdminOrStaffOrOwner>

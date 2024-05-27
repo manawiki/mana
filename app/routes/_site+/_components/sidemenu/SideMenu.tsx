@@ -22,7 +22,13 @@ import { nanoid } from "nanoid";
 import { useFetcher } from "@remix-run/react";
 import { isAdding } from "~/utils/form";
 
-export function SideMenu({ site }: { site: Site }) {
+export function SideMenu({
+   site,
+   isSidebar,
+}: {
+   site: Site;
+   isSidebar?: boolean;
+}) {
    const fetcher = useFetcher();
 
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -87,14 +93,43 @@ export function SideMenu({ site }: { site: Site }) {
                )}
             </DragOverlay>
          </DndContext>
+         <div className="p-3 flex items-center">
+            <button
+               onClick={() =>
+                  //@ts-ignore
+                  setMenu((existingMenuItems) => {
+                     const newMenuSection = [
+                        //@ts-ignore
+                        ...existingMenuItems,
+                        {
+                           id: nanoid(),
+                           name: "Untitled",
+                           links: [
+                              { id: nanoid(), name: "Untitled", path: "/" },
+                           ],
+                        },
+                     ];
+                     return newMenuSection;
+                  })
+               }
+               className="flex items-center justify-center gap-1.5 dark:hover:bg-dark350 hover:bg-zinc-100 rounded-lg py-2 px-2.5"
+            >
+               <Icon
+                  name="list-plus"
+                  className="text-zinc-400 dark:text-zinc-600"
+                  size={16}
+               />
+               <span className="text-xs text-1">Add Menu Section</span>
+            </button>
+         </div>
          {/* Menu controls */}
-         <div className="fixed bottom-0 desktop:w-[214px] backdrop-blur-lg pl-2">
+         <div className="fixed bottom-0 w-[59px] desktop:w-[214px] backdrop-blur-lg flex flex-col">
             {isChanged && (
-               <div className="pl-2 pt-3">
+               <div className="pl-2 py-3">
                   <div className="grid grid-cols-2 gap-3">
                      <Button
                         onClick={() => setMenu(site?.menu)}
-                        className="!py-1 !px-2 text-xs"
+                        className="!py-1 !px-2 text-xs size-8"
                         color="zinc"
                      >
                         Cancel
@@ -124,37 +159,6 @@ export function SideMenu({ site }: { site: Site }) {
                   </div>
                </div>
             )}
-            <div className="mt-3 pb-3 flex items-center">
-               <button
-                  onClick={() =>
-                     //@ts-ignore
-                     setMenu((existingMenuItems) => {
-                        const newMenuSection = [
-                           //@ts-ignore
-                           ...existingMenuItems,
-                           {
-                              id: nanoid(),
-                              name: "Untitled",
-                              links: [
-                                 { id: nanoid(), name: "Untitled", path: "/" },
-                              ],
-                           },
-                        ];
-                        return newMenuSection;
-                     })
-                  }
-                  className="flex items-center justify-center gap-1.5 dark:hover:bg-dark350 hover:bg-zinc-100 rounded-lg py-2 px-2.5"
-               >
-                  <Icon
-                     name="list-plus"
-                     className="text-zinc-400 dark:text-zinc-600"
-                     size={16}
-                  />
-                  <span className="text-xs text-1 hidden desktop:block">
-                     Add Menu Section
-                  </span>
-               </button>
-            </div>
          </div>
       </>
    );

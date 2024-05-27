@@ -7,11 +7,15 @@ import { AdUnit } from "~/routes/_site+/_components/Ramp";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
 import { Contributors } from "./Contributors";
-import { PrimaryMenuLinks } from "./Menu";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 import { LogoText } from "~/components/Logo";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { DarkModeToggle } from "../action+/theme-toggle";
+import { SideMenu } from "./sidemenu/SideMenu";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
+import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
+import { PrimaryMenu } from "./PrimaryMenu";
 
 export function ColumnFour() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
@@ -24,11 +28,14 @@ export function ColumnFour() {
          >
             <div className="laptop:h-full flex flex-col bg-zinc-50 dark:bg-bg2Dark">
                {/* Mobile */}
-               <section
-                  className="py-4 max-tablet:px-3 laptop:hidden 
-                  max-laptop:max-w-[728px] mx-auto w-full"
-               >
-                  <PrimaryMenuLinks site={site} />
+               <section className="max-tablet:p-2 laptop:hidden max-laptop:max-w-[728px] mx-auto w-full">
+                  <PrimaryMenu />
+                  <AdminOrStaffOrOwner>
+                     <SideMenu site={site} />
+                  </AdminOrStaffOrOwner>
+                  <NotAdminOrStaffOrOwner>
+                     <ViewSideMenu site={site} />
+                  </NotAdminOrStaffOrOwner>
                </section>
                <div className="relative max-laptop:border-t max-laptop:border-color dark:border-zinc-700/50">
                   <div className="laptop:sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark relative">

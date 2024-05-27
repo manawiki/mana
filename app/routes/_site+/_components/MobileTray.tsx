@@ -3,10 +3,13 @@ import { Drawer } from "vaul";
 
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
-import type { Site } from "~/db/payload-types";
+import { Site } from "~/db/payload-types";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
 import { useWindowDimensions } from "~/utils/useWindowDimensions";
-
-import { PrimaryMenuLinks } from "./Menu";
+import { SideMenu } from "./sidemenu/SideMenu";
+import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
+import { PrimaryMenu } from "./PrimaryMenu";
 
 export const MobileTray = ({
    children,
@@ -139,18 +142,24 @@ export function NestedTray({
    );
 }
 
-export const MenuTrayContent = ({
+export function MenuTrayContent({
    site,
    onOpenChange,
 }: {
    site: Site;
    onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+}) {
    return (
       <menu className="flex flex-col h-full">
          <div className="flex-grow">
-            <PrimaryMenuLinks site={site} onOpenChange={onOpenChange} />
+            <PrimaryMenu />
+            <AdminOrStaffOrOwner>
+               <SideMenu site={site} />
+            </AdminOrStaffOrOwner>
+            <NotAdminOrStaffOrOwner>
+               <ViewSideMenu site={site} />
+            </NotAdminOrStaffOrOwner>
          </div>
       </menu>
    );
-};
+}
