@@ -21,7 +21,7 @@ export function TotalMaterialCost({ data: full }: { data: any }) {
     ?.map((a: any) => a.resonator_skill?.upgrade_costs);
   const passive_nodes_cost = char?.skill_tree
     ?.filter((a: any) => a.node_type == "PASSIVE_NODE")
-    ?.map((a: any) => a.unlock_costs);
+    ?.map((a: any) => a.resonator_skill?.upgrade_costs);
   const bonus_nodes_cost = char?.skill_tree
     ?.filter((a: any) => a.node_type == "BONUS_NODE")
     ?.map((a: any) => a.unlock_costs);
@@ -64,15 +64,29 @@ export function TotalMaterialCost({ data: full }: { data: any }) {
   // 2) Calculate Skill Tree total
   // ======================
   let skillTreeTotal = [] as ItemQtyFrameProps[];
+  const exists = (id: string) => skillTreeTotal.findIndex((a) => a.item.id == id);
+
   if (skillTree && skillTree?.length > 0) {
     for (let i = 0; i < skillTree?.length; i++) {
-      const material_qty = skillTree?.[i]?.items;
-      if (!material_qty) break;
+      const entry = skillTree?.[i];
+      if (!entry) continue;
+      const single = entry?.item;
+      if (single) {
+        const existIndex = exists(single.id);
+        if (existIndex == -1) {
+          skillTreeTotal.push({
+            item: single,
+            cnt: entry?.cnt,
+          });
+        } else {
+          skillTreeTotal[existIndex].cnt += entry?.cnt;
+        }
+        continue;
+      }
+      const material_qty = entry?.items;
       for (let j = 0; j < material_qty.length; j++) {
         const currMat = { ...material_qty?.[j] } as ItemQtyFrameProps;
-        const existIndex = skillTreeTotal.findIndex(
-          (a) => a.item?.id == currMat.item?.id
-        );
+        const existIndex = exists(currMat.item?.id);
         if (existIndex == -1) {
           skillTreeTotal.push(currMat);
         } else {

@@ -118,7 +118,7 @@ const PassiveNode = ({ node }: any) => {
   var desc = node?.resonator_skill?.desc;
   desc = desc.replace(/(<br\s*\/?>){2,}/gi, "<br/>");
   const type = node?.resonator_skill?.type?.name;
-  const upgrade_costs = node?.unlock_costs;
+  const upgrade_costs = node?.resonator_skill?.upgrade_costs;
   const params = node?.resonator_skill?.params;
   const icon = node?.resonator_skill?.icon?.url;
 
@@ -157,7 +157,7 @@ const PassiveNode = ({ node }: any) => {
           dangerouslySetInnerHTML={{ __html: dispdesc }}
         ></div>
         <div className="text-center">
-          {upgrade_costs?.map((mat, key) => (
+          {upgrade_costs[0]?.items?.map((mat, key) => (
             <ItemQtyFrame mat={mat} key={key} />
           ))}
         </div>
