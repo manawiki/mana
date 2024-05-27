@@ -4,7 +4,7 @@ import { Link } from "@remix-run/react";
 
 export function GetStartedOptions() {
    return (
-      <div className="dark:bg-zinc-800/10 bg-zinc-50/50 w-full z-10 relative max-laptop:px-6 border-y border-zinc-100 dark:border-zinc-700/30 pt-16 pb-24">
+      <div className="dark:bg-zinc-800/10 bg-zinc-50/50 w-full z-10 relative max-laptop:px-6 border-t-2 border-b border-zinc-100 dark:border-dark350 pt-16 pb-24">
          <div className="max-w-5xl mx-auto px-5">
             <div className="font-header text-2xl pb-1.5 text-center">
                A wiki for everyone
