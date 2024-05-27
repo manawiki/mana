@@ -40,7 +40,7 @@ export async function loader({
 export const meta: MetaFunction = () => {
   return [
     {
-      title: "Achievement Tracker - Wuthering Waves",
+      title: "Trophy Tracker - Wuthering Waves",
     },
     {
       name: "description",
@@ -110,7 +110,7 @@ const AchievementTracker = (data: any) => {
   return (
     <>
       <div className="laptop:mt-1 mt-14"></div>
-      <H2 text="Achievement Tracker" />
+      <H2 text="Trophy Tracker" />
 
       <div className="grid laptop:grid-cols-3 gap-2 grid-cols-1">
         {!isMobile || !toggleView ? (
