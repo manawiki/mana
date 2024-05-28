@@ -13,6 +13,7 @@ export const usersSlug = "users";
 export const Users: CollectionConfig = {
    slug: usersSlug,
    auth: {
+      tokenExpiration: 60 * 60 * 24 * 30, // 30 days
       useAPIKey: true,
       verify: {
          generateEmailHTML: ({ token, user }) => {

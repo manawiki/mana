@@ -24,11 +24,6 @@ export function DateButton({
       onClick(date);
    }, [onClick, date]);
 
-   const dateAriaLabel = useMemo(
-      () => date.toLocaleDateString("en-US", dateOptions),
-      [date, dateOptions]
-   );
-
    return (
       <button
          className={`sdp--square-btn sdp--date-btn ${
@@ -38,7 +33,7 @@ export function DateButton({
          tabIndex={active ? 0 : -1}
          aria-label={`${
             selected ? "Currently selected" : "Select"
-         } ${dateAriaLabel}`}
+         } ${date.toLocaleDateString("en-US", dateOptions)}`}
          type="button"
       >
          {date.getDate()}
