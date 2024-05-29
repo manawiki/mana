@@ -13,6 +13,7 @@ import { Icon } from "~/components/Icon";
 import { isLoading } from "~/utils/form";
 import { useDebouncedValue } from "~/utils/use-debounce";
 
+import { PostListPagination } from "./PostListPagination";
 import { PublishedPostRow } from "./PublishedPostRow";
 import type { loader } from "../_posts";
 
@@ -101,7 +102,7 @@ export function PublishedPosts() {
                </>
             )}
          </div>
-         <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700 mb-6">
+         <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
             {publishedPosts && publishedPosts?.docs?.length > 0 ? (
                publishedPosts.docs.map((post: any) => (
                   <PublishedPostRow key={post.id} post={post} />
@@ -147,6 +148,10 @@ export function PublishedPosts() {
                </div>
             )}
          </section>
+         <PostListPagination
+            myPosts={publishedPosts}
+            setSearchParams={setSearchParams}
+         />
       </>
    );
 }

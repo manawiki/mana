@@ -78,6 +78,7 @@ export function BlockUpdates({ element }: Props) {
                      {Intl.DateTimeFormat("en-US", {
                         month: "short",
                         day: "numeric",
+                        timeZone: "America/Los_Angeles",
                      }).format(new Date())}
                   </span>
                   <div className="h-full w-full text-sm">

@@ -311,7 +311,9 @@ export const action: ActionFunction = async ({
             });
          } catch (error) {
             return redirectWithError(
-               `/login${signUpEmail ? `?email=${email}` : ""}`,
+               `/login${
+                  signUpEmail ? `?email=${encodeURIComponent(email)}` : ""
+               }`,
                "The email or password provided is incorrect",
             );
          }

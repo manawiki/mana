@@ -70,19 +70,18 @@ export async function fetchListCore({
             (element: any) => element?.default == true,
          );
 
+      const defaultSort =
+         defaultSortParam && defaultSortParam.defaultSortType == "ascending"
+            ? `${defaultSortParam.value}`
+            : defaultSortParam?.value && `-${defaultSortParam.value}`;
+
       const preparedQuery = `${where ? where : ""}${
-         sort
-            ? `&sort=${sort}`
-            : `&sort=${
-                 defaultSortParam?.defaultSortType == "ascending"
-                    ? `${defaultSortParam.value}`
-                    : defaultSortParam?.value && `-${defaultSortParam.value}`
-              }`
+         sort || defaultSort ? `&sort=${sort || defaultSort}` : ""
       }${page ? `&page=${page}` : ""}`;
 
       const restPath = `http://localhost:4000/api/${collectionEntry.slug}${
          preparedQuery ? `?${preparedQuery}&` : "?"
-      }depth=2&limit=50`;
+      }depth=1&limit=50`;
 
       const { docs, ...entryMetaData } = user
          ? await authRestFetcher({

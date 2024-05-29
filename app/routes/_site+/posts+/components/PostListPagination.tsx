@@ -16,7 +16,7 @@ export function PostListPagination({
 }) {
    if (myPosts && myPosts?.totalPages > 1)
       return (
-         <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+         <div className="text-1 flex items-center justify-between pt-3 pb-5 text-sm">
             <div>
                Showing{" "}
                <span className="font-bold">{myPosts?.pagingCounter}</span> to{" "}

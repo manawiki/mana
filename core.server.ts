@@ -1,7 +1,6 @@
 import * as path from "node:path";
 
-import { createRequestHandler } from "@metronome-sh/express";
-import type { RequestHandler } from "@remix-run/express";
+import { createRequestHandler, type RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";
@@ -14,7 +13,7 @@ import invariant from "tiny-invariant";
 import { settings } from "./app/config";
 
 // patch in Remix runtime globals
-installGlobals();
+installGlobals({});
 require("dotenv").config();
 sourceMapSupport.install();
 
@@ -163,29 +162,27 @@ startCore();
 
 // Create a request handler for production
 function createProductionRequestHandler(): RequestHandler {
-   function getLoadContext(req: any, res: any) {
-      const userData = req.user
-         ? {
-              id: req?.user?.id,
-              roles: req?.user?.roles,
-              username: req?.user?.username,
-              avatar: {
-                 id: req?.user?.avatar?.id,
-                 url: req?.user?.avatar?.url,
-              },
-           }
-         : undefined;
-      return {
-         payload: req.payload,
-         user: req?.user && userData,
-         res,
-      };
-   }
-
    return createRequestHandler({
       build,
       mode: process.env.NODE_ENV,
-      getLoadContext,
+      getLoadContext(req, res) {
+         const userData = req.user
+            ? {
+                 id: req?.user?.id,
+                 roles: req?.user?.roles,
+                 username: req?.user?.username,
+                 avatar: {
+                    id: req?.user?.avatar?.id,
+                    url: req?.user?.avatar?.url,
+                 },
+              }
+            : undefined;
+         return {
+            payload: req.payload,
+            user: userData,
+            res,
+         };
+      },
    });
 }
 
@@ -217,7 +214,7 @@ function createDevRequestHandler(): RequestHandler {
       try {
          return createRequestHandler({
             build,
-            mode: "development",
+            mode: process.env.NODE_ENV,
             getLoadContext(req, res) {
                const userData = req.user
                   ? {
