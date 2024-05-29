@@ -3,8 +3,8 @@ import type { CollectionConfig } from "payload/types";
 import { isStaff } from "../../db/collections/users/access";
 
 export const RangesData: CollectionConfig = {
-   slug: "rangesData",
-   labels: { singular: "rangeData", plural: "rangesData" },
+   slug: "ranges-data",
+   labels: { singular: "range-data", plural: "ranges-data" },
    admin: {
       group: "Custom",
       useAsTitle: "name",

@@ -3,8 +3,8 @@ import type { CollectionConfig } from "payload/types";
 import { isStaff } from "../../db/collections/users/access";
 
 export const MedalTypes: CollectionConfig = {
-   slug: "medalTypes",
-   labels: { singular: "medalType", plural: "medalTypes" },
+   slug: "medal-types",
+   labels: { singular: "medal-type", plural: "medal-types" },
    admin: {
       group: "Custom",
       useAsTitle: "name",

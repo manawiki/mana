@@ -3,8 +3,8 @@ import type { CollectionConfig } from "payload/types";
 import { isStaff } from "../../db/collections/users/access";
 
 export const SkinQuotes: CollectionConfig = {
-   slug: "skinQuotes",
-   labels: { singular: "skinQuote", plural: "skinQuotes" },
+   slug: "skin-quotes",
+   labels: { singular: "skin-quote", plural: "skin-quotes" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
