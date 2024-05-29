@@ -41,7 +41,7 @@ export const Materials: CollectionConfig = {
       {
          name: "type",
          type: "relationship",
-         relationTo: "materialTypes",
+         relationTo: "material-types",
       },
       {
          name: "sort_id",

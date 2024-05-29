@@ -36,12 +36,12 @@ export const Medals: CollectionConfig = {
       {
          name: "type",
          type: "relationship",
-         relationTo: "medalTypes",
+         relationTo: "medal-types",
       },
       {
          name: "set",
          type: "relationship",
-         relationTo: "medalSets",
+         relationTo: "medal-sets",
       },
       {
          name: "desc",

@@ -92,7 +92,7 @@ export const Operators: CollectionConfig = {
       {
          name: "tags",
          type: "relationship",
-         relationTo: "operatorTags",
+         relationTo: "operator-tags",
          hasMany: true,
       },
       {
@@ -119,7 +119,7 @@ export const Operators: CollectionConfig = {
             {
                name: "range",
                type: "relationship",
-               relationTo: "rangesData",
+               relationTo: "ranges-data",
             },
             {
                name: "hp",

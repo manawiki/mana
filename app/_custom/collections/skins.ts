@@ -32,7 +32,7 @@ export const Skins: CollectionConfig = {
       {
          name: "brand",
          type: "relationship",
-         relationTo: "skinBrands",
+         relationTo: "skin-brands",
       },
       {
          name: "description",
@@ -62,7 +62,7 @@ export const Skins: CollectionConfig = {
       {
          name: "quotes",
          type: "relationship",
-         relationTo: "skinQuotes",
+         relationTo: "skin-quotes",
          hasMany: true,
       },
       {
