@@ -49,7 +49,7 @@ export const Monsters: CollectionConfig = {
       {
          name: "echo",
          type: "relationship",
-         relationTo: "echos",
+         relationTo: "echoes",
       },
       {
          name: "attrs",
