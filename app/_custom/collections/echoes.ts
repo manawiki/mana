@@ -25,6 +25,10 @@ export const Echoes: CollectionConfig = {
          type: "text",
       },
       {
+         name: "code",
+         type: "text",
+      },
+      {
          name: "name",
          type: "text",
       },

@@ -168,9 +168,9 @@ const EchoList = ({ chars, sonatalist, elementlist }: any) => {
     return showEntry == 0;
   });
 
-  // Filter search by name
+  // Filter search by code/name
   cfiltered = cfiltered.filter((char) => {
-    return char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
+    return char.code.toLowerCase().indexOf(search.toLowerCase()) > -1 || char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
   });
 
   return (
@@ -284,7 +284,7 @@ const EchoList = ({ chars, sonatalist, elementlist }: any) => {
           {sortOptions.map((opt) => (
             <div
               key={opt.name}
-              className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
+              className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full
                         border px-4 py-1 text-center text-sm font-bold shadow ${
                           sort == opt.field
                             ? `bg-zinc-50 dark:bg-zinc-500/10`
@@ -303,7 +303,7 @@ const EchoList = ({ chars, sonatalist, elementlist }: any) => {
       {/* Toggle Show Description */}
       {/* <button
             type="button"
-            className={`border-color-sub shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm 
+            className={`border-color-sub shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm
                font-bold underline decoration-zinc-500 underline-offset-2 shadow-sm ${
                   showDesc ? "bg-3-sub bg-zinc-50" : "bg-2-sub"
                }`}
@@ -507,7 +507,7 @@ const EntryIconOnly = ({ char }: any) => {
           />
         </div>
         {/* Name */}
-        <div className="pt-1 text-center text-xs font-bold ">{char.name}</div>
+        <div className="pt-1 text-center text-xs font-bold ">{char.code}{char.name}</div>
       </Link>
     </>
   );
@@ -518,6 +518,7 @@ const QUERY_ECHOES = `
     echoes: Echoes(limit: 1000) {
       docs {
          id
+         code
          name
          slug
          class {
