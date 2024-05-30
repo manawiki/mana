@@ -42,6 +42,31 @@ export const Monsters: CollectionConfig = {
          type: "text",
       },
       {
+         name: "element",
+         type: "relationship",
+         relationTo: "elements",
+      },
+      {
+         name: "echo",
+         type: "relationship",
+         relationTo: "echos",
+      },
+      {
+         name: "attrs",
+         type: "array",
+         fields: [
+            {
+               name: "attribute",
+               type: "relationship",
+               relationTo: "attributes",
+            },
+            {
+               name: "value",
+               type: "number",
+            },
+         ],
+      },
+      {
          name: "checksum",
          type: "text",
          required: true,
