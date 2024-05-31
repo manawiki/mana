@@ -7,7 +7,6 @@ import { AdUnit } from "~/routes/_site+/_components/Ramp";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
 import { Contributors } from "./Contributors";
-import { PrimaryMenuLinks } from "./Menu";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 import { LogoText } from "~/components/Logo";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -23,13 +22,6 @@ export function ColumnFour() {
             h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px] justify-between"
          >
             <div className="laptop:h-full flex flex-col bg-zinc-50 dark:bg-bg2Dark">
-               {/* Mobile */}
-               <section
-                  className="py-4 max-tablet:px-3 laptop:hidden 
-                  max-laptop:max-w-[728px] mx-auto w-full"
-               >
-                  <PrimaryMenuLinks site={site} />
-               </section>
                <div className="relative max-laptop:border-t max-laptop:border-color dark:border-zinc-700/50">
                   <div className="laptop:sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark relative">
                      <div className="max-laptop:max-w-[760px] mx-auto">

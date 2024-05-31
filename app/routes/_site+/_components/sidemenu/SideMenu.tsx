@@ -58,7 +58,7 @@ export function SideMenu({ site }: { site: Site }) {
    }
 
    return (
-      <>
+      <div>
          <DndContext
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
@@ -87,75 +87,74 @@ export function SideMenu({ site }: { site: Site }) {
                )}
             </DragOverlay>
          </DndContext>
+         <div className="py-3 px-2.5 flex items-center">
+            <button
+               onClick={() =>
+                  //@ts-ignore
+                  setMenu((existingMenuItems) => {
+                     const newMenuSection = [
+                        //@ts-ignore
+                        ...existingMenuItems,
+                        {
+                           id: nanoid(),
+                           name: "Untitled",
+                           links: [
+                              { id: nanoid(), name: "Untitled", path: "/" },
+                           ],
+                        },
+                     ];
+                     return newMenuSection;
+                  })
+               }
+               className="flex items-center justify-center gap-1.5 dark:hover:bg-dark350 hover:bg-zinc-100 rounded-lg py-2 px-2.5"
+            >
+               <Icon
+                  name="list-plus"
+                  className="text-zinc-400 dark:text-zinc-600"
+                  size={16}
+               />
+               <span className="text-xs text-1">Add Menu Section</span>
+            </button>
+         </div>
          {/* Menu controls */}
-         <div className="fixed bottom-0 desktop:w-[214px] backdrop-blur-lg pl-2">
+         <div
+            className="w-full tablet:w-[376px] fixed bottom-0 left-0 tablet:bottom-3 desktop:bottom-0 tablet:left-3 
+            desktop:w-[229px] backdrop-blur-lg flex flex-col tablet:rounded-b-lg"
+         >
             {isChanged && (
-               <div className="pl-2 pt-3">
-                  <div className="grid grid-cols-2 gap-3">
-                     <Button
-                        onClick={() => setMenu(site?.menu)}
-                        className="!py-1 !px-2 text-xs"
-                        color="zinc"
-                     >
-                        Cancel
-                     </Button>
-                     <Button
-                        disabled={savingMenu}
-                        type="submit"
-                        onClick={() => {
-                           return fetcher.submit(
-                              //@ts-ignore
-                              {
-                                 intent: "saveMenu",
-                                 siteMenu: JSON.stringify(menus),
-                                 siteId: site.id,
-                              },
-                              {
-                                 method: "POST",
-                                 action: "/settings/site",
-                              },
-                           );
-                        }}
-                        className="!py-1 !px-2 text-xs"
-                        color="green"
-                     >
-                        {savingMenu ? "Saving..." : "Save"}
-                     </Button>
-                  </div>
+               <div className="grid grid-cols-2 justify-center gap-3 p-4">
+                  <Button
+                     onClick={() => setMenu(site?.menu)}
+                     className="!py-1 !px-2 text-xs"
+                     color="zinc"
+                  >
+                     Cancel
+                  </Button>
+                  <Button
+                     disabled={savingMenu}
+                     type="submit"
+                     onClick={() => {
+                        return fetcher.submit(
+                           //@ts-ignore
+                           {
+                              intent: "saveMenu",
+                              siteMenu: JSON.stringify(menus),
+                              siteId: site.id,
+                           },
+                           {
+                              method: "POST",
+                              action: "/settings/site",
+                           },
+                        );
+                     }}
+                     className="!py-1 !px-2 text-xs"
+                     color="green"
+                  >
+                     {savingMenu ? "Saving..." : "Save"}
+                  </Button>
                </div>
             )}
-            <div className="mt-3 pb-3 flex items-center">
-               <button
-                  onClick={() =>
-                     //@ts-ignore
-                     setMenu((existingMenuItems) => {
-                        const newMenuSection = [
-                           //@ts-ignore
-                           ...existingMenuItems,
-                           {
-                              id: nanoid(),
-                              name: "Untitled",
-                              links: [
-                                 { id: nanoid(), name: "Untitled", path: "/" },
-                              ],
-                           },
-                        ];
-                        return newMenuSection;
-                     })
-                  }
-                  className="flex items-center justify-center gap-1.5 dark:hover:bg-dark350 hover:bg-zinc-100 rounded-lg py-2 px-2.5"
-               >
-                  <Icon
-                     name="list-plus"
-                     className="text-zinc-400 dark:text-zinc-600"
-                     size={16}
-                  />
-                  <span className="text-xs text-1 hidden desktop:block">
-                     Add Menu Section
-                  </span>
-               </button>
-            </div>
          </div>
-      </>
+      </div>
    );
 }
