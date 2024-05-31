@@ -81,79 +81,86 @@ export function SideMenuSection({
    } = useSortable({ id: menuSection.id });
 
    return (
-      <menu
-         ref={setNodeRef}
-         style={
-            {
-               transition: transition,
-               transform: CSS.Transform.toString(transform),
-               pointerEvents: isSorting ? "none" : undefined,
-               opacity: isDragging ? 0 : 1,
-            } as React.CSSProperties /* cast because of css variable */
-         }
-         {...attributes}
-         className="px-2 pt-4"
-      >
-         <div className="pl-2 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
-            <input
-               type="text"
-               placeholder="Section Name"
-               value={menuSection.name}
-               onChange={(e) => {
-                  setMenu((existingMenuItems: any) => {
-                     const updatedMenu = existingMenuItems?.map(
-                        (menuRow: any) => {
-                           return {
-                              ...menuRow,
-                              name:
-                                 menuSection.id === menuRow.id
-                                    ? e.target.value
-                                    : menuRow.name,
-                           };
-                        },
-                     );
-                     return updatedMenu;
-                  });
-               }}
-               className="text-sm bg-transparent font-semibold focus:outline-none dark:focus:bg-dark350 focus:bg-white p-0.5 rounded"
-            />
-            <div
-               className="touch-none hidden group-hover:block -left-1.5 top-0 cursor-grab hover:bg-zinc-200 dark:hover:bg-dark500 rounded py-1 px-0.5"
-               aria-label="Drag to reorder"
-               ref={setActivatorNodeRef}
-               {...listeners}
-            >
-               <Icon name="grip-vertical" title="Drag to reorder" size={14} />
-            </div>
-         </div>
-         <div className="space-y-0.5">
-            <DndContext
-               onDragStart={handleDragStart}
-               onDragEnd={handleDragEnd}
-               modifiers={[restrictToVerticalAxis]}
-               collisionDetection={closestCenter}
-            >
-               <SortableContext
-                  //@ts-ignore
-                  items={menuSection.links}
-                  strategy={verticalListSortingStrategy}
+      <>
+         <menu
+            ref={setNodeRef}
+            style={
+               {
+                  transition: transition,
+                  transform: CSS.Transform.toString(transform),
+                  pointerEvents: isSorting ? "none" : undefined,
+                  opacity: isDragging ? 0 : 1,
+               } as React.CSSProperties /* cast because of css variable */
+            }
+            {...attributes}
+            className="px-2 py-4"
+         >
+            <div className="pl-2 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
+               <input
+                  type="text"
+                  placeholder="Section Name"
+                  value={menuSection.name}
+                  onChange={(e) => {
+                     setMenu((existingMenuItems: any) => {
+                        const updatedMenu = existingMenuItems?.map(
+                           (menuRow: any) => {
+                              return {
+                                 ...menuRow,
+                                 name:
+                                    menuSection.id === menuRow.id
+                                       ? e.target.value
+                                       : menuRow.name,
+                              };
+                           },
+                        );
+                        return updatedMenu;
+                     });
+                  }}
+                  className="text-sm bg-transparent font-semibold focus:outline-none dark:focus:bg-dark350 focus:bg-white p-0.5 rounded"
+               />
+               <div
+                  className="touch-none hidden group-hover:block -left-1.5 top-0 cursor-grab hover:bg-zinc-200 dark:hover:bg-dark500 rounded py-1 px-0.5"
+                  aria-label="Drag to reorder"
+                  ref={setActivatorNodeRef}
+                  {...listeners}
                >
-                  {menuSection.links?.map((link: any, index: number) => (
-                     <SideMenuLink
-                        key={link.id}
-                        link={link}
-                        setMenu={setMenu}
-                        index={index}
-                     />
-                  ))}
-               </SortableContext>
-               <DragOverlay adjustScale={false}>
-                  {activeSection && (
-                     <SideMenuLink link={activeSection} setMenu={setMenu} />
-                  )}
-               </DragOverlay>
-            </DndContext>
-         </div>
-      </menu>
+                  <Icon
+                     name="grip-vertical"
+                     title="Drag to reorder"
+                     size={14}
+                  />
+               </div>
+            </div>
+            <div className="space-y-0.5">
+               <DndContext
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
+                  modifiers={[restrictToVerticalAxis]}
+                  collisionDetection={closestCenter}
+               >
+                  <SortableContext
+                     //@ts-ignore
+                     items={menuSection.links}
+                     strategy={verticalListSortingStrategy}
+                  >
+                     {menuSection.links?.map((link: any, index: number) => (
+                        <SideMenuLink
+                           key={link.id}
+                           link={link}
+                           setMenu={setMenu}
+                           index={index}
+                        />
+                     ))}
+                  </SortableContext>
+                  <DragOverlay adjustScale={false}>
+                     {activeSection && (
+                        <SideMenuLink link={activeSection} setMenu={setMenu} />
+                     )}
+                  </DragOverlay>
+               </DndContext>
+            </div>
+         </menu>
+         <div className="border-t border-zinc-200/60 dark:border-zinc-700/50 mx-4" />
+      </>
    );
 }
