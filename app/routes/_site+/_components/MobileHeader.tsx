@@ -11,7 +11,7 @@ import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
 import { isAdding } from "~/utils/form";
 import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
-import { FollowingListMobile } from "./Menu";
+import { FollowingListMobile } from "./FollowingListMobile";
 import { MobileTray } from "./MobileTray";
 
 export function MobileHeader() {
@@ -161,7 +161,6 @@ export function MobileHeader() {
          <MobileTray
             onOpenChange={setFollowerMenuOpen}
             open={isFollowerMenuOpen}
-            shouldScaleBackground
          >
             <menu className="flex h-full flex-col">
                <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />

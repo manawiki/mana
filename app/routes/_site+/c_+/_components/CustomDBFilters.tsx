@@ -58,7 +58,6 @@ export function CustomDBFilters({ collection }: { collection: Collection }) {
                <Icon name="arrow-up-down" title="Sort" size={14} />
             </Button>
             <MobileTray
-               shouldScaleBackground
                direction="right"
                onOpenChange={setFilterToggle}
                open={filterMenuToggle}
