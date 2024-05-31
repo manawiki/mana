@@ -95,7 +95,7 @@ export function SideMenuSection({
             {...attributes}
             className="px-2 py-4"
          >
-            <div className="pl-2 pb-1 dark:text-zinc-400 flex items-center justify-between relative group max-desktop:hidden">
+            <div className="pl-2 pb-1 dark:text-zinc-400 flex items-center justify-between relative group">
                <input
                   type="text"
                   placeholder="Section Name"
@@ -160,7 +160,7 @@ export function SideMenuSection({
                </DndContext>
             </div>
          </menu>
-         <div className="border-t border-zinc-200/80 dark:border-zinc-700/50 mx-4" />
+         <div className="border-t border-zinc-200/60 dark:border-zinc-700/50 mx-4" />
       </>
    );
 }

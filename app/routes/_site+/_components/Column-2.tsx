@@ -7,8 +7,15 @@ import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOw
 import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
 import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
 import { PrimaryMenu } from "./PrimaryMenu";
+import { Icon } from "~/components/Icon";
 
-export function ColumnTwo() {
+export function ColumnTwo({
+   setPrimaryMenuOpen,
+   isPrimaryMenu,
+}: {
+   setPrimaryMenuOpen: (open: boolean) => void;
+   isPrimaryMenu: boolean;
+}) {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
 
    return (
@@ -20,19 +27,27 @@ export function ColumnTwo() {
             scrollbar-thumb-zinc-200 scrollbar-track-zinc-50 scrollbar"
          >
             <div className="flex-grow">
-               <div className="pt-2.5 mb-0 fixed h-[178px] w-[59px] desktop:w-[229px] bg-2 z-10 flex flex-col justify-between">
+               <div className="fixed h-[174px] w-[59px] desktop:w-[229px] bg-2 z-10 flex flex-col justify-between">
                   <PrimaryMenu isSidebar />
-                  {site.menu && site.menu.length > 0 && (
-                     <div className="border-dotted border-t-2 border-zinc-200/80 dark:border-zinc-700 mx-4" />
-                  )}
+                  <div className="border-dotted border-t-2 border-zinc-200/80 dark:border-zinc-700 mx-4" />
                </div>
-               <div className="pt-[178px]">
-                  <AdminOrStaffOrOwner>
-                     <SideMenu site={site} />
-                  </AdminOrStaffOrOwner>
-                  <NotAdminOrStaffOrOwner>
-                     <ViewSideMenu site={site} />
-                  </NotAdminOrStaffOrOwner>
+               <div className="pt-[186px] desktop:pt-[176px]">
+                  <button
+                     className="transition duration-300 active:translate-y-0.5 desktop:hidden mx-auto flex items-center 
+                     justify-center dark:bg-dark450 dark:hover:bg-dark500 bg-zinc-200/50 hover:bg-zinc-200 size-8 rounded-md"
+                     aria-label="Menu"
+                     onClick={() => setPrimaryMenuOpen(true)}
+                  >
+                     <Icon name="menu" size={14} className="text-1" />
+                  </button>
+                  <div className="max-desktop:hidden">
+                     <AdminOrStaffOrOwner>
+                        <SideMenu site={site} />
+                     </AdminOrStaffOrOwner>
+                     <NotAdminOrStaffOrOwner>
+                        <ViewSideMenu site={site} />
+                     </NotAdminOrStaffOrOwner>
+                  </div>
                </div>
             </div>
          </div>

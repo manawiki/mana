@@ -15,7 +15,7 @@ export function PrimaryMenu({
             "flex flex-col",
             isSidebar
                ? "p-2 gap-0.5 max-desktop:items-center max-desktop:gap-2"
-               : "px-0.5 max-desktop:py-3  gap-1.5",
+               : "gap-1.5",
             className,
          )}
       >
@@ -34,7 +34,7 @@ export function PrimaryMenu({
             to="/"
          >
             {({ isActive }) => (
-               <div className="flex items-center gap-3  w-full max-desktop:justify-center">
+               <div className="flex items-center gap-3 w-full max-desktop:justify-center">
                   <div
                      className={clsx(
                         isActive
@@ -66,9 +66,6 @@ export function PrimaryMenu({
                </div>
             )}
          </NavLink>
-         {!isSidebar && (
-            <div className="border-t border-dotted border-zinc-200 dark:border-zinc-700 mx-2" />
-         )}
          <NavLink
             prefetch="intent"
             className={({ isActive }) =>
@@ -115,9 +112,6 @@ export function PrimaryMenu({
                </div>
             )}
          </NavLink>
-         {!isSidebar && (
-            <div className="border-t border-dotted border-zinc-200 dark:border-zinc-700 mx-2" />
-         )}
          <NavLink
             prefetch="intent"
             className={({ isActive }) =>
@@ -164,9 +158,6 @@ export function PrimaryMenu({
                </div>
             )}
          </NavLink>
-         {!isSidebar && (
-            <div className="border-t border-dotted border-zinc-200 dark:border-zinc-700 mx-2" />
-         )}
          <NavLink
             prefetch="intent"
             end

@@ -22,13 +22,7 @@ import { nanoid } from "nanoid";
 import { useFetcher } from "@remix-run/react";
 import { isAdding } from "~/utils/form";
 
-export function SideMenu({
-   site,
-   isSidebar,
-}: {
-   site: Site;
-   isSidebar?: boolean;
-}) {
+export function SideMenu({ site }: { site: Site }) {
    const fetcher = useFetcher();
 
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -64,7 +58,7 @@ export function SideMenu({
    }
 
    return (
-      <>
+      <div>
          <DndContext
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
@@ -93,7 +87,7 @@ export function SideMenu({
                )}
             </DragOverlay>
          </DndContext>
-         <div className="p-3 flex items-center">
+         <div className="py-3 px-2.5 flex items-center">
             <button
                onClick={() =>
                   //@ts-ignore
@@ -123,43 +117,44 @@ export function SideMenu({
             </button>
          </div>
          {/* Menu controls */}
-         <div className="fixed bottom-0 w-[59px] desktop:w-[214px] backdrop-blur-lg flex flex-col">
+         <div
+            className="w-full tablet:w-[376px] fixed bottom-0 left-0 tablet:bottom-3 desktop:bottom-0 tablet:left-3 
+            desktop:w-[229px] backdrop-blur-lg flex flex-col tablet:rounded-b-lg"
+         >
             {isChanged && (
-               <div className="pl-2 py-3">
-                  <div className="grid grid-cols-2 gap-3">
-                     <Button
-                        onClick={() => setMenu(site?.menu)}
-                        className="!py-1 !px-2 text-xs size-8"
-                        color="zinc"
-                     >
-                        Cancel
-                     </Button>
-                     <Button
-                        disabled={savingMenu}
-                        type="submit"
-                        onClick={() => {
-                           return fetcher.submit(
-                              //@ts-ignore
-                              {
-                                 intent: "saveMenu",
-                                 siteMenu: JSON.stringify(menus),
-                                 siteId: site.id,
-                              },
-                              {
-                                 method: "POST",
-                                 action: "/settings/site",
-                              },
-                           );
-                        }}
-                        className="!py-1 !px-2 text-xs"
-                        color="green"
-                     >
-                        {savingMenu ? "Saving..." : "Save"}
-                     </Button>
-                  </div>
+               <div className="grid grid-cols-2 justify-center gap-3 p-4">
+                  <Button
+                     onClick={() => setMenu(site?.menu)}
+                     className="!py-1 !px-2 text-xs"
+                     color="zinc"
+                  >
+                     Cancel
+                  </Button>
+                  <Button
+                     disabled={savingMenu}
+                     type="submit"
+                     onClick={() => {
+                        return fetcher.submit(
+                           //@ts-ignore
+                           {
+                              intent: "saveMenu",
+                              siteMenu: JSON.stringify(menus),
+                              siteId: site.id,
+                           },
+                           {
+                              method: "POST",
+                              action: "/settings/site",
+                           },
+                        );
+                     }}
+                     className="!py-1 !px-2 text-xs"
+                     color="green"
+                  >
+                     {savingMenu ? "Saving..." : "Save"}
+                  </Button>
                </div>
             )}
          </div>
-      </>
+      </div>
    );
 }
