@@ -1,6 +1,12 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 
-import { Combobox, Transition } from "@headlessui/react";
+import {
+   Combobox,
+   Transition,
+   ComboboxOption,
+   ComboboxInput,
+   ComboboxOptions,
+} from "@headlessui/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useFetcher, useNavigate } from "@remix-run/react";
@@ -203,11 +209,29 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
 
    return (
       <div className="h-full w-full">
+         <button
+            type="button"
+            className="size-6 top-5 z-50 absolute right-0 mr-2.5 text-1 dark:text-dark400"
+            onClick={() => {
+               setSearchToggle(false);
+            }}
+         >
+            {isSearching ? (
+               <Icon name="loader-2" className="mx-auto size-5 animate-spin" />
+            ) : (
+               <Icon
+                  name="x"
+                  title="Close Search"
+                  size={20}
+                  className="text-zinc-400"
+               />
+            )}
+         </button>
          <Combobox onChange={handleChange}>
             <div className="relative h-full w-full focus:outline-none">
-               <Combobox.Input
+               <ComboboxInput
                   autoFocus
-                  className="h-full w-full border-0 p-0 bg-transparent outline-none !ring-transparent"
+                  className="h-full w-full border-0 max-laptop:px-4 p-0 bg-transparent outline-none !ring-transparent"
                   displayValue={(item: Search) => item?.name ?? ""}
                   name="search"
                   placeholder="Search..."
@@ -216,14 +240,18 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
             </div>
             <Transition
                as={Fragment}
-               leave="transition ease-in duration-100"
-               leaveFrom="opacity-100"
-               leaveTo="opacity-0"
+               enter="duration-200 ease-out"
+               enterFrom="scale-95 opacity-0"
+               enterTo="scale-100 opacity-100"
+               leave="duration-300 ease-out"
+               leaveFrom="scale-100 opacity-100"
+               leaveTo="scale-95 opacity-0"
                afterLeave={() => setQuery("")}
             >
-               <Combobox.Options
-                  className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub absolute left-0 z-20 max-h-80 w-full divide-y
-                  overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 no-scrollbar laptop:rounded-2xl laptop:outline"
+               <ComboboxOptions
+                  modal={true}
+                  className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub  left-0 z-20 max-h-80 w-full divide-y
+                  overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 no-scrollbar laptop:rounded-2xl laptop:outline max-desktop:-left-4"
                >
                   {searchListItems.length === 0
                      ? query && (
@@ -232,7 +260,7 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
                           </div>
                        )
                      : searchListItems?.map((item: Search) => (
-                          <Combobox.Option
+                          <ComboboxOption
                              className={({ active }) =>
                                 `relative cursor-default select-none ${
                                    active
@@ -278,28 +306,11 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
                                    <SearchType type={item} />
                                 </Link>
                              </>
-                          </Combobox.Option>
+                          </ComboboxOption>
                        ))}
-               </Combobox.Options>
+               </ComboboxOptions>
             </Transition>
          </Combobox>
-         <button
-            className="absolute right-2 top-5"
-            onClick={() => {
-               setSearchToggle(false);
-            }}
-         >
-            {isSearching ? (
-               <Icon name="loader-2" className="mx-auto h-5 w-5 animate-spin" />
-            ) : (
-               <Icon
-                  name="x"
-                  title="Close Search"
-                  size={20}
-                  className="text-zinc-400"
-               />
-            )}
-         </button>
       </div>
    );
 }
