@@ -43,7 +43,7 @@ export function SiteHeader({
 
    return (
       <section
-         className="z-30 w-full laptop:z-50 fixed max-laptop:top-[56px] max-laptop:px-3 shadow-sm dark:shadow-zinc-900/30
+         className="z-30 w-full laptop:z-50 fixed max-laptop:top-[56px] shadow-sm dark:shadow-zinc-900/30
         laptop:sticky laptop:top-0 dark:bg-dark350 bg-white border-color border-b"
       >
          <div
@@ -58,7 +58,7 @@ export function SiteHeader({
                   <SearchComboBox siteType={site.type} />
                ) : (
                   <>
-                     <div className="flex items-center truncate">
+                     <div className="flex items-center truncate max-laptop:pl-3">
                         <Link
                            prefetch="intent"
                            to="/"
@@ -102,7 +102,7 @@ export function SiteHeader({
                            </div>
                         </Link>
                      </div>
-                     <div className="flex items-center gap-3 pl-2">
+                     <div className="flex items-center gap-3 pl-2 max-laptop:pr-3">
                         <FollowingSite>
                            <Menu as="div" className="relative">
                               {({ open }) => (

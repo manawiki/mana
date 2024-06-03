@@ -11,6 +11,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 import { LogoText } from "~/components/Logo";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { DarkModeToggle } from "../action+/theme-toggle";
+import { t } from "i18next";
 
 export function ColumnFour() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
@@ -193,11 +194,18 @@ export function ColumnFour() {
                      <DarkModeToggle className="!size-3.5" />
                      <LoggedOut>
                         <Link
-                           className="dark:text-zinc-300 bg-zinc-200 text-zinc-600 hover:bg-zinc-300 hover:text-zinc-700
-                         dark:hover:text-white rounded-full dark:bg-dark450 px-2.5 py-1 dark:hover:bg-dark500"
                            to="/join"
+                           className="group relative inline-flex h-8 laptop:h-6 w-full items-center justify-center overflow-hidden 
+                           rounded-lg laptop:rounded-md px-3 laptop:px-2 font-medium text-indigo-600 transition duration-300 ease-out shadow-sm shadow-1"
                         >
-                           Sign up
+                           <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                           <span
+                              className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                              rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                           ></span>
+                           <span className="relative text-xs laptop:text-[10px] font-bold text-white uppercase">
+                              {t("login.signUp", { ns: "auth" })}
+                           </span>
                         </Link>
                      </LoggedOut>
                   </div>
