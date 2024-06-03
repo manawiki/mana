@@ -1,24 +1,21 @@
-import type { Item as ItemType } from "payload/generated-custom-types";
-import { Disclosure } from "@headlessui/react";
 import { Image } from "~/components/Image";
-import { useState } from "react";
 
-export function Main({ data: char }: { data: ItemType }) {
-   const mainImage = char?.icon?.url;
-   const mainName = char?.name;
+export function EchoesMain({ data }: { data: any }) {
+   const mainImage = data?.data?.Echo.icon?.url;
+   const mainName = data?.data?.Echo?.name;
    const mainStatDisplay = [
       {
          label: "Element",
-         value: char.element?.name,
-         icon: char.element?.icon?.url,
+         value: data?.data?.Echo.element?.name,
+         icon: data?.data?.Echo.element?.icon?.url,
       },
       {
          label: "Class",
-         value: char.class?.name,
+         value: data?.data?.Echo.class?.name,
       },
       {
          label: "Cost",
-         value: char.class?.cost,
+         value: data?.data?.Echo.class?.cost,
       },
    ];
 

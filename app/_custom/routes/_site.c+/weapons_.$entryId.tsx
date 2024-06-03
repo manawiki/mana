@@ -1,155 +1,120 @@
 // Core Imports
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { gql } from "graphql-request";
 import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
-import { Image } from "~/components/Image";
 import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
 import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
 
 // Custom Component Imports
+import { WeaponsMain } from "~/_custom/components/weapons/weapons.Main";
+import { WeaponsSkill } from "~/_custom/components/weapons/weapons.Skill";
+import { WeaponsGallery } from "~/_custom/components/weapons/weapons.Gallery";
+import { WeaponsAscension } from "~/_custom/components/weapons/weapons.Ascension";
+
 export { entryMeta as meta };
-
-// Custom Site / Collection Config Imports
-import type { Item as ItemType } from "~/db/payload-custom-types";
-import { Items } from "../../collections/items";
-
-// Custom Component Imports
-import { Main } from "~/_custom/components/weapons/Main";
-import { Skill } from "~/_custom/components/weapons/Skill";
-import { Ascension } from "~/_custom/components/weapons/Ascension";
-import { Gallery } from "~/_custom/components/weapons/Gallery";
-//import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
 
 // Loader definition - loads Entry data!
 export async function loader({
-  context: { payload, user },
-  params,
-  request,
+   context: { payload, user },
+   params,
+   request,
 }: LoaderFunctionArgs) {
-  const fetchWeaponData = fetchEntry({
-    payload,
-    params,
-    request,
-    user,
-    gql: {
-      query: WeaponQuery,
-    },
-  });
+   const { entry } = await fetchEntry({
+      payload,
+      params,
+      request,
+      user,
+      gql: {
+         query: WeaponQuery,
+      },
+   });
 
-  const fetchCurveData = fetchEntry({
-    payload,
-    params,
-    request,
-    user,
-    gql: {
-      query: CurveQuery,
-    },
-  });
-
-  const [{ entry }, data] = await Promise.all([
-    fetchWeaponData,
-    fetchCurveData,
-  ]);
-
-  return json({
-    entry,
-    weaponCurveData: data?.entry?.data?.WeaponCurves?.docs,
-  });
+   return json({
+      entry,
+   });
 }
 
 const SECTIONS = {
-  main: Main,
-  // gallery: ImageGallery,
+   main: WeaponsMain,
+   skill: WeaponsSkill,
+   ascension: WeaponsAscension,
+   gallery: WeaponsGallery,
 };
 
 export default function EntryPage() {
-  const { entry, weaponCurveData } = useLoaderData<typeof loader>();
-  var char = {
-    Weapon: entry.data.Weapon,
-    Curves: weaponCurveData,
-  };
+   const { entry } = useLoaderData<typeof loader>();
 
-  return (
-    <>
-      {/* <Entry customComponents={SECTIONS} customData={char} /> */}
-      <Entry>
-        <Main data={char} />
-        <Skill data={char} />
-        <Ascension data={char} />
-        <Gallery data={char} />
-      </Entry>
-    </>
-  );
+   const char = {
+      Weapon: entry.data.Weapon,
+      Curves: entry.data.WeaponCurves.docs,
+   };
+
+   return <Entry customComponents={SECTIONS} customData={char} />;
 }
 
 const WeaponQuery = gql`
-  query Weapon($entryId: String!) {
-    Weapon(id: $entryId) {
-      id
-      name
-      desc
-      slug: id
-      rarity {
-        id
-        color
-      }
-      icon {
-        url
-      }
-      type {
-        name
-      }
-      splash {
-        url
-      }
-      stats {
-        attribute {
-          name
-          icon {
-            url
-          }
-          percent
-        }
-        ratio
-        value
-      }
-      skill_name
-      skill_desc
-      skill_params
-      ascension_costs {
-        items {
-          item {
+   query Weapon($entryId: String!) {
+      Weapon(id: $entryId) {
+         id
+         name
+         desc
+         slug: id
+         rarity {
             id
+            color
+         }
+         icon {
+            url
+         }
+         type {
             name
-            icon {
-              url
+         }
+         splash {
+            url
+         }
+         stats {
+            attribute {
+               name
+               icon {
+                  url
+               }
+               percent
             }
-            rarity {
-              id
-              color
+            ratio
+            value
+         }
+         skill_name
+         skill_desc
+         skill_params
+         ascension_costs {
+            items {
+               item {
+                  id
+                  name
+                  icon {
+                     url
+                  }
+                  rarity {
+                     id
+                     color
+                  }
+               }
+               cnt
             }
-          }
-          cnt
-        }
-        gold
+            gold
+         }
       }
-    }
-  }
-`;
-
-const CurveQuery = gql`
-  query {
-    WeaponCurves {
-      docs {
-        id
-        values {
-          level
-          ascension_level
-          value
-        }
+      WeaponCurves {
+         docs {
+            id
+            values {
+               level
+               ascension_level
+               value
+            }
+         }
       }
-    }
-  }
+   }
 `;

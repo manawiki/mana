@@ -13,14 +13,21 @@ export { entryMeta as meta };
 
 // Custom Site / Collection Config Imports
 import type { Echo as EchoType } from "~/db/payload-custom-types";
-import { Items } from "../../collections/items";
 
 // Custom Component Imports
-import { Main } from "~/_custom/components/echoes/Main";
-import { Skill } from "~/_custom/components/echoes/Skill";
-import { Sonata } from "~/_custom/components/echoes/Sonata";
-import { Stats } from "~/_custom/components/echoes/Stats";
-//import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
+import { EchoesSkill } from "~/_custom/components/echoes/echoes.Skill";
+import { EchoesSonata } from "~/_custom/components/echoes/echoes.Sonata";
+import { EchoesMainStats } from "~/_custom/components/echoes/echoes.MainStats";
+import { EchoesSubStats } from "~/_custom/components/echoes/echoes.SubStats";
+import { EchoesMain } from "~/_custom/components/echoes/echoes.Main";
+
+const SECTIONS = {
+   main: EchoesMain,
+   skill: EchoesSkill,
+   "sonata-effects-possible": EchoesSonata,
+   "possible-main-stats": EchoesMainStats,
+   "possible-sub-stats": EchoesSubStats,
+};
 
 // Loader definition - loads Entry data!
 export async function loader({
@@ -28,7 +35,7 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const fetchEchoData = fetchEntry({
+   const { entry } = await fetchEntry({
       payload,
       params,
       request,
@@ -37,45 +44,14 @@ export async function loader({
          query: QUERY,
       },
    });
-   const fetchStatsData = fetchEntry({
-      payload,
-      params,
-      request,
-      user,
-      gql: {
-         query: STAT_QUERY,
-      },
-   });
-
-   const [{ entry }, data] = await Promise.all([fetchEchoData, fetchStatsData]);
-
    return json({
       entry,
-      StatsData: data.entry?.data?.EchoMainSubStats?.docs,
    });
 }
 
-const SECTIONS = {
-   main: Main,
-   // gallery: ImageGallery,
-};
-
 export default function EntryPage() {
-   const { entry, StatsData } = useLoaderData<typeof loader>();
-   const char = entry?.data?.Echo as EchoType;
-   const stats = StatsData;
-
-   return (
-      <>
-         {/* <Entry customComponents={SECTIONS} customData={char} /> */}
-         <Entry>
-            <Main data={char} />
-            <Skill data={char} />
-            <Sonata data={char} />
-            <Stats data={stats} />
-         </Entry>
-      </>
-   );
+   const { entry } = useLoaderData<typeof loader>();
+   return <Entry customComponents={SECTIONS} customData={entry} />;
 }
 
 const QUERY = gql`
@@ -125,11 +101,6 @@ const QUERY = gql`
             }
          }
       }
-   }
-`;
-
-const STAT_QUERY = gql`
-   query EchoMainSubStats {
       EchoMainSubStats {
          docs {
             id

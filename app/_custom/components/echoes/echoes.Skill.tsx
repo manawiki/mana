@@ -1,21 +1,14 @@
 import { useState } from "react";
 
-import { Disclosure } from "@headlessui/react";
-
-import type { Echo as EchoType } from "payload/generated-custom-types";
 import { Image } from "~/components/Image";
-import { H2 } from "~/components/Headers";
 
-export function Skill({ data: full }: { data: any }) {
-   const char = full;
-
+export function EchoesSkill({ data }: { data: any }) {
    const [level, setLevel] = useState(0);
+   const params = data.data?.Echo?.skill?.params;
+   const desc = data.data?.Echo?.skill?.desc;
+   const icon = data.data?.Echo?.skill?.icon?.url;
 
-   const params = char?.skill?.params;
-   const desc = char?.skill?.desc;
-   const icon = char?.skill?.icon?.url;
-
-   var dispdesc = desc;
+   let dispdesc = desc;
    params[level].map((par: any, i: any) => {
       dispdesc = dispdesc?.replace("{" + i + "}", par);
    });
@@ -23,8 +16,6 @@ export function Skill({ data: full }: { data: any }) {
 
    return (
       <>
-         <H2 text="Skill" />
-
          {/* Slider */}
          <div className="my-2 flex items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-lg shadow-sm shadow-1 border border-color-sub py-1">
             <div className="mr-2 inline-flex align-middle text-zinc-200">

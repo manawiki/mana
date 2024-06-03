@@ -1,33 +1,18 @@
-import { useState } from "react";
-
-import { Disclosure } from "@headlessui/react";
-
-import type { Echo as EchoType } from "payload/generated-custom-types";
 import { Image } from "~/components/Image";
-import { H2 } from "~/components/Headers";
 
-export function Sonata({ data: full }: { data: any }) {
-   const char = full;
-
-   const [level, setLevel] = useState(0);
-
-   const sonata_list = char.sonata_effect_pool;
+export function EchoesSonata({ data }: { data: any }) {
+   const sonata_list = data.data.Echo.sonata_effect_pool;
 
    return (
-      <>
-         <H2 text="Sonata Effects Possible" />
-
-         {/* Sonata Effects */}
-         {sonata_list?.map((sonata: any) => <SonataEffect data={sonata} />)}
-      </>
+      <>{sonata_list?.map((sonata: any) => <SonataEffect sonata={sonata} />)}</>
    );
 }
 
-const SonataEffect = ({ data }: any) => {
-   const sonata_icon = data?.icon?.url;
-   const sonata_name = data?.name;
-   const sonata_effects = data?.effects;
-   const sonata_color = data?.color;
+const SonataEffect = ({ sonata }: { sonata: any }) => {
+   const sonata_icon = sonata.icon?.url;
+   const sonata_name = sonata?.name;
+   const sonata_effects = sonata?.effects;
+   const sonata_color = sonata?.color;
    return (
       <>
          <div className="border-color-sub bg-2-sub shadow-1 overflow-hidden rounded-lg border shadow-sm">
@@ -36,6 +21,7 @@ const SonataEffect = ({ data }: any) => {
                <div className="bg-zinc-800 dark:bg-transparent rounded-full">
                   <div
                      style={{
+                        //@ts-ignore
                         "border-color": `#${sonata_color}`,
                         "background-color": `#${sonata_color}44`,
                      }}
@@ -57,8 +43,8 @@ const SonataEffect = ({ data }: any) => {
 
             {/* Set Effects */}
             <div className="border-color-sub border-t p-3 text-sm">
-               {sonata_effects.map((effect: any) => {
-                  var dispdesc = effect.effect;
+               {sonata_effects?.map((effect: any) => {
+                  let dispdesc = effect.effect;
                   effect.params.map((par: any, i: any) => {
                      dispdesc = dispdesc?.replace("{" + i + "}", par);
                   });
