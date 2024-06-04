@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 
 import { Image } from "~/components/Image";
 
@@ -17,10 +17,14 @@ export function GachaHistory() {
    //     time: string;
    // }[];
 
+   const total = gacha?.data.length!;
+
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
          <h3 className="text-lg font-bold">Gacha History</h3>
-         {gacha?.data.map((roll, int) => <ResultFrame roll={roll} key={int} />)}
+         {gacha?.data.map((roll, int) => (
+            <ResultFrame roll={roll} key={total - int} number={total - int} />
+         ))}
       </div>
    );
 }
@@ -35,78 +39,73 @@ type RollData = {
    time: string;
 };
 
-function ResultFrame({ roll }: { roll: RollData }) {
+function ResultFrame({ roll, number }: { roll: RollData; number: number }) {
    switch (roll.resourceType) {
       case "Weapons":
-         return <WeaponFrame roll={roll} />;
+         return <WeaponFrame roll={roll} number={number} />;
       case "Resonators":
-         return <ResonatorFrame roll={roll} />;
+         return <ResonatorFrame roll={roll} number={number} />;
       default:
          return <div>Unknown Resource Type</div>;
    }
 }
 
-function WeaponFrame({ roll }: { roll: RollData }) {
+function WeaponFrame({ roll, number }: { roll: RollData; number: number }) {
    const { weapons } = useLoaderData<typeof loader>();
 
    const weapon = weapons?.find((w) => w.id == roll.resourceId);
    return (
-      <div className="flex gap-x-2">
-         <span className="font-bold">Weapon:</span>
-         {weapon && <ItemFrame entry={weapon} />}
-      </div>
+      <Link to={`/c/weapons/${weapon?.slug!}`}>
+         <div
+            className={`relative m-1 w-full rounded-md border p-2 dark:border-gray-700 ${customColor(
+               weapon?.rarity?.id,
+            )}`}
+         >
+            <ItemFrame entry={weapon} />
+            <div className="mx-1 inline-block align-middle">
+               {weapon?.rarity?.id}*
+            </div>
+            <div className="mx-1 inline-block align-middle">{weapon?.name}</div>
+            <div className="mx-1 inline-block align-right">#{number}</div>
+         </div>
+      </Link>
    );
 }
 
-function ResonatorFrame({ roll }: { roll: RollData }) {
+function ResonatorFrame({ roll, number }: { roll: RollData; number: number }) {
    const { resonators } = useLoaderData<typeof loader>();
    const resonator = resonators?.find((r) => r.id == roll.resourceId);
    return (
-      <div className="flex gap-x-2">
-         <span className="font-bold">Resonator:</span>
-         {resonator && <ItemFrame entry={resonator} />}
-      </div>
+      <Link to={`/c/resonators/${resonator?.slug!}`}>
+         <div
+            className={`flex m-1 w-full rounded-md border p-2 dark:border-gray-700 ${customColor(
+               resonator?.rarity?.id,
+            )}`}
+         >
+            <ItemFrame entry={resonator} />
+            <div className="mx-1 inline-block align-middle">
+               {resonator?.rarity?.id}*
+            </div>
+            <div className="mx-1 inline-block align-middle">
+               {resonator?.name}
+            </div>
+            <div className="mx-1 inline-block align-right">#{number}</div>
+         </div>
+      </Link>
    );
 }
 
-// Roll Result Frame
-// const ResultFrame = ({ entry, type }: any) => {
-//    var customcolor = "";
-//    switch (entry?.rarity?.display_number) {
-//       case "5":
-//          customcolor = "bg-orange-500 bg-opacity-10 font-bold";
-//          break;
-//       case "4":
-//          customcolor = "bg-purple-500 bg-opacity-10 font-bold";
-//          break;
-//       default:
-//    }
-//    return (
-//       <>
-//          <a href={`/c/${type}/${entry?.id}`}>
-//             <div
-//                className={`relative m-1 w-full rounded-md border p-2 dark:border-gray-700 ${customcolor}`}
-//             >
-//                <ItemFrame entry={entry} type={type} />
-//                <div className="mx-1 inline-block align-middle">
-//                   {entry?.rarity?.display_number}*
-//                </div>
-//                <div className="mx-1 inline-block align-middle">
-//                   {entry?.name}
-//                </div>
-//             </div>
-//          </a>
-//       </>
-//    );
-// };
+function customColor(rarity?: string) {
+   switch (rarity) {
+      case "5":
+         return "bg-orange-500 bg-opacity-10 font-bold";
+      case "4":
+         return "bg-purple-500 bg-opacity-10 font-bold";
+      default:
+         return "";
+   }
+}
 
-// // ====================================
-// // 0a) GENERIC: Item Icon Frame
-// // ------------------------------------
-// // * PROPS (Arguments) accepted:
-// // - entry: Any that contains a rarity, icon, and name field.
-// // - type: string denoting type of item for link
-// // ====================================
 function ItemFrame({ entry, type }: any) {
    // mat holds material information
 

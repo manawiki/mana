@@ -12,6 +12,7 @@ import { fetchWithCache } from "~/utils/cache.server";
 import gachas from "./gacha.json";
 import { GachaGraph } from "./GachaGraph";
 import { GachaHistory } from "./GachaHistory";
+import { GachaSummary } from "./GachaSummary";
 
 const banner_data: Record<
    number,
@@ -83,7 +84,7 @@ export async function loader({
 
    const gacha = gachas.data[key];
 
-   return json({ resonators, weapons, gacha });
+   return json({ resonators, weapons, gacha, banner: banner_data[cardPoolId] });
 }
 
 export default function HomePage() {
@@ -106,8 +107,8 @@ export default function HomePage() {
                <input type="submit" value="Submit" />
             </Form>
          </div>
-
-         <GachaGraph />
+         <GachaSummary />
+         {/* <GachaGraph /> */}
          <GachaHistory />
       </div>
    );
