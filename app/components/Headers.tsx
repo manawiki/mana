@@ -26,13 +26,11 @@ export const H2Plain = ({
 }) => {
    return (
       <h2
-         className={clsx(
-            className,
-            "flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-2xl scroll-mt-32 laptop:scroll-mt-16",
-         )}
+         className="dark:text-zinc-100 mt-10 mb-3 pl-3.5 leading-7 dark:bg-dark450 bg-zinc-100
+               font-header relative text-xl scroll-mt-32 laptop:scroll-mt-16 rounded py-1.5 overflow-hidden"
       >
-         <div className="flex-none">{text}</div>
-         <div className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400" />
+         {text}
+         <span className="h-full w-1.5 dark:bg-zinc-500 bg-zinc-300 absolute left-0 top-0 rounded-full" />
       </h2>
    );
 };
