@@ -10,8 +10,8 @@ import { H2 } from "~/components/Headers";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import gachas from "./gacha.json";
-import GachaGraph from "./GachaGraph";
-import GachaHistory from "./GachaHistory";
+import { GachaGraph } from "./GachaGraph";
+import { GachaHistory } from "./GachaHistory";
 
 const banner_data: Record<
    number,
@@ -87,8 +87,6 @@ export async function loader({
 }
 
 export default function HomePage() {
-   const { gacha } = useLoaderData<typeof loader>();
-
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <H2 text="Warp History" />
@@ -108,7 +106,6 @@ export default function HomePage() {
                <input type="submit" value="Submit" />
             </Form>
          </div>
-         {JSON.stringify(gacha)}
 
          <GachaGraph />
          <GachaHistory />

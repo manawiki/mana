@@ -248,13 +248,14 @@ function App() {
 }
 
 // Toggle Remix Dev Tools
-// if (process.env.NODE_ENV === "development") {
-//    const { withDevTools } = require("remix-development-tools");
+let AppExport = App;
+if (process.env.NODE_ENV === "development") {
+   const { withDevTools } = require("remix-development-tools");
 
-//    AppExport = withDevTools(AppExport);
-// }
+   AppExport = withDevTools(AppExport);
+}
 
-export default App;
+export default AppExport;
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();

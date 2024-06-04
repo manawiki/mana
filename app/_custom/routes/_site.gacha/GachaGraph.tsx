@@ -1,4 +1,4 @@
-export default function GachaGraph() {
+export function GachaGraph() {
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
          <h3 className="text-lg font-bold">Gacha Graph</h3>
