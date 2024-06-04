@@ -23,7 +23,7 @@ export const HomeContents: CollectionConfig = {
          name: "author",
          type: "relationship",
          relationTo: "users",
-         maxDepth: 3,
+         maxDepth: 2,
          required: false,
          defaultValue: ({ user }: { user: User }) => user?.id,
          admin: {

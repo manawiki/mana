@@ -9,7 +9,7 @@ import { PostContents } from "./post-contents/config";
 import { PostTags } from "./post-tags/config";
 import { Posts } from "./posts/config";
 import { SiteApplications } from "./site-applications/config";
-import { Sites } from "./sites/config";
+import { Sites } from "./sites/site-config";
 import { Updates } from "./updates/config";
 import { Users } from "./users/config";
 

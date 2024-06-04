@@ -177,8 +177,8 @@ export const TooltipContent = React.forwardRef<
    return (
       <FloatingPortal>
          <div
-            className="dark:bg-zinc-900 relative z-50 rounded-md border bg-white px-2 py-1 
-            text-[10px] font-bold shadow dark:border-transparent dark:shadow-zinc-800"
+            className="bg-zinc-900 relative z-50 rounded-md px-2 py-1 
+            text-[10px] text-white font-semibold shadow shadow-zinc-300 dark:shadow-zinc-800"
             ref={ref}
             style={{
                ...state.floatingStyles,

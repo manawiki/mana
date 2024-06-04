@@ -24,7 +24,7 @@ export function PostActionBar({ post }: { post: PostData }) {
                <>
                   <Link
                      to="#comments"
-                     className="flex hover:dark:bg-dark350 hover:bg-zinc-100 py-1 px-1.5 rounded-lg items-center gap-1.5 font-bold text-xs"
+                     className="flex hover:dark:bg-dark450 group hover:bg-zinc-100 py-1 px-1.5 rounded-lg items-center gap-1.5 font-bold text-xs"
                   >
                      <Icon
                         name="message-circle"
@@ -33,17 +33,17 @@ export function PostActionBar({ post }: { post: PostData }) {
                      />
                      <div className="text-1">Comments</div>
                      <div
-                        className="rounded-full text-[10px] flex items-center 
-                              justify-center dark:bg-dark450 bg-zinc-100 w-5 h-5 ml-0.5"
+                        className="rounded-full text-[10px] flex items-center  group-hover:bg-white
+                              justify-center dark:bg-dark450 bg-zinc-100 w-5 h-5 ml-0.5 dark:group-hover:bg-dark500"
                      >
                         {post.totalComments}
                      </div>
                   </Link>
-                  <Icon
+                  {/* <Icon
                      name="slash"
                      size={16}
                      className="text-zinc-200/70 text-lg -rotate-[30deg] dark:text-zinc-700"
-                  />
+                  /> */}
                </>
             ) : null}
             {/* <div className="flex items-center gap-1.5 font-bold text-xs px-3">

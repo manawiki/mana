@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 
+import { useLocation, useParams } from "@remix-run/react";
 import clsx from "clsx";
-import { useLocation, useParams } from "react-router-dom";
 
 import type { Collection } from "~/db/payload-types";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";

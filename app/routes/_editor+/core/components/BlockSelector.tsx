@@ -17,9 +17,10 @@ import { BlockType } from "../types";
 type Props = {
    element: CustomElement;
    editor: Editor;
+   isSelectorOpen: boolean;
 };
 
-export function BlockSelector({ element, editor }: Props) {
+export function BlockSelector({ element, editor, isSelectorOpen }: Props) {
    function onInsertBelow(block: CustomElement) {
       //@ts-ignore
       const path = [ReactEditor.findPath(editor, element)[0] + 1];
@@ -146,29 +147,6 @@ export function BlockSelector({ element, editor }: Props) {
       {
          label: "Linking",
          items: [
-            // {
-            //    label: "Embed",
-            //    icon: (
-            //       <Icon
-            //          name="brackets"
-            //          title="Embed"
-            //          className="text-teal-500"
-            //          size={16}
-            //       />
-            //    ),
-            //    description: "Embed a page or post",
-            //    onSelect: () => {
-            //       onInsertBelow({
-            //          id: nanoid(),
-            //          type: BlockType.Embed,
-            //          postUrl: "",
-            //          imageUrl: "",
-            //          title: "",
-            //          description: "",
-            //          children: [{ text: "" }],
-            //       });
-            //    },
-            // },
             {
                label: "Group",
                icon: (
@@ -426,24 +404,25 @@ export function BlockSelector({ element, editor }: Props) {
 
    return (
       <>
-         <button
-            type="button"
-            onClick={() => setEditorTray(true)}
-            className="flex h-7 w-7 items-center justify-center focus:outline-none"
-            aria-label="Insert block below"
-         >
-            <Icon
-               name="plus"
-               className={`${
-                  isEditorTrayOpen ? "rotate-45" : ""
-               } transform transition duration-300 ease-in-out`}
-               size={16}
-            />
-         </button>
+         {!isSelectorOpen && (
+            <button
+               type="button"
+               onClick={() => setEditorTray(true)}
+               className="flex h-7 w-7 items-center justify-center focus:outline-none"
+               aria-label="Insert block below"
+            >
+               <Icon
+                  name="plus"
+                  className={`${
+                     isEditorTrayOpen ? "rotate-45" : ""
+                  } transform transition duration-300 ease-in-out`}
+                  size={16}
+               />
+            </button>
+         )}
          <MobileTray
             onOpenChange={setEditorTray}
             open={isEditorTrayOpen}
-            shouldScaleBackground
             direction="right"
          >
             <div className="relative z-10 grid-cols-2 grid gap-3">
