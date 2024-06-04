@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import { Image } from "~/components/Image";
 
 import type { loader } from "./route";
+import { PieChart } from "./Pie";
 
 export function GachaSummary() {
    const { gacha, banner } = useLoaderData<typeof loader>();
@@ -14,30 +15,55 @@ export function GachaSummary() {
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
          <h3 className="text-lg font-bold">Gacha Summary</h3>
-         <div className="flex flex-col gap-y-2">
-            <div className="flex flex-col gap-y-1">
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Gacha Name:</span>
-                  <span>{banner.name}</span>
+         <div //two columns
+            className="columns-2"
+         >
+            <div className="flex flex-col gap-y-2">
+               <div className="flex flex-col gap-y-1">
+                  <div className="flex gap-x-2">
+                     <span className="font-bold">Gacha Name:</span>
+                     <span>{banner.name}</span>
+                  </div>
+                  <div className="flex gap-x-2">
+                     <span className="font-bold">Gacha Type:</span>
+                     <span>{banner.type}</span>
+                  </div>
                </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Gacha Type:</span>
-                  <span>{banner.type}</span>
+               <div className="flex flex-col gap-y-1">
+                  <div className="flex gap-x-2">
+                     <span className="font-bold">Total Pulls:</span>
+                     <span>{summary.totalPulls}</span>
+                  </div>
+                  <div className="flex gap-x-2">
+                     <span className="font-bold">Resonators:</span>
+                     <span>{summary.resonators}</span>
+                  </div>
+                  <div className="flex gap-x-2">
+                     <span className="font-bold">Weapons:</span>
+                     <span>{summary.weapons}</span>
+                  </div>
                </div>
             </div>
+
             <div className="flex flex-col gap-y-1">
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Total Pulls:</span>
-                  <span>{summary.totalPulls}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Total 5* Pulls:</span>
-                  <span>{summary.fiveStarPulls.length}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Total 4* Pulls:</span>
-                  <span>{summary.fourStarPulls.length}</span>
-               </div>
+               {/* <PieChart
+                  data={{
+                     resonators: summary.resonators,
+                     weapons: summary.weapons,
+                  }}
+                  title="Resource Type"
+               /> */}
+               <PieChart
+                  data={{
+                     "3*":
+                        summary.totalPulls -
+                        summary.fiveStarPulls.length -
+                        summary.fourStarPulls.length,
+                     "4*": summary.fourStarPulls.length,
+                     "5*": summary.fiveStarPulls.length,
+                  }}
+                  title="Rarity"
+               />
             </div>
          </div>
          <FiveStarWarps summary={summary} />
