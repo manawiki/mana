@@ -6,9 +6,21 @@ export function BlockTableView({
    children,
    element,
 }: RenderElementProps) {
+   const tableStyle = element.tableStyle;
+   const tableLayout = element.tableLayout;
+
    return (
       <>
-         <table className="table-auto mb-4 w-full relative" {...attributes}>
+         <table
+            className={clsx(
+               tableLayout === "fixed" && "table-fixed",
+               tableLayout === "auto" && "table-auto",
+               tableStyle === "rounded" && "rounded-table",
+               tableStyle === "default" && "default-table",
+               "mb-4 w-full relative overflow-hidden",
+            )}
+            {...attributes}
+         >
             {children}
          </table>
       </>
@@ -31,7 +43,7 @@ export function BlockTableHeaderCellView({
             align === "center" && "text-center",
             align === "right" && "text-right",
             align === "left" && "text-left",
-            "bg-2-sub border border-zinc-200 p-3 dark:border-zinc-700 text-left font-semibold",
+            "bg-2-sub px-3 py-2.5 text-left font-semibold relative",
          )}
          rowSpan={element.rowSpan}
          colSpan={element.colSpan}
@@ -58,7 +70,7 @@ export function BlockTableCellView({
             align === "center" && "text-center",
             align === "right" && "text-right",
             align === "left" && "text-left",
-            "bg-3 border border-zinc-200 p-3 dark:border-zinc-700 relative group",
+            "bg-3  px-3 py-2.5 relative group",
          )}
          rowSpan={element.rowSpan}
          colSpan={element.colSpan}

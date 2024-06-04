@@ -74,12 +74,12 @@ export function EditorBlocks({
          return (
             <h2
                id={id}
-               className="dark:text-zinc-100 mt-10 mb-3 pl-3 leading-7
-               font-header relative text-2xl scroll-mt-32 laptop:scroll-mt-16"
+               className="dark:text-zinc-100 mt-10 mb-3 pl-3.5 leading-7 dark:bg-dark450 bg-zinc-100
+               font-header relative text-xl scroll-mt-32 laptop:scroll-mt-16 rounded py-1.5 overflow-hidden"
                {...attributes}
             >
                {children}
-               <span className="h-full w-1 dark:bg-zinc-400 bg-zinc-400 absolute left-0 top-0 rounded-full" />
+               <span className="h-full w-1.5 dark:bg-zinc-500 bg-zinc-300 absolute left-0 top-0 rounded-full" />
             </h2>
          );
       }
