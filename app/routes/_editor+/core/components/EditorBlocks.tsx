@@ -74,14 +74,12 @@ export function EditorBlocks({
          return (
             <h2
                id={id}
-               className="flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-2xl scroll-mt-32 laptop:scroll-mt-16"
+               className="dark:text-zinc-100 mt-10 mb-3 pl-3 leading-7
+               font-header relative text-2xl scroll-mt-32 laptop:scroll-mt-16"
                {...attributes}
             >
-               <div className="min-w-[10px] flex-none">{children}</div>
-               <div
-                  contentEditable={false}
-                  className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400"
-               />
+               {children}
+               <span className="h-full w-1 dark:bg-zinc-400 bg-zinc-400 absolute left-0 top-0 rounded-full" />
             </h2>
          );
       }
