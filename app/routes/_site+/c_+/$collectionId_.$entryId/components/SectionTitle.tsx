@@ -17,10 +17,9 @@ export function SectionTitle({
          <div className="max-w-[728px] mx-auto">
             <Link to={`#${section?.slug}`}>
                <h2
-                  className={clsx(
-                     `border-color relative  mt-8 overflow-hidden  rounded-lg shadow-sm dark:shadow-black/20 mb-2.5 border-2
-                    font-header text-xl font-bold  dark:bg-dark350 `,
-                  )}
+                  className="border-color-sub border-zinc-200/80 relative  
+                  mt-8 overflow-hidden  rounded-lg shadow-sm dark:shadow-black/20 mb-2.5 border-2
+                    font-header text-xl font-bold  dark:bg-dark400"
                >
                   <div
                      className="pattern-dots absolute left-0 top-0 -z-0 h-full

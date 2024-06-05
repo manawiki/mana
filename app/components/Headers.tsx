@@ -26,11 +26,11 @@ export const H2Plain = ({
 }) => {
    return (
       <h2
-         className="dark:text-zinc-100 mt-10 mb-3 pl-3.5 leading-7 dark:bg-dark450 bg-zinc-100
-               font-header relative text-xl scroll-mt-32 laptop:scroll-mt-16 rounded py-1.5 overflow-hidden"
+         className="dark:text-zinc-100 mt-8 mb-3 pl-3.5 leading-7 dark:bg-dark400 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200/70
+      font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-700"
       >
          {text}
-         <span className="h-full w-1.5 dark:bg-zinc-500 bg-zinc-300 absolute left-0 top-0 rounded-full" />
+         <span className="h-full inline-flex top-0 w-1.5 dark:bg-zinc-600/30 bg-zinc-200/70 absolute left-0" />
       </h2>
    );
 };
