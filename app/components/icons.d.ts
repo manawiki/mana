@@ -1,4 +1,6 @@
 export type IconName =
+  | "square-plus"
+  | "message-square-plus"
   | "corner-down-left"
   | "list-tree"
   | "ellipsis"
