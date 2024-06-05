@@ -204,7 +204,7 @@ export function ColumnFour() {
                               rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
                            ></span>
                            <span className="relative text-xs laptop:text-[10px] font-bold text-white uppercase">
-                              {t("login.signUp", { ns: "auth" })}
+                              Sign up
                            </span>
                         </Link>
                      </LoggedOut>

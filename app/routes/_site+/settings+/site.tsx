@@ -340,7 +340,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         return jsonWithSuccess(null, "Successfully updated menu");
+         return jsonWithSuccess({ message: "ok" }, "Successfully updated menu");
       }
       case "saveSettings": {
          const result = await getMultipleFormData({
