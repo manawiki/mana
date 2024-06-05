@@ -73,14 +73,12 @@ export async function loader({
    )?.docs;
 
    // get the cardPoolId from request searchParams
-   const searchParams = new URLSearchParams(request.url);
+   const { searchParams } = new URL(request.url);
 
    const cardPoolId = searchParams.get("cardPoolId") || "1";
 
    //match the cardPoolId to the banner_data object keys
    const key = Object.keys(banner_data).indexOf(cardPoolId);
-
-   console.log(gachas);
 
    const gacha = gachas.data[key];
 

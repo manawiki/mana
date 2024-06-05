@@ -2,8 +2,8 @@ import { useLoaderData } from "@remix-run/react";
 
 import { Image } from "~/components/Image";
 
-import type { loader } from "./route";
 import { PieChart } from "./Pie";
+import type { loader } from "./route";
 
 export function GachaSummary() {
    const { gacha, banner } = useLoaderData<typeof loader>();
