@@ -195,34 +195,36 @@ async function getData({
 
 clientLoader.hydrate = true;
 
-export const HydrateFallback = () => (
+export const HydrateFallback = () => {
    const [searchParams] = useSearchParams();
-   <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-      <H2 text="Warp History" />
-      <div className="justify-left flex items-center gap-x-1">
-         <Form method="GET">
-            <label htmlFor="url">Import URL</label>
-            <input name="url" placeholder="" type="url" className="w-full" />
-            <select
-               className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
-               name="cardPoolId"
-               onChange={(e) => e.currentTarget.form?.submit()}
-               defaultValue={searchParams.get("cardPoolId") ?? undefined}
-            >
-               {Object.entries(banner_data).map(([key, value]) => (
-                  <option key={key} value={key}>
-                     {value.name}
-                  </option>
-               ))}
-            </select>
-            <input type="submit" value="Submit" />
-         </Form>
+   return (
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
+         <H2 text="Warp History" />
+         <div className="justify-left flex items-center gap-x-1">
+            <Form method="GET">
+               <label htmlFor="url">Import URL</label>
+               <input name="url" placeholder="" type="url" className="w-full" />
+               <select
+                  className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
+                  name="cardPoolId"
+                  onChange={(e) => e.currentTarget.form?.submit()}
+                  defaultValue={searchParams.get("cardPoolId") ?? undefined}
+               >
+                  {Object.entries(banner_data).map(([key, value]) => (
+                     <option key={key} value={key}>
+                        {value.name}
+                     </option>
+                  ))}
+               </select>
+               <input type="submit" value="Submit" />
+            </Form>
+         </div>
+         <div className="flex items-center justify-center h-96">
+            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+         </div>
+         {/* <GachaSummary /> */}
+         {/* <GachaGraph /> */}
+         {/* <GachaHistory /> */}
       </div>
-      <div className="flex items-center justify-center h-96">
-         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-      {/* <GachaSummary /> */}
-      {/* <GachaGraph /> */}
-      {/* <GachaHistory /> */}
-   </div>
-);
+   );
+};
