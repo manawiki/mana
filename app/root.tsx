@@ -254,7 +254,7 @@ function App() {
 //    AppExport = withDevTools(AppExport);
 // }
 
-export default AppExport;
+export default App;
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();
