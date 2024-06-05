@@ -7,6 +7,7 @@ import {
    ClientLoaderFunctionArgs,
    Form,
    useLoaderData,
+   useSearchParams,
 } from "@remix-run/react";
 
 import type { Resonator, Weapon } from "payload/generated-custom-types";
@@ -103,6 +104,7 @@ export async function loader({
 }
 
 export default function HomePage() {
+   const [searchParams] = useSearchParams();
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <H2 text="Warp History" />
@@ -114,6 +116,7 @@ export default function HomePage() {
                   className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
                   name="cardPoolId"
                   onChange={(e) => e.currentTarget.form?.submit()}
+                  defaultValue={searchParams.get("cardPoolId") ?? undefined}
                >
                   {Object.entries(banner_data).map(([key, value]) => (
                      <option key={key} value={key}>
@@ -193,6 +196,7 @@ async function getData({
 clientLoader.hydrate = true;
 
 export const HydrateFallback = () => (
+   const [searchParams] = useSearchParams();
    <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
       <H2 text="Warp History" />
       <div className="justify-left flex items-center gap-x-1">
@@ -203,6 +207,7 @@ export const HydrateFallback = () => (
                className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
                name="cardPoolId"
                onChange={(e) => e.currentTarget.form?.submit()}
+               defaultValue={searchParams.get("cardPoolId") ?? undefined}
             >
                {Object.entries(banner_data).map(([key, value]) => (
                   <option key={key} value={key}>
