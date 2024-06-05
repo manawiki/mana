@@ -38,13 +38,14 @@ export function BlockTable({
    const inTable = TableCursor.isInTable(editor);
    const path = ReactEditor.findPath(editor, element);
    const tableStyle = element.tableStyle;
+   const tableLayout = element.tableLayout;
 
    return (
       <>
          <table
             className={clsx(
-               element.tableLayout === "fixed" && "table-fixed",
-               element.tableLayout === "auto" && "table-auto",
+               tableLayout === "fixed" && "table-fixed",
+               tableLayout === "auto" && "table-auto",
                tableStyle === "rounded" && "rounded-table",
                tableStyle === "default" && "default-table",
                isSelecting && "table-selection-none",
