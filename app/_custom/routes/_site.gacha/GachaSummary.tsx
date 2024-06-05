@@ -42,6 +42,14 @@ export function GachaSummary() {
                      <span className="font-bold">Weapons:</span>
                      <span>{summary.weapons}</span>
                   </div>
+                  <div className="flex gap-x-2">
+                     <span className="font-bold">5*:</span>
+                     <span>{summary.fiveStarPulls.length}</span>
+                  </div>
+                  <div className="flex gap-x-2">
+                     <span className="font-bold">4*:</span>
+                     <span>{summary.fourStarPulls.length}</span>
+                  </div>
                </div>
             </div>
 
