@@ -12,7 +12,7 @@ import {
    updateCommentCount,
    updateCommentCountAfterDelete,
 } from "./updateCommentCount";
-import { isLoggedIn, isStaff } from "../users/access";
+import { isLoggedIn, isStaff } from "../users/users.access";
 
 export const Comments: CollectionConfig = {
    slug: "comments",

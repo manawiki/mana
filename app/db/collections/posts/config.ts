@@ -9,7 +9,7 @@ import {
    canUpdatePost,
 } from "./access";
 import { afterDeleteHook } from "./hooks";
-import { isStaffFieldLevel } from "../users/access";
+import { isStaffFieldLevel } from "../users/users.access";
 
 export const Posts: CollectionConfig = {
    slug: "posts",

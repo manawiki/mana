@@ -11,7 +11,7 @@ import { Posts } from "./posts/config";
 import { SiteApplications } from "./site-applications/config";
 import { Sites } from "./sites/site-config";
 import { Updates } from "./updates/config";
-import { Users } from "./users/config";
+import { Users } from "./users/users.config";
 
 export const collections = [
    Sites,
