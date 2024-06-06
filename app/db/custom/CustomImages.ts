@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { isStaff, isStaffFieldLevel } from "../collections/users/access";
+import { isStaff, isStaffFieldLevel } from "../collections/users/users.access";
 
 export const CustomImages: CollectionConfig = {
    slug: "images",

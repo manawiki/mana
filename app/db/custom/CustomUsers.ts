@@ -4,7 +4,7 @@ import {
    isStaff,
    isStaffFieldLevel,
    isStaffOrSelf,
-} from "../collections/users/access";
+} from "../collections/users/users.access";
 export const Users: CollectionConfig = {
    slug: "users",
    auth: true,
