@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { isStaffFieldLevel } from "../users/access";
+import { isStaffFieldLevel } from "../users/users.access";
 import {
    canCreateUserData,
    canDeleteUserData,

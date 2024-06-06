@@ -7,7 +7,7 @@ import {
 } from "./access";
 import { replaceVersionAuthor } from "../../hooks/replaceVersionAuthor";
 import type { User } from "../../payload-types";
-import { isStaffFieldLevel } from "../users/access";
+import { isStaffFieldLevel } from "../users/users.access";
 
 export const PostContents: CollectionConfig = {
    slug: "postContents",

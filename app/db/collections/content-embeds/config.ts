@@ -8,7 +8,7 @@ import {
    canReadContentEmbed,
    canUpdateContentEmbed,
 } from "./access";
-import { isStaffFieldLevel } from "../users/access";
+import { isStaffFieldLevel } from "../users/users.access";
 
 export const ContentEmbeds: CollectionConfig = {
    slug: "contentEmbeds",
