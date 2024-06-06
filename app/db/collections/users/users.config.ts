@@ -5,7 +5,7 @@ import {
    isStaffFieldLevel,
    isStaffOrSelf,
    isStaffOrSelfFieldLevel,
-} from "./access";
+} from "./users.access";
 
 export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";
@@ -158,14 +158,14 @@ export const Users: CollectionConfig = {
          name: "apiKey",
          type: "text",
          access: {
-            read: () => false,
+            read: isStaffOrSelfFieldLevel,
          },
       },
       {
          name: "enableAPIKey",
          type: "text",
          access: {
-            read: () => false,
+            read: isStaffOrSelfFieldLevel,
          },
       },
       {
