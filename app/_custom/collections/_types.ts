@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload/types";
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const Types: CollectionConfig = {
    slug: "types",
