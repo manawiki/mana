@@ -392,7 +392,7 @@ export const updateSiteAnalytics = inngest.createFunction(
 
       const getPostsTotal = (await authRestFetcher({
          method: "GET",
-         path: `http://localhost:3000/api/posts${postTotalQuery}`,
+         path: `https://mana.wiki/api/posts${postTotalQuery}`,
       })) as PaginatedDocs<Post>;
 
       // Get total site entries
@@ -427,7 +427,7 @@ export const updateSiteAnalytics = inngest.createFunction(
                   }
                   const totalCoreEntries = await authRestFetcher({
                      method: "GET",
-                     path: `http://localhost:3000/api/entries${entryTotalQuery}`,
+                     path: `https://mana.wiki/api/entries${entryTotalQuery}`,
                   });
                   return totalCoreEntries.totalDocs;
                },
@@ -438,7 +438,7 @@ export const updateSiteAnalytics = inngest.createFunction(
       // Update site with new data
       await authRestFetcher({
          method: "PATCH",
-         path: `http://localhost:3000/api/sites/${siteId}`,
+         path: `https://mana.wiki/api/sites/${siteId}`,
          body: {
             totalPosts: getPostsTotal.totalDocs ?? null,
             totalEntries: totalEntries ?? null,
