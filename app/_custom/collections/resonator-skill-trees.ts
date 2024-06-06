@@ -1,10 +1,13 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const ResonatorSkillTrees: CollectionConfig = {
    slug: "resonator-skill-trees",
-   labels: { singular: "resonator-skill-tree", plural: "resonator-skill-trees" },
+   labels: {
+      singular: "resonator-skill-tree",
+      plural: "resonator-skill-trees",
+   },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -20,7 +23,8 @@ export const ResonatorSkillTrees: CollectionConfig = {
          name: "id",
          type: "text",
       },
-      { // TODO(dim): I don't like it like this...
+      {
+         // TODO(dim): I don't like it like this...
          name: "node_type",
          type: "radio",
          options: [

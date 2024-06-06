@@ -1,10 +1,13 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const ResonatorSkillTypes: CollectionConfig = {
    slug: "resonator-skill-types",
-   labels: { singular: "resonator-skill-type", plural: "resonator-skill-types" },
+   labels: {
+      singular: "resonator-skill-type",
+      plural: "resonator-skill-types",
+   },
    admin: {
       group: "Custom",
       useAsTitle: "name",

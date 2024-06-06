@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const Weapons: CollectionConfig = {
    slug: "weapons",
@@ -79,7 +79,7 @@ export const Weapons: CollectionConfig = {
                name: "curve",
                type: "relationship",
                relationTo: "weapon-curves",
-            }
+            },
          ],
       },
       {

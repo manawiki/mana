@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const ConvenePools: CollectionConfig = {
    slug: "convene-pools",
@@ -31,7 +31,7 @@ export const ConvenePools: CollectionConfig = {
       },
       {
          name: "resource_id",
-         type: "text"
+         type: "text",
       },
       {
          name: "checksum",

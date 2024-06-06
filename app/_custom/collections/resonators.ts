@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const Resonators: CollectionConfig = {
    slug: "resonators",
@@ -118,8 +118,8 @@ export const Resonators: CollectionConfig = {
                      type: "number",
                   },
                ],
-            }
-         ]
+            },
+         ],
       },
       {
          name: "resonance_chain",
@@ -137,7 +137,7 @@ export const Resonators: CollectionConfig = {
                name: "icon",
                type: "upload",
                relationTo: "images",
-            }
+            },
          ],
       },
       {

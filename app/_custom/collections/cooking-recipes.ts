@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const CookingRecipes: CollectionConfig = {
    slug: "cooking-recipes",
@@ -58,8 +58,8 @@ export const CookingRecipes: CollectionConfig = {
                name: "item",
                type: "relationship",
                relationTo: "items",
-            }
-         ]
+            },
+         ],
       },
       {
          name: "checksum",

@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const Trophies: CollectionConfig = {
    slug: "trophies",
@@ -50,8 +50,8 @@ export const Trophies: CollectionConfig = {
             {
                name: "cnt",
                type: "number",
-            }
-         ]
+            },
+         ],
       },
       {
          name: "checksum",
