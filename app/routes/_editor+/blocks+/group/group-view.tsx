@@ -34,17 +34,20 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      className="flex items-center w-full gap-5 group p-3"
                   >
                      {element.iconUrl && (
-                        <div className="w-1/2 tablet:w-28 flex-none overflow-hidden rounded">
+                        <div
+                           className="w-1/2 tablet:w-28 flex-none overflow-hidden rounded-lg border 
+                        dark:border-zinc-500 border-zinc-200 shadow-sm shadow-1"
+                        >
                            <Image
                               alt={element.name}
-                              className="w-full rounded object-cover"
+                              className="w-full object-cover"
                               height={300}
                               options="height=300"
                               url={element?.iconUrl}
                            />
                         </div>
                      )}
-                     <div className="relative flex-grow space-y-1">
+                     <div className="relative flex-grow space-y-0.5">
                         {element.name && (
                            <div className="font-header font-bold group-hover:underline line-clamp-2">
                               {element.name}
