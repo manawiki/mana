@@ -977,10 +977,10 @@ export function BlockGroupItem({
                      {element.isPost && element.iconUrl ? (
                         <div className="flex items-center w-full gap-5 group">
                            {element.iconUrl && (
-                              <div className="w-1/2 tablet:w-28 flex-none overflow-hidden rounded">
+                              <div className="w-1/2 tablet:w-28 flex-none overflow-hidden rounded-lg border-y tablet:border dark:border-zinc-500 border-zinc-200 shadow-sm shadow-1">
                                  <Image
                                     alt={element.name}
-                                    className="w-full rounded object-cover"
+                                    className="w-full object-cover"
                                     height={300}
                                     options="height=300"
                                     url={element?.iconUrl}
