@@ -9,7 +9,7 @@ export function ViewSideMenu({ site }: { site: Site }) {
    return (
       <>
          {site?.menu?.map((item) => (
-            <menu className="px-2 pt-4">
+            <menu key={item.id} className="px-2 pt-4">
                <div
                   className="pl-2 pb-1 text-xs dark:text-zinc-400 text-zinc-500 font-semibold
                 flex items-center justify-between relative group"

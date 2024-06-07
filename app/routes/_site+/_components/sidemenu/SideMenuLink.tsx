@@ -166,7 +166,7 @@ export function SideMenuLink({
                         className="size-3 rounded-full flex items-center justify-center dark:bg-dark500 bg-white border dark:border-transparent 
                         absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
                      >
-                        <Icon name="plus" title="Insert Below" size={9} />
+                        <Icon name="plus" title="Insert above" size={9} />
                      </div>
                      <div className="dark:bg-dark450 bg-zinc-300 flex items-center justify-center h-0.5 rounded-b w-4/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/" />
                   </TooltipTrigger>

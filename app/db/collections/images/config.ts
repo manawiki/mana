@@ -3,7 +3,11 @@ import type { CollectionConfig } from "payload/types";
 import type { User } from "payload/generated-types";
 
 import { canDeleteImages } from "./access";
-import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../users/access";
+import {
+   isStaff,
+   isStaffFieldLevel,
+   isStaffOrSelf,
+} from "../users/users.access";
 
 export const imagesSlug = "images";
 export const Images: CollectionConfig = {

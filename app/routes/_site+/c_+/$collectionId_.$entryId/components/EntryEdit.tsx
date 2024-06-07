@@ -59,7 +59,6 @@ export function EntryEdit({ entry }: { entry: any }) {
             <Icon name="settings" size={16} />
          </Button>
          <MobileTray
-            shouldScaleBackground
             direction="right"
             onOpenChange={setSettingsOpen}
             open={isSettingsOpen}
@@ -129,7 +128,7 @@ export function EntryEdit({ entry }: { entry: any }) {
                      value={entry.icon?.id}
                   />
                </FieldGroup>
-               <div className="z-50 fixed bottom-0 left-0 w-full">
+               <div className="z-50 fixed bottom-3 left-3 w-full">
                   <div className="flex gap-2 items-center justify-between bg-2-sub p-4 border-t border-color-sub">
                      <Button
                         color="light/zinc"

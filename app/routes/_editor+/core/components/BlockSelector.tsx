@@ -423,7 +423,6 @@ export function BlockSelector({ element, editor, isSelectorOpen }: Props) {
          <MobileTray
             onOpenChange={setEditorTray}
             open={isEditorTrayOpen}
-            shouldScaleBackground
             direction="right"
          >
             <div className="relative z-10 grid-cols-2 grid gap-3">

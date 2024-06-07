@@ -6,7 +6,7 @@ import {
    canUpdateSiteRolesField,
 } from "./site-access";
 import { afterCreateSite } from "./site-hooks";
-import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/access";
+import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/users.access";
 
 export const sitesSlug = "sites";
 export const Sites: CollectionConfig = {
@@ -42,7 +42,6 @@ export const Sites: CollectionConfig = {
          label: "Enable Ads",
          defaultValue: false,
       },
-
       {
          name: "collections",
          type: "relationship",
@@ -78,6 +77,12 @@ export const Sites: CollectionConfig = {
                      type: "text",
                   },
                   {
+                     name: "hasCustomIcon",
+                     type: "checkbox",
+                     label: "Custom Icon",
+                     defaultValue: false,
+                  },
+                  {
                      name: "nestedLinks",
                      type: "array",
                      fields: [
@@ -94,6 +99,12 @@ export const Sites: CollectionConfig = {
                         {
                            name: "icon",
                            type: "text",
+                        },
+                        {
+                           name: "hasCustomIcon",
+                           type: "checkbox",
+                           label: "Custom Icon",
+                           defaultValue: false,
                         },
                      ],
                   },
