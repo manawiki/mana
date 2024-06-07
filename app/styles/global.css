@@ -152,6 +152,42 @@ html.dark {
    @apply list-[square];
 }
 
+/* --------------- Rounded Table  ---------------*/
+
+table.rounded-table {
+   @apply rounded-lg border border-color-sub border-spacing-0 border-separate;
+}
+
+table.default-table {
+   @apply border border-color-sub;
+}
+
+table.default-table th,
+table.default-table td {
+   @apply border border-color-sub;
+}
+
+/* Apply a border to the right of all but the last column */
+table.rounded-table th:not(:last-child),
+table.rounded-table td:not(:last-child) {
+   @apply border-color-sub border-r;
+}
+
+/* Apply a border to the bottom of all but the last row */
+table.rounded-table > thead > tr:not(:last-child) > th,
+table.rounded-table > thead > tr:not(:last-child) > td,
+table.rounded-table > tbody > tr:not(:last-child) > th,
+table.rounded-table > tbody > tr:not(:last-child) > td,
+table.rounded-table > tfoot > tr:not(:last-child) > th,
+table.rounded-table > tfoot > tr:not(:last-child) > td,
+table.rounded-table > tr:not(:last-child) > td,
+table.rounded-table > tr:not(:last-child) > th,
+table.rounded-table > thead:not(:last-child),
+table.rounded-table > tbody:not(:last-child),
+table.rounded-table > tfoot:not(:last-child) {
+   @apply border-color-sub border-b;
+}
+
 /* --------------- Date/Time Picker  ---------------*/
 
 /* Time Picker */

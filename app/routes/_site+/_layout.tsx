@@ -1,20 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { useLoaderData, useLocation } from "@remix-run/react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 
 import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 
 import { ColumnOne } from "./_components/Column-1";
 import { ColumnTwo } from "./_components/Column-2";
-import { ColumnThree } from "./_components/Column-3";
 import { ColumnFour } from "./_components/Column-4";
 import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
 import { RampScripts } from "./_components/RampScripts";
 import { fetchSite } from "./_utils/fetchSite.server";
+import { SiteHeader } from "./_components/SiteHeader";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -37,12 +37,9 @@ export default function SiteLayout() {
 
    const [, setSearchToggle] = useSearchToggleState();
 
-   useEffect(() => {
-      //Google Analytics automatically tracks pageviews when the browser history state changes. This means that client-side navigations between Next.js routes will send pageview data without any configuration.
-      // if (process.env.NODE_ENV === "production" && gaTag) {
-      //    gtag.pageview(location.pathname, gaTag);
-      // }
+   const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
 
+   useEffect(() => {
       //Hide the search on path change
       setSearchToggle(false);
    }, [setSearchToggle, location]);
@@ -55,8 +52,17 @@ export default function SiteLayout() {
            laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr_334px]"
          >
             <ColumnOne />
-            <ColumnTwo />
-            <ColumnThree />
+            <ColumnTwo
+               isPrimaryMenu={isPrimaryMenu}
+               setPrimaryMenuOpen={setPrimaryMenuOpen}
+            />
+            <section className="bg-3 max-laptop:pt-14 max-laptop:min-h-[140px]">
+               <SiteHeader
+                  isPrimaryMenu={isPrimaryMenu}
+                  setPrimaryMenuOpen={setPrimaryMenuOpen}
+               />
+               <Outlet />
+            </section>
             <ColumnFour />
          </main>
          <GAScripts gaTrackingId={gaTag} />

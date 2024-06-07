@@ -14,7 +14,6 @@ import type { Collection, Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { gqlFormat } from "~/utils/to-words";
-import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -194,12 +193,7 @@ export async function loader({
 
          //Otherwise, return site
          default:
-            return {
-               name: site?.name,
-               icon: {
-                  url: site?.icon?.url,
-               },
-            };
+            return null;
       }
    } catch (err: unknown) {
       payload.logger.error(`${err}`);

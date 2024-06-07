@@ -53,14 +53,23 @@ export function authGQLFetcher({
    request?: Request;
 }) {
    try {
-      return gqlRequest(gqlEndpoint({ siteSlug }), document, variables, {
-         ...(request && {
-            cookie: request?.headers.get("cookie") ?? "",
-         }),
-         ...(process.env.MANA_APP_KEY && {
-            Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
-         }),
-      });
+      return gqlRequest(
+         process.env.INNGEST_EVENT_KEY
+            ? "https://mana.wiki/api/graphql"
+            : siteSlug
+              ? "http://localhost:4000/api/graphql"
+              : "http://localhost:3000/api/graphql",
+         document,
+         variables,
+         {
+            ...(request && {
+               cookie: request?.headers.get("cookie") ?? "",
+            }),
+            ...(process.env.MANA_APP_KEY && {
+               Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
+            }),
+         },
+      );
    } catch (err) {
       console.log(err);
    }

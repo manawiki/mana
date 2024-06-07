@@ -183,7 +183,7 @@ export function CollectionHeader({
                         initials={
                            collection?.icon?.url
                               ? undefined
-                              : collectionName.charAt(0)
+                              : collectionName?.charAt(0)
                         }
                         options="aspect_ratio=1:1&height=80&width=80"
                      />

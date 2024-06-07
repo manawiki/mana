@@ -29,8 +29,10 @@ import { BlockLink } from "../../blocks+/link/_link";
 import { BlockLinkView } from "../../blocks+/link/link-view";
 import {
    BlockTable,
+   BlockTableBody,
    BlockTableCell,
    BlockTableHeaderCell,
+   BlockTableRow,
 } from "../../blocks+/table/_table";
 import {
    BlockTableView,
@@ -72,13 +74,21 @@ export function EditorBlocks({
          return (
             <h2
                id={id}
-               className="flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-2xl scroll-mt-32 laptop:scroll-mt-16"
+               className="dark:text-zinc-100 mt-8 mb-3 pl-3.5 leading-7 dark:bg-dark400 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200/70
+               font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-700"
                {...attributes}
             >
-               <div className="min-w-[10px] flex-none">{children}</div>
+               <span className="z-10 relative">{children}</span>
+               <span
+                  contentEditable={false}
+                  className="h-full inline-flex top-0 w-1.5 dark:bg-zinc-600/30 bg-zinc-200/70 absolute left-0 z-10"
+               />
                <div
                   contentEditable={false}
-                  className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400"
+                  className="pattern-dots absolute left-0
+                  top-0 z-0 h-full
+                  w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
+                  pattern-size-1 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
                />
             </h2>
          );
@@ -87,8 +97,16 @@ export function EditorBlocks({
          //@ts-ignore
          const id = urlSlug(element?.children[0]?.text ?? undefined);
          return (
-            <h3 id={id} {...attributes}>
-               {children}
+            <h3
+               id={id}
+               className="flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-xl scroll-mt-32 laptop:scroll-mt-16"
+               {...attributes}
+            >
+               <div className="min-w-[10px] flex-none">{children}</div>
+               <div
+                  contentEditable={false}
+                  className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400"
+               />
             </h3>
          );
       }
@@ -300,11 +318,23 @@ export function EditorBlocks({
       case BlockType.TableHead:
          return <TableHead {...attributes}>{children}</TableHead>;
       case BlockType.TableBody:
-         return <TableBody {...attributes}>{children}</TableBody>;
+         return (
+            <BlockTableBody
+               children={children}
+               element={element}
+               attributes={attributes}
+            />
+         );
       case BlockType.TableFooter:
          return <tfoot {...attributes}>{children}</tfoot>;
       case BlockType.TableRow:
-         return <TableRow {...attributes}>{children}</TableRow>;
+         return (
+            <BlockTableRow
+               children={children}
+               element={element}
+               attributes={attributes}
+            />
+         );
       case BlockType.TableHeaderCell:
          if (readOnly) {
             return (

@@ -18,6 +18,8 @@ import { gqlEndpoint } from "~/utils/fetchers.server";
 import { Discover } from "./components/Discover";
 import { TopHome } from "./components/TopHome";
 import indexStyles from "./styles.css";
+import { ToolKit } from "./components/Toolkit";
+import { GetStartedOptions } from "./components/GetStartedOptions";
 
 export const meta: MetaFunction = () => [
    { title: "Mana - The all-in-one wiki builder" },
@@ -111,6 +113,8 @@ export default function IndexMain() {
       <>
          <TopHome />
          <Discover />
+         <GetStartedOptions />
+         <ToolKit />
       </>
    );
 }

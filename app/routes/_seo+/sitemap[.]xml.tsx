@@ -88,7 +88,7 @@ export async function loader({
             //@ts-ignore
             ({ slug }) => `${origin}/p/${slug}`,
          ),
-         ...collections!.map(({ slug }) => `${origin}/${slug}`),
+         ...collections!.map(({ slug }) => `${origin}/c/${slug}`),
          ...entries.map(
             ({ id, collectionEntity, slug }) =>
                `${origin}/c/${collectionEntity?.slug}/${slug ?? id}`,

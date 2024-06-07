@@ -1,6 +1,12 @@
 import { Fragment, useState } from "react";
 
-import { Menu, Transition } from "@headlessui/react";
+import {
+   Menu,
+   MenuButton,
+   MenuItem,
+   MenuItems,
+   Transition,
+} from "@headlessui/react";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
@@ -19,20 +25,25 @@ import { isAdding } from "~/utils/form";
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../action+/search";
 
-export function SiteHeader() {
+export function SiteHeader({
+   setPrimaryMenuOpen,
+   isPrimaryMenu,
+}: {
+   setPrimaryMenuOpen: (open: boolean) => void;
+   isPrimaryMenu: boolean;
+}) {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
 
    const fetcher = useFetcher({ key: "site" });
 
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
-   const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
 
    const [searchToggle, setSearchToggle] = useSearchToggleState();
 
    return (
       <section
-         className="z-30 w-full laptop:z-50 fixed max-laptop:top-[56px] max-laptop:px-3 shadow-sm dark:shadow-zinc-900/30
+         className="z-30 w-full laptop:z-50 fixed max-laptop:top-[56px] shadow-sm dark:shadow-zinc-900/30
         laptop:sticky laptop:top-0 dark:bg-dark350 bg-white border-color border-b"
       >
          <div
@@ -47,7 +58,7 @@ export function SiteHeader() {
                   <SearchComboBox siteType={site.type} />
                ) : (
                   <>
-                     <div className="flex items-center truncate">
+                     <div className="flex items-center truncate max-laptop:pl-3">
                         <Link
                            prefetch="intent"
                            to="/"
@@ -89,15 +100,14 @@ export function SiteHeader() {
                                  </div>
                               )}
                            </div>
-                           {/* {site.about} */}
                         </Link>
                      </div>
-                     <div className="flex items-center gap-3 pl-2">
+                     <div className="flex items-center gap-3 pl-2 max-laptop:pr-3">
                         <FollowingSite>
                            <Menu as="div" className="relative">
                               {({ open }) => (
                                  <>
-                                    <Menu.Button
+                                    <MenuButton
                                        className="text-1 hover:bg-3 flex h-9 w-9 
                                 items-center justify-center rounded-full transition duration-300 active:translate-y-0.5"
                                     >
@@ -117,7 +127,7 @@ export function SiteHeader() {
                                              />
                                           </>
                                        )}
-                                    </Menu.Button>
+                                    </MenuButton>
                                     <Transition
                                        as={Fragment}
                                        enter="transition ease-out duration-100"
@@ -127,7 +137,7 @@ export function SiteHeader() {
                                        leaveFrom="transform opacity-100 scale-100"
                                        leaveTo="transform opacity-0 scale-95"
                                     >
-                                       <Menu.Items
+                                       <MenuItems
                                           className="absolute -right-1 z-30 mt-1.5 w-full min-w-[140px]
                                  max-w-md origin-top-right transform transition-all"
                                        >
@@ -136,7 +146,7 @@ export function SiteHeader() {
                                             p-1 shadow-md dark:shadow-zinc-800/80 space-y-0.5"
                                           >
                                              <AdminOrStaffOrOwner>
-                                                <Menu.Item>
+                                                <MenuItem>
                                                    <Link
                                                       to="/settings/site"
                                                       className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
@@ -151,9 +161,9 @@ export function SiteHeader() {
                                                          className="text-zinc-400 w-4.5 h-4.5"
                                                       />
                                                    </Link>
-                                                </Menu.Item>
+                                                </MenuItem>
                                              </AdminOrStaffOrOwner>
-                                             <Menu.Item>
+                                             <MenuItem>
                                                 <button
                                                    onClick={() => {
                                                       fetcher.submit(
@@ -180,9 +190,9 @@ export function SiteHeader() {
                                                       className="text-zinc-400 w-4.5 h-4.5"
                                                    />
                                                 </button>
-                                             </Menu.Item>
+                                             </MenuItem>
                                           </div>
-                                       </Menu.Items>
+                                       </MenuItems>
                                     </Transition>
                                  </>
                               )}
@@ -243,7 +253,7 @@ export function SiteHeader() {
                            <Icon name="menu" className="w-5 h-5" />
                         </button>
                         <MobileTray
-                           shouldScaleBackground
+                           direction="left"
                            onOpenChange={setPrimaryMenuOpen}
                            open={isPrimaryMenu}
                         >

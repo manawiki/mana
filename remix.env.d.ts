@@ -1,6 +1,7 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node/globals" />
 
+import type { RequestHandler } from "@remix-run/express";
 import type { ServerBuild } from "@remix-run/node";
 import type { Payload } from "payload";
 
@@ -36,11 +37,6 @@ type GetLoadContextFunction = (
    req: PayloadRequest,
    res: Response,
 ) => Promise<AppLoadContext> | AppLoadContext;
-type RequestHandler = (
-   req: Request,
-   res: Response,
-   next: NextFunction,
-) => Promise<void>;
 
 declare module "@remix-run/express" {
    export declare function createRequestHandler({

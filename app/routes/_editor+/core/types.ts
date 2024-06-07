@@ -226,6 +226,7 @@ export interface TableElement {
    id: string;
    type: BlockType.Table;
    tableLayout: "auto" | "fixed";
+   tableStyle: "rounded" | "default";
    children: Array<
       BlockType.TableHead | BlockType.TableBody | BlockType.TableFooter
    >;
@@ -255,6 +256,7 @@ export interface TableHeaderCellElement {
    type: BlockType.TableHeaderCell;
    rowSpan?: number;
    colSpan?: number;
+   align?: "left" | "center" | "right" | undefined;
    children: CustomText[];
 }
 
@@ -262,6 +264,7 @@ export interface TableCellElement {
    type: BlockType.TableCell;
    rowSpan?: number;
    colSpan?: number;
+   align?: "left" | "center" | "right" | undefined;
    children: CustomText[];
 }
 

@@ -7,7 +7,7 @@ import {
 } from "./access";
 import { replaceVersionAuthor } from "../../hooks/replaceVersionAuthor";
 import type { User } from "../../payload-types";
-import { isStaffFieldLevel } from "../users/access";
+import { isStaffFieldLevel } from "../users/users.access";
 
 export const PostContents: CollectionConfig = {
    slug: "postContents",
@@ -37,7 +37,7 @@ export const PostContents: CollectionConfig = {
          name: "author",
          type: "relationship",
          relationTo: "users",
-         maxDepth: 3,
+         maxDepth: 2,
          required: false,
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {

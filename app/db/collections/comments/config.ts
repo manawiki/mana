@@ -12,7 +12,7 @@ import {
    updateCommentCount,
    updateCommentCountAfterDelete,
 } from "./updateCommentCount";
-import { isLoggedIn, isStaff } from "../users/access";
+import { isLoggedIn, isStaff } from "../users/users.access";
 
 export const Comments: CollectionConfig = {
    slug: "comments",
@@ -49,6 +49,7 @@ export const Comments: CollectionConfig = {
          name: "site",
          type: "relationship",
          relationTo: "sites",
+         maxDepth: 0,
          required: true,
          access: {
             update: () => false,
@@ -58,6 +59,7 @@ export const Comments: CollectionConfig = {
          name: "postParent",
          type: "relationship",
          relationTo: "posts",
+         maxDepth: 1,
          hasMany: false,
          access: {
             update: () => false,
@@ -67,6 +69,7 @@ export const Comments: CollectionConfig = {
          name: "sectionParentCollection",
          type: "relationship",
          relationTo: "collections",
+         maxDepth: 1,
          access: {
             update: () => false,
          },
@@ -97,6 +100,7 @@ export const Comments: CollectionConfig = {
          name: "replies",
          type: "relationship",
          relationTo: "comments",
+         maxDepth: 1,
          hasMany: true,
          access: {
             update: () => false,
@@ -106,8 +110,8 @@ export const Comments: CollectionConfig = {
          name: "upVotes",
          type: "relationship",
          relationTo: "users",
-         hasMany: true,
          maxDepth: 0,
+         hasMany: true,
          access: {
             update: () => false,
          },
@@ -116,6 +120,7 @@ export const Comments: CollectionConfig = {
          name: "author",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 2,
          required: true,
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
