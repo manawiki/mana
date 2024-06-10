@@ -52,12 +52,12 @@ export function authGQLFetcher({
    variables?: any;
    request?: Request;
    siteSlug?: string | undefined | null;
-   customPath?: string | undefined | null;
+   customPath?: string | false;
 }) {
    //If siteSlug is provided, it is querying the custom site endpoint
    try {
       return gqlRequest(
-         customPath ?? gqlEndpoint({ siteSlug }),
+         customPath ? customPath : gqlEndpoint({ siteSlug }),
          document,
          variables,
          {
