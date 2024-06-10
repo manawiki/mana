@@ -280,7 +280,10 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { entryData }: { entryData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
-                  siteSlug: customCollection ? siteSlug : undefined,
+                  customPath: customCollection
+                     ? siteDomain && `https://${siteDomain}:4000/api/graphql`
+                     : siteSlug &&
+                       `http://${siteSlug}.mana.wiki:4000/api/graphql`,
                   variables: {
                      entrySlug: doc.entrySlug,
                      //Only send siteId and collectionID if core site
@@ -344,7 +347,10 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { listData }: { listData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
-                  siteSlug: customCollection ? siteSlug : undefined,
+                  customPath: customCollection
+                     ? siteDomain && `https://${siteDomain}:4000/api/graphql`
+                     : siteSlug &&
+                       `http://${siteSlug}.mana.wiki:4000/api/graphql`,
                   variables: {
                      listSlug: doc.listSlug,
                   },
