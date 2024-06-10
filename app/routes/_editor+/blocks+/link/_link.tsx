@@ -193,7 +193,9 @@ export async function loader({
 
          //Otherwise, return site
          default:
-            return null;
+            return {
+               message: "ok",
+            };
       }
    } catch (err: unknown) {
       payload.logger.error(`${err}`);
