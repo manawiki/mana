@@ -128,6 +128,20 @@ export const Sites: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "logoDarkImage",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "logoLightImage",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "logoURL",
+         type: "text",
+      },
+      {
          name: "id",
          type: "text",
       },
