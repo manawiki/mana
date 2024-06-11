@@ -12,12 +12,14 @@ import { LogoText } from "~/components/Logo";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { DarkModeToggle } from "../action+/theme-toggle";
 import { t } from "i18next";
+import { useTheme } from "~/utils/client-hints";
 
 export function ColumnFour() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
+   const theme = useTheme();
 
    return (
-      <section className="relative laptop:z-30 laptop:block max-laptop:bg-2-sub">
+      <section className="relative laptop:z-50 laptop:block max-laptop:bg-2-sub">
          <div
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 no-scrollbar 
             h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px] justify-between"
@@ -174,7 +176,7 @@ export function ColumnFour() {
                   )}
                </div>
             </div>
-            <div className="p-4 laptop:pt-0 laptop:fixed bottom-0 laptop:w-[334px] bg-3 laptop:bg-2">
+            <div className="p-4 laptop:pt-0 laptop:fixed bottom-0 laptop:w-[334px] bg-3 laptop:bg-2 z-50">
                <div
                   className="border-t border-dotted justify-between border-zinc-200 dark:border-zinc-700 w-full flex items-center pt-4
                max-laptop:max-w-[728px] mx-auto"
@@ -184,12 +186,29 @@ export function ColumnFour() {
                         to="https://mana.wiki"
                         className="flex items-center gap-1.5 justify-start laptop:justify-end group"
                      >
-                        <span className="dark:text-zinc-500 text-zinc-400 text-xs">
+                        <span className="dark:text-zinc-500 text-zinc-400 text-xs font-semibold">
                            Powered by
                         </span>
-                        <LogoText className="w-9 text-1 group-hover:dark:text-zinc-300 group-hover:text-zinc-600" />
+                        <LogoText className="w-12 text-1 group-hover:dark:text-zinc-300 group-hover:text-zinc-600" />
                      </Link>
                   )}
+                  {site.isWhiteLabel &&
+                     site?.logoDarkImage?.url &&
+                     site?.logoLightImage?.url &&
+                     site?.logoURL && (
+                        <Link to={site?.logoURL}>
+                           <Image
+                              className="object-contain h-6"
+                              height={80}
+                              options="height=80"
+                              url={
+                                 theme === "light"
+                                    ? site?.logoLightImage?.url
+                                    : site?.logoDarkImage?.url
+                              }
+                           />
+                        </Link>
+                     )}
                   <div className="flex items-center gap-4 text-xs text-1">
                      <DarkModeToggle className="!size-3.5" />
                      <LoggedOut>
