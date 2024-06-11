@@ -1,5 +1,4 @@
 import { Attributes } from "./attributes";
-import { ConvenePools } from "./convene-pools";
 import { ConveneTypes } from "./convene-types";
 import { CookingRecipes } from "./cooking-recipes";
 import { EchoClasses } from "./echo-classes";
@@ -33,7 +32,6 @@ import { Weapons } from "./weapons";
 
 export const CustomCollections = [
    Attributes,
-   ConvenePools,
    ConveneTypes,
    CookingRecipes,
    EchoClasses,
