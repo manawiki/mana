@@ -71,7 +71,7 @@ export function ColumnTwo({
                                  </button>
                               ) : (
                                  <button
-                                    className="flex items-center gap-2 text-1 text-xs p-2 ml-2.5 mt-2.5 hover:bg-zinc-100 rounded-lg dark:hover:bg-dark400"
+                                    className="flex items-center gap-2 text-1 text-xs p-2 pr-2.5 ml-2.5 mt-2.5 hover:bg-zinc-100 rounded-lg dark:hover:bg-dark400"
                                     onClick={() => setEditMode(true)}
                                  >
                                     <Icon
