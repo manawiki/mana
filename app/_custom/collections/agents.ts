@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/access";
+
 export const Agents: CollectionConfig = {
   slug: "agents",
   labels: { singular: "agent", plural: "agents" },
@@ -29,6 +30,10 @@ export const Agents: CollectionConfig = {
     },
     {
       name: "name_code",
+      type: "text",
+    },
+    {
+      name: "name_full",
       type: "text",
     },
     {
@@ -71,6 +76,18 @@ export const Agents: CollectionConfig = {
     },
     {
       name: "def",
+      type: "number",
+    },
+    {
+      name: "hp_growth",
+      type: "number",
+    },
+    {
+      name: "atk_growth",
+      type: "number",
+    },
+    {
+      name: "def_growth",
       type: "number",
     },
     {
@@ -125,6 +142,52 @@ export const Agents: CollectionConfig = {
       type: "relationship",
       relationTo: "talents",
       hasMany: true,
+    },
+    {
+      name: "ascension_data",
+      type: "array",
+      fields: [
+        {
+          name: "asc",
+          type: "number",
+        },
+        {
+          name: "lv_min",
+          type: "number",
+        },
+        {
+          name: "lv_max",
+          type: "number",
+        },
+        {
+          name: "hp_adv",
+          type: "number",
+        },
+        {
+          name: "atk_adv",
+          type: "number",
+        },
+        {
+          name: "def_adv",
+          type: "number",
+        },
+        {
+          name: "materials",
+          type: "array",
+          fields: [
+            {
+              name: "material",
+              type: "relationship",
+              relationTo: "materials",
+              hasMany: false,
+            },
+            {
+              name: "qty",
+              type: "number",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "icon_path",
