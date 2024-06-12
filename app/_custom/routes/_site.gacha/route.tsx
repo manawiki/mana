@@ -4,65 +4,28 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
-   ClientLoaderFunctionArgs,
+   type ClientLoaderFunctionArgs,
    Form,
    useLoaderData,
    useSearchParams,
 } from "@remix-run/react";
 
-import type { Resonator, Weapon } from "payload/generated-custom-types";
+import type {
+   ConveneType,
+   Resonator,
+   Weapon,
+} from "payload/generated-custom-types";
 import { H2 } from "~/components/Headers";
 import { fetchWithCache } from "~/utils/cache.server";
 
-import gachas from "./gacha.json";
-import { GachaGraph } from "./GachaGraph";
 import { GachaHistory } from "./GachaHistory";
 import { GachaSummary } from "./GachaSummary";
+import { getSummary } from "./getSummary";
 
-const banner_data: Record<
-   string,
-   { name: string; type: number; res_id: string }
-> = {
-   "1": {
-      name: "Utternace of Marvels", // 20% OFF starter banner, 50 rolls guaranteed 5-star at end.
-      type: 5, // Beginner Convene
-      res_id: "4df1ed7da8530acc4263774922de7d7",
-   },
-   "2": {
-      name: "Tidal Chorus", // Standard Resonator Banner
-      type: 3, // Standard Resonator Convene
-      res_id: "6a6544dd7ce748e541a528967e4395c8",
-   },
-   "3": {
-      name: "???", // Unnamed in the files, it uses the selected item name.
-      type: 4, // Standard Weapon Convene
-      res_id: "a859ca595b193b96502fe3af3cb7726f",
-   },
-   "4": {
-      name: "???", // Unnamed in the files, 80 rolls guaranteed selected 5-star at end.
-      type: 6, // Beginner's Choice Convene
-      res_id: "917dfa695d6c6634ee4e972bb9168f6a",
-   },
-   "5": {
-      name: "???", // Unnamed in the files, free 5* resonator choice. Uses resonator name.
-      type: 7, // Beginner's Choice Convene (Giveback Custom Convene)
-      res_id: "48e034de667fdca4b2538397e6fb5d26",
-   },
-   "100001": {
-      name: "Prevail the Lasting Night",
-      type: 1,
-      res_id: "5c13a63f85465e9fcc0f24d6efb15083",
-   },
-   "200001": {
-      name: "Absolute Pulsation",
-      type: 2,
-      res_id: "663ab75b8820a61fc09a91b45dafa1f0",
-   },
-};
-
-type RollData = {
+export type RollData = {
+   pity?: number;
    cardPoolType: string;
-   resourceId: number;
+   resourceId: string;
    qualityLevel: number;
    resourceType: string;
    name: string;
@@ -71,7 +34,7 @@ type RollData = {
 };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
    params,
    request,
 }: LoaderFunctionArgs) {
@@ -87,10 +50,15 @@ export async function loader({
       )
    )?.docs;
 
-   // get the cardPoolId from request searchParams
+   const conveneTypes = (
+      await fetchWithCache<{ docs: Array<ConveneType> }>(
+         "http://localhost:4000/api/convene-types?limit=1000&sort=id&depth=2",
+      )
+   )?.docs;
+
    const { searchParams } = new URL(request.url);
 
-   const cardPoolId = searchParams.get("cardPoolId") || "1";
+   const convene = searchParams.get("convene") || "1";
 
    // we'll load player Data from the client
    // const gacha = await getData({ cardPoolId, url: searchParams.get("url") });
@@ -98,40 +66,10 @@ export async function loader({
    return json({
       resonators,
       weapons,
+      conveneTypes,
+      convene: conveneTypes?.find((c) => c.id === convene),
       gacha: { data: [] as RollData[] },
-      banner: banner_data[cardPoolId],
    });
-}
-
-export default function HomePage() {
-   const [searchParams] = useSearchParams();
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <H2 text="Warp History" />
-         <div className="justify-left flex items-center gap-x-1">
-            <Form method="GET">
-               <label htmlFor="url">Import URL</label>
-               <input name="url" placeholder="" type="url" className="w-full" />
-               <select
-                  className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
-                  name="cardPoolId"
-                  onChange={(e) => e.currentTarget.form?.submit()}
-                  defaultValue={searchParams.get("cardPoolId") ?? undefined}
-               >
-                  {Object.entries(banner_data).map(([key, value]) => (
-                     <option key={key} value={key}>
-                        {value.name}
-                     </option>
-                  ))}
-               </select>
-               <input type="submit" value="Submit" />
-            </Form>
-         </div>
-         <GachaSummary />
-         {/* <GachaGraph /> */}
-         <GachaHistory />
-      </div>
-   );
 }
 
 // we'll load player Data from the client
@@ -146,10 +84,10 @@ export const clientLoader = async ({
    // get the cardPoolId from request searchParams
    const { searchParams } = new URL(request.url);
 
-   const cardPoolId = searchParams.get("cardPoolId") || "1";
+   const convene = searchParams.get("convene") || "1";
 
    const gacha = await (
-      await getData({ cardPoolId, url: searchParams.get("url") })
+      await getData({ convene, url: searchParams.get("url") })
    ).json();
 
    // Return the data to expose through useLoaderData()
@@ -157,10 +95,10 @@ export const clientLoader = async ({
 };
 
 async function getData({
-   cardPoolId,
+   convene,
    url,
 }: {
-   cardPoolId: string;
+   convene: string;
    url: string | null;
 }) {
    const { searchParams } = new URL(
@@ -172,9 +110,7 @@ async function getData({
       serverId:
          searchParams.get("serverId") || "591d6af3a3090d8ea00d8f86cf6d7501",
       languageCode: searchParams.get("languageCode") || "en",
-      cardPoolId:
-         banner_data[cardPoolId]?.res_id || "4df1ed7da8530acc4263774922de7d7",
-      cardPoolType: banner_data[cardPoolId]?.type || "5",
+      cardPoolType: convene || "1",
       recordId:
          searchParams.get("recordId") || "cb1d1f2269e5442124eff6540823a570",
    };
@@ -197,6 +133,8 @@ clientLoader.hydrate = true;
 
 export const HydrateFallback = () => {
    const [searchParams] = useSearchParams();
+   const loaderData = useLoaderData<typeof loader>();
+
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <H2 text="Warp History" />
@@ -206,13 +144,13 @@ export const HydrateFallback = () => {
                <input name="url" placeholder="" type="url" className="w-full" />
                <select
                   className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
-                  name="cardPoolId"
+                  name="convene"
                   onChange={(e) => e.currentTarget.form?.submit()}
-                  defaultValue={searchParams.get("cardPoolId") ?? undefined}
+                  defaultValue={searchParams.get("convene") ?? "1"}
                >
-                  {Object.entries(banner_data).map(([key, value]) => (
-                     <option key={key} value={key}>
-                        {value.name}
+                  {loaderData?.conveneTypes?.map((convene) => (
+                     <option key={convene.id} value={convene.id}>
+                        {convene.name}
                      </option>
                   ))}
                </select>
@@ -228,3 +166,40 @@ export const HydrateFallback = () => {
       </div>
    );
 };
+
+export default function HomePage() {
+   const [searchParams] = useSearchParams();
+   const loaderData = useLoaderData<typeof loader>();
+
+   const summary = getSummary(loaderData);
+
+   console.log(loaderData.gacha);
+
+   return (
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
+         <H2 text="Warp History" />
+         <div className="justify-left flex items-center gap-x-1">
+            <Form method="GET">
+               <label htmlFor="url">Import URL</label>
+               <input name="url" placeholder="" type="url" className="w-full" />
+               <select
+                  className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
+                  name="convene"
+                  onChange={(e) => e.currentTarget.form?.submit()}
+                  defaultValue={searchParams.get("convene") ?? "1"}
+               >
+                  {loaderData?.conveneTypes?.map((convene) => (
+                     <option key={convene.id} value={convene.id}>
+                        {convene.name}
+                     </option>
+                  ))}
+               </select>
+               <input type="submit" value="Submit" />
+            </Form>
+         </div>
+         <GachaSummary summary={summary} />
+         {/* <GachaGraph /> */}
+         <GachaHistory summary={summary} />
+      </div>
+   );
+}
