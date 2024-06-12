@@ -28,6 +28,10 @@ export const _Stats: CollectionConfig = {
       type: "text",
     },
     {
+      name: "divisor",
+      type: "number",
+    },
+    {
       name: "icon_name",
       type: "text",
     },
