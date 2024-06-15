@@ -29,6 +29,8 @@ pnpm import_collection_data collection:bangboo-talents,filename:BangbooTalent.js
 
 # W-Engines
 pnpm import_collection_data collection:w-engines,filename:WEngine.json,idname:data_key,sync:false,overwrite:false
+# Weapon Level + Weapon Star JSON constants
+pnpm import_collection_data collection:_data-jsons,filename:_DataJsonsWLevelStar.json,idname:data_key,sync:false,overwrite:false
 
 # Disk Drives
 pnpm import_collection_data collection:disk-drive-sets,filename:DiskDriveSet.json,idname:data_key,sync:false,overwrite:false

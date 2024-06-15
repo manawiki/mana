@@ -37,6 +37,20 @@ export const BangbooSkills: CollectionConfig = {
       relationTo: "bangboos",
     },
     {
+      name: "params",
+      type: "array",
+      fields: [
+        {
+          name: "title",
+          type: "text",
+        },
+        {
+          name: "params",
+          type: "json",
+        },
+      ],
+    },
+    {
       name: "icon_path",
       type: "text",
     },
