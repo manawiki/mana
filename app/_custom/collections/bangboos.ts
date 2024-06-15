@@ -45,7 +45,15 @@ export const Bangboos: CollectionConfig = {
       type: "number",
     },
     {
+      name: "hp_growth",
+      type: "number",
+    },
+    {
       name: "atk",
+      type: "number",
+    },
+    {
+      name: "atk_growth",
       type: "number",
     },
     {
@@ -53,7 +61,19 @@ export const Bangboos: CollectionConfig = {
       type: "number",
     },
     {
+      name: "def_growth",
+      type: "number",
+    },
+    {
       name: "impact",
+      type: "number",
+    },
+    {
+      name: "attribute_mastery",
+      type: "number",
+    },
+    {
+      name: "crit",
       type: "number",
     },
     {
@@ -67,6 +87,52 @@ export const Bangboos: CollectionConfig = {
       type: "relationship",
       relationTo: "bangboo-talents",
       hasMany: true,
+    },
+    {
+      name: "ascension_data",
+      type: "array",
+      fields: [
+        {
+          name: "asc",
+          type: "number",
+        },
+        {
+          name: "lv_min",
+          type: "number",
+        },
+        {
+          name: "lv_max",
+          type: "number",
+        },
+        {
+          name: "hp_adv",
+          type: "number",
+        },
+        {
+          name: "atk_adv",
+          type: "number",
+        },
+        {
+          name: "def_adv",
+          type: "number",
+        },
+        {
+          name: "materials",
+          type: "array",
+          fields: [
+            {
+              name: "material",
+              type: "relationship",
+              relationTo: "materials",
+              hasMany: false,
+            },
+            {
+              name: "qty",
+              type: "number",
+            },
+          ],
+        },
+      ],
     },
     {
       name: "icon_path",

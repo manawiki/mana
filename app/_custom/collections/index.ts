@@ -1,6 +1,7 @@
 import { _CharacterCamps } from "./_character-camps";
 import { _DamageElements } from "./_damage-elements";
 import { _DamageTypes } from "./_damage-types";
+import { _DataJsons } from "./_data-jsons";
 import { _DescIcons } from "./_desc-icons";
 import { _MaterialClasses } from "./_material-classes";
 import { _Rarities } from "./_rarities";
@@ -30,6 +31,7 @@ export const CustomCollections = [
   _CharacterCamps,
   _DamageElements,
   _DamageTypes,
+  _DataJsons,
   _DescIcons,
   _MaterialClasses,
   _Rarities,
