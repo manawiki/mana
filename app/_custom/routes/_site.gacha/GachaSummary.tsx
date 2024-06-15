@@ -1,80 +1,79 @@
 import { Link, useLoaderData } from "@remix-run/react";
 
+import { H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
-import { type GachaSummary } from "./getSummary";
-import { PieChart } from "./Pie";
+import { DatesChart } from "./DatesChart";
+import { type GachaSummaryType } from "./getSummary";
 import type { loader, RollData } from "./route";
 
-export function GachaSummary({ summary }: { summary: GachaSummary }) {
+export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
+   // display five star percentage in shape of #.##%
+   const fiveStarPercentage = (
+      (summary.fiveStars.length / summary.total) *
+      100
+   ).toFixed(2);
+   const fourStarPercentage = (
+      (summary.fourStars.length / summary.total) *
+      100
+   ).toFixed(2);
+
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
-         <FiveStarWarps summary={summary} />
+         <div className="flex flex-col gap-y-1">
+            <H2 text={summary?.convene?.name ?? "Convene"} />
+         </div>
          <div //two columns
             className="columns-2"
          >
-            <div className="flex flex-col gap-y-2">
-               <div className="flex flex-col gap-y-1">
-                  <h2>{summary?.convene?.name}</h2>
+            <div className="flex flex-col gap-y-1">
+               <div className="flex gap-x-2">
+                  <span className="font-bold">Convenes Total:</span>
+                  <span>{summary.total}</span>
                </div>
-               <div className="flex flex-col gap-y-1">
-                  <div className="flex gap-x-2">
-                     <span className="font-bold">Total Convenes:</span>
-                     <span>{summary.total}</span>
-                  </div>
-                  <div className="flex gap-x-2">
-                     <span className="font-bold">Cost:</span>
-                     <span>{summary.total * 160}</span>
-                  </div>
-                  <div className="flex gap-x-2">
-                     <span className="font-bold">Resonators:</span>
-                     <span>{summary.resonators}</span>
-                  </div>
-                  <div className="flex gap-x-2">
-                     <span className="font-bold">Weapons:</span>
-                     <span>{summary.weapons}</span>
-                  </div>
-                  <div className="flex gap-x-2">
-                     <span className="font-bold">5* Convenes:</span>
-                     <span>{summary.fiveStars.length}</span>
-                  </div>
-                  <div className="flex gap-x-2">
-                     <span className="font-bold">4* Convenes:</span>
-                     <span>{summary.fourStars.length}</span>
-                  </div>
-                  <div className="flex gap-x-2">
-                     <span className="font-bold">Avg 5* Pity:</span>
-                     <span>{summary.fiveStarPity}</span>
-                  </div>
-                  <div className="flex gap-x-2">
-                     <span className="font-bold">Avg 4* Pity:</span>
-                     <span>{summary.fourStarPity}</span>
-                  </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">Worth:</span>
+                  <span>{summary.total * 160}</span>
                </div>
-               <div className="flex flex-col gap-y-1">
-                  <PieChart
-                     data={{
-                        "3*":
-                           summary.total -
-                           summary.fiveStars.length -
-                           summary.fourStars.length,
-                        "4*": summary.fourStars.length,
-                        "5*": summary.fiveStars.length,
-                     }}
-                     title="Rarity"
-                  />
+               <div className="flex gap-x-2">
+                  <span className="font-bold">Resonators:</span>
+                  <span>{summary.resonators}</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">Weapons:</span>
+                  <span>{summary.weapons}</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">5★ Convenes:</span>
+                  <span>{summary.fiveStars.length}</span>
+                  <span>({fiveStarPercentage}%)</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">4★ Convenes:</span>
+                  <span>{summary.fourStars.length}</span>
+                  <span>({fourStarPercentage}%)</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">5★ Median:</span>
+                  <span>{summary.fiveStarPity}</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">4★ Median:</span>
+                  <span>{summary.fourStarPity}</span>
                </div>
             </div>
          </div>
+         <DatesChart dates={summary.dates} />
+         <FiveStars summary={summary} />
       </div>
    );
 }
 
-function FiveStarWarps({ summary }: { summary: GachaSummary }) {
+function FiveStars({ summary }: { summary: GachaSummaryType }) {
    return (
       <div className="flex flex-col gap-y-1">
+         <H2 text="5★ Convenes" />
          <div className="relative inline-block text-center align-middle">
-            <h2 className="font-bold">5* Convenes:</h2>
             <div className="relative m-1 w-full rounded-md border p-2 dark:border-gray-700">
                {summary.fiveStars
                   .map((roll, int) => <WarpFrame roll={roll} key={int} />)
