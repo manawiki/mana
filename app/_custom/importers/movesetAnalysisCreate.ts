@@ -8,6 +8,7 @@ import { nanoid } from "nanoid";
 require("dotenv").config();
 
 const { PAYLOADCMS_SECRET } = process.env;
+
 const { JSDOM } = require("jsdom");
 
 import { deserializeSlate } from "./deserializeSlate";
@@ -66,17 +67,24 @@ async function mapper() {
                });
 
                if (existingPVEAnalysisEmbed.docs.length == 0) {
-                  const dom = new JSDOM(row?.field_pokemon_overview);
-                  console.log(row?.field_pokemon_overview);
-                  const document = dom.window.document;
+                  // Assuming deserializeSlate() now accepts HTML and converts it
+                  const pveOffensiveMovesetAnalysisHTMLContent =
+                     row?.field_pokemon_overview;
 
-                  console.log(document, "Document");
+                  // Parse the HTML content
+                  const dom = new JSDOM(pveOffensiveMovesetAnalysisHTMLContent);
 
-                  const slateFormat = deserializeSlate(document);
+                  const document = dom.window.document.body;
 
-                  console.log(slateFormat, "Slate Format");
+                  console.log(document, "DOCUMENT Format");
 
-                  console.log(JSON.parse(slateFormat));
+                  const pveOffensiveMovesetAnalysis =
+                     deserializeSlate(document);
+
+                  console.log(
+                     pveOffensiveMovesetAnalysis,
+                     "pveOffensiveMovesetAnalysis Format",
+                  );
 
                   await payload.create({
                      collection: "contentEmbeds",
@@ -88,7 +96,6 @@ async function mapper() {
                         collectionEntity: "npY1abcTr6pokemon",
                         author: "643fc4b599231b1364d3ae87",
                         content: [
-                           // ...slateFormat,
                            {
                               type: "h3",
                               id: nanoid(),
@@ -98,6 +105,7 @@ async function mapper() {
                                  },
                               ],
                            },
+                           ...pveOffensiveMovesetAnalysis,
                            {
                               type: "table",
                               id: nanoid(),

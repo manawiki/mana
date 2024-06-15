@@ -1,14 +1,17 @@
 import { jsx } from "slate-hyperscript";
-import { Node } from "slate";
+
+import { nanoid } from "nanoid";
+
+// Create a JSDOM instance to access DOM Node constants
+const { JSDOM } = require("jsdom");
+const { Node } = new JSDOM().window;
 
 export const deserializeSlate = (el, markAttributes = {}) => {
-   console.log(el);
-
-   // if (el.nodeType === Node.TEXT_NODE) {
-   //    return jsx("text", markAttributes, el.textContent);
-   // } else if (el.nodeType !== Node.ELEMENT_NODE) {
-   //    return null;
-   // }
+   if (el.nodeType === Node.TEXT_NODE) {
+      return jsx("text", markAttributes, el.textContent);
+   } else if (el.nodeType !== Node.ELEMENT_NODE) {
+      return null;
+   }
 
    const nodeAttributes = { ...markAttributes };
 
@@ -25,6 +28,7 @@ export const deserializeSlate = (el, markAttributes = {}) => {
    if (children.length === 0) {
       children.push(jsx("text", nodeAttributes, ""));
    }
+   console.log(el.nodeName);
 
    switch (el.nodeName) {
       case "BODY":
