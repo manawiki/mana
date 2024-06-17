@@ -274,189 +274,248 @@ async function mapper() {
                         author: "643fc4b599231b1364d3ae87",
                         content: [
                            ...(pvpOffensive[0].text !== ""
-                              ? [...pvpOffensive]
+                              ? [
+                                   {
+                                      type: "table",
+                                      id: nanoid(),
+                                      tableLayout: "auto",
+                                      children: [
+                                         {
+                                            type: "table-body",
+                                            children: [
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              id: nanoid(),
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "",
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                     },
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              id: nanoid(),
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "Best",
+                                                                    greenBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        align: "center",
+                                                     },
+                                                  ],
+                                               },
+                                            ],
+                                         },
+                                      ],
+                                      tableStyle: "rounded",
+                                   },
+                                   ...pvpOffensive,
+                                ]
                               : []),
                            ...(pvpLeagues[0].text !== ""
-                              ? [...pvpLeagues]
+                              ? [
+                                   ...pvpLeagues,
+                                   {
+                                      type: "table",
+                                      id: nanoid(),
+                                      tableLayout: "auto",
+                                      children: [
+                                         {
+                                            type: "table-body",
+                                            children: [
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "Great League",
+                                                                    blueBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                     },
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: " / 5",
+                                                                    greenBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        align: "center",
+                                                     },
+                                                  ],
+                                               },
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "table-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    id: nanoid(),
+                                                                    type: "paragraph",
+                                                                    children: [
+                                                                       {
+                                                                          text: "",
+                                                                       },
+                                                                    ],
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        colSpan: 2,
+                                                     },
+                                                  ],
+                                               },
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "Ultra League",
+                                                                    yellowBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                     },
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: " / 5",
+                                                                    greenBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        align: "center",
+                                                     },
+                                                  ],
+                                               },
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "table-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "",
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        colSpan: 2,
+                                                     },
+                                                  ],
+                                               },
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "Master League",
+                                                                    violetBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                     },
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: " / 5",
+                                                                    greenBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        align: "center",
+                                                     },
+                                                  ],
+                                               },
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "table-cell",
+                                                        children: [
+                                                           {
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "",
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        colSpan: 2,
+                                                     },
+                                                  ],
+                                               },
+                                            ],
+                                         },
+                                      ],
+                                      tableStyle: "rounded",
+                                   },
+                                ]
                               : []),
-                           {
-                              type: "table",
-                              id: nanoid(),
-                              tableLayout: "auto",
-                              children: [
-                                 {
-                                    type: "table-body",
-                                    children: [
-                                       {
-                                          type: "table-row",
-                                          children: [
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "Great League",
-                                                            blueBG: true,
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                             },
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "4 / 5",
-                                                            greenBG: true,
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                                align: "center",
-                                             },
-                                          ],
-                                       },
-                                       {
-                                          type: "table-row",
-                                          children: [
-                                             {
-                                                type: "table-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            id: nanoid(),
-                                                            type: "paragraph",
-                                                            children: [
-                                                               {
-                                                                  text: "",
-                                                               },
-                                                            ],
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                                colSpan: 2,
-                                             },
-                                          ],
-                                       },
-                                       {
-                                          type: "table-row",
-                                          children: [
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "Ultra League",
-                                                            yellowBG: true,
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                             },
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: " / 5",
-                                                            greenBG: true,
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                                align: "center",
-                                             },
-                                          ],
-                                       },
-                                       {
-                                          type: "table-row",
-                                          children: [
-                                             {
-                                                type: "table-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "",
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                                colSpan: 2,
-                                             },
-                                          ],
-                                       },
-                                       {
-                                          type: "table-row",
-                                          children: [
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "Master League",
-                                                            violetBG: true,
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                             },
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: " / 5",
-                                                            greenBG: true,
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                                align: "center",
-                                             },
-                                          ],
-                                       },
-                                       {
-                                          type: "table-row",
-                                          children: [
-                                             {
-                                                type: "table-cell",
-                                                children: [
-                                                   {
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "",
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                                colSpan: 2,
-                                             },
-                                          ],
-                                       },
-                                    ],
-                                 },
-                              ],
-                              tableStyle: "rounded",
-                           },
                         ],
                      },
                   });
