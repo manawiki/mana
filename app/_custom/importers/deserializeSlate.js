@@ -28,7 +28,6 @@ export const deserializeSlate = (el, markAttributes = {}) => {
    if (children.length === 0) {
       children.push(jsx("text", nodeAttributes, ""));
    }
-   console.log(el.nodeName);
 
    switch (el.nodeName) {
       case "BODY":
@@ -39,12 +38,29 @@ export const deserializeSlate = (el, markAttributes = {}) => {
          return jsx("element", { type: "quote", id: nanoid() }, children);
       case "P":
          return jsx("element", { type: "paragraph", id: nanoid() }, children);
+      case "H3":
+         return jsx("element", { type: "h3", id: nanoid() }, children);
       case "A":
          return jsx(
             "element",
             { type: "link", id: nanoid(), url: el.getAttribute("href") },
             children,
          );
+      case "UL":
+         return jsx(
+            "element",
+            { type: "bulleted-list", id: nanoid() },
+            children,
+         );
+      case "OL":
+         return jsx(
+            "element",
+            { type: "numbered-list", id: nanoid() },
+            children,
+         );
+      case "LI":
+         return jsx("element", { type: "list-item" }, children);
+
       default:
          return children;
    }

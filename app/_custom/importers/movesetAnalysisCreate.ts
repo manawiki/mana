@@ -67,23 +67,29 @@ async function mapper() {
                });
 
                if (existingPVEAnalysisEmbed.docs.length == 0) {
-                  // Assuming deserializeSlate() now accepts HTML and converts it
-                  const pveOffensiveMovesetAnalysisHTMLContent =
-                     row?.field_pokemon_overview;
+                  // deserializeSlate() accepts HTML and converts it
+                  const pveOffensiveOverview = deserializeSlate(
+                     new JSDOM(
+                        row?.field_pokemon_overview.replace(/[\n\t]/g, ""),
+                     ).window.document.body,
+                  );
 
-                  // Parse the HTML content
-                  const dom = new JSDOM(pveOffensiveMovesetAnalysisHTMLContent);
-
-                  const document = dom.window.document.body;
-
-                  console.log(document, "DOCUMENT Format");
-
-                  const pveOffensiveMovesetAnalysis =
-                     deserializeSlate(document);
-
-                  console.log(
-                     pveOffensiveMovesetAnalysis,
-                     "pveOffensiveMovesetAnalysis Format",
+                  const pveOffensive = deserializeSlate(
+                     new JSDOM(
+                        row?.field_offensive_moves_explanatio.replace(
+                           /[\n\t]/g,
+                           "",
+                        ),
+                     ).window.document.body,
+                  );
+                  console.log(pveOffensive, "pveOffensive thingyy");
+                  const pveDefensive = deserializeSlate(
+                     new JSDOM(
+                        row?.field_defensive_moves_explanatio.replace(
+                           /[\n\t]/g,
+                           "",
+                        ),
+                     ).window.document.body,
                   );
 
                   await payload.create({
@@ -96,158 +102,133 @@ async function mapper() {
                         collectionEntity: "npY1abcTr6pokemon",
                         author: "643fc4b599231b1364d3ae87",
                         content: [
-                           {
-                              type: "h3",
-                              id: nanoid(),
-                              children: [
-                                 {
-                                    text: "Best PvE Offensive Moveset",
-                                 },
-                              ],
-                           },
-                           ...pveOffensiveMovesetAnalysis,
-                           {
-                              type: "table",
-                              id: nanoid(),
-                              tableLayout: "auto",
-                              children: [
-                                 {
-                                    id: nanoid(),
-                                    type: "paragraph",
-                                    children: [
-                                       {
-                                          text: "",
-                                       },
-                                    ],
-                                 },
-                                 {
-                                    type: "table-body",
-                                    children: [
-                                       {
-                                          type: "table-row",
-                                          children: [
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      id: nanoid(),
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "",
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                             },
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      id: nanoid(),
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "Best",
-                                                            greenBG: true,
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                                align: "center",
-                                             },
-                                          ],
-                                       },
-                                    ],
-                                 },
-                              ],
-                              tableStyle: "rounded",
-                           },
-                           // {
-                           //    type: "paragraph",
-                           //    id: nanoid(),
-                           //    children: [
-                           //       {
-                           //          text: row?.field_offensive_moves_explanatio,
-                           //       },
-                           //    ],
-                           // },
-                           {
-                              id: nanoid(),
-                              type: "h3",
-                              children: [
-                                 {
-                                    text: "Best PvE Defensive Moveset",
-                                 },
-                              ],
-                           },
-                           {
-                              type: "table",
-                              id: nanoid(),
-                              tableLayout: "auto",
-                              children: [
-                                 {
-                                    id: nanoid(),
-                                    type: "paragraph",
-                                    children: [
-                                       {
-                                          text: "",
-                                       },
-                                    ],
-                                 },
-                                 {
-                                    type: "table-body",
-                                    children: [
-                                       {
-                                          type: "table-row",
-                                          children: [
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      id: nanoid(),
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "",
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                             },
-                                             {
-                                                type: "header-cell",
-                                                children: [
-                                                   {
-                                                      id: nanoid(),
-                                                      type: "table-content",
-                                                      children: [
-                                                         {
-                                                            text: "Best",
-                                                            greenBG: true,
-                                                         },
-                                                      ],
-                                                   },
-                                                ],
-                                                align: "center",
-                                             },
-                                          ],
-                                       },
-                                    ],
-                                 },
-                              ],
-                              tableStyle: "rounded",
-                           },
-                           {
-                              id: nanoid(),
-                              type: "paragraph",
-                              children: [
-                                 {
-                                    text: "",
-                                    // text: row?.field_defensive_moves_explanatio,
-                                 },
-                              ],
-                           },
+                           ...pveOffensiveOverview,
+                           ...(pveOffensive[0].text !== ""
+                              ? [
+                                   {
+                                      type: "h3",
+                                      id: nanoid(),
+                                      children: [
+                                         {
+                                            text: "Best PvE Offensive Moveset",
+                                         },
+                                      ],
+                                   },
+                                   {
+                                      type: "table",
+                                      id: nanoid(),
+                                      tableLayout: "auto",
+                                      tableStyle: "rounded",
+                                      children: [
+                                         {
+                                            type: "table-body",
+                                            children: [
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              id: nanoid(),
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "",
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                     },
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              id: nanoid(),
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "Best",
+                                                                    greenBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        align: "center",
+                                                     },
+                                                  ],
+                                               },
+                                            ],
+                                         },
+                                      ],
+                                   },
+                                   ...pveOffensive,
+                                ]
+                              : []),
+                           ...(pveDefensive[0].text !== ""
+                              ? [
+                                   {
+                                      type: "h3",
+                                      id: nanoid(),
+                                      children: [
+                                         {
+                                            text: "Best PvE Defensive Moveset",
+                                         },
+                                      ],
+                                   },
+                                   {
+                                      type: "table",
+                                      id: nanoid(),
+                                      tableLayout: "auto",
+                                      children: [
+                                         {
+                                            type: "table-body",
+                                            children: [
+                                               {
+                                                  type: "table-row",
+                                                  children: [
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              id: nanoid(),
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "",
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                     },
+                                                     {
+                                                        type: "header-cell",
+                                                        children: [
+                                                           {
+                                                              id: nanoid(),
+                                                              type: "table-content",
+                                                              children: [
+                                                                 {
+                                                                    text: "Best",
+                                                                    greenBG:
+                                                                       true,
+                                                                 },
+                                                              ],
+                                                           },
+                                                        ],
+                                                        align: "center",
+                                                     },
+                                                  ],
+                                               },
+                                            ],
+                                         },
+                                      ],
+                                      tableStyle: "rounded",
+                                   },
+                                   ...pveDefensive,
+                                ]
+                              : []),
                         ],
                      },
                   });
@@ -262,7 +243,26 @@ async function mapper() {
                      subSectionId: { equals: "pvp-analysis" },
                   },
                });
+
                if (existingPVPAnalysisEmbed.docs.length == 0) {
+                  const pvpOffensive = deserializeSlate(
+                     new JSDOM(
+                        row?.field_pve_rating_explanation.replace(
+                           /[\n\t]/g,
+                           "",
+                        ),
+                     ).window.document.body,
+                  );
+
+                  const pvpLeagues = deserializeSlate(
+                     new JSDOM(
+                        row?.field_pvp_rating_explanation.replace(
+                           /[\n\t]/g,
+                           "",
+                        ),
+                     ).window.document.body,
+                  );
+
                   await payload.create({
                      collection: "contentEmbeds",
                      data: {
@@ -273,40 +273,12 @@ async function mapper() {
                         collectionEntity: "npY1abcTr6pokemon",
                         author: "643fc4b599231b1364d3ae87",
                         content: [
-                           {
-                              id: nanoid(),
-                              type: "paragraph",
-                              children: [
-                                 {
-                                    type: "paragraph",
-                                    id: nanoid(),
-                                    children: [
-                                       {
-                                          //This one is weird i know
-                                          text: "",
-                                          // text: row?.field_pve_rating_explanation,
-                                       },
-                                    ],
-                                 },
-                              ],
-                           },
-
-                           {
-                              id: nanoid(),
-                              type: "paragraph",
-                              children: [
-                                 {
-                                    type: "paragraph",
-                                    id: nanoid(),
-                                    children: [
-                                       {
-                                          text: "",
-                                          // text: row?.field_pvp_rating_explanation,
-                                       },
-                                    ],
-                                 },
-                              ],
-                           },
+                           ...(pvpOffensive[0].text !== ""
+                              ? [...pvpOffensive]
+                              : []),
+                           ...(pvpLeagues[0].text !== ""
+                              ? [...pvpLeagues]
+                              : []),
                            {
                               type: "table",
                               id: nanoid(),
