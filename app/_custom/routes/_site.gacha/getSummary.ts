@@ -1,11 +1,9 @@
 import type { SerializeFrom } from "@remix-run/node";
 
-import type { ConveneType } from "payload/generated-custom-types";
-
 import type { loader, RollData } from "./route";
 
 export type GachaSummaryType = {
-   convene?: ConveneType;
+   cardPoolType?: string;
    total: number;
    resonators: number;
    weapons: number;
@@ -84,7 +82,7 @@ export function getSummary({ gacha, convene }: SerializeFrom<typeof loader>) {
       Math.floor(average(fourStars.map((roll) => roll.pity!))) || 10;
 
    return {
-      convene,
+      cardPoolType: convene?.id || "1",
       total,
       resonators,
       weapons,

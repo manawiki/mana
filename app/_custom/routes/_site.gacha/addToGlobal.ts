@@ -1,9 +1,7 @@
-import type { ConveneType } from "payload/generated-custom-types";
-
 import type { GachaSummaryType } from "./getSummary";
 
 export type GlobalSummaryType = {
-   convene?: ConveneType;
+   cardPoolType: string;
    total: number;
    players: number;
    resonators: number;
@@ -17,7 +15,7 @@ export type GlobalSummaryType = {
 };
 
 export function toGlobal(summary: GachaSummaryType) {
-   let convene = summary.convene,
+   let cardPoolType = summary.cardPoolType || "1",
       total = summary.total,
       players = 1,
       resonators = summary.resonators,
@@ -56,7 +54,7 @@ export function toGlobal(summary: GachaSummaryType) {
    }
 
    return {
-      convene,
+      cardPoolType,
       total,
       players,
       resonators,
@@ -69,7 +67,7 @@ export function toGlobal(summary: GachaSummaryType) {
 
 // This function adds GlobalSummary a and b together
 export function addGlobalSummary(a: GlobalSummaryType, b: GlobalSummaryType) {
-   const convene = a.convene ?? b.convene;
+   const cardPoolType = a.cardPoolType ?? b.cardPoolType;
    const total = a.total + b.total;
    const players = a.players + b.players;
    const resonators = a.resonators + b.resonators;
@@ -97,7 +95,7 @@ export function addGlobalSummary(a: GlobalSummaryType, b: GlobalSummaryType) {
    }
 
    return {
-      convene,
+      cardPoolType,
       total,
       players,
       resonators,
@@ -137,7 +135,7 @@ export function subAandB(
 
 // This function subsracts GlobalSummary a from b
 export function subGlobalSummary(a: GlobalSummaryType, b: GlobalSummaryType) {
-   const convene = a.convene ?? b.convene;
+   const cardPoolType = a.cardPoolType ?? b.cardPoolType;
    const total = a.total - b.total;
    const players = a.players - b.players;
    const resonators = a.resonators - b.resonators;
@@ -164,7 +162,7 @@ export function subGlobalSummary(a: GlobalSummaryType, b: GlobalSummaryType) {
    }
 
    return {
-      convene,
+      cardPoolType,
       total,
       players,
       resonators,

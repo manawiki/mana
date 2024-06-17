@@ -20,9 +20,6 @@ export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
 
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
-         <div className="flex flex-col gap-y-1">
-            <H2 text={summary?.convene?.name ?? "Convene"} />
-         </div>
          <div //two columns
             className="columns-2"
          >

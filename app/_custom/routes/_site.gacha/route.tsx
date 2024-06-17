@@ -240,6 +240,9 @@ export default function HomePage() {
             value="Submit Summary to global"
             onClick={saveSummary}
          />
+         <div className="flex flex-col gap-y-1">
+            <H2 text={loaderData.convene?.name ?? "Convene"} />
+         </div>
          {loaderData.globalSummary && (
             <GachaGlobal summary={loaderData.globalSummary} />
          )}
@@ -261,9 +264,10 @@ export async function action({
 
    console.log({ base_payload, summary });
 
-   const id = "wuwa-" + base_payload?.playerId + "-" + summary.convene?.id;
+   const id =
+      "wuwa-" + base_payload?.playerId + "-" + base_payload?.cardPoolType;
 
-   const globalId = "wuwa-convene-" + summary.convene?.id;
+   const globalId = "wuwa-convene-" + base_payload?.cardPoolType;
 
    let oldPlayerSummary: GachaSummaryType | undefined = undefined,
       oldGlobalSummary: GlobalSummaryType | undefined = undefined;

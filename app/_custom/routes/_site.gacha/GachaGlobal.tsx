@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { SerializeFrom } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 
 import { Button } from "~/components/Button";
 import { H2 } from "~/components/Headers";
@@ -33,7 +33,7 @@ export function GachaGlobal({
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
          <div className="flex flex-col gap-y-1">
-            <H2 text={summary?.convene?.name + " Global Stats"} />
+            <H2 text={"Global Stats"} />
          </div>
          <div //two columns
             className="columns-2"
