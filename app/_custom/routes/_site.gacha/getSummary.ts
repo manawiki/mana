@@ -1,6 +1,4 @@
-import type { SerializeFrom } from "@remix-run/node";
-
-import type { loader, RollData } from "./route";
+import type { RollData } from "./route";
 
 export type GachaSummaryType = {
    cardPoolType?: string;
@@ -9,8 +7,8 @@ export type GachaSummaryType = {
    weapons: number;
    fiveStars: RollData[];
    fourStars: RollData[];
-   fiveStarPity: number;
-   fourStarPity: number;
+   pity5: number;
+   pity4: number;
    dates: Record<string, number>;
 };
 
@@ -76,14 +74,6 @@ export function getSummary(
       }
    }
 
-   // set average pity rate as fiveStarPity, which is average of roll.pity in summary.fiveStars
-   const fiveStarPity =
-      Math.floor(average(fiveStars.map((roll) => roll.pity!))) || 10;
-
-   // set average pity rate as fourStarPity, which is average of roll.pity in summary.fourStars
-   const fourStarPity =
-      Math.floor(average(fourStars.map((roll) => roll.pity!))) || 10;
-
    return {
       cardPoolType,
       total,
@@ -91,8 +81,8 @@ export function getSummary(
       weapons,
       fiveStars,
       fourStars,
-      fiveStarPity,
-      fourStarPity,
+      pity5,
+      pity4,
       dates,
    } satisfies GachaSummaryType;
 }

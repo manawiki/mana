@@ -7,6 +7,10 @@ import { DatesChart } from "./DatesChart";
 import { type GachaSummaryType } from "./getSummary";
 import type { loader, RollData } from "./route";
 
+export function average(arr: Array<number>) {
+   return arr.reduce((acc, curr) => acc + curr ?? 0, 0) / arr.length;
+}
+
 export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
    // display five star percentage in shape of #.##%
    const fiveStarPercentage = (
@@ -17,6 +21,14 @@ export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
       (summary.fourStars.length / summary.total) *
       100
    ).toFixed(2);
+
+   // set average pity rate as fiveStarPity, which is average of roll.pity in summary.fiveStars
+   const fiveStarPity =
+      Math.floor(average(summary.fiveStars.map((roll) => roll.pity!))) || 10;
+
+   // set average pity rate as fourStarPity, which is average of roll.pity in summary.fourStars
+   const fourStarPity =
+      Math.floor(average(summary.fourStars.map((roll) => roll.pity!))) || 10;
 
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
@@ -31,6 +43,14 @@ export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
                <div className="flex gap-x-2">
                   <span className="font-bold">Worth:</span>
                   <span>{summary.total * 160}</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">Current 5* Pity:</span>
+                  <span>{summary.pity5}</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">Current 4* Pity:</span>
+                  <span>{summary.pity4}</span>
                </div>
                <div className="flex gap-x-2">
                   <span className="font-bold">Resonators:</span>
@@ -52,11 +72,11 @@ export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
                </div>
                <div className="flex gap-x-2">
                   <span className="font-bold">5★ Median:</span>
-                  <span>{summary.fiveStarPity}</span>
+                  <span>{fiveStarPity}</span>
                </div>
                <div className="flex gap-x-2">
                   <span className="font-bold">4★ Median:</span>
-                  <span>{summary.fourStarPity}</span>
+                  <span>{fourStarPity}</span>
                </div>
             </div>
          </div>

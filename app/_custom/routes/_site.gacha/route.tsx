@@ -18,6 +18,8 @@ import type {
    Resonator,
    Weapon,
 } from "payload/generated-custom-types";
+import { Button } from "~/components/Button";
+import { Checkbox } from "~/components/Checkbox";
 import { H2 } from "~/components/Headers";
 import { fetchWithCache } from "~/utils/cache.server";
 
@@ -31,7 +33,6 @@ import { GachaGlobal } from "./GachaGlobal";
 import { GachaHistory } from "./GachaHistory";
 import { GachaSummary } from "./GachaSummary";
 import { type GachaSummaryType, getSummary } from "./getSummary";
-import { use } from "i18next";
 
 export type RollData = {
    pity?: number;
@@ -158,7 +159,8 @@ export default function HomePage() {
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <select
-            className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800 w-full"
+            className="dark:text-zinc-100 mt-8 mb-3 p-3.5 leading-7 dark:bg-dark400 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200/70
+      font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-700 w-full"
             name="convene"
             defaultValue={searchParams.get("convene") ?? "1"}
             onChange={(e) => navigate("/gacha?convene=" + e.target.value)}
@@ -169,13 +171,25 @@ export default function HomePage() {
                </option>
             ))}
          </select>
-
-         <div className="flex flex-col gap-y-1">
-            <H2 text={loaderData.convene?.name ?? "Convene"} />
-         </div>
+         <H2 text={loaderData.convene?.name ?? "Convene"} />
          {loaderData.globalSummary && (
             <GachaGlobal summary={loaderData.globalSummary} />
          )}
+         <h2
+            className="dark:shadow-zinc-800/50 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
+      border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50 dark:bg-dark350"
+            id="import"
+         >
+            <div
+               className="pattern-dots absolute left-0
+                   top-0 -z-0 h-full dark:text-zinc-100
+                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
+                     pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+            />
+            <div className="relative h-full w-full px-3.5 py-2.5">
+               Import Convene History
+            </div>
+         </h2>
          <Form
             method="POST"
             navigate={false}
@@ -196,9 +210,10 @@ export default function HomePage() {
                name="convene"
                defaultValue={searchParams.get("convene") ?? "1"}
             />
-            <input type="submit" value="Import" />
-            <input
-               type="checkbox"
+            <Button type="submit" value="Import">
+               Import
+            </Button>
+            <Checkbox
                name="save"
                defaultChecked={
                   loaderData.userData
@@ -206,7 +221,7 @@ export default function HomePage() {
                      : true
                }
             />
-            <label htmlFor="save">Global</label>
+            <label htmlFor="save">Share</label>
             {/* <input
                   type="checkbox"
                   name="refresh"
@@ -410,7 +425,7 @@ export async function action({
    }
 
    // update user-data
-   const userData = await updateUserData(user, payload, {
+   await updateUserData(user, payload, {
       url,
       save,
       refresh,
