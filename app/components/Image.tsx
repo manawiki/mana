@@ -94,7 +94,7 @@ export function Image({
          ? breakpoints
               .map((bp, i) =>
                  bp < maxWidth
-                    ? `${url}?${setWH(bp, breakpointh[i]).toString()}w`
+                    ? `${url}?${setWH(bp, breakpointh[i]).toString()} ${bp}w`
                     : null,
               )
               .filter(Boolean)
