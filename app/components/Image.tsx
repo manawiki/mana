@@ -53,9 +53,24 @@ export function Image({
       searchParams.set("height", height.toString());
 
    // For large images, we'll set breakpoints to provide responsive image sets
-   // todo we should optimize this a bit by provide for an early return for small images
    const breakpoints = [430, 640, 728, 1000] as const;
 
+   // provide for an early return for small images to save on processing
+   const maxWidth = typeof width === "string" ? parseInt(width) : width;
+
+   if (maxWidth && maxWidth <= breakpoints[0])
+      return (
+         <img
+            {...props}
+            className={className}
+            width={width ?? searchParams.get("width") ?? undefined}
+            height={height ?? searchParams.get("height") ?? undefined}
+            alt={alt}
+            src={`${url}?${searchParams.toString()}` ?? "/favicon.ico"}
+         />
+      );
+
+   // otherwise, we'll create a responsive image source set
    const breakpointh = breakpoints.map((bp) => {
       return height && width
          ? Math.round(
@@ -72,8 +87,6 @@ export function Image({
       if (h) searchParams.set("height", h.toString());
       return searchParams;
    }
-
-   const maxWidth = typeof width === "string" ? parseInt(width) : width;
 
    // set srcSet responsive images, do not go over maxWidth
    const srcSet =
