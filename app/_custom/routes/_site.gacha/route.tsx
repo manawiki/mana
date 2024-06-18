@@ -2,14 +2,16 @@
 // Note all achievements and subcategories / total roll currency rewards will be included if possible.
 
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
-   type ClientLoaderFunctionArgs,
    Form,
    useLoaderData,
+   useNavigate,
    useSearchParams,
    useSubmit,
 } from "@remix-run/react";
+import type { Payload } from "payload";
+import { z } from "zod";
 
 import type {
    ConveneType,
@@ -29,6 +31,7 @@ import { GachaGlobal } from "./GachaGlobal";
 import { GachaHistory } from "./GachaHistory";
 import { GachaSummary } from "./GachaSummary";
 import { type GachaSummaryType, getSummary } from "./getSummary";
+import { use } from "i18next";
 
 export type RollData = {
    pity?: number;
@@ -79,7 +82,7 @@ export async function loader({
             })
          ).data as T;
       } catch (e) {
-         console.error(e);
+         console.error(id, e);
          return null;
       }
    }
@@ -88,187 +91,212 @@ export async function loader({
       "wuwa-convene-" + convene,
    );
 
+   // check user data for wuwa-url
+   const userData = await fetchSummary<{
+      url: string;
+      save: string;
+      refresh: string;
+   }>("wuwa-" + user?.id);
+
+   // check request cookie for wuwa-url
+   let cookieURL = request.headers.get("Cookie")?.split("wuwa-url=")?.[1];
+
+   const wuwaURL = cookieURL || userData?.url;
+
+   const playerId = wuwaURL
+      ? new URLSearchParams(wuwaURL)?.get("player_id")
+      : null;
+
+   console.log({ cookieURL, userData, wuwaURL, playerId });
+
+   const playerSummary = playerId
+      ? await fetchSummary<GachaSummaryType>("wuwa-" + playerId + "-" + convene)
+      : null;
+
    return json({
       resonators,
       weapons,
       conveneTypes,
       convene: conveneTypes?.find((c) => c.id === convene),
       globalSummary,
-      gacha: { data: [] as RollData[] },
+      playerSummary,
+      userData,
    });
 }
-
-// we'll load player Data from the client
-export const clientLoader = async ({
-   request,
-   params,
-   serverLoader,
-}: ClientLoaderFunctionArgs) => {
-   // call the server loader
-   const serverData = await serverLoader<typeof loader>();
-
-   // get the cardPoolId from request searchParams
-   const { searchParams } = new URL(request.url);
-
-   const convene = searchParams.get("convene") || "1";
-
-   const gacha = await (
-      await getData({ convene, url: searchParams.get("url") })
-   ).json();
-
-   // Return the data to expose through useLoaderData()
-   return { ...serverData, gacha };
-};
-
-async function getData({
-   convene,
-   url,
-}: {
-   convene: string;
-   url: string | null;
-}) {
-   const { searchParams } = new URL(
-      url || "https://gmserver-api.aki-game2.net/gacha/record/query",
-   );
-
-   let base_payload = {
-      playerId: searchParams.get("playerId") || "500016561",
-      serverId:
-         searchParams.get("serverId") || "591d6af3a3090d8ea00d8f86cf6d7501",
-      languageCode: searchParams.get("languageCode") || "en",
-      cardPoolType: convene || "1",
-      recordId:
-         searchParams.get("recordId") || "cb1d1f2269e5442124eff6540823a570",
-   };
-
-   localStorage.setItem("base_payload", JSON.stringify(base_payload));
-
-   const response = await fetch(
-      "https://gmserver-api.aki-game2.net/gacha/record/query",
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify(base_payload),
-      },
-   );
-
-   return response;
-}
-
-clientLoader.hydrate = true;
-
-export const HydrateFallback = () => {
-   const [searchParams] = useSearchParams();
-   const loaderData = useLoaderData<typeof loader>();
-
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <H2 text="Warp History" />
-         <div className="justify-left flex items-center gap-x-1 ">
-            <Form method="GET">
-               <label htmlFor="url">Import URL</label>
-               <input name="url" placeholder="" type="url" className="w-full" />
-               <select
-                  className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
-                  name="convene"
-                  onChange={(e) => e.currentTarget.form?.submit()}
-                  defaultValue={searchParams.get("convene") ?? "1"}
-               >
-                  {loaderData?.conveneTypes?.map((convene) => (
-                     <option key={convene.id} value={convene.id}>
-                        {convene.name}
-                     </option>
-                  ))}
-               </select>
-               <input type="submit" value="Submit" />
-            </Form>
-         </div>
-         <div className="flex items-center justify-center h-96">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-         </div>
-         {/* <GachaSummary /> */}
-         {/* <GachaGraph /> */}
-         {/* <GachaHistory /> */}
-      </div>
-   );
-};
 
 export default function HomePage() {
    const [searchParams] = useSearchParams();
    const loaderData = useLoaderData<typeof loader>();
    const submit = useSubmit();
+   const navigate = useNavigate();
 
-   const summary = getSummary(loaderData);
+   const playerSummary = loaderData.playerSummary;
 
-   function saveSummary() {
-      const base_payload = JSON.parse(
-         localStorage.getItem("base_payload") || "{}",
-      );
+   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+      // We want to fetch from the client, so submit it manually
+      e.preventDefault();
 
-      submit(
-         { base_payload, summary },
-         { method: "POST", navigate: false, encType: "application/json" },
-      );
+      const body = new FormData(e.currentTarget);
+
+      const result = await getConveneData({ body });
+
+      console.log("this is a local fetch: ", result);
+
+      if (!result || result.error) return alert("Error fetching data");
+
+      // if global is checked, submit to global
+
+      console.log(result);
+
+      submit(result, {
+         method: "POST",
+         navigate: false,
+         encType: "application/json",
+      });
    }
 
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <H2 text="Warp History" />
-         <div className="justify-left flex items-center gap-x-1">
-            <Form method="GET">
-               <label htmlFor="url">Import URL</label>
-               <input name="url" placeholder="" type="url" className="w-full" />
-               <select
-                  className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
-                  name="convene"
-                  onChange={(e) => e.currentTarget.form?.submit()}
-                  defaultValue={searchParams.get("convene") ?? "1"}
-               >
-                  {loaderData?.conveneTypes?.map((convene) => (
-                     <option key={convene.id} value={convene.id}>
-                        {convene.name}
-                     </option>
-                  ))}
-               </select>
-               <input type="submit" value="Submit" />
-            </Form>
-         </div>
-         <input
-            type="button"
-            value="Submit Summary to global"
-            onClick={saveSummary}
-         />
+         <select
+            className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800 w-full"
+            name="convene"
+            defaultValue={searchParams.get("convene") ?? "1"}
+            onChange={(e) => navigate("/gacha?convene=" + e.target.value)}
+         >
+            {loaderData?.conveneTypes?.map((convene) => (
+               <option key={convene.id} value={convene.id}>
+                  {convene.name}
+               </option>
+            ))}
+         </select>
+
          <div className="flex flex-col gap-y-1">
             <H2 text={loaderData.convene?.name ?? "Convene"} />
          </div>
          {loaderData.globalSummary && (
             <GachaGlobal summary={loaderData.globalSummary} />
          )}
-         <GachaSummary summary={summary} />
-         <GachaHistory summary={summary} />
+         <Form
+            method="POST"
+            navigate={false}
+            onSubmit={onSubmit}
+            className="justify-left flex items-center gap-x-1"
+         >
+            <label htmlFor="url">Import URL</label>
+            <input
+               name="url"
+               placeholder="Insert URL here"
+               type="url"
+               className="w-full"
+               defaultValue={loaderData.userData?.url ?? ""}
+               required
+            />
+            <input
+               hidden
+               name="convene"
+               defaultValue={searchParams.get("convene") ?? "1"}
+            />
+            <input type="submit" value="Import" />
+            <input
+               type="checkbox"
+               name="save"
+               defaultChecked={
+                  loaderData.userData
+                     ? Boolean(loaderData.userData?.save)
+                     : true
+               }
+            />
+            <label htmlFor="save">Global</label>
+            {/* <input
+                  type="checkbox"
+                  name="refresh"
+                  defaultChecked={Boolean(loaderData.userData?.refresh)}
+               />
+               <label htmlFor="refresh">Auto Refresh</label> */}
+         </Form>
+         {playerSummary && <GachaSummary summary={playerSummary} />}
+         {playerSummary && <GachaHistory summary={playerSummary} />}
       </div>
    );
 }
 
-// todo: currently we're skipping access controls
+const WuwaPayloadSchema = z.object({
+   playerId: z.string(),
+   serverId: z.string(),
+   languageCode: z.string(),
+   cardPoolType: z.string(),
+   recordId: z.string(),
+});
+
+// we'll fetch the data on the client side then save it to the server
+export async function getConveneData({ body }: { body: FormData }) {
+   const url = body.get("url") as string;
+   const convene = (body.get("convene") as string) || "1";
+   const save = body.get("save") as string;
+   const refresh = body.get("refresh") as string;
+
+   if (!url) return { error: "No URL provided" };
+
+   try {
+      const searchParams = new URLSearchParams(url?.split("?")?.[1]);
+
+      const wuwaPayload = WuwaPayloadSchema.parse({
+         playerId: searchParams.get("player_id"),
+         serverId: searchParams.get("svr_id"),
+         languageCode: searchParams.get("lang"),
+         cardPoolType: convene,
+         recordId: searchParams.get("record_id"),
+      });
+
+      const response = await fetch(
+         "https://gmserver-api.aki-game2.net/gacha/record/query",
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+            },
+            body: JSON.stringify(wuwaPayload),
+         },
+      );
+
+      const gacha = (await await response.json()) as { data: Array<RollData> };
+
+      const summary = getSummary(gacha, convene);
+
+      return {
+         gacha,
+         summary,
+         playerId: wuwaPayload.playerId,
+         convene,
+         refresh,
+         save,
+         url,
+      };
+   } catch (e) {
+      console.error(e);
+      return { error: e };
+   }
+}
+
 export async function action({
    request,
    context: { user, payload },
 }: ActionFunctionArgs) {
-   const { base_payload, summary } = JSON.parse(await request.text()) as {
-      base_payload: any;
+   const { url, convene, summary, save, playerId, refresh } = JSON.parse(
+      await request.text(),
+   ) as {
+      url: string;
+      convene: string;
+      save: string;
+      refresh: string;
       summary: GachaSummaryType;
+      playerId: string;
    };
 
-   console.log({ base_payload, summary });
+   const id = "wuwa-" + playerId + "-" + convene;
+   const globalId = "wuwa-convene-" + convene;
 
-   const id =
-      "wuwa-" + base_payload?.playerId + "-" + base_payload?.cardPoolType;
-
-   const globalId = "wuwa-convene-" + base_payload?.cardPoolType;
-
+   // Check if these exists first
    let oldPlayerSummary: GachaSummaryType | undefined = undefined,
       oldGlobalSummary: GlobalSummaryType | undefined = undefined;
 
@@ -280,7 +308,10 @@ export async function action({
             overrideAccess: true,
          })
       )?.data as GachaSummaryType;
-
+   } catch (e) {
+      console.error(e);
+   }
+   try {
       oldGlobalSummary = (
          await payload.findByID({
             collection: "user-data",
@@ -302,6 +333,15 @@ export async function action({
       ? addGlobalSummary(oldGlobalSummary, addToGlobal)
       : addToGlobal;
 
+   console.log({
+      id,
+      globalId,
+      oldPlayerSummary,
+      oldGlobalSummary,
+      addToGlobal,
+      newGlobalSummary,
+   });
+
    try {
       // First we'll update the user record with the new summary
       if (oldPlayerSummary) {
@@ -314,6 +354,8 @@ export async function action({
                // @ts-expect-error this is fine
                site: "pogseal-imbhew2r8tg7",
             },
+            // for public access we're overriding access control here
+            overrideAccess: true,
          });
       } else {
          console.log("no result, inserting new record");
@@ -321,11 +363,15 @@ export async function action({
          await payload.create({
             collection: "user-data",
             data: {
+               id,
                data: summary,
                // @ts-expect-error this is fine
                site: "pogseal-imbhew2r8tg7",
-               id,
+               // @ts-expect-error we'll hardcode in an user for public access
+               author: user?.id ?? "6447492be887aa8eaee61a4f",
             },
+            // for public access we're overriding access control here
+            overrideAccess: true,
          });
       }
 
@@ -340,30 +386,69 @@ export async function action({
                // @ts-expect-error this is fine
                site: "pogseal-imbhew2r8tg7",
             },
+            // for public access we're overriding access control here
+            overrideAccess: true,
          });
       } else {
          // insert new record
          await payload.create({
             collection: "user-data",
             data: {
+               id: globalId,
                data: newGlobalSummary,
                // @ts-expect-error this is fine
                site: "pogseal-imbhew2r8tg7",
-               id: globalId,
+               // @ts-expect-error we'll hardcode in an user for public access
+               author: user?.id ?? "6447492be887aa8eaee61a4f",
             },
+            // for public access we're overriding access control here
+            overrideAccess: true,
          });
       }
    } catch (e) {
       console.error("Error updating userData ", id, e);
    }
 
-   return json({
-      success: true,
-      oldGlobalSummary,
-      newGlobalSummary,
-      addToGlobal,
+   // update user-data
+   const userData = await updateUserData(user, payload, {
+      url,
+      save,
+      refresh,
+   });
+
+   // redirect and set url to cookie
+   return redirect("/gacha?convene=" + convene, {
+      headers: {
+         "Set-Cookie": `wuwa-url=${url}; Path=/; Max-Age=31536000; SameSite=Strict`,
+      },
    });
 }
 
-// we don't want this to revalidate
-export const shouldRevalidate = () => false;
+async function updateUserData(user: any, payload: Payload, data: any) {
+   if (!user) return;
+
+   try {
+      return await payload.create({
+         collection: "user-data",
+         data: {
+            id: "wuwa-" + user.id,
+            data,
+            // @ts-expect-error this is fine
+            site: "pogseal-imbhew2r8tg7",
+            author: user.id,
+         },
+         user,
+         overrideAccess: false,
+      });
+   } catch (e) {
+      console.error(user.username + " updating wuwa user-data");
+
+      return await payload.update({
+         collection: "user-data",
+         id: "wuwa-" + user.id,
+         data,
+         user,
+         overrideAccess: false,
+      });
+   }
+}

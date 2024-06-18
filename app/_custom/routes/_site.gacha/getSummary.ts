@@ -14,7 +14,10 @@ export type GachaSummaryType = {
    dates: Record<string, number>;
 };
 
-export function getSummary({ gacha, convene }: SerializeFrom<typeof loader>) {
+export function getSummary(
+   gacha: { data: RollData[] },
+   cardPoolType: string = "1",
+) {
    let total = 0,
       resonators = 0,
       weapons = 0,
@@ -82,7 +85,7 @@ export function getSummary({ gacha, convene }: SerializeFrom<typeof loader>) {
       Math.floor(average(fourStars.map((roll) => roll.pity!))) || 10;
 
    return {
-      cardPoolType: convene?.id || "1",
+      cardPoolType,
       total,
       resonators,
       weapons,

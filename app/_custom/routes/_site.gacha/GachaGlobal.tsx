@@ -28,7 +28,7 @@ export function GachaGlobal({
       ? summary.fiveStars[resourceId]?.dates
       : summary.dates;
 
-   console.log({ dates, pities });
+   // console.log({ dates, pities });
 
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
@@ -78,7 +78,7 @@ function FiveStars({
    fiveStars: string[];
    setResourceId: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
-   console.log({ fiveStars });
+   // console.log({ fiveStars });
    return (
       <div className="flex flex-col gap-y-1">
          <div className="relative inline-block text-center align-middle">
@@ -125,7 +125,7 @@ function WarpFrame({
 }
 
 function ItemFrame({ entry }: any) {
-   console.log(entry);
+   // console.log(entry);
    // mat holds material information
    return (
       <div
