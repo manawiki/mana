@@ -348,14 +348,14 @@ export async function action({
       ? addGlobalSummary(oldGlobalSummary, addToGlobal)
       : addToGlobal;
 
-   console.log({
-      id,
-      globalId,
-      oldPlayerSummary,
-      oldGlobalSummary,
-      addToGlobal,
-      newGlobalSummary,
-   });
+   // console.log({
+   //    id,
+   //    globalId,
+   //    oldPlayerSummary,
+   //    oldGlobalSummary,
+   //    addToGlobal,
+   //    newGlobalSummary,
+   // });
 
    try {
       // First we'll update the user record with the new summary

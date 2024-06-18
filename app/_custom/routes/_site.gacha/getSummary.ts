@@ -58,6 +58,7 @@ export function getSummary(
                pity: pity4,
                ...roll,
             });
+            pity5++;
             pity4 = 1;
             break;
          default:
@@ -85,8 +86,4 @@ export function getSummary(
       pity4,
       dates,
    } satisfies GachaSummaryType;
-}
-
-export function average(arr: Array<number>) {
-   return arr.reduce((acc, curr) => acc + curr ?? 0, 0) / arr.length;
 }

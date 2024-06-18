@@ -62,7 +62,7 @@ export function GachaGlobal({
             </div>
          </div>
          <FiveStars
-            fiveStars={Object.keys(summary.fiveStars)}
+            fiveStars={summary.fiveStars}
             setResourceId={setResourceId}
          />
          {dates && <DatesChart dates={dates} />}
@@ -75,19 +75,22 @@ function FiveStars({
    fiveStars,
    setResourceId,
 }: {
-   fiveStars: string[];
+   fiveStars: Record<
+      string,
+      { pities: Record<string, number>; dates: Record<string, number> }
+   >;
    setResourceId: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
-   // console.log({ fiveStars });
    return (
       <div className="flex flex-col gap-y-1">
          <div className="relative inline-block text-center align-middle">
             <div className="relative m-1 w-full rounded-md border p-2 dark:border-gray-700">
-               {fiveStars
-                  .map((resourceId) => (
+               {Object.entries(fiveStars)
+                  .map(([resourceId, { pities, dates }]) => (
                      <WarpFrame
                         resourceId={resourceId}
                         key={resourceId}
+                        pities={pities}
                         setResourceId={setResourceId}
                      />
                   ))
@@ -101,11 +104,16 @@ function FiveStars({
 function WarpFrame({
    resourceId,
    setResourceId,
+   pities,
 }: {
    resourceId: string;
    setResourceId: React.Dispatch<React.SetStateAction<string | null>>;
+   pities: Record<string, number>;
 }) {
    const { weapons, resonators } = useLoaderData<typeof loader>();
+
+   // sum of pities
+   const total = Object.values(pities).reduce((a, b) => a + b, 0);
 
    let entry =
       weapons?.find((w) => w.id == resourceId) ??
@@ -119,13 +127,12 @@ function WarpFrame({
          }
          outline
       >
-         <ItemFrame entry={entry} />
+         <ItemFrame entry={entry} total={total} />
       </Button>
    ) : null;
 }
 
-function ItemFrame({ entry }: any) {
-   // console.log(entry);
+function ItemFrame({ entry, total }: any) {
    // mat holds material information
    return (
       <div
@@ -141,6 +148,9 @@ function ItemFrame({ entry }: any) {
                } material-frame`}
                alt={entry?.name}
             />
+            <div className="absolute top-0 right-0 bg-white/50 text-black p-1 text-xs rounded-md ">
+               {total}
+            </div>
          </div>
       </div>
    );
