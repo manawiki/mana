@@ -379,7 +379,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                      </TooltipTrigger>
                      <TooltipContent>Simulated Universe World</TooltipContent>
                   </Tooltip>
-                  <Tooltip>
+                  {/*<Tooltip>
                      <TooltipTrigger className={dataClass}>
                         <span className="text-1 truncate">F. Hall Normal</span>
                         <span>
@@ -390,7 +390,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                         </span>
                      </TooltipTrigger>
                      <TooltipContent>Forgotten Hall Normal</TooltipContent>
-                  </Tooltip>
+                  </Tooltip>*/}
                   {/*<Tooltip>
                      <TooltipTrigger className={dataClass}>
                         <span className="text-1 truncate">F. Hall Hard</span>
@@ -404,7 +404,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                      <TooltipContent>Forgotten Hall Hard</TooltipContent>
                   </Tooltip>
                   */}
-                  <Tooltip>
+                  {/*<Tooltip>
                      <TooltipTrigger className={dataClass}>
                         <span className="text-1 truncate">Pure Fiction</span>
                         <span>
@@ -422,7 +422,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                         </span>
                      </TooltipTrigger>
                      <TooltipContent>Pure Fiction</TooltipContent>
-                  </Tooltip>
+                  </Tooltip>*/}
                </div>
             </section>
             <div
