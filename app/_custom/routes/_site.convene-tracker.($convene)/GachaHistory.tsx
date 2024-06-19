@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useRouteLoaderData } from "@remix-run/react";
 
+import { Checkbox } from "~/components/Checkbox";
 import { H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
@@ -29,46 +30,38 @@ export function GachaHistory({ summary }: { summary: GachaSummaryType }) {
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
          <H2 text="Gacha History" />
          <div className="grid grid-cols-4 gap-x-2">
-            <label>
-               <input
-                  type="checkbox"
-                  checked={toggles.fourStar}
-                  onChange={() =>
-                     setToggles((t) => ({ ...t, fourStar: !t.fourStar }))
-                  }
-               />
-               4*
-            </label>
-            <label>
-               <input
-                  type="checkbox"
-                  checked={toggles.fiveStar}
-                  onChange={() =>
-                     setToggles((t) => ({ ...t, fiveStar: !t.fiveStar }))
-                  }
-               />
-               5*
-            </label>
-            <label>
-               <input
-                  type="checkbox"
-                  checked={toggles.resonators}
-                  onChange={() =>
-                     setToggles((t) => ({ ...t, resonators: !t.resonators }))
-                  }
-               />
+            <Checkbox
+               checked={toggles.fiveStar}
+               onChange={() =>
+                  setToggles((t) => ({ ...t, fiveStar: !t.fiveStar }))
+               }
+            >
+               5★ Convenes
+            </Checkbox>
+            <Checkbox
+               checked={toggles.fourStar}
+               onChange={() =>
+                  setToggles((t) => ({ ...t, fourStar: !t.fourStar }))
+               }
+            >
+               4★ Convenes
+            </Checkbox>
+            <Checkbox
+               checked={toggles.resonators}
+               onChange={() =>
+                  setToggles((t) => ({ ...t, resonators: !t.resonators }))
+               }
+            >
                Resonators
-            </label>
-            <label>
-               <input
-                  type="checkbox"
-                  checked={toggles.weapons}
-                  onChange={() =>
-                     setToggles((t) => ({ ...t, weapons: !t.weapons }))
-                  }
-               />
+            </Checkbox>
+            <Checkbox
+               checked={toggles.weapons}
+               onChange={() =>
+                  setToggles((t) => ({ ...t, weapons: !t.weapons }))
+               }
+            >
                Weapons
-            </label>
+            </Checkbox>
          </div>
          {gacha?.map((roll, int) => <ResultFrame roll={roll} key={int} />)}
       </div>
@@ -108,7 +101,9 @@ function ResultFrame({ roll }: { roll: RollData }) {
 }
 
 function WeaponFrame({ roll }: { roll: RollData }) {
-   const { weapons } = useLoaderData<typeof loader>();
+   const { weapons } = useRouteLoaderData<typeof loader>(
+      "_custom/routes/_site.convene-tracker.($convene)/route",
+   )!;
 
    const entry = weapons?.find((w) => w.id == roll.resourceId);
 
@@ -120,7 +115,7 @@ function WeaponFrame({ roll }: { roll: RollData }) {
             )}`}
          >
             {entry && <ItemFrame entry={entry} />}
-            <div className="mx-1 align-middle">{roll.qualityLevel}*</div>
+            <div className="mx-1 align-middle">{roll.qualityLevel}★ </div>
             <div className="mx-1 align-center w-full">{roll.name}</div>
             <div className="mx-1 align-right">{roll.time}</div>
             <div className="mx-1 align-right">
@@ -133,7 +128,10 @@ function WeaponFrame({ roll }: { roll: RollData }) {
 }
 
 function ResonatorFrame({ roll }: { roll: RollData }) {
-   const { resonators } = useLoaderData<typeof loader>();
+   const { resonators } = useRouteLoaderData<typeof loader>(
+      "_custom/routes/_site.convene-tracker.($convene)/route",
+   )!;
+
    const entry = resonators?.find((r) => r.id == roll.resourceId);
    return (
       <Link to={`/c/resonators/${entry?.slug ?? entry?.id ?? ""}`}>
@@ -143,7 +141,7 @@ function ResonatorFrame({ roll }: { roll: RollData }) {
             )}`}
          >
             {entry && <ItemFrame entry={entry} />}
-            <div className="mx-1 align-middle">{roll.qualityLevel}*</div>
+            <div className="mx-1 align-middle">{roll.qualityLevel}★ </div>
             <div className="mx-1 align-middle w-full">{roll.name}</div>
             <div className="mx-1 align-right">{roll.time}</div>
             <div className="mx-1 align-right">

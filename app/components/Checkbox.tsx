@@ -136,10 +136,12 @@ type Color = keyof typeof colors;
 export function Checkbox({
    color = "dark/zinc",
    className,
+   children,
    ...props
 }: {
    color?: Color;
    className?: string;
+   children?: React.ReactNode;
 } & HeadlessCheckboxProps) {
    return (
       <HeadlessCheckbox
@@ -171,6 +173,9 @@ export function Checkbox({
                />
             </svg>
          </span>
+         {children && (
+            <span className="text-sm font-bold pl-1">{children}</span>
+         )}
       </HeadlessCheckbox>
    );
 }

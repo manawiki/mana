@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useRouteLoaderData } from "@remix-run/react";
 
 import { H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
@@ -41,29 +41,35 @@ export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
                   <span>{summary.total}</span>
                </div>
                <div className="flex gap-x-2">
-                  <span className="font-bold">Worth:</span>
-                  <span>{summary.total * 160}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Current 5* Pity:</span>
-                  <span>{summary.pity5}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Current 4* Pity:</span>
-                  <span>{summary.pity4}</span>
-               </div>
-               <div className="flex gap-x-2">
                   <span className="font-bold">Resonators:</span>
                   <span>{summary.resonators}</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">Worth:</span>
+                  <span>{summary.total * 160}</span>
                </div>
                <div className="flex gap-x-2">
                   <span className="font-bold">Weapons:</span>
                   <span>{summary.weapons}</span>
                </div>
+            </div>
+         </div>
+         <div //two columns
+            className="columns-2"
+         >
+            <div className="flex flex-col gap-y-1">
                <div className="flex gap-x-2">
                   <span className="font-bold">5★ Convenes:</span>
                   <span>{summary.fiveStars.length}</span>
                   <span>({fiveStarPercentage}%)</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">5★ Current Pity:</span>
+                  <span>{summary.pity5}</span>
+               </div>
+               <div className="flex gap-x-2">
+                  <span className="font-bold">5★ Avg Pity:</span>
+                  <span>{fiveStarPity}</span>
                </div>
                <div className="flex gap-x-2">
                   <span className="font-bold">4★ Convenes:</span>
@@ -71,11 +77,11 @@ export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
                   <span>({fourStarPercentage}%)</span>
                </div>
                <div className="flex gap-x-2">
-                  <span className="font-bold">5★ Median:</span>
-                  <span>{fiveStarPity}</span>
+                  <span className="font-bold">4★ Current Pity:</span>
+                  <span>{summary.pity4}</span>
                </div>
                <div className="flex gap-x-2">
-                  <span className="font-bold">4★ Median:</span>
+                  <span className="font-bold">4★ Avg Pity:</span>
                   <span>{fourStarPity}</span>
                </div>
             </div>
@@ -102,7 +108,9 @@ function FiveStars({ summary }: { summary: GachaSummaryType }) {
 }
 
 function WarpFrame({ roll }: { roll: RollData }) {
-   const { weapons, resonators } = useLoaderData<typeof loader>();
+   const { weapons, resonators } = useRouteLoaderData<typeof loader>(
+      "_custom/routes/_site.convene-tracker.($convene)/route",
+   )!;
 
    let entry: any;
 
@@ -142,8 +150,8 @@ function ItemFrame({ entry, roll }: any) {
                } material-frame`}
                alt={entry?.name}
             />
-            <div className="absolute bottom-0 right-0 bg-white/50 text-black p-1 text-xs rounded-md ">
-               {roll.pity}
+            <div className="absolute top-0 right-0 bg-white/50 text-black p-1 text-xs rounded-md ">
+               #{roll.pity}
             </div>
          </div>
       </div>

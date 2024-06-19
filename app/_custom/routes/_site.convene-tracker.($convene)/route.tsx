@@ -1,16 +1,16 @@
 // Track Achievements using Local Storage on this page!
 // Note all achievements and subcategories / total roll currency rewards will be included if possible.
 
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
    Form,
+   Outlet,
    useLoaderData,
    useNavigate,
-   useSearchParams,
+   useParams,
    useSubmit,
 } from "@remix-run/react";
-import type { Payload } from "payload";
 import { z } from "zod";
 
 import type {
@@ -21,18 +21,11 @@ import type {
 import { Button } from "~/components/Button";
 import { Checkbox } from "~/components/Checkbox";
 import { H2 } from "~/components/Headers";
-import { fetchWithCache } from "~/utils/cache.server";
+import { cacheThis, fetchWithCache } from "~/utils/cache.server";
 
-import {
-   addGlobalSummary,
-   type GlobalSummaryType,
-   subGlobalSummary,
-   toGlobal,
-} from "./addToGlobal";
+import type { GlobalSummaryType } from "./addToGlobal";
 import { GachaGlobal } from "./GachaGlobal";
-import { GachaHistory } from "./GachaHistory";
-import { GachaSummary } from "./GachaSummary";
-import { type GachaSummaryType, getSummary } from "./getSummary";
+import { getSummary } from "./getSummary";
 
 export type RollData = {
    pity?: number;
@@ -68,9 +61,7 @@ export async function loader({
       )
    )?.docs;
 
-   const { searchParams } = new URL(request.url);
-
-   const convene = searchParams.get("convene") || "1";
+   const convene = params.convene || "1";
 
    // we'll avoid access control for global summary
    async function fetchSummary<T>(id: string) {
@@ -88,31 +79,24 @@ export async function loader({
       }
    }
 
-   const globalSummary = await fetchSummary<GlobalSummaryType>(
+   const globalSummary = await cacheThis(
+      () => fetchSummary<GlobalSummaryType>("wuwa-convene-" + convene),
       "wuwa-convene-" + convene,
    );
 
    // check user data for wuwa-url
-   const userData = await fetchSummary<{
-      url: string;
-      save: string;
-      refresh: string;
-   }>("wuwa-" + user?.id);
+   const userData = user
+      ? await fetchSummary<{
+           url: string;
+           save: string;
+           refresh: string;
+        }>("wuwa-" + user?.id)
+      : { url: "", save: "", refresh: "" };
 
    // check request cookie for wuwa-url
    let cookieURL = request.headers.get("Cookie")?.split("wuwa-url=")?.[1];
 
    const wuwaURL = cookieURL || userData?.url;
-
-   const playerId = wuwaURL
-      ? new URLSearchParams(wuwaURL)?.get("player_id")
-      : null;
-
-   console.log({ cookieURL, userData, wuwaURL, playerId });
-
-   const playerSummary = playerId
-      ? await fetchSummary<GachaSummaryType>("wuwa-" + playerId + "-" + convene)
-      : null;
 
    return json({
       resonators,
@@ -120,18 +104,16 @@ export async function loader({
       conveneTypes,
       convene: conveneTypes?.find((c) => c.id === convene),
       globalSummary,
-      playerSummary,
       userData,
+      wuwaURL,
    });
 }
 
 export default function HomePage() {
-   const [searchParams] = useSearchParams();
+   const { convene } = useParams();
    const loaderData = useLoaderData<typeof loader>();
    const submit = useSubmit();
    const navigate = useNavigate();
-
-   const playerSummary = loaderData.playerSummary;
 
    async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
       // We want to fetch from the client, so submit it manually
@@ -149,8 +131,10 @@ export default function HomePage() {
 
       console.log(result);
 
+      // @ts-expect-error this is fine
       submit(result, {
          method: "POST",
+         action: "/convene-tracker/" + convene + "/track",
          navigate: false,
          encType: "application/json",
       });
@@ -162,8 +146,8 @@ export default function HomePage() {
             className="dark:text-zinc-100 mt-8 mb-3 p-3.5 leading-7 dark:bg-dark400 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200/70
       font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-700 w-full"
             name="convene"
-            defaultValue={searchParams.get("convene") ?? "1"}
-            onChange={(e) => navigate("/gacha?convene=" + e.target.value)}
+            defaultValue={convene ?? "1"}
+            onChange={(e) => navigate("/convene-tracker/" + e.target.value)}
          >
             {loaderData?.conveneTypes?.map((convene) => (
                <option key={convene.id} value={convene.id}>
@@ -178,7 +162,7 @@ export default function HomePage() {
          <h2
             className="dark:shadow-zinc-800/50 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
       border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50 dark:bg-dark350"
-            id="import"
+            id="track"
          >
             <div
                className="pattern-dots absolute left-0
@@ -202,14 +186,10 @@ export default function HomePage() {
                placeholder="Insert URL here"
                type="url"
                className="w-full"
-               defaultValue={loaderData.userData?.url ?? ""}
+               defaultValue={loaderData.wuwaURL}
                required
             />
-            <input
-               hidden
-               name="convene"
-               defaultValue={searchParams.get("convene") ?? "1"}
-            />
+            <input hidden name="convene" value={convene ?? "1"} />
             <Button type="submit" value="Import">
                Import
             </Button>
@@ -220,8 +200,9 @@ export default function HomePage() {
                      ? Boolean(loaderData.userData?.save)
                      : true
                }
-            />
-            <label htmlFor="save">Share</label>
+            >
+               Share
+            </Checkbox>
             {/* <input
                   type="checkbox"
                   name="refresh"
@@ -229,8 +210,8 @@ export default function HomePage() {
                />
                <label htmlFor="refresh">Auto Refresh</label> */}
          </Form>
-         {playerSummary && <GachaSummary summary={playerSummary} />}
-         {playerSummary && <GachaHistory summary={playerSummary} />}
+         <H2 text={loaderData.convene?.name ?? "Convene"} />
+         <Outlet />
       </div>
    );
 }
@@ -290,180 +271,5 @@ export async function getConveneData({ body }: { body: FormData }) {
    } catch (e) {
       console.error(e);
       return { error: e };
-   }
-}
-
-export async function action({
-   request,
-   context: { user, payload },
-}: ActionFunctionArgs) {
-   const { url, convene, summary, save, playerId, refresh } = JSON.parse(
-      await request.text(),
-   ) as {
-      url: string;
-      convene: string;
-      save: string;
-      refresh: string;
-      summary: GachaSummaryType;
-      playerId: string;
-   };
-
-   const id = "wuwa-" + playerId + "-" + convene;
-   const globalId = "wuwa-convene-" + convene;
-
-   // Check if these exists first
-   let oldPlayerSummary: GachaSummaryType | undefined = undefined,
-      oldGlobalSummary: GlobalSummaryType | undefined = undefined;
-
-   try {
-      oldPlayerSummary = (
-         await payload.findByID({
-            collection: "user-data",
-            id,
-            overrideAccess: true,
-         })
-      )?.data as GachaSummaryType;
-   } catch (e) {
-      console.error(e);
-   }
-   try {
-      oldGlobalSummary = (
-         await payload.findByID({
-            collection: "user-data",
-            id: globalId,
-            overrideAccess: true,
-         })
-      )?.data as GlobalSummaryType;
-   } catch (e) {
-      console.error(e);
-   }
-
-   // First we compare the old and new player record
-   const addToGlobal = oldPlayerSummary
-      ? subGlobalSummary(toGlobal(summary), toGlobal(oldPlayerSummary))
-      : toGlobal(summary);
-
-   // Then we calculate the new global summary
-   const newGlobalSummary = oldGlobalSummary
-      ? addGlobalSummary(oldGlobalSummary, addToGlobal)
-      : addToGlobal;
-
-   // console.log({
-   //    id,
-   //    globalId,
-   //    oldPlayerSummary,
-   //    oldGlobalSummary,
-   //    addToGlobal,
-   //    newGlobalSummary,
-   // });
-
-   try {
-      // First we'll update the user record with the new summary
-      if (oldPlayerSummary) {
-         // try to update the record
-         await payload.update({
-            collection: "user-data",
-            id,
-            data: {
-               data: summary,
-               // @ts-expect-error this is fine
-               site: "pogseal-imbhew2r8tg7",
-            },
-            // for public access we're overriding access control here
-            overrideAccess: true,
-         });
-      } else {
-         console.log("no result, inserting new record");
-
-         await payload.create({
-            collection: "user-data",
-            data: {
-               id,
-               data: summary,
-               // @ts-expect-error this is fine
-               site: "pogseal-imbhew2r8tg7",
-               // @ts-expect-error we'll hardcode in an user for public access
-               author: user?.id ?? "6447492be887aa8eaee61a4f",
-            },
-            // for public access we're overriding access control here
-            overrideAccess: true,
-         });
-      }
-
-      // Then we'll update the global record
-      if (oldGlobalSummary) {
-         // try to update the record
-         await payload.update({
-            collection: "user-data",
-            id: globalId,
-            data: {
-               data: newGlobalSummary,
-               // @ts-expect-error this is fine
-               site: "pogseal-imbhew2r8tg7",
-            },
-            // for public access we're overriding access control here
-            overrideAccess: true,
-         });
-      } else {
-         // insert new record
-         await payload.create({
-            collection: "user-data",
-            data: {
-               id: globalId,
-               data: newGlobalSummary,
-               // @ts-expect-error this is fine
-               site: "pogseal-imbhew2r8tg7",
-               // @ts-expect-error we'll hardcode in an user for public access
-               author: user?.id ?? "6447492be887aa8eaee61a4f",
-            },
-            // for public access we're overriding access control here
-            overrideAccess: true,
-         });
-      }
-   } catch (e) {
-      console.error("Error updating userData ", id, e);
-   }
-
-   // update user-data
-   await updateUserData(user, payload, {
-      url,
-      save,
-      refresh,
-   });
-
-   // redirect and set url to cookie
-   return redirect("/gacha?convene=" + convene, {
-      headers: {
-         "Set-Cookie": `wuwa-url=${url}; Path=/; Max-Age=31536000; SameSite=Strict`,
-      },
-   });
-}
-
-async function updateUserData(user: any, payload: Payload, data: any) {
-   if (!user) return;
-
-   try {
-      return await payload.create({
-         collection: "user-data",
-         data: {
-            id: "wuwa-" + user.id,
-            data,
-            // @ts-expect-error this is fine
-            site: "pogseal-imbhew2r8tg7",
-            author: user.id,
-         },
-         user,
-         overrideAccess: false,
-      });
-   } catch (e) {
-      console.error(user.username + " updating wuwa user-data");
-
-      return await payload.update({
-         collection: "user-data",
-         id: "wuwa-" + user.id,
-         data,
-         user,
-         overrideAccess: false,
-      });
    }
 }

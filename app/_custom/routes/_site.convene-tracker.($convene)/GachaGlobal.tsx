@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { SerializeFrom } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useRouteLoaderData } from "@remix-run/react";
 
 import { Button } from "~/components/Button";
 import { H2 } from "~/components/Headers";
@@ -28,6 +28,14 @@ export function GachaGlobal({
       ? summary.fiveStars[resourceId]?.dates
       : summary.dates;
 
+   // display five star percentage in shape of #.##%
+   const fiveStarPercentage = summary.fiveStar
+      ? ((summary.fiveStar / summary.total) * 100).toFixed(2)
+      : 0;
+   const fourStarPercentage = summary.fourStar
+      ? ((summary.fourStar / summary.total) * 100).toFixed(2)
+      : 0;
+
    // console.log({ dates, pities });
 
    return (
@@ -40,24 +48,26 @@ export function GachaGlobal({
          >
             <div className="flex flex-col gap-y-1">
                <div className="flex gap-x-2">
-                  <span className="font-bold">Convenes Total:</span>
-                  <span>{summary.total}</span>
+                  <span>{summary.players.toLocaleString()}</span>
+                  <span className="font-bold">Rovers logged</span>
                </div>
                <div className="flex gap-x-2">
-                  <span className="font-bold">Worth:</span>
-                  <span>{summary.total * 160}</span>
+                  <span>{summary.total.toLocaleString()}</span>
+                  <span className="font-bold">Convenes rolled</span>
                </div>
                <div className="flex gap-x-2">
-                  <span className="font-bold">Players:</span>
-                  <span>{summary.players}</span>
+                  <span>{(summary.total * 160).toLocaleString()}</span>
+                  <span className="font-bold">Gems used</span>
                </div>
                <div className="flex gap-x-2">
-                  <span className="font-bold">Resonators:</span>
-                  <span>{summary.resonators}</span>
+                  <span className="font-bold">5★ Convenes:</span>
+                  <span>{summary.fiveStar}</span>
+                  <span>({fiveStarPercentage}%)</span>
                </div>
                <div className="flex gap-x-2">
-                  <span className="font-bold">Weapons:</span>
-                  <span>{summary.weapons}</span>
+                  <span className="font-bold">4★ Convenes:</span>
+                  <span>{summary.fourStar}</span>
+                  <span>({fourStarPercentage}%)</span>
                </div>
             </div>
          </div>
@@ -67,6 +77,7 @@ export function GachaGlobal({
          />
          {dates && <DatesChart dates={dates} />}
          {pities && <PitiesChart pities={pities} />}
+         {/* {pities && <LineandBarChart pities={pities} />} */}
       </div>
    );
 }
@@ -110,7 +121,9 @@ function WarpFrame({
    setResourceId: React.Dispatch<React.SetStateAction<string | null>>;
    pities: Record<string, number>;
 }) {
-   const { weapons, resonators } = useLoaderData<typeof loader>();
+   const { weapons, resonators } = useRouteLoaderData<typeof loader>(
+      "_custom/routes/_site.convene-tracker.($convene)/route",
+   )!;
 
    // sum of pities
    const total = Object.values(pities).reduce((a, b) => a + b, 0);
@@ -148,8 +161,8 @@ function ItemFrame({ entry, total }: any) {
                } material-frame`}
                alt={entry?.name}
             />
-            <div className="absolute top-0 right-0 bg-white/50 text-black p-1 text-xs rounded-md ">
-               {total}
+            <div className="absolute bottom-0 right-0 bg-white/50 text-black p-1 text-xs rounded-md ">
+               x{total}
             </div>
          </div>
       </div>

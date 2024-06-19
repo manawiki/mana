@@ -8,6 +8,8 @@ export type GlobalSummaryType = {
    weapons: number;
    pities: Record<string, number>;
    dates: Record<string, number>;
+   fiveStar: number;
+   fourStar: number;
    fiveStars: Record<
       string,
       { pities: Record<string, number>; dates: Record<string, number> }
@@ -22,6 +24,8 @@ export function toGlobal(summary: GachaSummaryType) {
       weapons = summary.weapons,
       dates = summary.dates,
       pities: Record<string, number> = {},
+      fiveStar = summary.fiveStars.length,
+      fourStar = summary.fourStars.length,
       fiveStars: Record<
          string,
          { pities: Record<string, number>; dates: Record<string, number> }
@@ -61,6 +65,8 @@ export function toGlobal(summary: GachaSummaryType) {
       weapons,
       pities,
       dates,
+      fiveStar,
+      fourStar,
       fiveStars,
    } satisfies GlobalSummaryType;
 }
@@ -68,10 +74,12 @@ export function toGlobal(summary: GachaSummaryType) {
 // This function adds GlobalSummary a and b together
 export function addGlobalSummary(a: GlobalSummaryType, b: GlobalSummaryType) {
    const cardPoolType = a.cardPoolType ?? b.cardPoolType;
-   const total = a.total + b.total;
-   const players = a.players + b.players;
-   const resonators = a.resonators + b.resonators;
-   const weapons = a.weapons + b.weapons;
+   const total = (a.total || 0) + (b.total || 0);
+   const players = (a.players || 0) + (b.players || 0);
+   const resonators = (a.resonators || 0) + (b.resonators || 0);
+   const weapons = (a.weapons || 0) + (b.weapons || 0);
+   const fiveStar = (a.fiveStar || 0) + (b.fiveStar || 0);
+   const fourStar = (a.fourStar || 0) + (b.fourStar || 0);
 
    //combine dates from a and b, if date exists in both, add them together
    const dates = addAandB(a.dates, b.dates);
@@ -102,6 +110,8 @@ export function addGlobalSummary(a: GlobalSummaryType, b: GlobalSummaryType) {
       weapons,
       dates,
       pities,
+      fiveStar,
+      fourStar,
       fiveStars,
    } satisfies GlobalSummaryType;
 }
@@ -136,10 +146,12 @@ export function subAandB(
 // This function subsracts GlobalSummary a from b
 export function subGlobalSummary(a: GlobalSummaryType, b: GlobalSummaryType) {
    const cardPoolType = a.cardPoolType ?? b.cardPoolType;
-   const total = a.total - b.total;
-   const players = a.players - b.players;
-   const resonators = a.resonators - b.resonators;
-   const weapons = a.weapons - b.weapons;
+   const total = (a.total || 0) - (b.total || 0);
+   const players = (a.players || 0) - (b.players || 0);
+   const resonators = (a.resonators || 0) - (b.resonators || 0);
+   const weapons = (a.weapons || 0) - (b.weapons || 0);
+   const fiveStar = (a.fiveStar || 0) - (b.fiveStar || 0);
+   const fourStar = (a.fourStar || 0) - (b.fourStar || 0);
    //combine dates from a and b, if date exists in both, add them together
    const dates = subAandB(a.dates, b.dates);
    const pities = subAandB(a.pities, b.pities);
@@ -167,6 +179,8 @@ export function subGlobalSummary(a: GlobalSummaryType, b: GlobalSummaryType) {
       players,
       resonators,
       weapons,
+      fiveStar,
+      fourStar,
       fiveStars,
       pities,
       dates,
