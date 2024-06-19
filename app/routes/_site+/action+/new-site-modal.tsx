@@ -147,7 +147,7 @@ export const action: ActionFunction = async ({
 
       const siteSlug = `${slug}-${siteNanoID(5)}`;
 
-      const siteId = `${user.username}-${siteNanoID(12)}`;
+      const siteId = `${user.id}-${siteNanoID(12)}`;
 
       await payload.create({
          collection: "sites",

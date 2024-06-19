@@ -3,6 +3,8 @@
       "bradlc.vscode-tailwindcss",
       "vscode-icons-team.vscode-icons",
       "esbenp.prettier-vscode",
-      "wix.vscode-import-cost"
+      "wix.vscode-import-cost",
+      "tamasfe.even-better-toml",
+      "naumovs.color-highlight"
    ]
 }

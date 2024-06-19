@@ -54,12 +54,12 @@ export function PublishedPostRow({ post }: { post: Post }) {
                   </div>
                </div>
                {post.banner && (
-                  <div className="w-32 flex-none overflow-hidden rounded">
+                  <div className="w-36 flex-none overflow-hidden rounded-lg shadow-sm shadow-1 border border-color">
                      <Image
                         alt={post.name}
                         options="height=140"
                         height={200}
-                        className="w-full rounded object-cover"
+                        className="w-full object-cover"
                         //@ts-ignore
                         url={post?.banner?.url}
                      />

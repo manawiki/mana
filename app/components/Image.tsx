@@ -40,8 +40,10 @@ export function Image({
          .map(Number)
          .reduce((a, b) => a / b);
 
-      if (!width && height) width = parseInt(height.toString()) * aspectRatio;
-      if (!height && width) height = parseInt(width.toString()) / aspectRatio;
+      if (!width && height)
+         width = Math.round(parseInt(height.toString()) * aspectRatio);
+      if (!height && width)
+         height = Math.round(parseInt(width.toString()) / aspectRatio);
    }
 
    // insert it back into the options
@@ -53,15 +55,51 @@ export function Image({
    // For large images, we'll set breakpoints to provide responsive image sets
    const breakpoints = [430, 640, 728, 1000] as const;
 
+   // provide for an early return for small images to save on processing
    const maxWidth = typeof width === "string" ? parseInt(width) : width;
+
+   if (maxWidth && maxWidth <= breakpoints[0])
+      return (
+         <img
+            {...props}
+            className={className}
+            width={width ?? searchParams.get("width") ?? undefined}
+            height={height ?? searchParams.get("height") ?? undefined}
+            alt={alt}
+            src={`${url}?${searchParams.toString()}` ?? "/favicon.ico"}
+         />
+      );
+
+   // otherwise, we'll create a responsive image source set
+   const breakpointh = breakpoints.map((bp) => {
+      return height && width
+         ? Math.round(
+              (bp * parseInt(height.toString())) / parseInt(width.toString()),
+           )
+         : undefined;
+   });
+
+   function setWH(
+      w: string | number | undefined,
+      h: string | number | undefined,
+   ) {
+      if (w) searchParams.set("width", w.toString());
+      if (h) searchParams.set("height", h.toString());
+      return searchParams;
+   }
 
    // set srcSet responsive images, do not go over maxWidth
    const srcSet =
       maxWidth && maxWidth > breakpoints[0]
          ? breakpoints
-              .map((bp) => (bp < maxWidth ? `${url}?width=${bp} ${bp}w` : null))
+              .map((bp, i) =>
+                 bp < maxWidth
+                    ? `${url}?${setWH(bp, breakpointh[i]).toString()} ${bp}w`
+                    : null,
+              )
               .filter(Boolean)
-              .join(", ") + `, ${url}?${searchParams.toString()} ${maxWidth}w`
+              .join(", ") +
+           `, ${url}?${setWH(width, height).toString()} ${maxWidth}w`
          : undefined;
 
    return (
