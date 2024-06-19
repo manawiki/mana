@@ -91,7 +91,7 @@ export async function loader({
            save: string;
            refresh: string;
         }>("wuwa-" + user?.id)
-      : { url: "", save: "", refresh: "" };
+      : { url: "", save: "true", refresh: "" };
 
    // check request cookie for wuwa-url
    let cookieURL = request.headers.get("Cookie")?.split("wuwa-url=")?.[1];
