@@ -35,8 +35,19 @@ export async function loader({
       }
    }
 
+   // check user data for wuwa-url
+   const userData = user
+      ? await fetchSummary<{
+           url: string;
+           save: string;
+           refresh: string;
+        }>("wuwa-" + user?.id)
+      : { url: "", save: "", refresh: "" };
+
    // check request cookie for wuwa-url
-   const wuwaURL = request.headers.get("Cookie")?.split("wuwa-url=")?.[1];
+   let cookieURL = request.headers.get("Cookie")?.split("wuwa-url=")?.[1];
+
+   const wuwaURL = cookieURL || userData?.url;
 
    const playerId = wuwaURL
       ? new URLSearchParams(wuwaURL)?.get("player_id")
