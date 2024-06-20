@@ -4,10 +4,12 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Await, defer, redirect, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
 
+import { cache } from "~/utils/cache.server";
+
 import {
-   addGlobalSummary,
+   addAandB,
    type GlobalSummaryType,
-   subGlobalSummary,
+   subAandB,
    toGlobal,
 } from "./_site.convene-tracker.($convene)/addToGlobal";
 import { GachaHistory } from "./_site.convene-tracker.($convene)/GachaHistory";
@@ -134,12 +136,15 @@ export async function action({
 
    // First we compare the old and new player record
    const addToGlobal = oldPlayerSummary
-      ? subGlobalSummary(toGlobal(summary), toGlobal(oldPlayerSummary))
+      ? subAandB<GachaSummaryType>(
+           toGlobal(summary),
+           toGlobal(oldPlayerSummary),
+        )
       : toGlobal(summary);
 
    // Then we calculate the new global summary
    const newGlobalSummary = oldGlobalSummary
-      ? addGlobalSummary(oldGlobalSummary, addToGlobal)
+      ? addAandB<GachaSummaryType>(oldGlobalSummary, addToGlobal)
       : addToGlobal;
 
    // console.log({
@@ -198,6 +203,9 @@ export async function action({
             // for public access we're overriding access control here
             overrideAccess: true,
          });
+
+         // purge cache of this global summary
+         cache.delete(globalId);
       } else {
          // insert new record
          await payload.create({

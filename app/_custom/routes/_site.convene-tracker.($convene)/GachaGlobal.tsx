@@ -5,6 +5,7 @@ import { useRouteLoaderData } from "@remix-run/react";
 
 import { Image } from "~/components/Image";
 
+import { addAandB } from "./addToGlobal";
 import { DateFilters, DatesChart } from "./DatesChart";
 import { PitiesChart } from "./PitiesChart";
 import type { loader } from "./route";
@@ -30,11 +31,9 @@ export function GachaGlobal({
 
    if (!summary) return null;
 
-   const pities = filters.resourceId
-      ? summary.fiveStars[filters.resourceId]?.pities
-      : summary.pities;
+   const { pities, resourceIds } = getPities({ summary, filters });
 
-   // console.log(getPities({ summary, filters }));
+   console.log({ pities, resourceIds });
 
    // display five star percentage in shape of #.##%
    const fiveStarPercentage = summary.fiveStar
@@ -82,7 +81,7 @@ export function GachaGlobal({
          />
          {pities && <PitiesChart pities={pities} />}
          <FiveStars
-            fiveStars={summary.fiveStars}
+            resourceIds={resourceIds}
             resourceId={filters.resourceId}
             onClick={(e) =>
                setFilters({
@@ -105,21 +104,42 @@ function getPities({
    summary: SerializeFrom<typeof loader>["globalSummary"];
    filters: WuwaFiltersType;
 }) {
+   console.log(filters, summary);
    let pities: Record<string, number> = {};
+   let resourceIds: Record<string, number> = {};
    let { resourceId, startDate, endDate } = filters;
 
-   return pities;
+   if (!summary) return { pities, resourceIds };
+
+   let start = startDate ? new Date(startDate) : null;
+   let end = endDate ? new Date(endDate) : null;
+
+   Object.entries(summary.fiveStars).forEach(([date, resources]) => {
+      const currentDate = new Date(date);
+
+      if (start && currentDate <= start) return;
+      if (end && currentDate >= end) return;
+
+      Object.entries(resources).forEach(([id, current]) => {
+         if (!resourceId || resourceId === id) {
+            pities = addAandB(pities, current);
+
+            // sum of pities
+            let total = Object.values(current).reduce((a, b) => a + b, 0);
+            resourceIds[id] = resourceIds[id] ? resourceIds[id] + total : 1;
+         }
+      });
+   });
+
+   return { pities, resourceIds };
 }
 
 function FiveStars({
-   fiveStars,
+   resourceIds,
    resourceId,
    onClick,
 }: {
-   fiveStars: Record<
-      string,
-      { pities: Record<string, number>; dates: Record<string, number> }
-   >;
+   resourceIds: Record<string, number>;
    resourceId?: string;
    onClick: React.MouseEventHandler<HTMLButtonElement>;
 }) {
@@ -127,12 +147,12 @@ function FiveStars({
       <div className="flex flex-col gap-y-1">
          <div className="relative inline-block text-center align-middle">
             <div className="relative m-1 w-full rounded-md border p-2 dark:border-gray-700">
-               {Object.entries(fiveStars)
-                  .map(([id, { pities }]) => (
+               {Object.entries(resourceIds)
+                  .map(([id, total]) => (
                      <WarpFrame
                         id={id}
                         key={id}
-                        pities={pities}
+                        total={total}
                         resourceId={resourceId}
                         onClick={onClick}
                      />
@@ -148,19 +168,16 @@ function WarpFrame({
    id,
    resourceId,
    onClick,
-   pities,
+   total,
 }: {
    id: string;
    resourceId?: string;
    onClick: React.MouseEventHandler<HTMLButtonElement>;
-   pities: Record<string, number>;
+   total: number;
 }) {
    const { weapons, resonators } = useRouteLoaderData<typeof loader>(
       "_custom/routes/_site.convene-tracker.($convene)/route",
    )!;
-
-   // sum of pities
-   const total = Object.values(pities).reduce((a, b) => a + b, 0);
 
    let entry =
       weapons?.find((w) => w.id == id) ??
