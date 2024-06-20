@@ -76,13 +76,15 @@ export function PitiesChart({ pities }: { pities: Record<string, number> }) {
    const total = Object.values(pities).reduce((acc, cur) => acc + cur, 0);
 
    // line chart is a value from 0 to 100% of the total
-   const lineData = [] as number[];
+   const lineData = [Math.round((barData[0]! / total) * 100)] as number[];
 
    barData.reduce((acc, cur) => {
       acc += cur;
-      lineData.push((acc / total) * 100);
+      lineData.push(Math.round((acc / total) * 100));
       return acc;
    });
+
+   console.log({ barData, lineData });
 
    const data = {
       labels,
