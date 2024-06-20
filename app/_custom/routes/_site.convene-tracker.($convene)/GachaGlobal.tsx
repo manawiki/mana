@@ -126,7 +126,7 @@ function getPities({
 
          // sum of pities
          let total = Object.values(current).reduce((a, b) => a + b, 0);
-         resourceIds[id] = resourceIds[id] ? resourceIds[id] + total : 1;
+         resourceIds[id] = resourceIds[id] ? resourceIds[id] + total : total;
       });
    });
 
