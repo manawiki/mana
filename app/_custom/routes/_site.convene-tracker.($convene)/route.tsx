@@ -211,7 +211,11 @@ export default function HomePage() {
                            defaultValue={wuwaURL}
                            required
                         />
-                        <input hidden name="convene" value={convene ?? "1"} />
+                        <input
+                           hidden
+                           name="convene"
+                           defaultValue={convene ?? "1"}
+                        />
                         <Button type="submit" value="Import">
                            Import
                         </Button>

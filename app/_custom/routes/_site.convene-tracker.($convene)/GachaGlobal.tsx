@@ -171,13 +171,12 @@ function getPities({
       if (end && currentDate >= end) return;
 
       Object.entries(resources).forEach(([id, current]) => {
-         if (!resourceId || resourceId === id) {
+         if (!resourceId || resourceId === id)
             pities = addAandB(pities, current);
 
-            // sum of pities
-            let total = Object.values(current).reduce((a, b) => a + b, 0);
-            resourceIds[id] = resourceIds[id] ? resourceIds[id] + total : 1;
-         }
+         // sum of pities
+         let total = Object.values(current).reduce((a, b) => a + b, 0);
+         resourceIds[id] = resourceIds[id] ? resourceIds[id] + total : total;
       });
    });
 

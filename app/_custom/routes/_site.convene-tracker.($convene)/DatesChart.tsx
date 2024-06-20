@@ -50,7 +50,7 @@ export function DatesChart({
    filters,
 }: {
    dates: Record<string, number>;
-   filters: WuwaFiltersType;
+   filters?: WuwaFiltersType;
 }) {
    const labels = generateDatesLabels({ dates, filters });
 
@@ -77,7 +77,7 @@ function generateDatesLabels({
    filters,
 }: {
    dates: Record<string, number>;
-   filters: WuwaFiltersType;
+   filters?: WuwaFiltersType;
 }) {
    let dateArray = Object.keys(dates);
    let startDate = filters?.startDate || dateArray[0]!;
