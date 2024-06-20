@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Await, defer, redirect, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
+import { fetchWithCache } from "~/utils/cache.server";
 
 import { cache } from "~/utils/cache.server";
 
@@ -61,13 +62,20 @@ export async function loader({
       ? fetchSummary<GachaSummaryType>("wuwa-" + playerId + "-" + convene)
       : null;
 
+   const itemImages = (
+      await fetchWithCache<{ docs: any }>(
+         "http://localhost:4000/api/items?where[id][in]=3,50001,50002,50005"
+      )
+   )?.docs;
+
    return defer({
       playerSummary,
+      itemImages,
    });
 }
 
 export default function ConveneTracker() {
-   const { playerSummary } = useLoaderData<typeof loader>();
+   const { playerSummary, itemImages } = useLoaderData<typeof loader>();
 
    return (
       <Suspense
@@ -80,7 +88,12 @@ export default function ConveneTracker() {
          <Await resolve={playerSummary}>
             {(playerSummary) => (
                <>
-                  {playerSummary && <GachaSummary summary={playerSummary} />}
+                  {playerSummary && (
+                     <GachaSummary
+                        summary={playerSummary}
+                        images={itemImages}
+                     />
+                  )}
                   {playerSummary && <GachaHistory summary={playerSummary} />}
                </>
             )}
@@ -94,7 +107,7 @@ export async function action({
    context: { user, payload },
 }: ActionFunctionArgs) {
    const { url, convene, summary, save, playerId, refresh } = JSON.parse(
-      await request.text(),
+      await request.text()
    ) as {
       url: string;
       convene: string;

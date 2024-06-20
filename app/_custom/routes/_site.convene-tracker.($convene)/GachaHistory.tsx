@@ -63,7 +63,9 @@ export function GachaHistory({ summary }: { summary: GachaSummaryType }) {
                Weapons
             </Checkbox>
          </div>
-         {gacha?.map((roll, int) => <ResultFrame roll={roll} key={int} />)}
+         {gacha?.map((roll, int) => (
+            <ResultFrame roll={roll} key={int} />
+         ))}
       </div>
    );
 }
@@ -110,15 +112,15 @@ function WeaponFrame({ roll }: { roll: RollData }) {
    return (
       <Link to={`/c/weapons/${entry?.slug ?? entry?.id ?? ""}`}>
          <div
-            className={` m-1 w-full flex rounded-md border p-2 dark:border-gray-700 ${customColor(
+            className={` m-1 w-full flex rounded-md border p-2 items-center dark:border-gray-700 ${customColor(
                roll.qualityLevel,
             )}`}
          >
             {entry && <ItemFrame entry={entry} />}
-            <div className="mx-1 align-middle">{roll.qualityLevel}★ </div>
-            <div className="mx-1 align-center w-full">{roll.name}</div>
-            <div className="mx-1 align-right">{roll.time}</div>
-            <div className="mx-1 align-right">
+            <div className="mx-1">{roll.qualityLevel}★ </div>
+            <div className="mx-1 w-full">{roll.name}</div>
+            <div className="mx-1 text-right">{roll.time}</div>
+            <div className="mx-1 text-center">
                <div className="text-xs opacity-60 right-0">Pity</div>
                {roll.pity}
             </div>
@@ -136,15 +138,15 @@ function ResonatorFrame({ roll }: { roll: RollData }) {
    return (
       <Link to={`/c/resonators/${entry?.slug ?? entry?.id ?? ""}`}>
          <div
-            className={` m-1 w-full flex rounded-md align-middle border p-2 dark:border-gray-700 ${customColor(
+            className={` m-1 w-full flex rounded-md items-center border p-2 dark:border-gray-700 ${customColor(
                roll.qualityLevel,
             )}`}
          >
             {entry && <ItemFrame entry={entry} />}
-            <div className="mx-1 align-middle">{roll.qualityLevel}★ </div>
-            <div className="mx-1 align-middle w-full">{roll.name}</div>
-            <div className="mx-1 align-right">{roll.time}</div>
-            <div className="mx-1 align-right">
+            <div className="mx-1">{roll.qualityLevel}★ </div>
+            <div className="mx-1 w-full">{roll.name}</div>
+            <div className="mx-1 text-right">{roll.time}</div>
+            <div className="mx-1 text-center">
                <div className="text-xs opacity-60 right-0">Pity</div>
                {roll.pity}
             </div>

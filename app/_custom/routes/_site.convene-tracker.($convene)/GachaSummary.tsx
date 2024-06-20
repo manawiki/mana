@@ -11,7 +11,13 @@ export function average(arr: Array<number>) {
    return arr.reduce((acc, curr) => acc + curr ?? 0, 0) / arr.length;
 }
 
-export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
+export function GachaSummary({
+   summary,
+   images,
+}: {
+   summary: GachaSummaryType;
+   images: any;
+}) {
    // display five star percentage in shape of #.##%
    const fiveStarPercentage = (
       (summary.fiveStars.length / summary.total) *
@@ -30,67 +36,106 @@ export function GachaSummary({ summary }: { summary: GachaSummaryType }) {
    const fourStarPity =
       Math.floor(average(summary.fourStars.map((roll) => roll.pity!))) || 10;
 
+   const display_columns_1 = [
+      {
+         title: "Convenes Total",
+         value: summary.total.toLocaleString(),
+      },
+      {
+         title: "Resonators",
+         value: summary.resonators.toLocaleString(),
+      },
+      {
+         title: "5★ Convenes",
+         value:
+            summary.fiveStars.length.toLocaleString() +
+            ` (${fiveStarPercentage}%)`,
+      },
+      {
+         title: "5★ Current Pity",
+         value: summary.pity5,
+      },
+      {
+         title: "5★ Avg Pity",
+         value: fiveStarPity,
+      },
+   ];
+
+   const display_columns_2 = [
+      {
+         title: "Currency",
+         value: (summary.total * 160).toLocaleString(),
+         icon: images?.find((a) => a.id == "3")?.icon?.url, // Astrite image id=3
+      },
+      {
+         title: "Weapons",
+         value: summary.weapons.toLocaleString(),
+      },
+      {
+         title: "4★ Convenes",
+         value:
+            summary.fourStars.length.toLocaleString() +
+            ` (${fourStarPercentage}%)`,
+      },
+      {
+         title: "4★ Current Pity",
+         value: summary.pity4,
+      },
+      {
+         title: "4★ Avg Pity",
+         value: fourStarPity,
+      },
+   ];
+
    return (
-      <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
-         <div //two columns
-            className="columns-2"
-         >
-            <div className="flex flex-col gap-y-1">
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Convenes Total:</span>
-                  <span>{summary.total}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Resonators:</span>
-                  <span>{summary.resonators}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Worth:</span>
-                  <span>{summary.total * 160}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">Weapons:</span>
-                  <span>{summary.weapons}</span>
-               </div>
+      <>
+         <H2 text="Account Stats" />
+         <div className="bg-white dark:bg-neutral-900 rounded-lg">
+            <div //two columns
+               className="laptop:grid laptop:grid-cols-2 gap-x-4 mb-3"
+            >
+               <InfoColumn disp_cols={display_columns_1} />
+               <InfoColumn disp_cols={display_columns_2} />
             </div>
+
+            <DatesChart dates={summary.dates} />
+            <FiveStars summary={summary} />
          </div>
-         <div //two columns
-            className="columns-2"
-         >
-            <div className="flex flex-col gap-y-1">
-               <div className="flex gap-x-2">
-                  <span className="font-bold">5★ Convenes:</span>
-                  <span>{summary.fiveStars.length}</span>
-                  <span>({fiveStarPercentage}%)</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">5★ Current Pity:</span>
-                  <span>{summary.pity5}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">5★ Avg Pity:</span>
-                  <span>{fiveStarPity}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">4★ Convenes:</span>
-                  <span>{summary.fourStars.length}</span>
-                  <span>({fourStarPercentage}%)</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">4★ Current Pity:</span>
-                  <span>{summary.pity4}</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">4★ Avg Pity:</span>
-                  <span>{fourStarPity}</span>
-               </div>
-            </div>
-         </div>
-         <DatesChart dates={summary.dates} />
-         <FiveStars summary={summary} />
-      </div>
+      </>
    );
 }
+
+const InfoColumn = ({ disp_cols }: any) => {
+   return (
+      <div
+         className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
+          [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
+      >
+         {disp_cols.map((col) => (
+            <div
+               className="px-3 py-1.5 justify-between flex items-center gap-2"
+               key={`gacha_summary_account_info_${col.title}`}
+            >
+               <span className="font-bold">{col.title}:</span>
+               <span>
+                  <div className="inline-flex align-middle">{col.value}</div>
+                  {col.icon ? (
+                     <div className="inline-flex h-full align-middle">
+                        <Image
+                           height={24}
+                           className="object-contain"
+                           url={col.icon}
+                           options="height=24"
+                           alt={"Icon"}
+                        />
+                     </div>
+                  ) : null}
+               </span>
+            </div>
+         ))}
+      </div>
+   );
+};
 
 function FiveStars({ summary }: { summary: GachaSummaryType }) {
    return (
@@ -150,8 +195,8 @@ function ItemFrame({ entry, roll }: any) {
                } material-frame`}
                alt={entry?.name}
             />
-            <div className="absolute top-0 right-0 bg-white/50 text-black p-1 text-xs rounded-md ">
-               #{roll.pity}
+            <div className="absolute top-0 right-0 bg-zinc-200/50 dark:bg-zinc-100/50 text-black p-1 text-xs rounded-md">
+               {roll.pity}
             </div>
          </div>
       </div>

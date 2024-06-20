@@ -24,8 +24,10 @@ const versions = [
 
 export function GachaGlobal({
    summary,
+   images,
 }: {
    summary: SerializeFrom<typeof loader>["globalSummary"];
+   images: any;
 }) {
    const [filters, setFilters] = useState<WuwaFiltersType>({});
 
@@ -43,35 +45,51 @@ export function GachaGlobal({
       ? ((summary.fourStar / summary.total) * 100).toFixed(2)
       : 0;
 
+   const fivePityArray = Object.keys(pities)
+      .map((pkey) => Array(pities?.[pkey]).fill(parseInt(pkey)))
+      .flat()
+      .flat()
+      .flat();
+   const fivePityAverage =
+      fivePityArray.reduce((a, b) => a + b) / fivePityArray.length;
+
+   const display_columns_1 = [
+      {
+         title: "Rovers logged",
+         value: summary.players.toLocaleString(),
+      },
+      {
+         title: "Convenes rolled",
+         value: summary.total.toLocaleString(),
+      },
+      {
+         title: "Astrite used",
+         value: (summary.total * 160).toLocaleString(),
+         icon: images?.find((a) => a.id == "3")?.icon?.url, // Astrite image id=3
+      },
+   ];
+   const display_columns_2 = [
+      {
+         title: "5★ Convenes",
+         value: summary.fiveStar + ` (${fiveStarPercentage}%)`,
+      },
+      {
+         title: "4★ Convenes",
+         value: summary.fourStar + ` (${fourStarPercentage}%)`,
+      },
+      {
+         title: "Average 5★ Pity",
+         value: fivePityAverage.toFixed(2),
+      },
+   ];
+
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
          <div //two columns
-            className="columns-2"
+            className="laptop:grid laptop:grid-cols-2 gap-x-4 mb-3"
          >
-            <div className="flex flex-col gap-y-1">
-               <div className="flex gap-x-2">
-                  <span>{summary.players.toLocaleString()}</span>
-                  <span className="font-bold">Rovers logged</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span>{summary.total.toLocaleString()}</span>
-                  <span className="font-bold">Convenes rolled</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span>{(summary.total * 160).toLocaleString()}</span>
-                  <span className="font-bold">Gems used</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">5★ Convenes:</span>
-                  <span>{summary.fiveStar}</span>
-                  <span>({fiveStarPercentage}%)</span>
-               </div>
-               <div className="flex gap-x-2">
-                  <span className="font-bold">4★ Convenes:</span>
-                  <span>{summary.fourStar}</span>
-                  <span>({fourStarPercentage}%)</span>
-               </div>
-            </div>
+            <InfoColumn disp_cols={display_columns_1} />
+            <InfoColumn disp_cols={display_columns_2} />
          </div>
          <DatesChart dates={summary.dates} filters={filters} />
          <DateFilters
@@ -96,6 +114,38 @@ export function GachaGlobal({
       </div>
    );
 }
+
+const InfoColumn = ({ disp_cols }: any) => {
+   return (
+      <div
+         className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
+          [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
+      >
+         {disp_cols.map((col) => (
+            <div
+               className="px-3 py-1.5 justify-between flex items-center gap-2"
+               key={`gacha_global_info_${col.title}`}
+            >
+               <span className="font-bold">{col.title}:</span>
+               <span>
+                  <div className="inline-flex align-middle">{col.value}</div>
+                  {col.icon ? (
+                     <div className="inline-flex h-full align-middle">
+                        <Image
+                           height={24}
+                           className="object-contain"
+                           url={col.icon}
+                           options="height=24"
+                           alt={"Icon"}
+                        />
+                     </div>
+                  ) : null}
+               </span>
+            </div>
+         ))}
+      </div>
+   );
+};
 
 function getPities({
    summary,
@@ -190,7 +240,7 @@ function WarpFrame({
       <button
          onClick={onClick}
          value={id}
-         className={`relative isolate inline-flex items-center justify-center gap-x-2 rounded-lg border text-base/6 font-semibold px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] tablet:px-[calc(theme(spacing.3)-1px)] tablet:py-[calc(theme(spacing[1.5]))] tablet:text-tablet/6 focus:outline-none data-[focus]:outline data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-blue-500 data-[disabled]:opacity-50 [&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5 [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:tablet:my-1 [&>[data-slot=icon]]:tablet:size-4 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText] border-zinc-950/10 text-zinc-950 data-[active]:bg-zinc-950/[2.5%] data-[hover]:bg-zinc-950/[2.5%] dark:border-white/15 dark:text-white dark:[--btn-bg:transparent] dark:data-[active]:bg-white/5 dark:data-[hover]:bg-white/5 [--btn-icon:theme(colors.zinc.500)] data-[active]:[--btn-icon:theme(colors.zinc.700)] data-[hover]:[--btn-icon:theme(colors.zinc.700)] dark:data-[active]:[--btn-icon:theme(colors.zinc.400)] dark:data-[hover]:[--btn-icon:theme(colors.zinc.400)] cursor-pointer ${
+         className={`relative isolate inline-flex items-center justify-center mx-0.5 gap-x-2 rounded-lg border text-base/6 font-semibold px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] tablet:px-[calc(theme(spacing.3)-1px)] tablet:py-[calc(theme(spacing[1.5]))] tablet:text-tablet/6 focus:outline-none data-[focus]:outline data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-blue-500 data-[disabled]:opacity-50 [&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5 [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:tablet:my-1 [&>[data-slot=icon]]:tablet:size-4 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText] border-zinc-950/10 text-zinc-950 data-[active]:bg-zinc-950/[2.5%] data-[hover]:bg-zinc-950/[2.5%] dark:border-white/15 dark:text-white dark:[--btn-bg:transparent] dark:data-[active]:bg-white/5 dark:data-[hover]:bg-white/5 [--btn-icon:theme(colors.zinc.500)] data-[active]:[--btn-icon:theme(colors.zinc.700)] data-[hover]:[--btn-icon:theme(colors.zinc.700)] dark:data-[active]:[--btn-icon:theme(colors.zinc.400)] dark:data-[hover]:[--btn-icon:theme(colors.zinc.400)] cursor-pointer ${
             resourceId === id && "bg-orange-500/10"
          }`}
       >
@@ -206,7 +256,7 @@ function ItemFrame({ entry, total }: any) {
          className="relative inline-block text-center align-middle"
          key={entry?.id}
       >
-         <div className="relative mx-0.5 inline-block h-16 w-16 align-middle text-xs color-rarity-1">
+         <div className="relative inline-block h-16 w-16 align-middle text-xs color-rarity-1">
             <Image
                url={entry?.icon?.url ?? "no_image_42df124128"}
                className={`object-contain color-rarity-${

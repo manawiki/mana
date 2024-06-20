@@ -29,10 +29,18 @@ ChartJS.register(
 const options = {
    responsive: true,
    scales: {
+      x: {
+         grid: {
+            color: "rgba(200,200,200,0.5)",
+         },
+      },
       y: {
          ticks: { stepSize: 1 },
          suggestedMax: 10,
          min: 0,
+         grid: {
+            color: "rgba(200,200,200,0.5)",
+         },
       },
    },
 };

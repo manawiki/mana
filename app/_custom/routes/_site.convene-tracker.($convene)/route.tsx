@@ -64,6 +64,12 @@ export async function loader({
       )
    )?.docs;
 
+   const itemImages = (
+      await fetchWithCache<{ docs: Array<ConveneType> }>(
+         "http://localhost:4000/api/items?where[id][in]=3,50001,50002,50005",
+      )
+   )?.docs;
+
    const convene = params.convene || "1";
 
    // we'll avoid access control for global summary
@@ -101,6 +107,7 @@ export async function loader({
       weapons,
       conveneTypes,
       convene: conveneTypes?.find((c) => c.id === convene),
+      itemImages,
       globalSummary,
       userData,
    });
@@ -121,6 +128,8 @@ export default function HomePage() {
    const loaderData = useLoaderData<typeof loader>();
    const submit = useSubmit();
    const navigate = useNavigate();
+
+   // console.log(loaderData);
 
    async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
       // We want to fetch from the client, so submit it manually
@@ -162,25 +171,14 @@ export default function HomePage() {
                </option>
             ))}
          </select>
-         <H2 text={loaderData.convene?.name ?? "Convene"} />
+         <H2 text={`${loaderData.convene?.name ?? "Convene"} Global Stats`} />
          {loaderData.globalSummary && (
-            <GachaGlobal summary={loaderData.globalSummary} />
-         )}
-         <h2
-            className="dark:shadow-zinc-800/50 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
-      border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50 dark:bg-dark350"
-            id="track"
-         >
-            <div
-               className="pattern-dots absolute left-0
-                   top-0 -z-0 h-full dark:text-zinc-100
-                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
-                     pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+            <GachaGlobal
+               summary={loaderData.globalSummary}
+               images={loaderData.itemImages}
             />
-            <div className="relative h-full w-full px-3.5 py-2.5">
-               Import Convene History
-            </div>
-         </h2>
+         )}
+         <H2 text="Import Convene History" />
          <Suspense
             fallback={
                <div className="flex items-center justify-center h-96">
@@ -237,7 +235,7 @@ export default function HomePage() {
             </Await>
          </Suspense>
 
-         <H2 text={loaderData.convene?.name ?? "Convene"} />
+         {/* <H2 text={loaderData.convene?.name ?? "Convene"} /> */}
          <Outlet />
       </div>
    );

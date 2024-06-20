@@ -37,10 +37,15 @@ const options = {
    plugins: {
       title: {
          display: true,
-         text: "Pities Tracker",
+         text: "Pity Tracker",
       },
    },
    scales: {
+      x: {
+         grid: {
+            color: "rgba(200,200,200,0.5)",
+         },
+      },
       y: {
          type: "linear" as const,
          display: true,
@@ -49,6 +54,9 @@ const options = {
             callback: function (value: number) {
                return value + "%"; // append a "%" sign to the value
             },
+         },
+         grid: {
+            color: "rgba(200,200,200,0.5)",
          },
       },
       y1: {
