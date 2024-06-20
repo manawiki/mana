@@ -84,7 +84,7 @@ export function PitiesChart({ pities }: { pities: Record<string, number> }) {
       return acc;
    });
 
-   console.log({ barData, lineData });
+   // console.log({ barData, lineData });
 
    const data = {
       labels,

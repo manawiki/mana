@@ -136,7 +136,7 @@ function WarpFrame({
       resonators?.find((w) => w.id == id) ??
       null;
 
-   console.log({ resourceId, id });
+   // console.log({ resourceId, id });
 
    return entry ? (
       <Button
