@@ -1,9 +1,12 @@
 // Track Achievements using Local Storage on this page!
 // Note all achievements and subcategories / total roll currency rewards will be included if possible.
 
+import { Suspense } from "react";
+
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { defer } from "@remix-run/node";
 import {
+   Await,
    Form,
    Outlet,
    useLoaderData,
@@ -86,27 +89,31 @@ export async function loader({
 
    // check user data for wuwa-url
    const userData = user
-      ? await fetchSummary<{
+      ? fetchSummary<{
            url: string;
            save: string;
            refresh: string;
         }>("wuwa-" + user?.id)
-      : { url: "", save: "true", refresh: "" };
+      : undefined;
 
-   // check request cookie for wuwa-url
-   let cookieURL = request.headers.get("Cookie")?.split("wuwa-url=")?.[1];
-
-   const wuwaURL = cookieURL || userData?.url;
-
-   return json({
+   return defer({
       resonators,
       weapons,
       conveneTypes,
       convene: conveneTypes?.find((c) => c.id === convene),
       globalSummary,
       userData,
-      wuwaURL,
    });
+}
+
+function getCookie(name: string) {
+   if (typeof document !== "undefined") {
+      return document.cookie
+         .split(";")
+         .map((c) => c.trim())
+         .find((c) => c.startsWith(name + "="))
+         ?.slice(name.length + 1);
+   }
 }
 
 export default function HomePage() {
@@ -141,7 +148,7 @@ export default function HomePage() {
    }
 
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
          <select
             className="dark:text-zinc-100 mt-8 mb-3 p-3.5 leading-7 dark:bg-dark400 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200/70
       font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-700 w-full"
@@ -174,42 +181,62 @@ export default function HomePage() {
                Import Convene History
             </div>
          </h2>
-         <Form
-            method="POST"
-            navigate={false}
-            onSubmit={onSubmit}
-            className="justify-left flex items-center gap-x-1"
+         <Suspense
+            fallback={
+               <div className="flex items-center justify-center h-96">
+                  <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+               </div>
+            }
          >
-            <label htmlFor="url">Import URL</label>
-            <input
-               name="url"
-               placeholder="Insert URL here"
-               type="url"
-               className="w-full"
-               defaultValue={loaderData.wuwaURL}
-               required
-            />
-            <input hidden name="convene" value={convene ?? "1"} />
-            <Button type="submit" value="Import">
-               Import
-            </Button>
-            <Checkbox
-               name="save"
-               defaultChecked={
-                  loaderData.userData
-                     ? Boolean(loaderData.userData?.save)
-                     : true
-               }
-            >
-               Share
-            </Checkbox>
-            {/* <input
+            <Await resolve={loaderData.userData}>
+               {(userData) => {
+                  let wuwaURL = userData?.url;
+
+                  let cookieURL = getCookie("wuwa-url");
+
+                  // check cookie for wuwa-url
+                  if (cookieURL) wuwaURL = cookieURL;
+
+                  return (
+                     <Form
+                        method="POST"
+                        navigate={false}
+                        onSubmit={onSubmit}
+                        className="justify-left flex items-center gap-x-1"
+                     >
+                        <label htmlFor="url">Import URL</label>
+                        <input
+                           name="url"
+                           placeholder="Insert URL here"
+                           type="url"
+                           className="w-full"
+                           defaultValue={wuwaURL}
+                           required
+                        />
+                        <input hidden name="convene" value={convene ?? "1"} />
+                        <Button type="submit" value="Import">
+                           Import
+                        </Button>
+                        <Checkbox
+                           name="save"
+                           defaultChecked={
+                              userData ? Boolean(userData?.save) : true
+                           }
+                        >
+                           Share
+                        </Checkbox>
+                        {/* <input
                   type="checkbox"
                   name="refresh"
                   defaultChecked={Boolean(loaderData.userData?.refresh)}
                />
                <label htmlFor="refresh">Auto Refresh</label> */}
-         </Form>
+                     </Form>
+                  );
+               }}
+            </Await>
+         </Suspense>
+
          <H2 text={loaderData.convene?.name ?? "Convene"} />
          <Outlet />
       </div>

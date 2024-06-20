@@ -11,6 +11,7 @@ import {
 import { GachaHistory } from "./_site.convene-tracker.($convene)/GachaHistory";
 import { GachaSummary } from "./_site.convene-tracker.($convene)/GachaSummary";
 import type { GachaSummaryType } from "./_site.convene-tracker.($convene)/getSummary";
+import { Suspense } from "react";
 
 export async function loader({
    context: { payload, user },
@@ -66,14 +67,22 @@ export default function ConveneTracker() {
    const { playerSummary } = useLoaderData<typeof loader>();
 
    return (
-      <Await resolve={playerSummary}>
-         {(playerSummary) => (
-            <>
-               {playerSummary && <GachaSummary summary={playerSummary} />}
-               {playerSummary && <GachaHistory summary={playerSummary} />}
-            </>
-         )}
-      </Await>
+      <Suspense
+         fallback={
+            <div className="flex items-center justify-center h-96">
+               <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+            </div>
+         }
+      >
+         <Await resolve={playerSummary}>
+            {(playerSummary) => (
+               <>
+                  {playerSummary && <GachaSummary summary={playerSummary} />}
+                  {playerSummary && <GachaHistory summary={playerSummary} />}
+               </>
+            )}
+         </Await>
+      </Suspense>
    );
 }
 
