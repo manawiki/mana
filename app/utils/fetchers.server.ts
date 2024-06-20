@@ -46,19 +46,18 @@ export function authGQLFetcher({
    variables,
    siteSlug,
    request,
+   customPath,
 }: {
    document?: any;
    variables?: any;
-   siteSlug?: string | undefined | null;
    request?: Request;
+   siteSlug?: string | undefined | null;
+   customPath?: string | false;
 }) {
+   //If siteSlug is provided, it is querying the custom site endpoint
    try {
       return gqlRequest(
-         process.env.INNGEST_EVENT_KEY
-            ? "https://mana.wiki/api/graphql"
-            : siteSlug
-              ? "http://localhost:4000/api/graphql"
-              : "http://localhost:3000/api/graphql",
+         customPath ? customPath : gqlEndpoint({ siteSlug }),
          document,
          variables,
          {
