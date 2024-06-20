@@ -1,6 +1,9 @@
 #"import_collection_data": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_collection_data.ts"
 
-# Importing Costumes (301b) and latesr
+# Items
+pnpm import_collection_data collection:materials,filename:Item.json,idname:drupal_nid,sync:false,overwrite:false
+
+# Importing Costumes (301b) and later
 pnpm import_collection_data collection:costumes,filename:Costume.json,idname:drupal_nid,sync:false,overwrite:false
 
 # Command Codes
