@@ -130,13 +130,13 @@ export default function HomePage() {
 
       const result = await getConveneData({ body });
 
-      console.log("this is a local fetch: ", result);
+      // console.log("this is a local fetch: ", result);
 
       if (!result || result.error) return alert("Error fetching data");
 
       // if global is checked, submit to global
 
-      console.log(result);
+      // console.log(result);
 
       // @ts-expect-error this is fine
       submit(result, {

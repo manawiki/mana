@@ -172,7 +172,7 @@ export async function action({
             overrideAccess: true,
          });
       } else {
-         console.log("no result, inserting new record");
+         // console.log("no result, inserting new record");
 
          await payload.create({
             collection: "user-data",

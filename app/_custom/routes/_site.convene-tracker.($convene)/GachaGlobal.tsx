@@ -33,7 +33,7 @@ export function GachaGlobal({
 
    const { pities, resourceIds } = getPities({ summary, filters });
 
-   console.log({ pities, resourceIds });
+   // console.log({ pities, resourceIds });
 
    // display five star percentage in shape of #.##%
    const fiveStarPercentage = summary.fiveStar
@@ -104,7 +104,7 @@ function getPities({
    summary: SerializeFrom<typeof loader>["globalSummary"];
    filters: WuwaFiltersType;
 }) {
-   console.log(filters, summary);
+   // console.log(filters, summary);
    let pities: Record<string, number> = {};
    let resourceIds: Record<string, number> = {};
    let { resourceId, startDate, endDate } = filters;
