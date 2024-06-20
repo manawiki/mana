@@ -40,9 +40,6 @@ export function GachaGlobal({
 
    return (
       <div className="bg-white dark:bg-neutral-900 rounded-lg p-4">
-         <div className="flex flex-col gap-y-1">
-            <H2 text={"Global Stats"} />
-         </div>
          <div //two columns
             className="columns-2"
          >
@@ -73,6 +70,7 @@ export function GachaGlobal({
          </div>
          <FiveStars
             fiveStars={summary.fiveStars}
+            resourceId={resourceId}
             setResourceId={setResourceId}
          />
          {dates && <DatesChart dates={dates} />}
@@ -84,12 +82,14 @@ export function GachaGlobal({
 
 function FiveStars({
    fiveStars,
+   resourceId,
    setResourceId,
 }: {
    fiveStars: Record<
       string,
       { pities: Record<string, number>; dates: Record<string, number> }
    >;
+   resourceId: string | null;
    setResourceId: React.Dispatch<React.SetStateAction<string | null>>;
 }) {
    return (
@@ -97,11 +97,12 @@ function FiveStars({
          <div className="relative inline-block text-center align-middle">
             <div className="relative m-1 w-full rounded-md border p-2 dark:border-gray-700">
                {Object.entries(fiveStars)
-                  .map(([resourceId, { pities, dates }]) => (
+                  .map(([id, { pities }]) => (
                      <WarpFrame
-                        resourceId={resourceId}
-                        key={resourceId}
+                        id={id}
+                        key={id}
                         pities={pities}
+                        resourceId={resourceId}
                         setResourceId={setResourceId}
                      />
                   ))
@@ -113,11 +114,13 @@ function FiveStars({
 }
 
 function WarpFrame({
+   id,
    resourceId,
    setResourceId,
    pities,
 }: {
-   resourceId: string;
+   id: string;
+   resourceId: string | null;
    setResourceId: React.Dispatch<React.SetStateAction<string | null>>;
    pities: Record<string, number>;
 }) {
@@ -129,16 +132,17 @@ function WarpFrame({
    const total = Object.values(pities).reduce((a, b) => a + b, 0);
 
    let entry =
-      weapons?.find((w) => w.id == resourceId) ??
-      resonators?.find((w) => w.id == resourceId) ??
+      weapons?.find((w) => w.id == id) ??
+      resonators?.find((w) => w.id == id) ??
       null;
+
+   console.log({ resourceId, id });
 
    return entry ? (
       <Button
-         onClick={() =>
-            setResourceId((oldId) => (oldId === resourceId ? null : resourceId))
-         }
+         onClick={() => setResourceId((oldId) => (oldId === id ? null : id))}
          outline
+         className={resourceId === id ? "bg-orange-500/10" : ""}
       >
          <ItemFrame entry={entry} total={total} />
       </Button>
@@ -152,7 +156,7 @@ function ItemFrame({ entry, total }: any) {
          className="relative inline-block text-center align-middle"
          key={entry?.id}
       >
-         <div className="relative mx-0.5 inline-block h-16 w-16 align-middle text-xs">
+         <div className="relative mx-0.5 inline-block h-16 w-16 align-middle text-xs color-rarity-1">
             <Image
                url={entry?.icon?.url ?? "no_image_42df124128"}
                className={`object-contain color-rarity-${

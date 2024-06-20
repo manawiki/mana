@@ -20,6 +20,17 @@ ChartJS.register(
    Legend,
 );
 
+const options = {
+   responsive: true,
+   scales: {
+      y: {
+         ticks: { stepSize: 1 },
+         suggestedMax: 10,
+         min: 0,
+      },
+   },
+};
+
 export function DatesChart({ dates }: { dates: Record<string, number> }) {
    const labels = generateDatesLabels(dates);
 
@@ -38,7 +49,7 @@ export function DatesChart({ dates }: { dates: Record<string, number> }) {
       ],
    };
 
-   return <Line data={data} />;
+   return <Line data={data} options={options} />;
 }
 
 function generateDatesLabels(dates: Record<string, number>) {

@@ -27,7 +27,7 @@ ChartJS.register(
 // pities always from 1 to 80
 const labels = Array.from({ length: 80 }, (_, i) => i + 1).map(String);
 
-export const options = {
+const options = {
    responsive: true,
    interaction: {
       mode: "index" as const,

@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Await, defer, redirect, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
@@ -11,7 +13,6 @@ import {
 import { GachaHistory } from "./_site.convene-tracker.($convene)/GachaHistory";
 import { GachaSummary } from "./_site.convene-tracker.($convene)/GachaSummary";
 import type { GachaSummaryType } from "./_site.convene-tracker.($convene)/getSummary";
-import { Suspense } from "react";
 
 export async function loader({
    context: { payload, user },
