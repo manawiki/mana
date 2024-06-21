@@ -62,7 +62,7 @@ const ItemFrame = ({ mat }: { mat: ItemFrameProps }) => {
                <Image
                   height={44}
                   className="object-contain"
-                  url={mat.item?.icon?.url ?? "no_image_42df124128"}
+                  url={mat.item?.icon?.url ?? "/favicon.ico"}
                   options="aspect_ratio=1:1&height=120&width=120"
                   alt={mat.item?.name}
                />

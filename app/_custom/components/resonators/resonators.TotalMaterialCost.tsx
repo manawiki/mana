@@ -200,7 +200,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
                <Image
                   height={44}
                   className="object-contain"
-                  url={mat.item?.icon?.url ?? "no_image_42df124128"}
+                  url={mat.item?.icon?.url ?? "/favicon.ico"}
                   options="height=44"
                   alt={mat.item?.name}
                />

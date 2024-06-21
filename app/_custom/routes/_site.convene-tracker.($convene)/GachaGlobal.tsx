@@ -263,7 +263,7 @@ function ItemFrame({ entry, total }: any) {
       >
          <div className="relative inline-block h-16 w-16 align-middle text-xs color-rarity-1">
             <Image
-               url={entry?.icon?.url ?? "no_image_42df124128"}
+               url={entry?.icon?.url ?? "/favicon.ico"}
                className={`object-contain color-rarity-${
                   `1`
                   // mat?.rarity?.display_number ?? "1"
