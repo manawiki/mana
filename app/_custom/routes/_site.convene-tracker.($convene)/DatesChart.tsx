@@ -79,9 +79,12 @@ function generateDatesLabels({
    dates: Record<string, number>;
    filters?: WuwaFiltersType;
 }) {
-   let dateArray = Object.keys(dates);
+   // sort dates
+   let dateArray = Object.keys(dates).sort();
    let startDate = filters?.startDate || dateArray[0]!;
    let endDate = filters?.endDate || dateArray[dateArray.length! - 1]!;
+
+   console.log({ startDate, endDate, filters, dates });
 
    try {
       let start = new Date(startDate);
