@@ -45,13 +45,7 @@ export function GachaGlobal({
       ? ((summary.fourStar / summary.total) * 100).toFixed(2)
       : 0;
 
-   const fivePityArray = Object.keys(pities)
-      .map((pkey) => Array(pities?.[pkey]).fill(parseInt(pkey)))
-      .flat()
-      .flat()
-      .flat();
-   const fivePityAverage =
-      fivePityArray.reduce((a, b) => a + b) / fivePityArray.length;
+   const fivePityAverage = getAveragePity(pities);
 
    const display_columns_1 = [
       {
@@ -79,7 +73,7 @@ export function GachaGlobal({
       },
       {
          title: "Average 5★ Pity",
-         value: fivePityAverage.toFixed(2),
+         value: (fivePityAverage ? fivePityAverage.toFixed(0) : "?") + " /80",
       },
    ];
 
@@ -113,6 +107,18 @@ export function GachaGlobal({
          />
       </div>
    );
+}
+
+function getAveragePity(pities: Record<string, number>) {
+   let pityTotal = 0;
+   let pityCount = 0;
+
+   Object.entries(pities).forEach(([pity, count]) => {
+      pityTotal += parseInt(pity) * count;
+      pityCount += count;
+   });
+
+   return pityTotal / pityCount;
 }
 
 const InfoColumn = ({ disp_cols }: any) => {
