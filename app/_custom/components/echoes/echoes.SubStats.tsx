@@ -8,12 +8,16 @@ export function EchoesSubStats({ data }: { data: any }) {
    return (
       <>
          {sub?.map((stat: any) => (
-            <div className="inline-block bg-zinc-50 dark:bg-dark350 rounded-lg shadow-sm shadow-1 border border-color-sub py-1 m-2 ">
+            <div
+               className="inline-block bg-zinc-50 dark:bg-dark350 rounded-lg shadow-sm shadow-1 border border-color-sub py-1 m-2 "
+               key={stat.name}
+            >
                {stat.icon ? (
                   <>
                      <div className="items-center inline-block align-middle rounded-md justify-center dark:bg-dark350 bg-zinc-600 h-full mr-2">
                         <Image
                            width={30}
+                           height={30}
                            className="object-contain"
                            url={stat?.icon?.url}
                            options="width=30"
