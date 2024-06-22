@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 
 import { Link } from "@remix-run/react";
+import { Stats } from "~/_custom/components/servants/Stats";
+import { Traits } from "~/_custom/components/servants/Traits";
 
 import type { Servant as ServantType } from "payload/generated-custom-types";
 import { Image } from "~/components/Image";
 
-export function Main({ data: servant }: { data: ServantType }) {
+export function Main({ data }: { data: any }) {
+   const servant = data.servant;
    return (
       <>
          <div>
             {/* Header - Class and Rarity */}
             <ClassRarityHeader charData={servant} />
             <ServantImageBaseData charData={servant} />
+            <Stats data={data} />
+            <Traits data={data} />
          </div>
       </>
    );
