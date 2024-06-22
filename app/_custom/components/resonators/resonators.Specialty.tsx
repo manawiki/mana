@@ -1,4 +1,5 @@
-import { Link } from "@remix-run/react";
+import { Fragment } from "react";
+
 import { Image } from "~/components/Image";
 
 export function ResonatorSpecialty({ data: full }: { data: any }) {
@@ -6,38 +7,33 @@ export function ResonatorSpecialty({ data: full }: { data: any }) {
    return (
       <>
          <div className="mb-3 w-full">
-            {recipes.map((g: any, i: any) => {
-               const specialty = g.special_dishes;
-               return (
-                  <>
-                     <div
-                        className="shadow-1 border-color-sub relative inline-block overflow-hidden rounded-lg border text-center shadow-sm w-full"
-                        key={i}
-                     >
-                        <Link to={g.url}>
-                           <div className="bg-2-sub relative flex w-full items-center justify-center p-3">
-                              <div className="relative w-full text-center text-xl">
-                                 {specialty?.map((spec: any) => (
-                                    <>
-                                       <ItemFrame mat={spec} />
-                                       <div className="inline-block ml-2">
-                                          {spec.item?.name}
-                                       </div>
-                                    </>
-                                 ))}
-                                 {/* <Image
+            {recipes.map((g: any, i: any) => (
+               <div
+                  className="shadow-1 border-color-sub relative inline-block overflow-hidden rounded-lg border text-center shadow-sm w-full"
+                  key={i}
+               >
+                  {/* <Link to={g.url}> */}
+                  <div className="bg-2-sub relative flex w-full items-center justify-center p-3">
+                     <div className="relative w-full text-center text-xl">
+                        {g.special_dishes?.map((spec: any) => (
+                           <Fragment key={spec?.item?.name}>
+                              <ItemFrame mat={spec} />
+                              <div className="inline-block ml-2">
+                                 {spec.item?.name}
+                              </div>
+                           </Fragment>
+                        ))}
+                        {/* <Image
                           options="aspect_ratio=1:1&height=120&width=120"
                           alt="Gallery Item"
                           url={g.url}
                           className="h-24 w-24 object-contain"
                         /> */}
-                              </div>
-                           </div>
-                        </Link>
                      </div>
-                  </>
-               );
-            })}
+                  </div>
+                  {/* </Link> */}
+               </div>
+            ))}
          </div>
       </>
    );
@@ -58,7 +54,7 @@ const ItemFrame = ({ mat }: { mat: ItemFrameProps }) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/c/items/${mat.item?.id}`}>
-            <div className="relative mr-0.5 mt-0.5 inline-block h-14 w-14 align-middle text-xs bg-zinc-700 text-white text-xs leading-none">
+            <div className="relative mr-0.5 mt-0.5 inline-block h-14 w-14 align-middle  bg-zinc-700 text-white text-xs leading-none">
                <Image
                   height={44}
                   className="object-contain"

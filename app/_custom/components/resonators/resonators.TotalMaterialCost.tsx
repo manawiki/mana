@@ -1,3 +1,4 @@
+import { Image } from "~/components/Image";
 import {
    Table,
    TableBody,
@@ -6,7 +7,6 @@ import {
    TableHeader,
    TableRow,
 } from "~/components/Table";
-import { Image } from "~/components/Image";
 
 export function ResonatorTotalMaterialCost({ data: full }: { data: any }) {
    const char = full.Resonator;
@@ -196,12 +196,12 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/c/items/${mat.item?.id}`}>
-            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs bg-zinc-700 text-white text-xs leading-none">
+            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs bg-zinc-700 text-white  leading-none">
                <Image
                   height={44}
+                  width={44}
                   className="object-contain"
                   url={mat.item?.icon?.url ?? "/favicon.ico"}
-                  options="height=44"
                   alt={mat.item?.name}
                />
             </div>

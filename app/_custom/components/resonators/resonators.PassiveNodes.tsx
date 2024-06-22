@@ -10,7 +10,7 @@ export function ResonatorPassiveNodes({ data: full }: { data: any }) {
    return (
       <>
          {passive_nodes.map((snode: any) => (
-            <PassiveNode node={snode} />
+            <PassiveNode node={snode} key={snode?.resonator_skill?.name} />
          ))}
       </>
    );
@@ -26,7 +26,7 @@ const PassiveNode = ({ node }: any) => {
    const icon = node?.resonator_skill?.icon?.url;
 
    let dispdesc = desc;
-   params?.map((par: any, i: any) => {
+   params?.forEach((par: any, i: any) => {
       dispdesc = dispdesc?.replace("{" + i + "}", par);
    });
 
@@ -89,9 +89,9 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs bg-zinc-700 text-white leading-none">
                <Image
                   height={44}
+                  width={44}
                   className="object-contain"
                   url={mat.item?.icon?.url ?? "/favicon.ico"}
-                  options="height=44"
                   alt={mat.item?.name}
                />
             </div>

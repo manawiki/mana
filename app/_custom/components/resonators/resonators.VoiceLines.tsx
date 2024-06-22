@@ -49,25 +49,23 @@ export function ResonatorVoiceLines({ data: full }: { data: any }) {
                         <DisclosurePanel className="mb-3">
                            {/* Accordion Contents */}
                            {lines.map((voice, index) => (
-                              <>
-                                 <div
-                                    key={index}
-                                    className="bg-2-sub border border-color-sub rounded-lg shadow-sm shadow-1 mb-3 p-3"
-                                 >
-                                    <div className="font-header pb-1">
-                                       {voice.title}
-                                    </div>
-                                    <div
-                                       className="text-1"
-                                       dangerouslySetInnerHTML={{
-                                          __html: voice.content ?? "",
-                                       }}
-                                    ></div>
-                                    {/* Voice line player, if voices available, see AudioPlayer code */}
-                                    {/* @ts-ignore */}
-                                    <AudioPlayer voice={voice} />
+                              <div
+                                 key={index}
+                                 className="bg-2-sub border border-color-sub rounded-lg shadow-sm shadow-1 mb-3 p-3"
+                              >
+                                 <div className="font-header pb-1">
+                                    {voice.title}
                                  </div>
-                              </>
+                                 <div
+                                    className="text-1"
+                                    dangerouslySetInnerHTML={{
+                                       __html: voice.content ?? "",
+                                    }}
+                                 ></div>
+                                 {/* Voice line player, if voices available, see AudioPlayer code */}
+                                 {/* @ts-ignore */}
+                                 <AudioPlayer voice={voice} />
+                              </div>
                            ))}
                         </DisclosurePanel>
                      </>
@@ -120,28 +118,28 @@ const AudioPlayer = ({ voice }: { voice: VoiceType }) => {
                         <TabPanel>
                            <audio
                               controls
-                              src={voice.vo_en?.url}
+                              src={voice.vo_en?.url ?? undefined}
                               preload="none"
                            />
                         </TabPanel>
                         <TabPanel>
                            <audio
                               controls
-                              src={voice.vo_ja?.url}
+                              src={voice.vo_ja?.url ?? undefined}
                               preload="none"
                            />
                         </TabPanel>
                         <TabPanel>
                            <audio
                               controls
-                              src={voice.vo_zh?.url}
+                              src={voice.vo_zh?.url ?? undefined}
                               preload="none"
                            />
                         </TabPanel>
                         <TabPanel>
                            <audio
                               controls
-                              src={voice.vo_ko?.url}
+                              src={voice.vo_ko?.url ?? undefined}
                               preload="none"
                            />
                         </TabPanel>

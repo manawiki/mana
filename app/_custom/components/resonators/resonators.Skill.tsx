@@ -2,8 +2,9 @@ import { useState } from "react";
 
 import { Disclosure } from "@headlessui/react";
 
-import { Image } from "~/components/Image";
+import type { Item } from "payload/generated-custom-types";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import {
    Table,
    TableBody,
@@ -26,8 +27,8 @@ export function ResonatorSkill({ data: full }: { data: any }) {
 
    return (
       <>
-         {skill_nodes.map((snode: any) => (
-            <SkillNode node={snode} />
+         {skill_nodes.map((snode: any, i: number) => (
+            <SkillNode node={snode} key={i} />
          ))}
          <Disclosure>
             {({ open }) => (
@@ -58,8 +59,8 @@ export function ResonatorSkill({ data: full }: { data: any }) {
                   <Disclosure.Panel className="mb-3">
                      {/* Accordion contents */}
                      <div className="laptop:grid laptop:grid-cols-2 laptop:gap-x-2 border border-color-sub rounded-b-lg">
-                        {bonus_nodes.map((snode: any) => (
-                           <BonusNode node={snode} />
+                        {bonus_nodes.map((snode: any, i: number) => (
+                           <BonusNode node={snode} key={i} />
                         ))}
                      </div>
                   </Disclosure.Panel>
@@ -128,7 +129,7 @@ const SkillNode = ({ node }: any) => {
    const params = node?.resonator_skill?.params;
 
    let dispdesc = desc;
-   params?.map((par: any, i: any) => {
+   params?.forEach((par: any, i: any) => {
       dispdesc = dispdesc?.replace("{" + i + "}", par);
    });
 
@@ -284,13 +285,13 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/c/items/${mat.item?.id}`}>
-            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs bg-zinc-700 text-white text-xs leading-none">
+            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle  bg-zinc-700 text-white text-xs leading-none">
                <Image
                   height={44}
+                  width={44}
                   className="object-contain"
                   url={mat.item?.icon?.url ?? "/favicon.ico"}
-                  options="height=44"
-                  alt={mat.item?.name}
+                  alt={mat.item?.name ?? undefined}
                />
             </div>
             <div
