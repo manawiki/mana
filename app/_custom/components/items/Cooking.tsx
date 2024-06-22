@@ -1,6 +1,6 @@
 import type { Item } from "payload/generated-custom-types";
-import { Image } from "~/components/Image";
 import { H2 } from "~/components/Headers";
+import { Image } from "~/components/Image";
 
 export function Cooking({ data: full }: { data: any }) {
    const char = full.CookRecipes;
@@ -179,13 +179,13 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/c/items/${mat.item?.id}`}>
-            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs bg-zinc-700 text-white text-xs leading-none">
+            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs bg-zinc-700 text-white leading-none">
                <Image
                   height={44}
+                  width={44}
                   className="object-contain"
                   url={mat.item?.icon?.url ?? "/favicon.ico"}
-                  options="height=44"
-                  alt={mat.item?.name}
+                  alt={mat.item?.name ?? undefined}
                />
             </div>
             {mat?.cnt ? (
@@ -207,12 +207,13 @@ const ItemQtyFrameLarge = ({ mat }: { mat: ItemQtyFrameProps }) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/c/items/${mat.item?.id}`}>
-            <div className="relative mr-0.5 mt-0.5 inline-block h-14 w-14 align-middle text-xs bg-zinc-700 text-white text-xs leading-none">
+            <div className="relative mr-0.5 mt-0.5 inline-block h-14 w-14 align-middle text-xs bg-zinc-700 text-white leading-none">
                <Image
                   className="object-contain"
                   url={mat.item?.icon?.url ?? "/favicon.ico"}
-                  options="height=120"
-                  alt={mat.item?.name}
+                  height={120}
+                  width={120}
+                  alt={mat.item?.name ?? undefined}
                />
             </div>
             {mat?.cnt ? (
@@ -238,11 +239,12 @@ const ResonatorFrame = ({ resonator }: any) => {
    return (
       <div className="relative inline-block text-center mx-2" key={id}>
          <a href={`/c/resonator/${id}`}>
-            <div className="relative mt-0.5 inline-block h-16 w-16 align-middle text-xs bg-zinc-700 text-white text-xs leading-none rounded-t-sm rounded-t-sm ">
+            <div className="relative mt-0.5 inline-block h-16 w-16 align-middle text-xs bg-zinc-700 text-white  leading-none  rounded-t-sm ">
                <Image
+                  height={120}
+                  width={120}
                   className="object-contain"
                   url={icon ?? "/favicon.ico"}
-                  options="height=120"
                   alt={name}
                />
             </div>
