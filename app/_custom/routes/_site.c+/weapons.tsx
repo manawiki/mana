@@ -316,8 +316,8 @@ const EntryWithDescription = ({ char }: any) => {
    const desc = char?.skill_desc;
    const params = char?.skill_params;
 
-   var dispdesc = desc;
-   params.map((par: any, i: any) => {
+   let dispdesc = desc;
+   params.forEach((par: any, i: any) => {
       dispdesc = dispdesc?.replace("{" + i + "}", par?.[4]);
    });
 
@@ -347,7 +347,7 @@ const EntryWithDescription = ({ char }: any) => {
 
                   {/* Rarity */}
                   <div
-                     style={{ "border-color": `#${char.rarity?.color}` }}
+                     style={{ borderColor: `#${char.rarity?.color}` }}
                      className="absolute -bottom-2 w-full transform border-b-4"
                   >
                      {/* <Image
@@ -400,6 +400,8 @@ const EntryIconOnly = ({ char }: any) => {
                   <>
                      <div className="absolute -right-1 top-0 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
                         <Image
+                           width={28}
+                           height={28}
                            alt="Icon"
                            className="relative inline-block object-contain"
                            url={pathsmall}
@@ -410,13 +412,14 @@ const EntryIconOnly = ({ char }: any) => {
 
                {/* Rarity */}
                <div
-                  style={{ "border-color": `#${char.rarity?.color}` }}
+                  style={{ borderColor: `#${char.rarity?.color}` }}
                   className="absolute -bottom-2 w-full transform border-b-4"
                ></div>
 
                <Image
-                  options="height=150"
                   className="object-contain"
+                  width={150}
+                  height={150}
                   url={char.icon?.url}
                   alt={char?.name}
                />

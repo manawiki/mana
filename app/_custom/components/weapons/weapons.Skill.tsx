@@ -8,8 +8,8 @@ export function WeaponsSkill({ data: full }: { data: any }) {
    const params = char?.skill_params;
    const desc = char?.skill_desc;
 
-   var dispdesc = desc;
-   params.map((par: any, i: any) => {
+   let dispdesc = desc;
+   params.forEach((par: any, i: any) => {
       dispdesc = dispdesc?.replace("{" + i + "}", par?.[level]);
    });
 

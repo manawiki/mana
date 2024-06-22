@@ -1,5 +1,6 @@
-import clsx from "clsx";
 import { useState } from "react";
+
+import clsx from "clsx";
 
 import { Image } from "~/components/Image";
 
@@ -36,12 +37,12 @@ export function WeaponsMain({ data: full }: { data: any }) {
                <div className="flex items-center justify-center shadow-sm shadow-1 border border-color-sub rounded-lg dark:bg-dark350 bg-zinc-50 h-full">
                   <Image
                      height={320}
+                     width={320}
                      className="object-contain"
                      url={
                         mainImage ??
                         "https://static.mana.wiki/endfield/common_charhead_blank.png"
                      }
-                     options="height=320"
                      alt={mainName ?? "Icon"}
                   />
                </div>
@@ -52,7 +53,10 @@ export function WeaponsMain({ data: full }: { data: any }) {
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
                >
                   {mainStatDisplay?.map((row) => (
-                     <div className="px-3 py-2.5 justify-between flex items-center gap-2">
+                     <div
+                        className="px-3 py-2.5 justify-between flex items-center gap-2"
+                        key={row.label}
+                     >
                         <div className="flex items-center gap-2">
                            <span className="font-semibold text-sm">
                               {row.label}
@@ -84,33 +88,34 @@ export function WeaponsMain({ data: full }: { data: any }) {
                      const is_perc = attr?.ratio || attr?.attribute?.percent;
 
                      return (
-                        <>
-                           <div className="py-2.5 px-3 justify-between flex items-center gap-2">
-                              <div className="flex items-center gap-2">
-                                 {attr_icon ? (
-                                    <>
-                                       <div className="items-center inline-block align-middle justify-center h-full mr-1 invert-[0.3]">
-                                          <Image
-                                             height={30}
-                                             className="object-contain"
-                                             url={attr_icon}
-                                             options="height=30"
-                                             alt={attr_name ?? "Icon"}
-                                          />
-                                       </div>
-                                    </>
-                                 ) : null}
-                                 <span className="font-semibold text-sm inline-block align-middle">
-                                    {attr_name}
-                                 </span>
-                              </div>
-                              <div className="text-sm font-semibold">
-                                 <span className="inline-block align-middle">
-                                    {is_perc ? attr_val + "%" : attr_val}
-                                 </span>
-                              </div>
+                        <div
+                           className="py-2.5 px-3 justify-between flex items-center gap-2"
+                           key={aindex}
+                        >
+                           <div className="flex items-center gap-2">
+                              {attr_icon ? (
+                                 <>
+                                    <div className="items-center inline-block align-middle justify-center h-full mr-1 invert-[0.3]">
+                                       <Image
+                                          height={30}
+                                          className="object-contain"
+                                          url={attr_icon}
+                                          options="height=30"
+                                          alt={attr_name ?? "Icon"}
+                                       />
+                                    </div>
+                                 </>
+                              ) : null}
+                              <span className="font-semibold text-sm inline-block align-middle">
+                                 {attr_name}
+                              </span>
                            </div>
-                        </>
+                           <div className="text-sm font-semibold">
+                              <span className="inline-block align-middle">
+                                 {is_perc ? attr_val + "%" : attr_val}
+                              </span>
+                           </div>
+                        </div>
                      );
                   })}
                </div>
@@ -147,6 +152,7 @@ export function WeaponsMain({ data: full }: { data: any }) {
                <div className="flex text-md font-bold mr-2 items-center self-center rounded-full bg-zinc-200 dark:bg-zinc-500 h-5 px-1.5">
                   {[1, 2, 3, 4, 5, 6].map((stg: any) => (
                      <div
+                        key={stg}
                         className={clsx(
                            dispasc >= stg ? "text-white" : "text-zinc-800",
                            "inline-block align-middle drop-shadow-[0_1px_1px_rgba(0,0,0,0.2)]",

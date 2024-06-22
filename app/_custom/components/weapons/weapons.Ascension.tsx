@@ -43,23 +43,19 @@ export function WeaponsAscension({ data: full }: { data: any }) {
                </TableRow>
             </TableHead>
             <TableBody>
-               {char.ascension_costs?.map((promo: any, index: number) => {
-                  return (
-                     <>
-                        {promo.items?.length > 0 ? (
-                           <TableRow key={index}>
-                              <TableCell>Lv {index + 1}</TableCell>
-                              <TableCell>{promo.gold}</TableCell>
-                              <TableCell>
-                                 {promo.items?.map((mat: any, key: number) => (
-                                    <ItemQtyFrame mat={mat} key={key} />
-                                 ))}
-                              </TableCell>
-                           </TableRow>
-                        ) : null}
-                     </>
-                  );
-               })}
+               {char.ascension_costs?.map((promo: any, index: number) =>
+                  promo.items?.length > 0 ? (
+                     <TableRow key={index}>
+                        <TableCell>Lv {index + 1}</TableCell>
+                        <TableCell>{promo.gold}</TableCell>
+                        <TableCell>
+                           {promo.items?.map((mat: any, key: number) => (
+                              <ItemQtyFrame mat={mat} key={key} />
+                           ))}
+                        </TableCell>
+                     </TableRow>
+                  ) : null,
+               )}
             </TableBody>
          </Table>
       </>
@@ -86,9 +82,9 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs bg-zinc-700 text-white leading-none">
                <Image
                   height={44}
+                  width={44}
                   className="object-contain"
                   url={mat.item?.icon?.url ?? "/favicon.ico"}
-                  options="height=44"
                   alt={mat.item?.name}
                />
             </div>

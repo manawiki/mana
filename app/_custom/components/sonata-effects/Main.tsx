@@ -39,8 +39,8 @@ export function Main({ data: fulldata }: { data: ItemType }) {
             {/* Set Effects */}
             <div className="border-color-sub border-t p-3 text-sm">
                {sonata_effects.map((effect: any) => {
-                  var dispdesc = effect.effect;
-                  effect.params.map((par: any, i: any) => {
+                  let dispdesc = effect.effect;
+                  effect.params.forEach((par: any, i: any) => {
                      dispdesc = dispdesc?.replace("{" + i + "}", par);
                   });
 
