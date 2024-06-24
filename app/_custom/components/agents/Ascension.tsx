@@ -20,19 +20,19 @@ export function Ascension({ data: char }: { data: any }) {
             dangerouslySetInnerHTML={{
                __html: `<style>
                     div.zzz-rarity-1 {
-                        border-bottom: 4px solid #efece1;
+                        border-bottom: 4px solid #7DA89B;
                     }
                     div.zzz-rarity-2 {
-                        border-bottom: 4px solid #efece1;
+                        border-bottom: 4px solid #7DA89B;
                     }
                     div.zzz-rarity-3 {
-                        border-bottom: 4px solid #efece1;
+                        border-bottom: 4px solid #00A9FF;
                     }
                     div.zzz-rarity-4 {
-                        border-bottom: 4px solid #ca6dff;
+                        border-bottom: 4px solid #E900FF;
                     }
                     div.zzz-rarity-5 {
-                        border-bottom: 4px solid #ffe65a;
+                        border-bottom: 4px solid #FFBA05;
                     }
                   </style>`,
             }}
@@ -97,8 +97,11 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
          : cnt;
 
    return (
-      <div className="relative inline-block text-center mr-1" key={mat?.id}>
-         <a href={`/c/items/${mat.material?.id}`}>
+      <div
+         className="relative inline-block text-center mr-1 bg-black rounded-md"
+         key={mat?.id}
+      >
+         <a href={`/c/materials/${mat.material?.id}`}>
             <div
                className={`relative flex justify-center p-0.5 h-12 w-12 align-middle text-xs bg-zinc-700 text-white text-xs leading-none rounded-md zzz-rarity-${mat.material?.rarity?.id}`}
             >
@@ -110,8 +113,9 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
                   alt={mat.material?.name}
                />
             </div>
+
             <div
-               className={`relative w-12 bg-black align-middle text-xs text-white rounded-b-md `}
+               className={`relative w-12 align-middle text-xs text-white rounded-b-md `}
             >
                {display_qty}
             </div>
