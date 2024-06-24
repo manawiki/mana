@@ -26,7 +26,7 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await fetchEntry({
+   const fetchWEngineData = fetchEntry({
       payload,
       params,
       request,
@@ -35,8 +35,24 @@ export async function loader({
          query: QUERY,
       },
    });
+   const fetchWLevelData = fetchEntry({
+      payload,
+      params,
+      request,
+      user,
+      gql: {
+         query: WLEVEL_QUERY,
+      },
+   });
+
+   const [{ entry }, wlevel] = await Promise.all([
+      fetchWEngineData,
+      fetchWLevelData,
+   ]);
+
    return json({
       entry,
+      wLevelData: wlevel?.entry?.data?._dataJsons?.docs,
    });
 }
 
@@ -47,15 +63,15 @@ const SECTIONS = {
 };
 
 export default function EntryPage() {
-   const { entry } = useLoaderData<typeof loader>();
-   const char = entry?.data?.WEngine as WEngineType;
-   // console.log(char);
+   const loaderdata = useLoaderData<typeof loader>();
+   const char = loaderdata?.entry?.data?.WEngine as WEngineType;
+   // console.log(loaderdata);
 
    return (
       <>
          {/* <Entry customComponents={SECTIONS} customData={char} /> */}
          <Entry>
-            <Main data={char} />
+            <Main data={loaderdata} />
             <Talents data={char} />
             <ImageGallery data={char} />
 
@@ -71,6 +87,7 @@ const QUERY = gql`
          id
          name
          rarity {
+            id
             name
             icon_item {
                url
@@ -101,6 +118,18 @@ const QUERY = gql`
             desc
          }
          slug
+      }
+   }
+`;
+
+const WLEVEL_QUERY = gql`
+   query {
+      _dataJsons {
+         docs {
+            id
+            name
+            json
+         }
       }
    }
 `;
