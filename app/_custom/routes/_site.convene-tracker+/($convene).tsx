@@ -16,19 +16,16 @@ import {
 } from "@remix-run/react";
 import { z } from "zod";
 
-import type {
-   ConveneType,
-   Resonator,
-   Weapon,
-} from "payload/generated-custom-types";
 import { Button } from "~/components/Button";
 import { Checkbox } from "~/components/Checkbox";
 import { H2 } from "~/components/Headers";
-import { cacheThis, fetchWithCache } from "~/utils/cache.server";
+import { cacheThis } from "~/utils/cache.server";
 
-import type { GlobalSummaryType } from "./addToGlobal";
-import { GachaGlobal } from "./GachaGlobal";
-import { getSummary } from "./getSummary";
+import { useConveneLayoutData } from "./_layout";
+import type { GlobalSummaryType } from "./components/addToGlobal";
+import { GachaGlobal } from "./components/GachaGlobal";
+import { getSummary } from "./components/getSummary";
+import { getConveneData } from "./track";
 
 export type RollData = {
    pity?: number;
@@ -46,30 +43,6 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const resonators = (
-      await fetchWithCache<{ docs: Array<Resonator> }>(
-         "http://localhost:4000/api/resonators?limit=1000&sort=id&depth=2)",
-      )
-   )?.docs;
-
-   const weapons = (
-      await fetchWithCache<{ docs: Array<Weapon> }>(
-         "http://localhost:4000/api/weapons?limit=1000&sort=id&depth=2",
-      )
-   )?.docs;
-
-   const conveneTypes = (
-      await fetchWithCache<{ docs: Array<ConveneType> }>(
-         "http://localhost:4000/api/convene-types?limit=1000&sort=id&depth=2",
-      )
-   )?.docs;
-
-   const itemImages = (
-      await fetchWithCache<{ docs: Array<ConveneType> }>(
-         "http://localhost:4000/api/items?where[id][in]=3,50001,50002,50005",
-      )
-   )?.docs;
-
    const convene = params.convene || "1";
 
    // we'll avoid access control for global summary
@@ -93,7 +66,7 @@ export async function loader({
       "wuwa-convene-" + convene,
    );
 
-   // check user data for wuwa-url
+   // check user data for wuwa-url, this is deferred to the client to avoid blocking render
    const userData = user
       ? fetchSummary<{
            url: string;
@@ -103,11 +76,6 @@ export async function loader({
       : undefined;
 
    return defer({
-      resonators,
-      weapons,
-      conveneTypes,
-      convene: conveneTypes?.find((c) => c.id === convene),
-      itemImages,
       globalSummary,
       userData,
    });
@@ -124,37 +92,13 @@ function getCookie(name: string) {
 }
 
 export default function HomePage() {
-   const { convene } = useParams();
+   const { convene: conveneId } = useParams();
+   const { conveneTypes, itemImages } = useConveneLayoutData();
    const loaderData = useLoaderData<typeof loader>();
    const submit = useSubmit();
    const navigate = useNavigate();
 
-   // console.log(loaderData);
-
-   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-      // We want to fetch from the client, so submit it manually
-      e.preventDefault();
-
-      const body = new FormData(e.currentTarget);
-
-      const result = await getConveneData({ body });
-
-      // console.log("this is a local fetch: ", result);
-
-      if (!result || result.error) return alert("Error fetching data");
-
-      // if global is checked, submit to global
-
-      // console.log(result);
-
-      // @ts-expect-error this is fine
-      submit(result, {
-         method: "POST",
-         action: "/convene-tracker/" + convene + "/track",
-         navigate: false,
-         encType: "application/json",
-      });
-   }
+   const convene = conveneTypes?.find((c) => c.id === (conveneId ?? "1"));
 
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
@@ -162,23 +106,15 @@ export default function HomePage() {
             className="dark:text-zinc-100 mt-8 mb-3 p-3.5 leading-7 dark:bg-dark400 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200/70
       font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-700 w-full"
             name="convene"
-            defaultValue={convene ?? "1"}
+            defaultValue={conveneId ?? "1"}
             onChange={(e) => navigate("/convene-tracker/" + e.target.value)}
          >
-            {loaderData?.conveneTypes?.map((convene) => (
+            {conveneTypes?.map((convene) => (
                <option key={convene.id} value={convene.id}>
                   {convene.name}
                </option>
             ))}
          </select>
-         <H2 text={`${loaderData.convene?.name ?? "Convene"} Global Stats`} />
-         {loaderData.globalSummary && (
-            <GachaGlobal
-               summary={loaderData.globalSummary}
-               images={loaderData.itemImages}
-            />
-         )}
-         <H2 text="Import Convene History" />
          <Suspense
             fallback={
                <div className="flex items-center justify-center h-96">
@@ -214,7 +150,7 @@ export default function HomePage() {
                         <input
                            hidden
                            name="convene"
-                           defaultValue={convene ?? "1"}
+                           defaultValue={convene?.id ?? "1"}
                         />
                         <Button type="submit" value="Import">
                            Import
@@ -238,67 +174,69 @@ export default function HomePage() {
                }}
             </Await>
          </Suspense>
+         <H2 text={`${convene?.name ?? "Convene"} Global Stats`} />
+         {loaderData.globalSummary && (
+            <GachaGlobal
+               summary={loaderData.globalSummary}
+               images={itemImages}
+            />
+         )}
 
          {/* <H2 text={loaderData.convene?.name ?? "Convene"} /> */}
          <Outlet />
       </div>
    );
-}
 
-const WuwaPayloadSchema = z.object({
-   playerId: z.string(),
-   serverId: z.string(),
-   languageCode: z.string(),
-   cardPoolType: z.string(),
-   recordId: z.string(),
-});
+   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+      // We want to fetch from the client, so submit it manually
+      e.preventDefault();
 
-// we'll fetch the data on the client side then save it to the server
-export async function getConveneData({ body }: { body: FormData }) {
-   const url = body.get("url") as string;
-   const convene = (body.get("convene") as string) || "1";
-   const save = body.get("save") as string;
-   const refresh = body.get("refresh") as string;
+      const body = new FormData(e.currentTarget);
 
-   if (!url) return { error: "No URL provided" };
+      const { url, refresh, save } = Object.fromEntries(body);
 
-   try {
-      const searchParams = new URLSearchParams(url?.split("?")?.[1]);
+      const convenes = ["1", "2", "3", "4", "5", "6", "7"];
 
-      const wuwaPayload = WuwaPayloadSchema.parse({
-         playerId: searchParams.get("player_id"),
-         serverId: searchParams.get("svr_id"),
-         languageCode: searchParams.get("lang"),
-         cardPoolType: convene,
-         recordId: searchParams.get("record_id"),
-      });
+      const playerId = new URLSearchParams(
+         url?.toString().split("?")?.[1],
+      )?.get("player_id");
 
-      const response = await fetch(
-         "https://gmserver-api.aki-game2.net/gacha/record/query",
-         {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-            },
-            body: JSON.stringify(wuwaPayload),
-         },
+      await Promise.all(
+         convenes.map(
+            async (convene) =>
+               await getConveneData({ url, convene })
+                  .then((gacha: { data: Array<RollData> }) =>
+                     getSummary(gacha, convene),
+                  )
+                  .catch((error) => {
+                     console.error(error);
+                     return {};
+                  })
+                  .then((summary) =>
+                     submit(
+                        // @ts-ignore - should change the nulls to undefined
+                        {
+                           summary: summary,
+                           playerId,
+                           save,
+                           refresh,
+                           convene,
+                           url,
+                        },
+                        {
+                           method: "POST",
+                           action: "/convene-tracker/track",
+                           navigate: false,
+                           fetcherKey: "wuwa-convene-" + convene,
+                           encType: "application/json",
+                        },
+                     ),
+                  ),
+         ),
       );
 
-      const gacha = (await await response.json()) as { data: Array<RollData> };
+      console.log("should be working!");
 
-      const summary = getSummary(gacha, convene);
-
-      return {
-         gacha,
-         summary,
-         playerId: wuwaPayload.playerId,
-         convene,
-         refresh,
-         save,
-         url,
-      };
-   } catch (e) {
-      console.error(e);
-      return { error: e };
+      navigate("/convene-tracker/track");
    }
 }

@@ -1,13 +1,14 @@
 import { useState } from "react";
 
-import { Link, useRouteLoaderData } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 
 import { Checkbox } from "~/components/Checkbox";
 import { H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
 import type { GachaSummaryType } from "./getSummary";
-import type { loader, RollData } from "./route";
+import type { RollData } from "../($convene)";
+import { useConveneLayoutData } from "../_layout";
 
 type GachaToggles = {
    fourStar: boolean;
@@ -101,9 +102,7 @@ function ResultFrame({ roll }: { roll: RollData }) {
 }
 
 function WeaponFrame({ roll }: { roll: RollData }) {
-   const { weapons } = useRouteLoaderData<typeof loader>(
-      "_custom/routes/_site.convene-tracker.($convene)/route",
-   )!;
+   const { weapons } = useConveneLayoutData();
 
    const entry = weapons?.find((w) => w.id == roll.resourceId);
 
@@ -128,9 +127,7 @@ function WeaponFrame({ roll }: { roll: RollData }) {
 }
 
 function ResonatorFrame({ roll }: { roll: RollData }) {
-   const { resonators } = useRouteLoaderData<typeof loader>(
-      "_custom/routes/_site.convene-tracker.($convene)/route",
-   )!;
+   const { resonators } = useConveneLayoutData();
 
    const entry = resonators?.find((r) => r.id == roll.resourceId);
    return (

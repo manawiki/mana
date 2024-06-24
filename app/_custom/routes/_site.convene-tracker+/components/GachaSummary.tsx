@@ -1,11 +1,12 @@
-import { Link, useRouteLoaderData } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 
 import { H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
 import { DatesChart } from "./DatesChart";
 import { type GachaSummaryType } from "./getSummary";
-import type { loader, RollData } from "./route";
+import type { RollData } from "../($convene)";
+import { useConveneLayoutData } from "../_layout";
 
 export function average(arr: Array<number>) {
    return arr.reduce((acc, curr) => acc + curr ?? 0, 0) / arr.length;
@@ -153,9 +154,7 @@ function FiveStars({ summary }: { summary: GachaSummaryType }) {
 }
 
 function WarpFrame({ roll }: { roll: RollData }) {
-   const { weapons, resonators } = useRouteLoaderData<typeof loader>(
-      "_custom/routes/_site.convene-tracker.($convene)/route",
-   )!;
+   const { weapons, resonators } = useConveneLayoutData();
 
    let entry: any;
 

@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 import type { SerializeFrom } from "@remix-run/node";
-import { useRouteLoaderData } from "@remix-run/react";
 
 import { Image } from "~/components/Image";
 
 import { addAandB } from "./addToGlobal";
 import { DateFilters, DatesChart } from "./DatesChart";
 import { PitiesChart } from "./PitiesChart";
-import type { loader } from "./route";
+import type { loader } from "../($convene)";
+import { useConveneLayoutData } from "../_layout";
 
 type WuwaFiltersType = {
    startDate?: string;
@@ -85,13 +85,12 @@ export function GachaGlobal({
             <InfoColumn disp_cols={display_columns_1} />
             <InfoColumn disp_cols={display_columns_2} />
          </div>
-         <DatesChart dates={summary.dates} filters={filters} />
          <DateFilters
             versions={versions}
             filters={filters}
             setFilters={setFilters}
          />
-         {pities && <PitiesChart pities={pities} />}
+         <DatesChart dates={summary.dates} filters={filters} />
          <FiveStars
             resourceIds={resourceIds}
             resourceId={filters.resourceId}
@@ -105,6 +104,7 @@ export function GachaGlobal({
                })
             }
          />
+         {pities && <PitiesChart pities={pities} />}
       </div>
    );
 }
@@ -230,9 +230,7 @@ function WarpFrame({
    onClick: React.MouseEventHandler<HTMLButtonElement>;
    total: number;
 }) {
-   const { weapons, resonators } = useRouteLoaderData<typeof loader>(
-      "_custom/routes/_site.convene-tracker.($convene)/route",
-   )!;
+   const { weapons, resonators } = useConveneLayoutData();
 
    let entry =
       weapons?.find((w) => w.id == id) ??
