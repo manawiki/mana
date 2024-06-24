@@ -89,7 +89,7 @@ export default function ConveneTracker() {
    const submit = useSubmit();
 
    return (
-      <>
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
          {conveneTypes?.map((current) => (
             <button
                key={current.id}
@@ -130,7 +130,7 @@ export default function ConveneTracker() {
                )}
             </Await>
          </Suspense>
-      </>
+      </div>
    );
 
    async function onSubmit(e: React.FormEvent<HTMLButtonElement>) {

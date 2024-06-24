@@ -181,9 +181,6 @@ export default function HomePage() {
                images={itemImages}
             />
          )}
-
-         {/* <H2 text={loaderData.convene?.name ?? "Convene"} /> */}
-         <Outlet />
       </div>
    );
 
