@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 import { useMatches } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
@@ -72,8 +72,8 @@ export function Section({
                <TableOfContents entry={entry} sections={entry.sections} />
             </div>
          </div>
-         {entry.sections?.map((section) => (
-            <>
+         {entry.sections?.map((section: any) => (
+            <Fragment key={section.id}>
                {section.showAd ? (
                   <AdPlaceholder>
                      <div
@@ -99,7 +99,7 @@ export function Section({
                   customComponents={customComponents}
                   hasAccess={hasAccess}
                />
-            </>
+            </Fragment>
          ))}
          <ScrollToHashElement />
       </div>
