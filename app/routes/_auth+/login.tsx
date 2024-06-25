@@ -160,6 +160,7 @@ export default function Login() {
                            <Label>{t("login.email")}</Label>
                            <Input
                               autoFocus={email ? false : true}
+                              autoComplete="email"
                               type="email"
                               disabled={disabled}
                               defaultValue={email ?? ""}
@@ -173,6 +174,7 @@ export default function Login() {
                            <Label>{t("login.password")}</Label>
                            <Input
                               type="password"
+                              autoComplete="current-password"
                               disabled={disabled}
                               name={zo.fields.password()}
                            />
