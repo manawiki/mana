@@ -130,6 +130,7 @@ export default function Login() {
                         <Label>{t("login.email")}</Label>
                         <Input
                            autoFocus={true}
+                           autoComplete="email"
                            type="email"
                            disabled={disabled}
                            name={zoPW.fields.email()}
