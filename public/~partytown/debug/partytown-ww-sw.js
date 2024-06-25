@@ -1,4 +1,4 @@
-/* Partytown 0.9.2 - MIT builder.io */
+/* Partytown 0.10.2 - MIT builder.io */
 (self => {
     const WinIdKey = Symbol();
     const InstanceIdKey = Symbol();
@@ -27,7 +27,7 @@
     const getterDimensionPropNames = commaSplit("clientWidth,clientHeight,clientTop,clientLeft,innerWidth,innerHeight,offsetWidth,offsetHeight,offsetTop,offsetLeft,outerWidth,outerHeight,pageXOffset,pageYOffset,scrollWidth,scrollHeight,scrollTop,scrollLeft");
     const elementStructurePropNames = commaSplit("childElementCount,children,firstElementChild,lastElementChild,nextElementSibling,previousElementSibling");
     const structureChangingMethodNames = commaSplit("insertBefore,remove,removeChild,replaceChild");
-    const dimensionChangingSetterNames = commaSplit("className,width,height,hidden,innerHTML,innerText,textContent");
+    const dimensionChangingSetterNames = commaSplit("className,width,height,hidden,innerHTML,innerText,textContent,text");
     const dimensionChangingMethodNames = commaSplit("setAttribute,setAttributeNS,setProperty");
     const eventTargetMethods = commaSplit("addEventListener,dispatchEvent,removeEventListener");
     const nonBlockingMethods = eventTargetMethods.concat(dimensionChangingMethodNames, commaSplit("add,observe,remove,unobserve"));
@@ -424,7 +424,7 @@
             webWorkerCtx.$config$.logMainAccess && logWorker(`Main access, tasks sent: ${taskQueue.length}`);
             const endTask = taskQueue[len(taskQueue) - 1];
             const accessReq = {
-                $msgId$: randomId(),
+                $msgId$: `${randomId()}.${webWorkerCtx.$tabId$}`,
                 $tasks$: [ ...taskQueue ]
             };
             taskQueue.length = 0;
@@ -719,7 +719,7 @@
             type: type
         })))));
     };
-    const resolveToUrl = (env, url, type, baseLocation, resolvedUrl, configResolvedUrl) => {
+    const resolveBaseLocation = (env, baseLocation) => {
         baseLocation = env.$location$;
         while (!baseLocation.host) {
             env = environments[env.$parentWinId$];
@@ -728,6 +728,10 @@
                 break;
             }
         }
+        return baseLocation;
+    };
+    const resolveToUrl = (env, url, type, baseLocation, resolvedUrl, configResolvedUrl) => {
+        baseLocation = resolveBaseLocation(env, baseLocation);
         resolvedUrl = new URL(url || "", baseLocation);
         if (type && webWorkerCtx.$config$.resolveUrl) {
             configResolvedUrl = webWorkerCtx.$config$.resolveUrl(resolvedUrl, baseLocation, type);
@@ -738,7 +742,18 @@
         return resolvedUrl;
     };
     const resolveUrl = (env, url, type) => resolveToUrl(env, url, type) + "";
-    const getPartytownScript = () => `<script src="${partytownLibUrl("partytown.js?v=0.9.2")}"><\/script>`;
+    const resolveSendBeaconRequestParameters = (env, url) => {
+        const baseLocation = resolveBaseLocation(env);
+        const resolvedUrl = new URL(url || "", baseLocation);
+        if (webWorkerCtx.$config$.resolveSendBeaconRequestParameters) {
+            const configResolvedParams = webWorkerCtx.$config$.resolveSendBeaconRequestParameters(resolvedUrl, baseLocation);
+            if (configResolvedParams) {
+                return configResolvedParams;
+            }
+        }
+        return {};
+    };
+    const getPartytownScript = () => `<script src="${partytownLibUrl("partytown.js?v=0.10.2")}"><\/script>`;
     const createImageConstructor = env => class HTMLImageElement {
         constructor() {
             this.s = "";
@@ -855,6 +870,7 @@
                     }
                 }
             },
+            text: innerHTMLDescriptor,
             textContent: innerHTMLDescriptor,
             type: {
                 get() {
@@ -874,7 +890,13 @@
     const innerHTMLDescriptor = {
         get() {
             const type = getter(this, [ "type" ]);
-            return isScriptJsType(type) ? getInstanceStateValue(this, 3) || "" : getter(this, [ "innerHTML" ]);
+            if (isScriptJsType(type)) {
+                const scriptContent = getInstanceStateValue(this, 3);
+                if (scriptContent) {
+                    return scriptContent;
+                }
+            }
+            return getter(this, [ "innerHTML" ]) || "";
         },
         set(scriptContent) {
             setInstanceStateValue(this, 3, scriptContent);
@@ -1383,7 +1405,7 @@
                         (() => {
                             if (!webWorkerCtx.$initWindowMedia$) {
                                 self.$bridgeToMedia$ = [ getter, setter, callMethod, constructGlobal, definePrototypePropertyDescriptor, randomId, WinIdKey, InstanceIdKey, ApplyPathKey ];
-                                webWorkerCtx.$importScripts$(partytownLibUrl("partytown-media.js?v=0.9.2"));
+                                webWorkerCtx.$importScripts$(partytownLibUrl("partytown-media.js?v=0.10.2"));
                                 webWorkerCtx.$initWindowMedia$ = self.$bridgeFromMedia$;
                                 delete self.$bridgeFromMedia$;
                             }
@@ -1622,7 +1644,7 @@
                         sendBeacon: (url, body) => {
                             if (webWorkerCtx.$config$.logSendBeaconRequests) {
                                 try {
-                                    logWorker(`sendBeacon: ${resolveUrl(env, url, null)}${body ? ", data: " + JSON.stringify(body) : ""}`);
+                                    logWorker(`sendBeacon: ${resolveUrl(env, url, null)}${body ? ", data: " + JSON.stringify(body) : ""}, resolvedParams: ${JSON.stringify(resolveSendBeaconRequestParameters(env, url))}`);
                                 } catch (e) {
                                     console.error(e);
                                 }
@@ -1632,7 +1654,8 @@
                                     method: "POST",
                                     body: body,
                                     mode: "no-cors",
-                                    keepalive: true
+                                    keepalive: true,
+                                    ...resolveSendBeaconRequestParameters(env, url)
                                 });
                                 return true;
                             } catch (e) {
@@ -1704,7 +1727,9 @@
                         args[1] = resolveUrl(env, args[1], "xhr");
                         super.open(...args);
                     }
-                    set withCredentials(_) {}
+                    set withCredentials(_) {
+                        webWorkerCtx.$config$.allowXhrCredentials && (super.withCredentials = _);
+                    }
                     toString() {
                         return str;
                     }
@@ -1876,10 +1901,11 @@
                 webWorkerCtx.$origin$ = locOrigin;
                 webWorkerCtx.$postMessage$ = postMessage.bind(self);
                 webWorkerCtx.$sharedDataBuffer$ = initWebWorkerData.$sharedDataBuffer$;
+                webWorkerCtx.$tabId$ = initWebWorkerData.$tabId$;
                 self.importScripts = void 0;
                 delete self.postMessage;
                 delete self.WorkerGlobalScope;
-                commaSplit("resolveUrl,get,set,apply").map((configName => {
+                commaSplit("resolveUrl,resolveSendBeaconRequestParameters,get,set,apply").map((configName => {
                     config[configName] && (config[configName] = new Function("return " + config[configName])());
                 }));
             })(msgValue);
