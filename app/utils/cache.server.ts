@@ -31,7 +31,7 @@ export const cache = lruCacheAdapter(lruCache);
  * @param ttl - time to live in ms
  * @returns  the result of the fetch or its cached value
  */
-export async function fetchWithCache(
+export async function fetchWithCache<T>(
    url: string,
    init?: RequestInit,
    ttl?: number,
@@ -41,7 +41,7 @@ export async function fetchWithCache(
       ? (init.body as string).replace(/\s/g, "").replace(/\n/g, " ")
       : url;
 
-   return cachified<any>({
+   return cachified<T>({
       cache,
       key,
       async getFreshValue() {
@@ -58,7 +58,7 @@ export async function fetchWithCache(
 }
 
 //Instead of native fetch, we'll use gqlRequest from "graphql-request" to make the request.
-export async function gqlRequestWithCache(
+export async function gqlRequestWithCache<T>(
    url: string,
    query: string,
    variables?: any,
@@ -67,7 +67,7 @@ export async function gqlRequestWithCache(
 ) {
    const key = `${url}${query}${JSON.stringify(variables)}`;
 
-   return cachified<any>({
+   return cachified<T>({
       cache,
       key,
       async getFreshValue() {
@@ -76,10 +76,11 @@ export async function gqlRequestWithCache(
             const response = await gqlRequest(url, query, variables, {
                cookie: request?.headers.get("cookie") ?? "",
             });
-            return response;
+            return response as T;
          } catch (error) {
             console.error(error);
-            return null;
+            // return the error as a response
+            return null as T;
          }
       },
       ttl: ttl ?? 300_000, // how long to live in ms

@@ -16,7 +16,8 @@ export const updateSiteAnalytics = inngest.createFunction(
    { id: "site-analytics-report" },
    { event: "analytics/site.analytics.send" },
    async ({ event, step }) => {
-      const { gaPropertyId, siteSlug, collections, siteId } = event.data;
+      const { gaPropertyId, siteSlug, collections, siteId, siteDomain } =
+         event.data;
 
       const analyticsDataClient = new BetaAnalyticsDataClient({
          credentials: {
@@ -26,33 +27,35 @@ export const updateSiteAnalytics = inngest.createFunction(
          },
       });
 
-      const [response] = await analyticsDataClient.runReport({
-         property: `properties/${gaPropertyId}`,
-         dateRanges: [
-            {
-               startDate: "2daysAgo",
-               endDate: "today",
-            },
-         ],
-         dimensions: [
-            {
-               name: "pagePath",
-            },
-         ],
-         orderBys: [
-            {
-               desc: true,
-               metric: {
-                  metricName: "screenPageViews",
+      const [response] =
+         analyticsDataClient &&
+         (await analyticsDataClient.runReport({
+            property: `properties/${gaPropertyId}`,
+            dateRanges: [
+               {
+                  startDate: "4daysAgo",
+                  endDate: "today",
                },
-            },
-         ],
-         metrics: [
-            {
-               name: "screenPageViews",
-            },
-         ],
-      });
+            ],
+            dimensions: [
+               {
+                  name: "pagePath",
+               },
+            ],
+            orderBys: [
+               {
+                  desc: true,
+                  metric: {
+                     metricName: "screenPageViews",
+                  },
+               },
+            ],
+            metrics: [
+               {
+                  name: "screenPageViews",
+               },
+            ],
+         }));
 
       const filteredRows =
          response.rows &&
@@ -277,7 +280,12 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { entryData }: { entryData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
-                  siteSlug: customCollection ? siteSlug : undefined,
+                  customPath:
+                     customCollection && !!siteDomain
+                        ? `https://${siteDomain}:4000/api/graphql`
+                        : customCollection && !!siteSlug
+                          ? `https://${siteSlug}.mana.wiki:4000/api/graphql`
+                          : "https://mana.wiki/api/graphql",
                   variables: {
                      entrySlug: doc.entrySlug,
                      //Only send siteId and collectionID if core site
@@ -341,7 +349,12 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { listData }: { listData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
-                  siteSlug: customCollection ? siteSlug : undefined,
+                  customPath:
+                     customCollection && !!siteDomain
+                        ? `https://${siteDomain}:4000/api/graphql`
+                        : customCollection && !!siteSlug
+                          ? `https://${siteSlug}.mana.wiki:4000/api/graphql`
+                          : "https://mana.wiki/api/graphql",
                   variables: {
                      listSlug: doc.listSlug,
                   },
@@ -389,10 +402,10 @@ export const updateSiteAnalytics = inngest.createFunction(
 
       const getPostsTotal = (await authRestFetcher({
          method: "GET",
-         path: `http://localhost:3000/api/posts${postTotalQuery}`,
+         path: `https://mana.wiki/api/posts${postTotalQuery}`,
       })) as PaginatedDocs<Post>;
 
-      //Get total site entries
+      // Get total site entries
       const entryTotalQuery = qs.stringify(
          {
             where: {
@@ -416,13 +429,15 @@ export const updateSiteAnalytics = inngest.createFunction(
                   if (collection.customDatabase == true) {
                      const totalCustomEntries = await authRestFetcher({
                         method: "GET",
-                        path: `http://localhost:4000/api/${collection.slug}`,
+                        path: `https://${
+                           siteDomain ? siteDomain : `${siteSlug}.mana.wiki`
+                        }:4000/api/${collection.slug}`,
                      });
                      return totalCustomEntries.totalDocs;
                   }
                   const totalCoreEntries = await authRestFetcher({
                      method: "GET",
-                     path: `http://localhost:3000/api/entries${entryTotalQuery}`,
+                     path: `https://mana.wiki/api/entries${entryTotalQuery}`,
                   });
                   return totalCoreEntries.totalDocs;
                },
@@ -430,16 +445,17 @@ export const updateSiteAnalytics = inngest.createFunction(
          )
       ).reduce((partialSum, a) => partialSum + a, 0);
 
-      //Update site with new data
+      // Update site with new data
       await authRestFetcher({
          method: "PATCH",
-         path: `http://localhost:3000/api/sites/${siteId}`,
+         path: `https://mana.wiki/api/sites/${siteId}`,
          body: {
             totalPosts: getPostsTotal.totalDocs ?? null,
             totalEntries: totalEntries ?? null,
-            ...(trendingPages && {
-               trendingPages: trendingPages,
-            }),
+            ...(trendingPages &&
+               trendingPages.length > 0 && {
+                  trendingPages: trendingPages,
+               }),
          },
       });
 

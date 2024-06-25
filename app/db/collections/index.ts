@@ -11,7 +11,8 @@ import { Posts } from "./posts/config";
 import { SiteApplications } from "./site-applications/config";
 import { Sites } from "./sites/site-config";
 import { Updates } from "./updates/config";
-import { Users } from "./users/config";
+import { UserData } from "./user-data/user-data.config";
+import { Users } from "./users/users.config";
 
 export const collections = [
    Sites,
@@ -28,4 +29,5 @@ export const collections = [
    Comments,
    PostContents,
    SiteApplications,
+   UserData,
 ];

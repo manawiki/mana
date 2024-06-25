@@ -46,21 +46,29 @@ export function authGQLFetcher({
    variables,
    siteSlug,
    request,
+   customPath,
 }: {
    document?: any;
    variables?: any;
-   siteSlug?: string | undefined | null;
    request?: Request;
+   siteSlug?: string | undefined | null;
+   customPath?: string | false;
 }) {
+   //If siteSlug is provided, it is querying the custom site endpoint
    try {
-      return gqlRequest(gqlEndpoint({ siteSlug }), document, variables, {
-         ...(request && {
-            cookie: request?.headers.get("cookie") ?? "",
-         }),
-         ...(process.env.MANA_APP_KEY && {
-            Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
-         }),
-      });
+      return gqlRequest(
+         customPath ? customPath : gqlEndpoint({ siteSlug }),
+         document,
+         variables,
+         {
+            ...(request && {
+               cookie: request?.headers.get("cookie") ?? "",
+            }),
+            ...(process.env.MANA_APP_KEY && {
+               Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
+            }),
+         },
+      );
    } catch (err) {
       console.log(err);
    }

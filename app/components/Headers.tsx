@@ -26,13 +26,21 @@ export const H2Plain = ({
 }) => {
    return (
       <h2
-         className={clsx(
-            className,
-            "flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-2xl scroll-mt-32 laptop:scroll-mt-16",
-         )}
+         className="dark:text-zinc-100 mt-8 mb-3 pl-3.5 leading-7 dark:bg-dark400 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200/70
+      font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-700"
       >
-         <div className="flex-none">{text}</div>
-         <div className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400" />
+         <span className="z-10 relative">{text}</span>
+         <span
+            contentEditable={false}
+            className="h-full inline-flex top-0 w-1.5 dark:bg-zinc-600/30 bg-zinc-200/70 absolute left-0 z-10"
+         />
+         <div
+            contentEditable={false}
+            className="pattern-dots absolute left-0
+                  top-0 z-0 h-full
+                  w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
+                  pattern-size-1 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
+         />
       </h2>
    );
 };

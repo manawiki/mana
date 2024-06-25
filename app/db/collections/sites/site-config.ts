@@ -6,7 +6,7 @@ import {
    canUpdateSiteRolesField,
 } from "./site-access";
 import { afterCreateSite } from "./site-hooks";
-import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/access";
+import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/users.access";
 
 export const sitesSlug = "sites";
 export const Sites: CollectionConfig = {
@@ -126,6 +126,20 @@ export const Sites: CollectionConfig = {
          name: "favicon",
          type: "upload",
          relationTo: "images",
+      },
+      {
+         name: "logoDarkImage",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "logoLightImage",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "logoURL",
+         type: "text",
       },
       {
          name: "id",

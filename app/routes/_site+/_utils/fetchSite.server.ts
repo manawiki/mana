@@ -65,6 +65,7 @@ export async function fetchSite({
          siteId,
       });
 
+      //@ts-ignore
       return updateKeys(data?.site);
    }
 
@@ -101,6 +102,13 @@ const QUERY = gql`
          totalPosts
          trendingPages
          isWhiteLabel
+         logoURL
+         logoDarkImage {
+            url
+         }
+         logoLightImage {
+            url
+         }
          banner {
             id
             url
