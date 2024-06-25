@@ -51,12 +51,7 @@ export function SortableSectionItem({
          {...attributes}
          className="flex items-center gap-3 p-2 justify-between"
       >
-         <MobileTray
-            shouldScaleBackground
-            direction="right"
-            onOpenChange={setIsOpen}
-            open={isOpen}
-         >
+         <MobileTray direction="right" onOpenChange={setIsOpen} open={isOpen}>
             <>
                <UpdateSection
                   setAllSections={setAllSections}

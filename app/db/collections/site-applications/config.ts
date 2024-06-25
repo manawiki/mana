@@ -26,6 +26,7 @@ export const SiteApplications: CollectionConfig = {
          name: "createdBy",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 2,
          required: true,
          defaultValue: ({ user }: { user: RemixRequestContext["user"] }) =>
             user?.id,

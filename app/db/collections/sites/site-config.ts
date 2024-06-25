@@ -1,8 +1,12 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canEditSite, canReadSite, canUpdateSiteRolesField } from "./access";
-import { afterCreateSite } from "./hooks";
-import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/access";
+import {
+   canEditSite,
+   canReadSite,
+   canUpdateSiteRolesField,
+} from "./site-access";
+import { afterCreateSite } from "./site-hooks";
+import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/users.access";
 
 export const sitesSlug = "sites";
 export const Sites: CollectionConfig = {
@@ -26,7 +30,6 @@ export const Sites: CollectionConfig = {
          name: "about",
          type: "text",
       },
-
       {
          name: "isPublic",
          type: "checkbox",
@@ -39,7 +42,6 @@ export const Sites: CollectionConfig = {
          label: "Enable Ads",
          defaultValue: false,
       },
-
       {
          name: "collections",
          type: "relationship",
@@ -47,20 +49,66 @@ export const Sites: CollectionConfig = {
          hasMany: true,
       },
       {
-         name: "pinned",
+         name: "menu",
          type: "array",
-         label: "Pinned",
          maxRows: 10,
-         labels: {
-            singular: "Pinned Item",
-            plural: "Pinned Items",
-         },
          fields: [
             {
-               name: "relation",
-               type: "relationship",
-               relationTo: ["customPages", "entries", "posts", "collections"],
-               hasMany: false,
+               name: "name",
+               type: "text",
+               required: true,
+            },
+            {
+               name: "links",
+               type: "array",
+               fields: [
+                  {
+                     name: "name",
+                     type: "text",
+                     required: true,
+                  },
+                  {
+                     name: "path",
+                     type: "text",
+                     required: true,
+                  },
+                  {
+                     name: "icon",
+                     type: "text",
+                  },
+                  {
+                     name: "hasCustomIcon",
+                     type: "checkbox",
+                     label: "Custom Icon",
+                     defaultValue: false,
+                  },
+                  {
+                     name: "nestedLinks",
+                     type: "array",
+                     fields: [
+                        {
+                           name: "name",
+                           type: "text",
+                           required: true,
+                        },
+                        {
+                           name: "path",
+                           type: "text",
+                           required: true,
+                        },
+                        {
+                           name: "icon",
+                           type: "text",
+                        },
+                        {
+                           name: "hasCustomIcon",
+                           type: "checkbox",
+                           label: "Custom Icon",
+                           defaultValue: false,
+                        },
+                     ],
+                  },
+               ],
             },
          ],
       },
@@ -80,6 +128,20 @@ export const Sites: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "logoDarkImage",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "logoLightImage",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "logoURL",
+         type: "text",
+      },
+      {
          name: "id",
          type: "text",
       },
@@ -97,8 +159,8 @@ export const Sites: CollectionConfig = {
          name: "admins",
          type: "relationship",
          relationTo: "users",
-         hasMany: true,
          maxDepth: 2,
+         hasMany: true,
          access: {
             update: canUpdateSiteRolesField,
          },
@@ -107,10 +169,19 @@ export const Sites: CollectionConfig = {
          name: "contributors",
          type: "relationship",
          relationTo: "users",
-         hasMany: true,
          maxDepth: 2,
+         hasMany: true,
          access: {
             update: canUpdateSiteRolesField,
+         },
+      },
+      {
+         name: "isWhiteLabel",
+         type: "checkbox",
+         label: "White Label",
+         defaultValue: false,
+         access: {
+            update: isStaffFieldLevel,
          },
       },
       {
@@ -254,6 +325,7 @@ export const Sites: CollectionConfig = {
          name: "owner",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 2,
          hasMany: false,
          access: {
             update: isStaffFieldLevel,

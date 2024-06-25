@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { isStaff, isStaffFieldLevel } from "../collections/users/access";
+import { isStaff, isStaffFieldLevel } from "../collections/users/users.access";
 
 export const CustomImages: CollectionConfig = {
    slug: "images",
@@ -25,12 +25,13 @@ export const CustomImages: CollectionConfig = {
          name: "createdBy",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 2,
          required: true,
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
+            read: isStaffFieldLevel,
             update: isStaffFieldLevel,
          },
-         maxDepth: 1,
       },
       {
          name: "site",

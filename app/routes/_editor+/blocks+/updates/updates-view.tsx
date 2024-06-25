@@ -29,7 +29,7 @@ export function BlockUpdatesView({ element }: Props) {
                   {updateResults?.map((row) => (
                      <section
                         key={row.id}
-                        className="flex  gap-2 odd:bg-zinc-50  dark:odd:bg-dark350 mobile:max-[450px]:min-h-24 items-center "
+                        className="flex odd:bg-zinc-50 dark:odd:bg-dark350 mobile:max-[450px]:min-h-12 items-center "
                      >
                         <time
                            suppressHydrationWarning
@@ -49,7 +49,7 @@ export function BlockUpdatesView({ element }: Props) {
                            {row.entry?.length === 0 ? null : (
                               <>
                                  {row.entry?.map((item) => (
-                                    <div key={item.id} className="py-3 pr-3">
+                                    <div key={item.id} className="p-3">
                                        <EditorView
                                           data={item.content as Descendant[]}
                                        />

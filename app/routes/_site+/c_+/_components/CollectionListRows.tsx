@@ -1,4 +1,5 @@
 import { Link, useSearchParams } from "@remix-run/react";
+import clsx from "clsx";
 import type { PaginatedDocs } from "payload/database";
 
 import type { Entry } from "payload/generated-types";
@@ -7,10 +8,12 @@ import { Image } from "~/components/Image";
 
 export function CollectionListRows({
    entries,
-   rowComponent,
+   CellComponent,
+   cellContainerClass,
 }: {
    entries: PaginatedDocs<Entry>;
-   rowComponent?: any;
+   CellComponent?: any;
+   cellContainerClass?: string;
 }) {
    //Paging Variables
    const [, setSearchParams] = useSearchParams({});
@@ -25,38 +28,48 @@ export function CollectionListRows({
    return (
       <>
          {entries?.docs?.length > 0 ? (
-            <div className="border-color-sub divide-color-sub divide-y overflow-hidden shadow shadow-zinc-100 dark:shadow-zinc-800/80 rounded-xl border">
-               {entries.docs?.map((entry: Entry, int: number) => (
-                  <Link
-                     key={entry.id}
-                     to={entry.slug ?? entry.id}
-                     // prefetch="intent" Enabling this makes hover perform weird
-                     className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50 group"
-                  >
-                     <div
-                        className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
-                                 overflow-hidden rounded-full border bg-3-sub shadow-sm"
+            <div
+               className={clsx(
+                  CellComponent && cellContainerClass
+                     ? cellContainerClass
+                     : "border-color-sub divide-color-sub divide-y overflow-hidden shadow shadow-zinc-100 dark:shadow-zinc-800/80 rounded-xl border",
+               )}
+            >
+               {entries.docs?.map((entry: Entry, int: number) =>
+                  CellComponent ? (
+                     <CellComponent key={entry.id} entry={entry} />
+                  ) : (
+                     <Link
+                        key={entry.id}
+                        to={entry.slug ?? entry.id}
+                        // prefetch="intent" Enabling this makes hover perform weird
+                        className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50 group"
                      >
-                        {entry.icon?.url ? (
-                           <Image /* @ts-ignore */
-                              url={entry.icon?.url}
-                              options="aspect_ratio=1:1&height=80&width=80"
-                              alt={entry.name ?? "Entry Icon"}
-                              loading={int > 10 ? "lazy" : undefined}
-                           />
-                        ) : (
-                           <Icon
-                              name="component"
-                              className="text-1 mx-auto"
-                              size={18}
-                           />
-                        )}
-                     </div>
-                     <span className="text-sm font-bold group-hover:underline">
-                        {entry.name}
-                     </span>
-                  </Link>
-               ))}
+                        <div
+                           className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
+                                 overflow-hidden rounded-full border bg-3-sub shadow-sm"
+                        >
+                           {entry.icon?.url ? (
+                              <Image /* @ts-ignore */
+                                 url={entry.icon?.url}
+                                 options="aspect_ratio=1:1&height=80&width=80"
+                                 alt={entry.name ?? "Entry Icon"}
+                                 loading={int > 10 ? "lazy" : undefined}
+                              />
+                           ) : (
+                              <Icon
+                                 name="component"
+                                 className="text-1 mx-auto"
+                                 size={18}
+                              />
+                           )}
+                        </div>
+                        <span className="text-sm font-bold group-hover:underline">
+                           {entry.name}
+                        </span>
+                     </Link>
+                  ),
+               )}
             </div>
          ) : (
             <div className="text-sm text-1 border-t text-center border-color py-3 mt-4">

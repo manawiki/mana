@@ -17,14 +17,22 @@ kill_timeout = "5s"
   min_machines_running = 1
   processes = ["app"]
   [http_service.concurrency]
+    soft_limit = 1600
+    hard_limit = 2000
     type = "requests"
-    soft_limit = 800
-    hard_limit = 1000
 
 [[services]]
   protocol = "tcp"
   internal_port = 4000
   processes = ["app"]
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [services.concurrency]
+  soft_limit = 200
+  hard_limit = 250
+  type = "requests"
 
   [[services.ports]]
     port = 4000

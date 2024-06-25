@@ -18,7 +18,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { FloatingDelayGroup } from "@floating-ui/react";
-import { Popover } from "@headlessui/react";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
 import type { Descendant, Editor } from "slate";
@@ -162,6 +162,7 @@ function BlockInlineActions({
    isParentTwoColumn: boolean;
 }) {
    const { listeners, setActivatorNodeRef } = useDraggable({
+      //@ts-ignore
       id: element.id,
    });
    function onDelete(e: any, element: CustomElement) {
@@ -171,60 +172,49 @@ function BlockInlineActions({
    }
    return (
       <div
-         className="border-color-sub bg-white dark:bg-dark350 relative z-50
+         className="border-color-sub bg-white dark:bg-dark350 z-50 relative
          flex items-center rounded-r-lg rounded-l-md border drop-shadow-sm dark:drop-shadow"
       >
          <Popover>
             {({ open, close }) => (
-               <>
-                  <Float
-                     as={Fragment}
-                     enter="transition-opacity duration-75"
-                     enterFrom="opacity-0"
-                     enterTo="opacity-100"
-                     leave="transition-opacity duration-150"
-                     leaveFrom="opacity-100"
-                     leaveTo="opacity-0"
-                     placement="right-start"
-                     portal={isParentTwoColumn}
-                  >
-                     <Popover.Button className="flex focus:outline-none border-color-sub h-7 w-5 border-r select-none items-center justify-center">
-                        {open ? (
-                           <div>
+               <div className="flex items-center" onMouseLeave={() => close()}>
+                  <PopoverButton className="flex focus:outline-none border-color-sub h-7 w-5 border-r select-none items-center justify-center">
+                     {open ? (
+                        <div>
+                           <Icon
+                              name="chevron-left"
+                              className="text-1"
+                              size={14}
+                           />
+                        </div>
+                     ) : (
+                        <Icon name="more-vertical" size={14} />
+                     )}
+                  </PopoverButton>
+                  <PopoverPanel className="h-[30px] divide-x divide-color-sub -mt-[1px] z-20 overflow-hidden flex items-center">
+                     <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
+                        <Tooltip>
+                           <TooltipTrigger
+                              className={clsx(
+                                 sortable.isDragging
+                                    ? "cursor-grabbing"
+                                    : "cursor-move",
+                                 "flex items-center group w-7 h-full justify-center touch-none",
+                              )}
+                              aria-label="Drag to reorder"
+                              ref={setActivatorNodeRef}
+                              {...listeners}
+                           >
                               <Icon
-                                 name="chevron-left"
-                                 className="text-1"
+                                 title="More options"
+                                 name="grip-vertical"
+                                 className="group-hover:text-blue-400"
                                  size={14}
                               />
-                           </div>
-                        ) : (
-                           <Icon name="more-vertical" size={14} />
-                        )}
-                     </Popover.Button>
-                     <Popover.Panel className="h-[30px] divide-x divide-color-sub -mt-[1px] z-20 border-color-sub bg-3-sub border-l-0 rounded-r-md overflow-hidden border flex items-center">
-                        <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
-                           <Tooltip>
-                              <TooltipTrigger
-                                 className={clsx(
-                                    sortable.isDragging
-                                       ? "cursor-grabbing"
-                                       : "cursor-move",
-                                    "flex items-center group bg-3-sub w-7 h-full justify-center touch-none",
-                                 )}
-                                 aria-label="Drag to reorder"
-                                 ref={setActivatorNodeRef}
-                                 {...listeners}
-                              >
-                                 <Icon
-                                    title="More options"
-                                    name="grip-vertical"
-                                    className="group-hover:text-blue-400"
-                                    size={14}
-                                 />
-                              </TooltipTrigger>
-                              <TooltipContent>Move</TooltipContent>
-                           </Tooltip>
-                           {/* <Tooltip>
+                           </TooltipTrigger>
+                           <TooltipContent>Move</TooltipContent>
+                        </Tooltip>
+                        {/* <Tooltip>
                               <TooltipTrigger className="group h-full w-8 flex items-center justify-center">
                                  <Icon
                                     name="copy"
@@ -234,40 +224,33 @@ function BlockInlineActions({
                               </TooltipTrigger>
                               <TooltipContent>Copy</TooltipContent>
                            </Tooltip> */}
-                           {/* <Tooltip>
-                              <TooltipTrigger className="group h-full w-8 flex items-center justify-center">
-                                 <Lock
-                                    className="group-hover:text-yellow-400"
+                        {(element.type == BlockType.Image && !element?.refId) ||
+                        element.type !== BlockType.Image ? (
+                           <Tooltip>
+                              <TooltipTrigger
+                                 className="flex w-7 h-full items-center group justify-center"
+                                 onClick={(e) => onDelete(e, element)}
+                                 aria-label="Delete"
+                              >
+                                 <Icon
+                                    name="trash"
+                                    className="group-hover:text-red-400"
                                     size={12}
                                  />
                               </TooltipTrigger>
-                              <TooltipContent>Lock</TooltipContent>
-                           </Tooltip> */}
-                           {(element.type == BlockType.Image &&
-                              !element?.refId) ||
-                           element.type !== BlockType.Image ? (
-                              <Tooltip>
-                                 <TooltipTrigger
-                                    className="flex w-7 h-full items-center group justify-center"
-                                    onClick={(e) => onDelete(e, element)}
-                                    aria-label="Delete"
-                                 >
-                                    <Icon
-                                       name="trash"
-                                       className="group-hover:text-red-400"
-                                       size={12}
-                                    />
-                                 </TooltipTrigger>
-                                 <TooltipContent>Delete</TooltipContent>
-                              </Tooltip>
-                           ) : null}
-                        </FloatingDelayGroup>
-                     </Popover.Panel>
-                  </Float>
-               </>
+                              <TooltipContent>Delete</TooltipContent>
+                           </Tooltip>
+                        ) : null}
+                     </FloatingDelayGroup>
+                  </PopoverPanel>
+                  <BlockSelector
+                     element={element}
+                     editor={editor}
+                     isSelectorOpen={open}
+                  />
+               </div>
             )}
          </Popover>
-         <BlockSelector element={element} editor={editor} />
       </div>
    );
 }
@@ -313,6 +296,7 @@ function HoverElement({
    const animateLayoutChanges: AnimateLayoutChanges = (args) =>
       defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
+   //@ts-ignore
    const sortable = useSortable({ animateLayoutChanges, id: element.id });
 
    const activeIndex = editor.children.findIndex(
@@ -320,6 +304,7 @@ function HoverElement({
    );
 
    const insertPosition =
+      //@ts-ignore
       sortable.over?.id === element.id
          ? sortable.index > activeIndex
             ? Position.After

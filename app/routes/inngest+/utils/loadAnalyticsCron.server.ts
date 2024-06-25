@@ -45,6 +45,7 @@ export const loadAnalyticsCron = inngest.createFunction(
                   slug: true,
                   gaPropertyId: true,
                   gaTagId: true,
+                  domain: true,
                   collections: {
                      id: true,
                      slug: true,
@@ -75,6 +76,7 @@ export const loadAnalyticsCron = inngest.createFunction(
                   siteId: site.id,
                   siteType: site.type,
                   siteSlug: site.slug,
+                  siteDomain: site.domain,
                   gaPropertyId: site.gaPropertyId,
                   collections: site.collections,
                },

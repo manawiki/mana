@@ -41,11 +41,7 @@ export function UserContainer({
          <main className="max-tablet:px-3 tablet:w-[728px] tablet:mx-auto py-5">
             {children}
          </main>
-         <MobileTray
-            onOpenChange={setUserMenuOpen}
-            open={isUserMenuOpen}
-            shouldScaleBackground
-         >
+         <MobileTray onOpenChange={setUserMenuOpen} open={isUserMenuOpen}>
             <menu className="flex min-h-[calc(100vh-7rem)] gap-8 flex-col justify-between">
                <UserMenuItems />
                <button

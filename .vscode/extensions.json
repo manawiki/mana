@@ -2,11 +2,9 @@
    "recommendations": [
       "bradlc.vscode-tailwindcss",
       "vscode-icons-team.vscode-icons",
-      "stylelint.vscode-stylelint",
-      "rvest.vs-code-prettier-eslint",
       "esbenp.prettier-vscode",
       "wix.vscode-import-cost",
-      "dbaeumer.vscode-eslint",
-      "aaron-bond.better-comments"
+      "tamasfe.even-better-toml",
+      "naumovs.color-highlight"
    ]
 }

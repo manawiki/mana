@@ -78,6 +78,7 @@ export function BlockUpdates({ element }: Props) {
                      {Intl.DateTimeFormat("en-US", {
                         month: "short",
                         day: "numeric",
+                        timeZone: "America/Los_Angeles",
                      }).format(new Date())}
                   </span>
                   <div className="h-full w-full text-sm">
@@ -128,7 +129,7 @@ export function BlockUpdates({ element }: Props) {
                {updateResults?.map((row) => (
                   <section
                      key={row.id}
-                     className="flex items-start gap-2 odd:bg-zinc-50  dark:odd:bg-dark350"
+                     className="flex items-start odd:bg-zinc-50  dark:odd:bg-dark350"
                   >
                      <time
                         suppressHydrationWarning
@@ -149,7 +150,7 @@ export function BlockUpdates({ element }: Props) {
                               {row.entry?.map((item) => (
                                  <div
                                     key={item.id}
-                                    className="group/updates relative py-3"
+                                    className="group/updates relative p-3"
                                  >
                                     <UpdatesEditor
                                        rowId={row.id}

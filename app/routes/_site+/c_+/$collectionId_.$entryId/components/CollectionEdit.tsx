@@ -121,7 +121,6 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
             <Icon name="settings" size={16} />
          </Button>
          <MobileTray
-            shouldScaleBackground
             direction="right"
             onOpenChange={setSettingsOpen}
             open={isSettingsOpen}
@@ -133,7 +132,7 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                action="/collections"
                encType="multipart/form-data"
                onSubmit={preparedIconFile && handleSubmit}
-               className="max-tablet:pb-20"
+               className="max-tablet:pb-20 px-1"
             >
                <FieldGroup>
                   <Field disabled={disabled} className="w-full">
@@ -279,7 +278,7 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                   name={zoCollectionUpdate.fields.collectionIconId()}
                   value={collection.icon?.id}
                />
-               <div className="z-50 fixed bottom-0 left-0 w-full">
+               <div className="z-50 fixed left-0 bottom-0 tablet:bottom-3 tablet:left-3 w-full tablet:w-[376px] tablet:rounded-b-lg overflow-hidden">
                   <div className="flex gap-2 items-center justify-between bg-2-sub p-4 border-t border-color-sub">
                      <Button
                         color="light/zinc"

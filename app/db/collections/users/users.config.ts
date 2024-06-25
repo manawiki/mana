@@ -1,6 +1,11 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "./access";
+import {
+   isStaff,
+   isStaffFieldLevel,
+   isStaffOrSelf,
+   isStaffOrSelfFieldLevel,
+} from "./users.access";
 
 export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";
@@ -8,6 +13,7 @@ export const usersSlug = "users";
 export const Users: CollectionConfig = {
    slug: usersSlug,
    auth: {
+      tokenExpiration: 60 * 60 * 24 * 30, // 30 days
       useAPIKey: true,
       verify: {
          generateEmailHTML: ({ token, user }) => {
@@ -28,7 +34,9 @@ export const Users: CollectionConfig = {
                      <table cellspacing="0" cellpadding="0">
                            <tr>
                               <td style="border-radius: 2px;" bgcolor="#3b82f6">
-                                 <a href="${url}&email=${user.email}" style="padding: 8px 12px; border: 1px solid #3b82f6;border-radius: 2px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #ffffff;text-decoration: none;font-weight:bold;display: inline-block;">
+                                 <a href="${url}&email=${encodeURIComponent(
+                                    user.email,
+                                 )}" style="padding: 8px 12px; border: 1px solid #3b82f6;border-radius: 2px;font-family: Helvetica, Arial, sans-serif;font-size: 14px; color: #ffffff;text-decoration: none;font-weight:bold;display: inline-block;">
                                        Verify Email             
                                  </a>
                               </td>
@@ -84,7 +92,7 @@ export const Users: CollectionConfig = {
       create: () => true,
       delete: isStaffOrSelf,
       update: isStaffOrSelf,
-      //@ts-ignore
+      // @ts-expect-error - this is a payload type bug
       admin: isStaff,
    },
    fields: [
@@ -108,7 +116,7 @@ export const Users: CollectionConfig = {
          required: true,
          unique: true,
          access: {
-            read: isStaffFieldLevel,
+            read: isStaffOrSelfFieldLevel,
          },
       },
       {
@@ -135,12 +143,37 @@ export const Users: CollectionConfig = {
          name: "sites",
          type: "relationship",
          relationTo: "sites",
+         maxDepth: 2,
          hasMany: true,
+         access: {
+            read: isStaffOrSelfFieldLevel,
+         },
       },
       {
          name: "avatar",
          type: "upload",
          relationTo: "images",
+      },
+      {
+         name: "apiKey",
+         type: "text",
+         access: {
+            read: isStaffOrSelfFieldLevel,
+         },
+      },
+      {
+         name: "enableAPIKey",
+         type: "text",
+         access: {
+            read: isStaffOrSelfFieldLevel,
+         },
+      },
+      {
+         name: "loginAttempts",
+         type: "number",
+         access: {
+            read: isStaffOrSelfFieldLevel,
+         },
       },
    ],
 };

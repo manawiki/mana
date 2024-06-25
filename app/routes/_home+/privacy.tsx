@@ -15,7 +15,7 @@ export const handle = {
 export default function PrivacyPolicy() {
    return (
       <>
-         <div className="relative z-10 mx-auto mt-24 max-w-[680px] text-dark max-laptop:px-4">
+         <div className="relative z-20 mx-auto mt-24 max-w-[680px] max-laptop:px-4">
             <h1 className="pb-4 font-header text-2xl font-bold">
                Privacy policy
             </h1>

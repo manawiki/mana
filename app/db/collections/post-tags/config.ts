@@ -3,7 +3,7 @@ import type { CollectionConfig } from "payload/types";
 import type { User } from "payload/generated-types";
 
 import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
-import { isStaffFieldLevel } from "../users/access";
+import { isStaffFieldLevel } from "../users/users.access";
 
 export const PostTags: CollectionConfig = {
    slug: "postTags",
@@ -18,12 +18,12 @@ export const PostTags: CollectionConfig = {
          name: "createdBy",
          type: "relationship",
          relationTo: "users",
+         maxDepth: 0,
          required: true,
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },
-         maxDepth: 0,
       },
       {
          name: "slug",
