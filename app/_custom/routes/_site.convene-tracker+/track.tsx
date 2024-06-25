@@ -12,6 +12,7 @@ import type { Payload } from "payload";
 import { z } from "zod";
 
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import { cache } from "~/utils/cache.server";
 
 import type { RollData } from "./($convene)";
@@ -88,26 +89,87 @@ export default function ConveneTracker() {
 
    const submit = useSubmit();
 
+   const ConveneBannerButton = ({ current }: any) => {
+      var banner_currency = itemImages?.find((a) => a.id == "3")?.icon?.url; // Uses Astrite by default if banner is not enum'd
+
+      switch (current.id) {
+         case "1":
+            banner_currency = itemImages?.find((a) => a.id == "50002")?.icon
+               ?.url;
+            break;
+         case "2":
+            banner_currency = itemImages?.find((a) => a.id == "50005")?.icon
+               ?.url;
+            break;
+         case "3":
+         case "4":
+         case "5":
+         case "6":
+         case "7":
+            banner_currency = itemImages?.find((a) => a.id == "50001")?.icon
+               ?.url;
+            break;
+         default:
+      }
+
+      return (
+         <button
+            key={current.id}
+            value={current.id}
+            onClick={() => setConvene(parseInt(current.id))}
+            className={`w-full relative isolate inline-flex items-center justify-center justify-between gap-x-2 rounded-lg border text-base/6 font-semibold border-color-sub p-2 mt-2 cursor-pointer ${
+               parseInt(current.id) === convene && "bg-orange-500/10"
+            }`}
+         >
+            <div className="inline-flex">
+               <div className="inline-flex h-full align-middle mr-1 min-w-6">
+                  <Image
+                     height={24}
+                     className="object-contain"
+                     url={banner_currency}
+                     options="height=24"
+                     alt={"Icon"}
+                  />
+               </div>
+               <div className="inline-flex align-middle text-left">
+                  {current.name}
+               </div>
+            </div>
+
+            <Await resolve={convenes[parseInt(current.id)]}>
+               {(playerSummary) => {
+                  return (
+                     <>
+                        {playerSummary && (
+                           <div className="text-right min-w-[102px]">
+                              <div className="flex justify-between gap-x-2 text-yellow-500">
+                                 <div>5* Pity</div>
+                                 <div>{playerSummary.pity5}/80</div>
+                              </div>
+                              <div className="flex justify-between gap-x-2 text-purple-500">
+                                 <div>4* Pity</div>
+                                 <div>{playerSummary.pity4}/10</div>
+                              </div>
+                           </div>
+                        )}
+                     </>
+                  );
+               }}
+            </Await>
+         </button>
+      );
+   };
+
+   // =========================
+   // Main Interface Section
+   // =========================
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
-         {conveneTypes?.map((current) => (
-            <button
-               key={current.id}
-               value={current.id}
-               onClick={() => setConvene(parseInt(current.id))}
-               className={`w-full relative isolate inline-flex items-center justify-center mx-0.5 gap-x-2 rounded-lg border text-base/6 font-semibold px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] tablet:px-[calc(theme(spacing.3)-1px)] tablet:py-[calc(theme(spacing[1.5]))] tablet:text-tablet/6 focus:outline-none data-[focus]:outline data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-blue-500 data-[disabled]:opacity-50 [&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5 [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:tablet:my-1 [&>[data-slot=icon]]:tablet:size-4 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText] border-zinc-950/10 text-zinc-950 data-[active]:bg-zinc-950/[2.5%] data-[hover]:bg-zinc-950/[2.5%] dark:border-white/15 dark:text-white dark:[--btn-bg:transparent] dark:data-[active]:bg-white/5 dark:data-[hover]:bg-white/5 [--btn-icon:theme(colors.zinc.500)] data-[active]:[--btn-icon:theme(colors.zinc.700)] data-[hover]:[--btn-icon:theme(colors.zinc.700)] dark:data-[active]:[--btn-icon:theme(colors.zinc.400)] dark:data-[hover]:[--btn-icon:theme(colors.zinc.400)] cursor-pointer ${
-                  parseInt(current.id) === convene && "bg-orange-500/10"
-               }`}
-            >
-               {current.name}
-               <Await resolve={convenes[parseInt(current.id)]}>
-                  {(playerSummary) =>
-                     playerSummary &&
-                     ` (5* ${playerSummary.pity5}/80, 4* ${playerSummary.pity4}/10)`
-                  }
-               </Await>
-            </button>
-         ))}
+         <div className="laptop:mt-1 mt-14">
+            {conveneTypes?.map((current) => (
+               <ConveneBannerButton current={current} />
+            ))}
+         </div>
          <RefreshButton onClick={onSubmit} />
          <Suspense
             fallback={
@@ -196,23 +258,25 @@ function RefreshButton({ onClick }: any) {
    }, [navigation.state]);
 
    return (
-      <button
-         disabled={disableRefresh}
-         onClick={onClick}
-         type="submit"
-         className="border-color shadow-1 absolute left-2/3 z-20 flex -translate-x-1/2 transform
+      <div className="flex justify-end">
+         <button
+            disabled={disableRefresh}
+            onClick={onClick}
+            type="submit"
+            className="border-color shadow-1 relative flex
             items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold
             shadow disabled:opacity-50 dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
-         aria-label={disableRefresh ? "On cooldown..." : "Refresh"}
-         title={disableRefresh ? "On cooldown..." : "Refresh"}
-      >
-         {disableRefresh ? (
-            <Icon name="hourglass" size={18} />
-         ) : (
-            <Icon name="refresh-ccw" size={18} />
-         )}
-         <span>Refresh</span>
-      </button>
+            aria-label={disableRefresh ? "On cooldown..." : "Refresh"}
+            title={disableRefresh ? "On cooldown..." : "Refresh"}
+         >
+            {disableRefresh ? (
+               <Icon name="hourglass" size={18} />
+            ) : (
+               <Icon name="refresh-ccw" size={18} />
+            )}
+            <span>Refresh</span>
+         </button>
+      </div>
    );
 }
 
