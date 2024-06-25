@@ -142,7 +142,7 @@ export function BlockUpdates({ element }: Props) {
                            timeZone: "America/Los_Angeles",
                         })}
                      </time>
-                     <span className="divide-color flex-grow divide-y text-sm">
+                     <span className="divide-color flex-grow divide-y text-sm min-w-0">
                         {row.entry?.length === 0 ? (
                            <UpdatesEditor rowId={row.id} siteId={siteId} />
                         ) : (
@@ -150,7 +150,7 @@ export function BlockUpdates({ element }: Props) {
                               {row.entry?.map((item) => (
                                  <div
                                     key={item.id}
-                                    className="group/updates relative p-3"
+                                    className="group/updates relative pl-0 p-3"
                                  >
                                     <UpdatesEditor
                                        rowId={row.id}

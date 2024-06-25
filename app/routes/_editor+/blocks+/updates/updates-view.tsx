@@ -45,11 +45,11 @@ export function BlockUpdatesView({ element }: Props) {
                               },
                            )}
                         </time>
-                        <span className="divide-color flex-grow divide-y text-sm">
+                        <span className="divide-color flex-grow divide-y text-sm min-w-0">
                            {row.entry?.length === 0 ? null : (
                               <>
                                  {row.entry?.map((item) => (
-                                    <div key={item.id} className="p-3">
+                                    <div key={item.id} className="p-3 pl-0">
                                        <EditorView
                                           data={item.content as Descendant[]}
                                        />

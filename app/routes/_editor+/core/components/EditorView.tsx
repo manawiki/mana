@@ -25,7 +25,7 @@ export function EditorView({ data }: { data: any }) {
                width: isVariableWidth
                   ? //@ts-ignore
                     `${props.element.containerWidth}px`
-                  : "728px",
+                  : "auto",
             }}
             className="relative mx-auto max-tablet:!w-full"
          >
