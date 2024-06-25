@@ -11,6 +11,7 @@ import { ImageGallery } from "~/_custom/components/bangboos/ImageGallery";
 import { Main } from "~/_custom/components/bangboos/Main";
 import { Skills } from "~/_custom/components/bangboos/Skills";
 import { Talents } from "~/_custom/components/bangboos/Talents";
+import { Ascension } from "~/_custom/components/bangboos/Ascension";
 import { ZZZUnderConstruction } from "~/_custom/components/ZZZUnderConstruction";
 import type { Bangboo as BangbooType } from "~/db/payload-custom-types";
 import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
@@ -51,7 +52,7 @@ const SECTIONS = {
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
    const char = entry?.data?.Bangboo as BangbooType;
-   // console.log(char);
+   //console.log(char);
 
    return (
       <>
@@ -60,6 +61,7 @@ export default function EntryPage() {
             <Main data={char} />
             <Skills data={char} />
             <Talents data={char} />
+            <Ascension data={char} />
             <ImageGallery data={char} />
 
             <ZZZUnderConstruction />
@@ -78,7 +80,12 @@ const QUERY = gql`
          hp
          atk
          def
+         hp_growth
+         atk_growth
+         def_growth
          impact
+         attribute_mastery
+         crit
          icon_full {
             url
          }
@@ -98,6 +105,10 @@ const QUERY = gql`
             icon {
                url
             }
+            params {
+               title
+               params
+            }
          }
          talents {
             name
@@ -106,6 +117,28 @@ const QUERY = gql`
             }
             icon {
                url
+            }
+         }
+         ascension_data {
+            asc
+            lv_min
+            lv_max
+            hp_adv
+            atk_adv
+            def_adv
+            materials {
+               material {
+                  id
+                  name
+                  slug
+                  rarity {
+                     id
+                  }
+                  icon {
+                     url
+                  }
+               }
+               qty
             }
          }
       }
