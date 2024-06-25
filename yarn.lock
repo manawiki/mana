@@ -1077,10 +1077,10 @@
     call-me-maybe "^1.0.1"
     js-yaml "^4.1.0"
 
-"@builder.io/partytown@0.9.2":
-  version "0.9.2"
-  resolved "https://registry.yarnpkg.com/@builder.io/partytown/-/partytown-0.9.2.tgz#d2508f50753ed42cbf5d416a130ffd23713a5268"
-  integrity sha512-aoXFGyjquwlreLeKDdliXTXWIsnIKpM3moKo7hI++N8yHbH9idSoa/GpvsFxwcPO+FnA+IrhFs0LZGGjRZiQew==
+"@builder.io/partytown@0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@builder.io/partytown/-/partytown-0.10.2.tgz#102c909f805c945a638e249275003ef6ba828287"
+  integrity sha512-A9U+4PREWcS+CCYzKGIPovtGB/PBgnH/8oQyCE6Nr9drDJk6cMPpLQIEajpGPmG9tYF7N3FkRvhXm/AS9+0iKg==
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"

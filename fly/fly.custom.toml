@@ -18,10 +18,10 @@ kill_timeout = "5s"
   processes = ["app"]
   [http_service.concurrency]
     type = "requests"
-    soft_limit = 200
-    hard_limit = 250
+    soft_limit = 800
+    hard_limit = 1000
 
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
-  memory_mb = 512
+  memory_mb = 1024

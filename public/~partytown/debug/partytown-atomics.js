@@ -1,4 +1,4 @@
-/* Partytown 0.9.2 - MIT builder.io */
+/* Partytown 0.10.2 - MIT builder.io */
 (window => {
     const isPromise = v => "object" == typeof v && v && v.then;
     const noop = () => {};
@@ -158,7 +158,12 @@
         }
         return obj;
     };
-    const serializedValueIsError = value => value instanceof window.top.Error;
+    let ErrorObject = null;
+    const serializedValueIsError = value => {
+        var _a;
+        ErrorObject = (null === (_a = window.top) || void 0 === _a ? void 0 : _a.Error) || ErrorObject;
+        return value instanceof ErrorObject;
+    };
     const deserializeFromWorker = (worker, serializedTransfer, serializedType, serializedValue) => {
         if (serializedTransfer) {
             serializedType = serializedTransfer[0];
@@ -496,7 +501,8 @@
             $config$: $config$,
             $interfaces$: readImplementations(impls, initialInterfaces),
             $libPath$: new URL(libPath, mainWindow.location) + "",
-            $origin$: origin
+            $origin$: origin,
+            $tabId$: mainWindow._pttab
         };
         addGlobalConstructorUsingPrototype(initWebWorkerData.$interfaces$, mainWindow, "IntersectionObserverEntry");
         return initWebWorkerData;
@@ -592,14 +598,14 @@
         };
     })(((accessReq, responseCallback) => mainAccessHandler(worker, accessReq).then(responseCallback))).then((onMessageHandler => {
         if (onMessageHandler) {
-            worker = new Worker(libPath + "partytown-ww-atomics.js?v=0.9.2", {
+            worker = new Worker(libPath + "partytown-ww-atomics.js?v=0.10.2", {
                 name: "Partytown 🎉"
             });
             worker.onmessage = ev => {
                 const msg = ev.data;
                 12 === msg[0] ? mainAccessHandler(worker, msg[1]) : onMessageHandler(worker, msg);
             };
-            logMain("Created Partytown web worker (0.9.2)");
+            logMain("Created Partytown web worker (0.10.2)");
             worker.onerror = ev => console.error("Web Worker Error", ev);
             mainWindow.addEventListener("pt1", (ev => registerWindow(worker, getAndSetInstanceId(ev.detail.frameElement), ev.detail)));
         }

@@ -2,13 +2,13 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { isStaffFieldLevel } from "../users/users.access";
 import {
    canCreateUserData,
    canDeleteUserData,
    canReadUserData,
    canUpdateUserData,
-} from "./user-data.acces";
+} from "./user-data.access";
+import { isStaffFieldLevel } from "../users/users.access";
 
 export const UserData: CollectionConfig = {
    slug: "user-data",
