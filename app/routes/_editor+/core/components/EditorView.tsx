@@ -8,6 +8,7 @@ import { Slate, Editable, withReact, ReactEditor } from "slate-react";
 import { EditorBlocks } from "./EditorBlocks";
 import { Leaf } from "./Leaf";
 import { BlockType } from "../types";
+import { initialValue } from "../utils";
 
 export function EditorView({ data }: { data: any }) {
    const editor = useMemo(() => withReact(createEditor()), []);
@@ -35,7 +36,7 @@ export function EditorView({ data }: { data: any }) {
       );
    }, []);
    return (
-      <Slate editor={editor} initialValue={data}>
+      <Slate editor={editor} initialValue={data ?? initialValue()}>
          <Editable
             renderElement={renderElement}
             renderLeaf={Leaf}

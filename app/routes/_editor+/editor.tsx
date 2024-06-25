@@ -15,6 +15,7 @@ import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 import { Toolbar } from "./core/components/Toolbar";
 import { EditorWithDnD } from "./core/dnd";
 import { useEditor } from "./core/plugins";
+import { initialValue } from "./core/utils";
 
 export function ManaEditor({
    fetcher,
@@ -66,7 +67,7 @@ export function ManaEditor({
       <Slate
          onChange={setValue}
          editor={editor}
-         initialValue={value as Descendant[]}
+         initialValue={(value as Descendant[]) ?? initialValue()}
       >
          <Toolbar />
          <EditorWithDnD editor={editor} />
