@@ -55,7 +55,11 @@ export async function loader({
            save: string;
            refresh: string;
         }>("wuwa-" + user?.id)
-      : { url: "", save: "", refresh: "" };
+      : {
+           url: "https://aki-gm-resources-oversea.aki-game.net/aki/gacha/index.html#/record?svr_id=6eb2a235b30d05efd77bedb5cf60999e&player_id=601377267&lang=en&gacha_id=4&gacha_type=6&svr_area=global&record_id=68d299a4d57dab742648088ff9968c0d&resources_id=917dfa695d6c6634ee4e972bb9168f6a",
+           save: "",
+           refresh: "",
+        };
 
    // check request cookie for wuwa-url
    let cookieURL = request.headers.get("Cookie")?.split("wuwa-url=")?.[1];
@@ -91,6 +95,8 @@ export default function ConveneTracker() {
 
    const ConveneBannerButton = ({ current }: any) => {
       var banner_currency = itemImages?.find((a) => a.id == "3")?.icon?.url; // Uses Astrite by default if banner is not enum'd
+      var pity_threshold_five = 80;
+      var pity_threshold_four = 10;
 
       switch (current.id) {
          case "1":
@@ -108,6 +114,17 @@ export default function ConveneTracker() {
          case "7":
             banner_currency = itemImages?.find((a) => a.id == "50001")?.icon
                ?.url;
+            break;
+         default:
+      }
+
+      switch (current.id) {
+         case "5":
+            pity_threshold_five = 50;
+            break;
+         case "7":
+            pity_threshold_five = 0;
+            pity_threshold_four = 0;
             break;
          default:
       }
@@ -141,15 +158,28 @@ export default function ConveneTracker() {
                   return (
                      <>
                         {playerSummary && (
-                           <div className="text-right min-w-[102px]">
-                              <div className="flex justify-between gap-x-2 text-yellow-500">
-                                 <div>5* Pity</div>
-                                 <div>{playerSummary.pity5}/80</div>
-                              </div>
-                              <div className="flex justify-between gap-x-2 text-purple-500">
-                                 <div>4* Pity</div>
-                                 <div>{playerSummary.pity4}/10</div>
-                              </div>
+                           <div className="text-right min-w-[102px] h-12">
+                              {pity_threshold_five &&
+                              pity_threshold_five > 2 ? (
+                                 <div className="flex justify-between gap-x-2 text-yellow-500">
+                                    <div>5* Pity</div>
+                                    <div>
+                                       {playerSummary.pity5}/
+                                       {pity_threshold_five}
+                                    </div>
+                                 </div>
+                              ) : null}
+
+                              {pity_threshold_four &&
+                              pity_threshold_four > 2 ? (
+                                 <div className="flex justify-between gap-x-2 text-purple-500">
+                                    <div>4* Pity</div>
+                                    <div>
+                                       {playerSummary.pity4}/
+                                       {pity_threshold_four}
+                                    </div>
+                                 </div>
+                              ) : null}
                            </div>
                         )}
                      </>
