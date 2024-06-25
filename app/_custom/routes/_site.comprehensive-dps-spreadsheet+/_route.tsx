@@ -83,12 +83,12 @@ export function ComprehensiveDpsSpreadsheet() {
    const { pokemon, count } = useLoaderData<typeof clientLoader>();
 
    return (
-      <>
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
          <Introduction />
          <NewToggles pokemon={pokemon} />
 
          <ResultsTable />
-      </>
+      </div>
    );
 }
 
@@ -615,8 +615,8 @@ function TH({ children }: { children: string }) {
             sort !== children.toString().toLowerCase()
                ? searchParams.delete("asc")
                : asc
-               ? searchParams.delete("asc")
-               : searchParams.set("asc", "true");
+                 ? searchParams.delete("asc")
+                 : searchParams.set("asc", "true");
 
             return searchParams;
          },
@@ -637,8 +637,8 @@ function TH({ children }: { children: string }) {
                   sort !== children.toString().toLowerCase()
                      ? "chevrons-up-down"
                      : asc
-                     ? "chevron-up"
-                     : "chevron-down"
+                       ? "chevron-up"
+                       : "chevron-down"
                }
                size={18}
                className="text-zinc-500"
