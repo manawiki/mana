@@ -4,7 +4,7 @@ import { Delete_TermRelations } from "./hooks/Delete_TermRelations";
 import { Update_TermRelationsOneDeep } from "./hooks/Update_TermRelationsOneDeep";
 import { Delete_TermRelationsOneDeep } from "./hooks/Delete_TermRelationsOneDeep";
 
-import { isStaff } from "../../db/collections/users/access";
+import { isStaff } from "../../db/collections/users/users.access";
 
 export const CommandCodes: CollectionConfig = {
    slug: "command-codes",
