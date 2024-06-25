@@ -82,7 +82,7 @@ export default function SiteIndexMain() {
                   />
                </>
             ) : (
-               <EditorView data={home} />
+               <EditorView data={(home as Descendant[]) ?? initialValue()} />
             )}
          </main>
       </>
