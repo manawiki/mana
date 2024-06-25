@@ -46,7 +46,12 @@ export async function fetchWithCache<T>(
       key,
       async getFreshValue() {
          const response = await fetch(url, init);
+         // console.log("cached: ", key);
          return response.json();
+      },
+      checkValue<T>(value: T) {
+         // console.log(value);
+         return value && typeof value === "object" && !Array.isArray(value);
       },
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
@@ -76,12 +81,17 @@ export async function gqlRequestWithCache<T>(
             const response = await gqlRequest(url, query, variables, {
                cookie: request?.headers.get("cookie") ?? "",
             });
+            // console.log("cached: ", key);
             return response as T;
          } catch (error) {
             console.error(error);
             // return the error as a response
             return null as T;
          }
+      },
+      checkValue<T>(value: T) {
+         // console.log(value);
+         return value && typeof value === "object" && !Array.isArray(value);
       },
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
@@ -116,8 +126,11 @@ export async function cacheThis<T>(
       cache,
       key,
       async getFreshValue() {
-         console.log("cached: ", key);
+         // console.log("cached: ", key);
          return await func(params);
+      },
+      checkValue<T>(value: T) {
+         return value && typeof value === "object" && !Array.isArray(value);
       },
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
@@ -160,6 +173,9 @@ export async function cacheWithSelect<T>(
          const result = await func();
          return selectFunction(result, selectOptions);
       },
+      checkValue<T>(value: T) {
+         return value && typeof value === "object" && !Array.isArray(value);
+      },
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
@@ -177,9 +193,14 @@ export function verboseReporter<T>(): CreateReporter<T> {
       let getFreshValueStartTs: number;
       let refreshValueStartTS: number;
 
+      // Abbreviate the key to make it easier to read, make multiple spaces and newlines into a single space
+      let abbrevatedKey = key.replace(/\s+/g, " ").replace(/\n+/g, " ");
+
       //let abbrevated key be 50 characters long that takes the first 20 characters and the last 20 characters
-      const abbrevatedKey =
-         key.length > 100 ? key.slice(0, 50) + "..." + key.slice(-50) : key;
+      abbrevatedKey =
+         abbrevatedKey.length > 100
+            ? abbrevatedKey.slice(0, 50) + "..." + abbrevatedKey.slice(-50)
+            : abbrevatedKey;
 
       return (event) => {
          switch (event.name) {
