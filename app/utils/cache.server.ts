@@ -129,9 +129,6 @@ export async function cacheThis<T>(
          // console.log("cached: ", key);
          return await func(params);
       },
-      checkValue<T>(value: T) {
-         return value && typeof value === "object" && !Array.isArray(value);
-      },
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
