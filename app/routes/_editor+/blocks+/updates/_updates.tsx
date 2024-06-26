@@ -20,7 +20,7 @@ import { Icon } from "~/components/Icon";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { withLinkify } from "~/routes/_editor+/core/plugins/link/withLinkify";
-import { onKeyDown } from "~/routes/_editor+/core/utils";
+import { initialValue, onKeyDown } from "~/routes/_editor+/core/utils";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding, isProcessing } from "~/utils/form";
 import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
@@ -142,7 +142,7 @@ export function BlockUpdates({ element }: Props) {
                            timeZone: "America/Los_Angeles",
                         })}
                      </time>
-                     <span className="divide-color flex-grow divide-y text-sm">
+                     <span className="divide-color flex-grow divide-y text-sm min-w-0">
                         {row.entry?.length === 0 ? (
                            <UpdatesEditor rowId={row.id} siteId={siteId} />
                         ) : (
@@ -150,7 +150,7 @@ export function BlockUpdates({ element }: Props) {
                               {row.entry?.map((item) => (
                                  <div
                                     key={item.id}
-                                    className="group/updates relative p-3"
+                                    className="group/updates relative pl-0 p-3"
                                  >
                                     <UpdatesEditor
                                        rowId={row.id}
@@ -395,7 +395,7 @@ export function UpdatesEditor({
          //@ts-ignore
          onChange={(e) => setValue(e)}
          editor={editor}
-         initialValue={blocks as Descendant[]}
+         initialValue={(blocks as Descendant[]) ?? initialValue()}
       >
          <Toolbar />
          <Editable
