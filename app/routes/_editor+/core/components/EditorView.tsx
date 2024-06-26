@@ -10,7 +10,13 @@ import { Leaf } from "./Leaf";
 import { BlockType } from "../types";
 import { initialValue } from "../utils";
 
-export function EditorView({ data }: { data: any }) {
+export function EditorView({
+   data,
+   autoWidth,
+}: {
+   data: any;
+   autoWidth?: boolean;
+}) {
    const editor = useMemo(() => withReact(createEditor()), []);
 
    const renderElement = useCallback((props: RenderElementProps) => {
@@ -25,7 +31,9 @@ export function EditorView({ data }: { data: any }) {
                width: isVariableWidth
                   ? //@ts-ignore
                     `${props.element.containerWidth}px`
-                  : "auto",
+                  : autoWidth
+                    ? "auto"
+                    : "728px",
             }}
             className="relative mx-auto max-tablet:!w-full"
          >

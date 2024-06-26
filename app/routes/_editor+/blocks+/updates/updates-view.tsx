@@ -51,6 +51,7 @@ export function BlockUpdatesView({ element }: Props) {
                                  {row.entry?.map((item) => (
                                     <div key={item.id} className="p-3 pl-0">
                                        <EditorView
+                                          autoWidth
                                           data={item.content as Descendant[]}
                                        />
                                     </div>
