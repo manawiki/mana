@@ -271,7 +271,7 @@ function DragOverlayContent({
    const [value] = useState([JSON.parse(JSON.stringify(element))]); // clone
 
    return (
-      <Slate editor={editor} initialValue={value}>
+      <Slate editor={editor} initialValue={value ?? initialValue()}>
          <Editable renderElement={renderElement} renderLeaf={Leaf} />
       </Slate>
    );
