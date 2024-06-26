@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 
 import { Listbox, Transition } from "@headlessui/react";
 import clsx from "clsx";
@@ -9,35 +9,42 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 import type { Pokemon as PokemonType } from "~/db/payload-custom-types";
 
 export function Main({ data: pokemon }: { data: PokemonType }) {
-   const images = [
-      {
-         id: pokemon?.images?.goImage?.id,
-         name: "GO",
-         imageUrl: pokemon?.images?.goImage?.url,
-      },
-      {
-         id: pokemon?.images?.goShinyImage?.id,
-         name: "GO Shiny",
-         imageUrl: pokemon?.images?.goShinyImage?.url,
-      },
-      {
-         id: pokemon?.icon?.id,
-         name: "Sugimori",
-         imageUrl: pokemon?.icon?.url,
-      },
-      {
-         id: pokemon?.images?.florkImage?.id,
-         name: "Flork",
-         imageUrl: pokemon?.images?.florkImage?.url,
-      },
-      {
-         id: pokemon?.images?.shuffleImage?.id,
-         name: "Shuffle",
-         imageUrl: pokemon?.images?.shuffleImage?.url,
-      },
-   ];
+   const images = useMemo(
+      () => [
+         {
+            id: pokemon?.images?.goImage?.id,
+            name: "GO",
+            imageUrl: pokemon?.images?.goImage?.url,
+         },
+         {
+            id: pokemon?.images?.goShinyImage?.id,
+            name: "GO Shiny",
+            imageUrl: pokemon?.images?.goShinyImage?.url,
+         },
+         {
+            id: pokemon?.icon?.id,
+            name: "Sugimori",
+            imageUrl: pokemon?.icon?.url,
+         },
+         {
+            id: pokemon?.images?.florkImage?.id,
+            name: "Flork",
+            imageUrl: pokemon?.images?.florkImage?.url,
+         },
+         {
+            id: pokemon?.images?.shuffleImage?.id,
+            name: "Shuffle",
+            imageUrl: pokemon?.images?.shuffleImage?.url,
+         },
+      ],
+      [pokemon],
+   );
 
    const [selectedImage, setSelectedImage] = useState(images[0]);
+
+   useLayoutEffect(() => {
+      setSelectedImage(images[0]);
+   }, [images]);
 
    return (
       <div className="laptop:grid laptop:grid-cols-2 laptop:gap-4">
@@ -52,8 +59,8 @@ export function Main({ data: pokemon }: { data: PokemonType }) {
                   )}
                   <div className="flex items-center gap-2">
                      {pokemon?.type?.map((type) => (
-                        <Tooltip key={type.id} placement="top">
-                           <TooltipTrigger key={type.id}>
+                        <Tooltip key={type.name} placement="top">
+                           <TooltipTrigger>
                               <Image
                                  height={28}
                                  width={28}
