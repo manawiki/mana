@@ -242,6 +242,56 @@ export const Agents: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "profile_info",
+         type: "text",
+      },
+      {
+         name: "profile_desc",
+         type: "text",
+      },
+      {
+         name: "height",
+         type: "text",
+      },
+      {
+         name: "bday",
+         type: "text",
+      },
+      {
+         name: "quotes",
+         type: "array",
+         fields: [
+            {
+               name: "title",
+               type: "text",
+            },
+            {
+               name: "content",
+               type: "text",
+            },
+            {
+               name: "vo_zh",
+               type: "upload",
+               relationTo: "images",
+            },
+            {
+               name: "vo_ja",
+               type: "upload",
+               relationTo: "images",
+            },
+            {
+               name: "vo_en",
+               type: "upload",
+               relationTo: "images",
+            },
+            {
+               name: "vo_ko",
+               type: "upload",
+               relationTo: "images",
+            },
+         ],
+      },
+      {
          name: "slug",
          type: "text",
       },
