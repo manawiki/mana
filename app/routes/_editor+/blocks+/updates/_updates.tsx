@@ -73,7 +73,7 @@ export function BlockUpdates({ element }: Props) {
          <>
             <H2Plain text="Updates" />
             <div className="divide-color-sub border-color-sub bg-3 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
-               <div className="flex items-center justify-between gap-2 bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
+               <div className="flex items-center justify-between bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                      {Intl.DateTimeFormat("en-US", {
                         month: "short",
