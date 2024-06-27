@@ -83,7 +83,7 @@ export function Skills({ data: char }: { data: AgentType }) {
             }}
          ></div>
          {skills?.map((sk: any) => {
-            const [skillLevel, setSkillLevel] = useState(0);
+            const [skillLevel, setSkillLevel] = useState(10);
             const [tab, setTab] = useState(false); // false = Description, true = Stats
 
             const skill_icon = sk.icon;

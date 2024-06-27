@@ -4,7 +4,7 @@ import { Image } from "~/components/Image";
 import { useState } from "react";
 
 export function Main({ data: char }: { data: BangbooType }) {
-   const [level, setLevel] = useState(0);
+   const [level, setLevel] = useState(60);
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
 
    const mainImage = char?.icon_full?.url;
@@ -96,7 +96,7 @@ export function Main({ data: char }: { data: BangbooType }) {
             </section>
             <section>
                <div
-                  className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg 
+                  className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
                >
                   {mainStatDisplay?.map((row) => (
@@ -200,7 +200,7 @@ export function Main({ data: char }: { data: BangbooType }) {
                   </div>
                   {/* Ascension Checkbox */}
                   <input
-                     className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center 
+                     className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center
                      justify-between rounded-sm align-middle text-zinc-500"
                      type="checkbox"
                      aria-label="Ascension"
