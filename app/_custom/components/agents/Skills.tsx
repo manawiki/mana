@@ -43,6 +43,7 @@ export function Skills({ data: char }: { data: AgentType }) {
          icon: "https://static.mana.wiki/zzz/SkillEvade.png",
          skill: char.skill_dodge,
       },
+      { id: "Assist Skill", icon: "", skill: char.skill_assist },
       {
          id: "Special Attack",
          icon: "https://static.mana.wiki/zzz/SkillSpecial.png",
@@ -53,7 +54,7 @@ export function Skills({ data: char }: { data: AgentType }) {
          icon: "https://static.mana.wiki/zzz/SkillQTE.png",
          skill: char.skill_chain,
       },
-      { id: "Core Skills", icon: "", skill: char.skill_core },
+      { id: "Core Skill", icon: "", skill: char.skill_core },
    ];
 
    // Some general CSS stuff

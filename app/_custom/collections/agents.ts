@@ -135,6 +135,11 @@ export const Agents: CollectionConfig = {
                type: "relationship",
                relationTo: "skills",
             },
+            {
+               name: "skill_assist",
+               type: "relationship",
+               relationTo: "skills",
+            },
          ],
       },
       {
