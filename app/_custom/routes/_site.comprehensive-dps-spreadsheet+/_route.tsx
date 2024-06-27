@@ -559,8 +559,15 @@ function ResultsTable() {
 function filterResults(results, searchParams) {
    let filtered = results;
 
+   const columns: { [key: string]: string } = {
+      DPS: "dps",
+      TDO: "tdo",
+      ER: "ui_overall",
+      CP: "ui_cp",
+   };
+
    // to-do read params to toggle sorting
-   const sort = searchParams.get("sort") ?? "dps";
+   const sort = columns[searchParams.get("sort")!] ?? "dps";
    const asc = searchParams.get("asc") ? 1 : -1;
 
    filtered = filtered.sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc));
@@ -609,10 +616,10 @@ function TH({ children }: { children: string }) {
    const onClick = () => {
       setSearchParams(
          (searchParams) => {
-            searchParams.set("sort", children.toString().toLowerCase());
+            searchParams.set("sort", children);
 
             //reset asc if we're sorting by a different column
-            sort !== children.toString().toLowerCase()
+            sort !== children
                ? searchParams.delete("asc")
                : asc
                  ? searchParams.delete("asc")
