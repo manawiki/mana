@@ -41,6 +41,10 @@ export const Skills: CollectionConfig = {
          type: "text",
       },
       {
+         name: "core_desc",
+         type: "json",
+      },
+      {
          name: "description",
          type: "array",
          fields: [
