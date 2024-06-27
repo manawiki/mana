@@ -171,7 +171,7 @@ const QUERY = gql`
                params
             }
          }
-         skill_core {
+         skill_assist {
             description {
                name
                desc
@@ -180,6 +180,9 @@ const QUERY = gql`
                title
                params
             }
+         }
+         skill_core {
+            core_desc
          }
          talents {
             name
