@@ -224,7 +224,7 @@ export const action = async ({
          });
 
          const newData = JSON.parse(data);
-         const currentDate = dt.format(new Date(), "MMM-dd-yy");
+         const currentDate = dt.format(new Date(), "MMM-DD-YYYY");
 
          const update = await payload.find({
             collection: "updates",
