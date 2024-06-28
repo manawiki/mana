@@ -1,7 +1,7 @@
 import { useEffect, type ReactNode } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useFetcher } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import { gql, request as gqlRequest } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
@@ -218,11 +218,11 @@ type Fields = {
 };
 
 export function BlockLink({ element, children }: Props) {
-   const canFetch = element.icon == undefined;
+   const canFetch = element?.icon == undefined;
 
    const linkDataQuery = qs.stringify(
       {
-         linkUrl: element.url,
+         linkUrl: element?.url,
       },
       { addQueryPrefix: true },
    );
@@ -286,7 +286,7 @@ export function BlockLink({ element, children }: Props) {
                      width={30}
                      height={30}
                      url={element.icon.url}
-                     alt={children ? "" : element.name}
+                     alt={children ? "" : element?.name}
                      options="aspect_ratio=1:1&height=40&width=40"
                   />
                ) : (

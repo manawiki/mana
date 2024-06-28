@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { ShouldRevalidateFunctionArgs } from "@remix-run/react";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 
 import { useSearchToggleState } from "~/root";
@@ -13,8 +14,8 @@ import { ColumnFour } from "./_components/Column-4";
 import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
 import { RampScripts } from "./_components/RampScripts";
-import { fetchSite } from "./_utils/fetchSite.server";
 import { SiteHeader } from "./_components/SiteHeader";
+import { fetchSite } from "./_utils/fetchSite.server";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -78,3 +79,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
       },
    ];
 };
+
+// don't revalidate loader when url param changes
+export function shouldRevalidate({
+   currentUrl,
+   nextUrl,
+   defaultShouldRevalidate,
+}: ShouldRevalidateFunctionArgs) {
+   return currentUrl.pathname === nextUrl.pathname
+      ? false
+      : defaultShouldRevalidate;
+}

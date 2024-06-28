@@ -41,7 +41,7 @@ export async function getSiteSlug(
 
       if (site?.totalDocs == 1) {
          return {
-            siteSlug: site.docs[0]?.slug ?? "hq",
+            siteSlug: (site?.docs?.[0]?.slug as string) ?? "hq",
          };
       }
    }
