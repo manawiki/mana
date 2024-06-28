@@ -107,40 +107,34 @@ export const Agents: CollectionConfig = {
          type: "number",
       },
       {
-         label: "skills",
-         type: "collapsible",
-         fields: [
-            {
-               name: "skill_basic",
-               type: "relationship",
-               relationTo: "skills",
-            },
-            {
-               name: "skill_dodge",
-               type: "relationship",
-               relationTo: "skills",
-            },
-            {
-               name: "skill_special",
-               type: "relationship",
-               relationTo: "skills",
-            },
-            {
-               name: "skill_chain",
-               type: "relationship",
-               relationTo: "skills",
-            },
-            {
-               name: "skill_core",
-               type: "relationship",
-               relationTo: "skills",
-            },
-            {
-               name: "skill_assist",
-               type: "relationship",
-               relationTo: "skills",
-            },
-         ],
+         name: "skill_basic",
+         type: "relationship",
+         relationTo: "skills",
+      },
+      {
+         name: "skill_dodge",
+         type: "relationship",
+         relationTo: "skills",
+      },
+      {
+         name: "skill_special",
+         type: "relationship",
+         relationTo: "skills",
+      },
+      {
+         name: "skill_chain",
+         type: "relationship",
+         relationTo: "skills",
+      },
+      {
+         name: "skill_core",
+         type: "relationship",
+         relationTo: "skills",
+      },
+      {
+         name: "skill_assist",
+         type: "relationship",
+         relationTo: "skills",
       },
       {
          name: "talents",
