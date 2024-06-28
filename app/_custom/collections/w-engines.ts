@@ -28,6 +28,10 @@ export const WEngines: CollectionConfig = {
          type: "text",
       },
       {
+         name: "desc",
+         type: "text",
+      },
+      {
          name: "rarity",
          type: "relationship",
          relationTo: "_rarities",
@@ -58,6 +62,10 @@ export const WEngines: CollectionConfig = {
                name: "value",
                type: "text",
             },
+            {
+               name: "pct",
+               type: "checkbox",
+            }
          ],
       },
       {

@@ -303,6 +303,7 @@ const CharacterList = ({ chars }: any) => {
                   default:
                }
                const secondval = char?.stat_secondary?.value;
+               const secondpct = char?.stat_secondary?.pct;
                var rarityhex;
                switch (raritynum) {
                   case "B":
@@ -376,7 +377,7 @@ const CharacterList = ({ chars }: any) => {
                                     {secondname}
                                  </div>
                                  <div className="text-white text-sm">
-                                    {secondval}
+                                    {parseFloat(secondval).toFixed(1)}{secondpct ? "%" : ""}
                                  </div>
                               </div>
                            </div>
@@ -443,6 +444,7 @@ const CHARACTERS = gql`
                id: name
                name
                value
+               pct
             }
             talent_title
             talent {

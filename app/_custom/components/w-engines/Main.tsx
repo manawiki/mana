@@ -54,11 +54,13 @@ export function Main({ data }: { data: WEngineType }) {
             level_growth,
             star_growth,
          ),
+         pct: false,
          //icon: "https://static.mana.wiki/zzz/IconHpMax.png",
       },
       {
          label: char?.stat_secondary?.name,
          value: calcSecondStat(char?.stat_secondary?.value, secondary_growth),
+         pct: char?.stat_secondary?.pct,
          //icon: "https://static.mana.wiki/zzz/IconAttack.png",
       },
    ];
@@ -82,7 +84,7 @@ export function Main({ data }: { data: WEngineType }) {
             </section>
             <section>
                <div
-                  className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg 
+                  className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
                >
                   {mainStatDisplay?.map((row) => (
@@ -118,6 +120,16 @@ export function Main({ data }: { data: WEngineType }) {
                   ))}
                </div>
             </section>
+         </div>
+
+         {/* ======================== */}
+         {/* W-Engine description */}
+         {/* ======================== */}
+         <div
+            className="my-2 flex items-center gap-2 px-3 py-2.5 bg-2-sub
+            rounded-lg shadow-sm shadow-1 border border-color-sub italic"
+         >
+            {char?.desc}
          </div>
 
          {/* ======================== */}
@@ -181,7 +193,7 @@ export function Main({ data }: { data: WEngineType }) {
                   </div>
                   {/* Ascension Checkbox */}
                   <input
-                     className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center 
+                     className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center
                      justify-between rounded-sm align-middle text-zinc-500"
                      type="checkbox"
                      aria-label="Ascension"
@@ -219,7 +231,7 @@ const StatBlock = ({ attr }: any) => {
    const attr_icon = attr?.icon;
    const attr_name = attr?.label;
    const attr_val = attr?.value;
-   const attr_perc = attr?.percent;
+   const attr_perc = attr?.pct;
 
    return (
       <>
@@ -244,7 +256,7 @@ const StatBlock = ({ attr }: any) => {
             </div>
             <div className="text-sm font-semibold">
                <span className="inline-block align-middle">
-                  {attr_perc ? attr_val / 100 + "%" : attr_val}
+                  {attr_perc ? attr_val + "%" : attr_val}
                </span>
             </div>
          </div>
@@ -257,5 +269,5 @@ function calcMainStat(base: any, level_growth: any, star_growth: any) {
 }
 
 function calcSecondStat(base: any, secondary_growth: any) {
-   return Math.floor(base * (1 + secondary_growth / 10000));
+   return (base * (1 + secondary_growth / 10000)).toFixed(1);
 }

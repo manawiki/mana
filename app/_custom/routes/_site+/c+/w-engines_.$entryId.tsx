@@ -86,6 +86,7 @@ const QUERY = gql`
       WEngine(id: $entryId) {
          id
          name
+         desc
          rarity {
             id
             name
@@ -111,6 +112,7 @@ const QUERY = gql`
             id: name
             name
             value
+            pct
          }
          talent_title
          talent {
