@@ -30,8 +30,8 @@ kill_timeout = "5s"
   min_machines_running = 1
 
   [services.concurrency]
-  soft_limit = 200
-  hard_limit = 250
+  soft_limit = 800
+  hard_limit = 1000
   type = "requests"
 
   [[services.ports]]
