@@ -67,22 +67,6 @@ export function Skills({ data: char }: { data: AgentType }) {
    return (
       <>
          <H2 text="Skills" />
-         <div
-            dangerouslySetInnerHTML={{
-               __html: `<style>
-                                  div.zzz-skill-description > span {
-                                     background-color: rgb(50,50,50);
-                                     padding-top: 2px;
-                                     padding-right: 2px;
-                                     padding-left: 2px;
-                                     padding-bottom: 1px;
-                                     margin-right: 2px;
-                                     margin-left: 2px;
-                                     border-radius: 2px;
-                                  }
-                               </style>`,
-            }}
-         ></div>
          {skills?.map((sk: any) => {
             const [skillLevel, setSkillLevel] = useState(11);
             const [tab, setTab] = useState(false); // false = Description, true = Stats
@@ -213,7 +197,7 @@ export function Skills({ data: char }: { data: AgentType }) {
                                        {desc.name}
                                     </div>
                                     <div
-                                       className="zzz-skill-description mb-4"
+                                       className="dark:brightness-100 brightness-7 mb-4"
                                        dangerouslySetInnerHTML={{
                                           __html: display,
                                        }}

@@ -221,7 +221,7 @@ const CharacterList = ({ chars }: any) => {
                   return (
                      <div
                         key={opt.field}
-                        className={`border-color text-1 relative cursor-pointer 
+                        className={`border-color text-1 relative cursor-pointer
                         rounded-full border px-4 py-1 text-center text-xs font-bold ${
                            sort == opt.field
                               ? `bg-zinc-50 dark:bg-zinc-500/10`
@@ -237,23 +237,6 @@ const CharacterList = ({ chars }: any) => {
                })}
             </div>
          </div>
-
-         <div
-            dangerouslySetInnerHTML={{
-               __html: `<style>
-                                  div.zzz-skill-description > span {
-                                     background-color: rgb(50,50,50);
-                                     padding-top: 2px;
-                                     padding-right: 2px;
-                                     padding-left: 2px;
-                                     padding-bottom: 1px;
-                                     margin-right: 2px;
-                                     margin-left: 2px;
-                                     border-radius: 2px;
-                                  }
-                               </style>`,
-            }}
-         ></div>
 
          {/* List of Characters with applied sorting */}
          <div className="grid grid-cols-1 gap-3 pb-4 text-center laptop:grid-cols-2">

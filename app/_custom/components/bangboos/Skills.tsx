@@ -43,22 +43,6 @@ export function Skills({ data: char }: { data: BangbooType }) {
    return (
       <>
          <H2 text="Skills" />
-         <div
-            dangerouslySetInnerHTML={{
-               __html: `<style>
-                                  div.zzz-skill-description > span {
-                                     background-color: rgb(50,50,50);
-                                     padding-top: 2px;
-                                     padding-right: 2px;
-                                     padding-left: 2px;
-                                     padding-bottom: 1px;
-                                     margin-right: 2px;
-                                     margin-left: 2px;
-                                     border-radius: 2px;
-                                  }
-                               </style>`,
-            }}
-         ></div>
          {skills?.map((sk: any) => {
             const [skillLevel, setSkillLevel] = useState(0);
             const [tab, setTab] = useState(false); // false = Description, true = Stats
@@ -179,7 +163,7 @@ export function Skills({ data: char }: { data: BangbooType }) {
 
                         <div className="bg-zinc-50 dark:bg-dark350 shadow-sm shadow-1 border border-color-sub rounded-lg px-3 py-2  mt-2">
                            <div
-                              className="zzz-skill-description"
+                              className="dark:brightness-100 brightness-75"
                               dangerouslySetInnerHTML={{ __html: display }}
                            ></div>
                         </div>

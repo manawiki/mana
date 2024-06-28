@@ -39,23 +39,6 @@ export function Talents({ data: char }: { data: AgentType }) {
    return (
       <>
          <H2 text="Talents" />
-         <div
-            dangerouslySetInnerHTML={{
-               __html: `<style>
-                                  div.zzz-skill-description > span {
-                                     background-color: rgb(50,50,50);
-                                     padding-top: 2px;
-                                     padding-right: 2px;
-                                     padding-left: 2px;
-                                     padding-bottom: 1px;
-                                     margin-right: 2px;
-                                     margin-left: 2px;
-                                     border-radius: 2px;
-                                  }
-                               </style>`,
-            }}
-         ></div>
-
          {talent_list.map((t, i) => {
             const ticon = t.icon;
             const tname = t.talent?.name;
@@ -83,7 +66,7 @@ export function Talents({ data: char }: { data: AgentType }) {
                         <div className="font-bold text-2xl mb-2">{tname}</div>
                         {/* Description */}
                         <div
-                           className="zzz-skill-description"
+                           className="dark:brightness-100 brightness-7"
                            dangerouslySetInnerHTML={{ __html: tdesc }}
                         ></div>
                         {/* Flavor */}

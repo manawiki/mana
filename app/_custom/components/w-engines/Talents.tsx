@@ -42,22 +42,6 @@ export function Talents({ data: char }: { data: WEngineType }) {
    return (
       <>
          <H2 text="Talent" />
-         <div
-            dangerouslySetInnerHTML={{
-               __html: `<style>
-                                  div.zzz-skill-description > span {
-                                     background-color: rgb(50,50,50);
-                                     padding-top: 2px;
-                                     padding-right: 2px;
-                                     padding-left: 2px;
-                                     padding-bottom: 1px;
-                                     margin-right: 2px;
-                                     margin-left: 2px;
-                                     border-radius: 2px;
-                                  }
-                               </style>`,
-            }}
-         ></div>
          {/* Slider */}
          {talents?.length > 0 ? (
             <>
@@ -96,7 +80,7 @@ export function Talents({ data: char }: { data: WEngineType }) {
 
          <div className="bg-zinc-50 dark:bg-dark350 shadow-sm shadow-1 border border-color-sub rounded-lg px-3 py-2  mt-2">
             <div
-               className="zzz-skill-description"
+               className="dark:brightness-100 brightness-7"
                dangerouslySetInnerHTML={{ __html: talent_desc }}
             ></div>
          </div>

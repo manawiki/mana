@@ -41,23 +41,6 @@ export function Effects({ data: char }: { data: DiskDriveSetType }) {
    return (
       <>
          <H2 text="Set Effects" />
-         <div
-            dangerouslySetInnerHTML={{
-               __html: `<style>
-                                  div.zzz-skill-description > span {
-                                     background-color: rgb(50,50,50);
-                                     padding-top: 2px;
-                                     padding-right: 2px;
-                                     padding-left: 2px;
-                                     padding-bottom: 1px;
-                                     margin-right: 2px;
-                                     margin-left: 2px;
-                                     border-radius: 2px;
-                                  }
-                               </style>`,
-            }}
-         ></div>
-
          {/* Description */}
          {set_effects?.map((effect: any) => {
             return (
