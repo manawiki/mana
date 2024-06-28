@@ -5,7 +5,7 @@ export function RampScripts({
 }: {
    enableAds: boolean | null | undefined;
 }) {
-   if (process.env.NODE_ENV === "production" && enableAds)
+   if (process.env.NODE_ENV != "production" && enableAds)
       return (
          <>
             <Script

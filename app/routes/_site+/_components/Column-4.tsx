@@ -97,17 +97,6 @@ export function ColumnFour() {
                            )}
                         </div>
                         <Contributors site={site} />
-                        {/* <div className="text-xs text-1 pb-2">Lvl 1</div>
-                                 <div className="rounded-full h-3 w-full dark:bg-dark500 bg-teal-50 relative overflow-hidden">
-                                    <span className="absolute top-0 left-0 bg-teal-500 w-40 h-full" />
-                                 </div> */}
-                        <div className="flex items-center justify-center relative z-20">
-                           <AdUnit
-                              adType="desktopSquareATF"
-                              selectorId="rightSidebarBottomUnit"
-                              enableAds={site.enableAds}
-                           />
-                        </div>
                      </div>
                      <span
                         className="bg-gradient-to-t dark:from-bg3Dark dark:laptop:from-bg2Dark dark:to-transparent 
