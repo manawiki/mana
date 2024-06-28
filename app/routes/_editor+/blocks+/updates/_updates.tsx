@@ -20,7 +20,7 @@ import { Icon } from "~/components/Icon";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { withLinkify } from "~/routes/_editor+/core/plugins/link/withLinkify";
-import { onKeyDown } from "~/routes/_editor+/core/utils";
+import { initialValue, onKeyDown } from "~/routes/_editor+/core/utils";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding, isProcessing } from "~/utils/form";
 import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
@@ -73,7 +73,7 @@ export function BlockUpdates({ element }: Props) {
          <>
             <H2Plain text="Updates" />
             <div className="divide-color-sub border-color-sub bg-3 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
-               <div className="flex items-center justify-between gap-2 bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
+               <div className="flex items-center justify-between bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                      {Intl.DateTimeFormat("en-US", {
                         month: "short",
@@ -142,7 +142,7 @@ export function BlockUpdates({ element }: Props) {
                            timeZone: "America/Los_Angeles",
                         })}
                      </time>
-                     <span className="divide-color flex-grow divide-y text-sm">
+                     <span className="divide-color flex-grow divide-y text-sm min-w-0">
                         {row.entry?.length === 0 ? (
                            <UpdatesEditor rowId={row.id} siteId={siteId} />
                         ) : (
@@ -150,7 +150,7 @@ export function BlockUpdates({ element }: Props) {
                               {row.entry?.map((item) => (
                                  <div
                                     key={item.id}
-                                    className="group/updates relative p-3"
+                                    className="group/updates relative pl-0 p-3"
                                  >
                                     <UpdatesEditor
                                        rowId={row.id}
@@ -224,7 +224,7 @@ export const action = async ({
          });
 
          const newData = JSON.parse(data);
-         const currentDate = dt.format(new Date(), "MMM-dd-yy");
+         const currentDate = dt.format(new Date(), "MMM-DD-YYYY");
 
          const update = await payload.find({
             collection: "updates",
@@ -395,7 +395,7 @@ export function UpdatesEditor({
          //@ts-ignore
          onChange={(e) => setValue(e)}
          editor={editor}
-         initialValue={blocks as Descendant[]}
+         initialValue={(blocks as Descendant[]) ?? initialValue()}
       >
          <Toolbar />
          <Editable
