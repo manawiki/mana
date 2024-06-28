@@ -99,7 +99,7 @@ export async function loader({
 }
 
 const searchLinkUrlGenerator = (item: any, siteSlug?: string) => {
-   const type = item.doc?.relationTo;
+   const type = item?.doc?.relationTo;
    switch (type) {
       case "customPages": {
          const slug = item.slug;
@@ -175,7 +175,7 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
    //use local loader to pull searchResults
    const fetcher = useFetcher();
    const [query, setQuery] = useState("");
-   const debouncedValue = useDebouncedValue(query, 100);
+   const debouncedValue = useDebouncedValue(query, 1000);
    //todo - seems brittle, doublecheck
    const {
       site: { id: siteId },
@@ -196,7 +196,7 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
       if (debouncedValue) {
          return fetcher.submit(
             { q: query ?? "", intent: "search", type: siteType },
-            { method: "get", action: loaderRoute },
+            { method: "GET", action: loaderRoute },
          );
       }
    }, [debouncedValue]);
