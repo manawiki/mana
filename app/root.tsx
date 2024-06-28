@@ -14,6 +14,7 @@ import {
    Meta,
    Outlet,
    Scripts,
+   ShouldRevalidateFunctionArgs,
    useLoaderData,
    useMatches,
    useOutletContext,
@@ -262,4 +263,15 @@ export function useChangeLanguage(locale: string) {
    useEffect(() => {
       i18n.changeLanguage(locale);
    }, [locale, i18n]);
+}
+
+// don't revalidate loader when url param changes
+export function shouldRevalidate({
+   currentUrl,
+   nextUrl,
+   defaultShouldRevalidate,
+}: ShouldRevalidateFunctionArgs) {
+   return currentUrl.pathname === nextUrl.pathname
+      ? false
+      : defaultShouldRevalidate;
 }
