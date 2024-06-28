@@ -1,3 +1,7 @@
+import { AchievementGroups } from "./achievement-groups";
+import { AchievementRarities } from "./achievement-rarities";
+import { AchievementSubGroups } from "./achievement-subgroups";
+import { Achievements } from "./achievements";
 import { _CharacterCamps } from "./_character-camps";
 import { _DamageElements } from "./_damage-elements";
 import { _DamageTypes } from "./_damage-types";
@@ -18,6 +22,10 @@ import { Talents } from "./talents";
 import { WEngines } from "./w-engines";
 
 export const CustomCollections = [
+  AchievementGroups,
+  AchievementRarities,
+  AchievementSubGroups,
+  Achievements,
   Agents,
   Bangboos,
   WEngines,
