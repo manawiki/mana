@@ -14,12 +14,13 @@ import { Agents } from "./agents";
 import { Bangboos } from "./bangboos";
 import { BangbooSkills } from "./bangboo-skills";
 import { BangbooTalents } from "./bangboo-talents";
-import { DiskDrives } from "./disk-drives";
 import { DiskDriveSets } from "./disk-drive-sets";
+import { DiskDrivePartitions } from "./disk-drive-partitions";
 import { Materials } from "./materials";
 import { Skills } from "./skills";
 import { Talents } from "./talents";
 import { WEngines } from "./w-engines";
+import { DiskDrivePools } from "./disk-drive-pools";
 
 export const CustomCollections = [
   AchievementGroups,
@@ -29,8 +30,9 @@ export const CustomCollections = [
   Agents,
   Bangboos,
   WEngines,
+  DiskDrivePartitions,
+  DiskDrivePools,
   DiskDriveSets,
-  DiskDrives,
   BangbooSkills,
   BangbooTalents,
   Materials,

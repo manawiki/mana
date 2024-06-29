@@ -20,7 +20,7 @@ export const DiskDriveSets: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
+         name: "slug",
          type: "text",
       },
       {
@@ -30,6 +30,17 @@ export const DiskDriveSets: CollectionConfig = {
       {
          name: "desc",
          type: "textarea",
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "rarity_possible",
+         type: "relationship",
+         relationTo: "_rarities",
+         hasMany: true,
       },
       {
          name: "set_effect",
@@ -46,33 +57,33 @@ export const DiskDriveSets: CollectionConfig = {
          ],
       },
       {
-         name: "disks",
-         type: "relationship",
-         relationTo: "disk-drives",
-         hasMany: true,
-      },
-      {
-         name: "rarity_possible",
-         type: "relationship",
-         relationTo: "_rarities",
-         hasMany: true,
-      },
-      {
-         name: "icon_path",
-         type: "text",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "slug",
-         type: "text",
+         name: "partitions",
+         type: "array",
+         fields: [
+            {
+               name: "name",
+               type: "text",
+            },
+            {
+               name: "desc",
+               type: "textarea"
+            },
+            {
+               name: "partition",
+               type: "relationship",
+               relationTo: "disk-drive-partitions",
+            },
+            {
+               name: "main_stat_pool",
+               type: "relationship",
+               relationTo: "disk-drive-pools",
+            },
+            {
+               name: "sub_stat_pool",
+               type: "relationship",
+               relationTo: "disk-drive-pools",
+            }
+         ],
       },
       {
          name: "checksum",
