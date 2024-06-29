@@ -20,15 +20,7 @@ export const _Rarities: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
-         type: "text",
-      },
-      {
          name: "name",
-         type: "text",
-      },
-      {
-         name: "icon_name",
          type: "text",
       },
       {

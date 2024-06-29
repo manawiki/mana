@@ -20,7 +20,7 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
+         name: "slug",
          type: "text",
       },
       {
@@ -36,6 +36,11 @@ export const Materials: CollectionConfig = {
          type: "textarea",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "rarity",
          type: "relationship",
          relationTo: "_rarities",
@@ -44,23 +49,6 @@ export const Materials: CollectionConfig = {
          name: "class",
          type: "relationship",
          relationTo: "_material-classes",
-      },
-      {
-         name: "icon_path",
-         type: "text",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "slug",
-         type: "text",
       },
       {
          name: "checksum",

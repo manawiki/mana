@@ -20,20 +20,16 @@ export const _Stats: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
+         name: "name",
          type: "text",
       },
       {
-         name: "name",
+         name: "desc",
          type: "text",
       },
       {
          name: "divisor",
          type: "number",
-      },
-      {
-         name: "icon_name",
-         type: "text",
       },
       {
          name: "icon",
