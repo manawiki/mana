@@ -21,6 +21,7 @@ import { Skills } from "./skills";
 import { Talents } from "./talents";
 import { WEngines } from "./w-engines";
 import { DiskDrivePools } from "./disk-drive-pools";
+import { Specialties } from "./specialties";
 
 export const CustomCollections = [
   AchievementGroups,
@@ -37,6 +38,7 @@ export const CustomCollections = [
   BangbooTalents,
   Materials,
   Skills,
+  Specialties,
   Talents,
   _CharacterCamps,
   _DamageElements,

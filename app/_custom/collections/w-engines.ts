@@ -20,7 +20,7 @@ export const WEngines: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
+         name: "slug",
          type: "text",
       },
       {
@@ -32,17 +32,42 @@ export const WEngines: CollectionConfig = {
          type: "text",
       },
       {
+         name: "comment",
+         type: "text",
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_full",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_big",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "rarity",
          type: "relationship",
          relationTo: "_rarities",
+      },
+      {
+         name: "specialty",
+         type: "relationship",
+         relationTo: "specialties",
       },
       {
          name: "stat_primary",
          type: "group",
          fields: [
             {
-               name: "name",
-               type: "text",
+               name: "stat",
+               type: "relationship",
+               relationTo: "_stats",
             },
             {
                name: "value",
@@ -55,8 +80,9 @@ export const WEngines: CollectionConfig = {
          type: "group",
          fields: [
             {
-               name: "name",
-               type: "text",
+               name: "stat",
+               type: "relationship",
+               relationTo: "_stats",
             },
             {
                name: "value",
@@ -85,49 +111,6 @@ export const WEngines: CollectionConfig = {
                type: "textarea",
             },
          ],
-      },
-      {
-         name: "icon_path",
-         type: "text",
-      },
-      {
-         name: "icon_full_path",
-         type: "text",
-      },
-      {
-         name: "icon_big_path",
-         type: "text",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon_full_name",
-         type: "text",
-      },
-      {
-         name: "icon_big_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_full",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_big",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "slug",
-         type: "text",
       },
       {
          name: "checksum",
