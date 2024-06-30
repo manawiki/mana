@@ -188,6 +188,7 @@ export function ColumnFour() {
                         <Link to={site?.logoURL}>
                            <Image
                               className="object-contain h-6"
+                              width={500}
                               height={80}
                               options="height=80"
                               url={
