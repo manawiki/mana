@@ -10,10 +10,10 @@ export const Agents: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
@@ -59,24 +59,24 @@ export const Agents: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarities",
+         relationTo: "rarities",
       },
       {
          name: "damage_type",
          type: "relationship",
-         relationTo: "_damage-types",
+         relationTo: "damage-types",
          hasMany: true,
       },
       {
          name: "damage_element",
          type: "relationship",
-         relationTo: "_damage-elements",
+         relationTo: "damage-elements",
          hasMany: true,
       },
       {
          name: "character_camp",
          type: "relationship",
-         relationTo: "_character-camps",
+         relationTo: "character-camps",
       },
       {
          name: "gender",

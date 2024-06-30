@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+
 export const WEngines: CollectionConfig = {
    slug: "w-engines",
    labels: { singular: "w-engine", plural: "w-engines" },
@@ -9,10 +10,10 @@ export const WEngines: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
@@ -53,7 +54,7 @@ export const WEngines: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarities",
+         relationTo: "rarities",
       },
       {
          name: "specialty",
@@ -67,7 +68,7 @@ export const WEngines: CollectionConfig = {
             {
                name: "stat",
                type: "relationship",
-               relationTo: "_stats",
+               relationTo: "stats",
             },
             {
                name: "value",
@@ -82,7 +83,7 @@ export const WEngines: CollectionConfig = {
             {
                name: "stat",
                type: "relationship",
-               relationTo: "_stats",
+               relationTo: "stats",
             },
             {
                name: "value",

@@ -1,18 +1,19 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
-export const _Stats: CollectionConfig = {
-   slug: "_stats",
-   labels: { singular: "_stat", plural: "_stats" },
+
+export const Stats: CollectionConfig = {
+   slug: "stats",
+   labels: { singular: "stat", plural: "stats" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {

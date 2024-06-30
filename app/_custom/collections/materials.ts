@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+
 export const Materials: CollectionConfig = {
    slug: "materials",
    labels: { singular: "material", plural: "materials" },
@@ -9,10 +10,10 @@ export const Materials: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
@@ -43,12 +44,12 @@ export const Materials: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarities",
+         relationTo: "rarities",
       },
       {
          name: "class",
          type: "relationship",
-         relationTo: "_material-classes",
+         relationTo: "material-classes",
       },
       {
          name: "checksum",

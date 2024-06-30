@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+
 export const Skills: CollectionConfig = {
    slug: "skills",
    labels: { singular: "skill", plural: "skills" },
@@ -9,10 +10,10 @@ export const Skills: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
@@ -22,7 +23,7 @@ export const Skills: CollectionConfig = {
       {
          name: "skill_type",
          type: "relationship",
-         relationTo: "skill-types",
+         relationTo: "agent-skill-types",
       },
       {
          name: "description",

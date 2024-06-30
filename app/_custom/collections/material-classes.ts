@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
 
-export const Talents: CollectionConfig = {
-   slug: "talents",
-   labels: { singular: "talent", plural: "talents" },
+export const MaterialClasses: CollectionConfig = {
+   slug: "material-classes",
+   labels: { singular: "material-class", plural: "material-classes" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -23,18 +23,6 @@ export const Talents: CollectionConfig = {
       {
          name: "name",
          type: "text",
-      },
-      {
-         name: "sort",
-         type: "number",
-      },
-      {
-         name: "desc",
-         type: "textarea",
-      },
-      {
-         name: "desc_flavor",
-         type: "textarea",
       },
       {
          name: "checksum",

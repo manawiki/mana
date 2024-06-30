@@ -1,18 +1,19 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
-export const _DamageElements: CollectionConfig = {
-   slug: "_damage-elements",
-   labels: { singular: "_damage-element", plural: "_damage-elements" },
+
+export const DamageTypes: CollectionConfig = {
+   slug: "damage-types",
+   labels: { singular: "damage-type", plural: "damage-types" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
@@ -31,18 +32,6 @@ export const _DamageElements: CollectionConfig = {
          name: "icon",
          type: "upload",
          relationTo: "images",
-      },
-      {
-         name: "hp_revise",
-         type: "number",
-      },
-      {
-         name: "armor_revise",
-         type: "number",
-      },
-      {
-         name: "shield_revise",
-         type: "number",
       },
       {
          name: "checksum",

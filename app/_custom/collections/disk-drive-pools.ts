@@ -27,7 +27,7 @@ export const DiskDrivePools: CollectionConfig = {
             {
                name: "stat",
                type: "relationship",
-               relationTo: "_stats",
+               relationTo: "stats",
             },
             {
                name: "value",

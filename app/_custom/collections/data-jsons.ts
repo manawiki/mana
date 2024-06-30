@@ -1,18 +1,19 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
-export const _CharacterCamps: CollectionConfig = {
-   slug: "_character-camps",
-   labels: { singular: "_character-camp", plural: "_character-camps" },
+
+export const DataJsons: CollectionConfig = {
+   slug: "data-jsons",
+   labels: { singular: "data-json", plural: "data-jsons" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
@@ -24,9 +25,8 @@ export const _CharacterCamps: CollectionConfig = {
          type: "text",
       },
       {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
+         name: "json",
+         type: "json",
       },
       {
          name: "checksum",
