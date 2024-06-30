@@ -20,29 +20,9 @@ export const Skills: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
-         type: "text",
-      },
-      {
-         name: "name",
-         type: "text",
-      },
-      {
-         name: "character",
-         type: "relationship",
-         relationTo: "agents",
-      },
-      {
-         name: "text_type",
-         type: "text",
-      },
-      {
          name: "skill_type",
-         type: "text",
-      },
-      {
-         name: "core_desc",
-         type: "json",
+         type: "relationship",
+         relationTo: "skill-types",
       },
       {
          name: "description",
@@ -59,7 +39,7 @@ export const Skills: CollectionConfig = {
          ],
       },
       {
-         name: "stats",
+         name: "modifiers",
          type: "array",
          fields: [
             {
@@ -67,8 +47,28 @@ export const Skills: CollectionConfig = {
                type: "text",
             },
             {
-               name: "params",
+               name: "modifers",
                type: "json",
+            },
+         ],
+      },
+      {
+         name: "materials",
+         type: "array",
+         fields: [
+            {
+               name: "lv",
+               type: "number",
+            },
+            {
+               name: "material",
+               type: "relationship",
+               relationTo: "materials",
+               hasMany: false,
+            },
+            {
+               name: "qty",
+               type: "number",
             },
          ],
       },

@@ -21,7 +21,7 @@ export const Agents: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
+         name: "slug",
          type: "text",
       },
       {
@@ -35,6 +35,26 @@ export const Agents: CollectionConfig = {
       {
          name: "name_full",
          type: "text",
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_full",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_general",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_round",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "rarity",
@@ -63,78 +83,34 @@ export const Agents: CollectionConfig = {
          type: "text",
       },
       {
-         name: "weapon_type",
-         type: "text",
+         name: "stats",
+         type: "array",
+         fields: [
+            {
+               name: "stat",
+               type: "relationship",
+               relationTo: "stats",
+            },
+            {
+               name: "base",
+               type: "number",
+            },
+            {
+               name: "growth",
+               type: "number",
+            }
+         ],
       },
       {
-         name: "hp",
-         type: "number",
-      },
-      {
-         name: "atk",
-         type: "number",
-      },
-      {
-         name: "def",
-         type: "number",
-      },
-      {
-         name: "hp_growth",
-         type: "number",
-      },
-      {
-         name: "atk_growth",
-         type: "number",
-      },
-      {
-         name: "def_growth",
-         type: "number",
-      },
-      {
-         name: "impact",
-         type: "number",
-      },
-      {
-         name: "crit",
-         type: "number",
-      },
-      {
-         name: "crit_damage",
-         type: "number",
-      },
-      {
-         name: "attribute_mastery",
-         type: "number",
-      },
-      {
-         name: "skill_basic",
+         name: "skills",
          type: "relationship",
          relationTo: "skills",
+         hasMany: true,
       },
       {
-         name: "skill_dodge",
+         name: "core_skill",
          type: "relationship",
-         relationTo: "skills",
-      },
-      {
-         name: "skill_special",
-         type: "relationship",
-         relationTo: "skills",
-      },
-      {
-         name: "skill_chain",
-         type: "relationship",
-         relationTo: "skills",
-      },
-      {
-         name: "skill_core",
-         type: "relationship",
-         relationTo: "skills",
-      },
-      {
-         name: "skill_assist",
-         type: "relationship",
-         relationTo: "skills",
+         relationTo: "agent-core-skills",
       },
       {
          name: "talents",
@@ -159,16 +135,34 @@ export const Agents: CollectionConfig = {
                type: "number",
             },
             {
-               name: "hp_adv",
-               type: "number",
+               name: "stat_adv",
+               type: "array",
+               fields: [
+                  {
+                     name: "stat",
+                     type: "relationship",
+                     relationTo: "stats",
+                  },
+                  {
+                     name: "value",
+                     type: "number",
+                  },
+               ],
             },
             {
-               name: "atk_adv",
-               type: "number",
-            },
-            {
-               name: "def_adv",
-               type: "number",
+               name: "stat_add",
+               type: "array",
+               fields: [
+                  {
+                     name: "stat",
+                     type: "relationship",
+                     relationTo: "stats",
+                  },
+                  {
+                     name: "value",
+                     type: "number",
+                  },
+               ],
             },
             {
                name: "materials",
@@ -189,58 +183,6 @@ export const Agents: CollectionConfig = {
          ],
       },
       {
-         name: "icon_path",
-         type: "text",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon_full_path",
-         type: "text",
-      },
-      {
-         name: "icon_full_name",
-         type: "text",
-      },
-      {
-         name: "icon_general_path",
-         type: "text",
-      },
-      {
-         name: "icon_general_name",
-         type: "text",
-      },
-      {
-         name: "icon_round_path",
-         type: "text",
-      },
-      {
-         name: "icon_round_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_full",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_general",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_round",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
          name: "profile_info",
          type: "text",
       },
@@ -256,44 +198,40 @@ export const Agents: CollectionConfig = {
          name: "bday",
          type: "text",
       },
-      {
-         name: "quotes",
-         type: "array",
-         fields: [
-            {
-               name: "title",
-               type: "text",
-            },
-            {
-               name: "content",
-               type: "text",
-            },
-            {
-               name: "vo_zh",
-               type: "upload",
-               relationTo: "images",
-            },
-            {
-               name: "vo_ja",
-               type: "upload",
-               relationTo: "images",
-            },
-            {
-               name: "vo_en",
-               type: "upload",
-               relationTo: "images",
-            },
-            {
-               name: "vo_ko",
-               type: "upload",
-               relationTo: "images",
-            },
-         ],
-      },
-      {
-         name: "slug",
-         type: "text",
-      },
+      //{
+      //   name: "quotes",
+      //   type: "array",
+      //   fields: [
+      //      {
+      //         name: "title",
+      //         type: "text",
+      //      },
+      //      {
+      //         name: "content",
+      //         type: "text",
+      //      },
+      //      {
+      //         name: "vo_zh",
+      //         type: "upload",
+      //         relationTo: "images",
+      //      },
+      //      {
+      //         name: "vo_ja",
+      //         type: "upload",
+      //         relationTo: "images",
+      //      },
+      //      {
+      //         name: "vo_en",
+      //         type: "upload",
+      //         relationTo: "images",
+      //      },
+      //      {
+      //         name: "vo_ko",
+      //         type: "upload",
+      //         relationTo: "images",
+      //      },
+      //   ],
+      //},
       {
          name: "checksum",
          type: "text",

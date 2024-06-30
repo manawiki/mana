@@ -22,12 +22,16 @@ import { Talents } from "./talents";
 import { WEngines } from "./w-engines";
 import { DiskDrivePools } from "./disk-drive-pools";
 import { Specialties } from "./specialties";
+import { AgentCoreSkills } from "./agent-core-skills";
+import { AgentSkillTypes } from "./agent-skill-types";
 
 export const CustomCollections = [
   AchievementGroups,
   AchievementRarities,
   AchievementSubGroups,
   Achievements,
+  AgentCoreSkills,
+  AgentSkillTypes,
   Agents,
   Bangboos,
   WEngines,
