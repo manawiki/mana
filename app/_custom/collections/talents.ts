@@ -20,10 +20,6 @@ export const Talents: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
-         type: "text",
-      },
-      {
          name: "name",
          type: "text",
       },

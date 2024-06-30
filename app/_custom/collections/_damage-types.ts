@@ -20,20 +20,12 @@ export const _DamageTypes: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
-         type: "text",
-      },
-      {
          name: "name",
          type: "text",
       },
       {
          name: "desc",
          type: "textarea",
-      },
-      {
-         name: "icon_name",
-         type: "text",
       },
       {
          name: "icon",

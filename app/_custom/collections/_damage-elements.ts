@@ -20,16 +20,17 @@ export const _DamageElements: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
-         type: "text",
-      },
-      {
          name: "name",
          type: "text",
       },
       {
          name: "desc",
          type: "textarea",
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "hp_revise",
@@ -42,15 +43,6 @@ export const _DamageElements: CollectionConfig = {
       {
          name: "shield_revise",
          type: "number",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
       },
       {
          name: "checksum",
