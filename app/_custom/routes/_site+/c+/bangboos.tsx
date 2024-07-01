@@ -215,7 +215,7 @@ const CharacterList = ({ chars }: any) => {
                   return (
                      <div
                         key={opt.field}
-                        className={`border-color text-1 relative cursor-pointer 
+                        className={`border-color text-1 relative cursor-pointer
                         rounded-full border px-4 py-1 text-center text-xs font-bold ${
                            sort == opt.field
                               ? `bg-zinc-50 dark:bg-zinc-500/10`
@@ -250,7 +250,7 @@ const CharacterList = ({ chars }: any) => {
                      <div className="relative w-full">
                         {/* Rarity */}
                         <div
-                           className="border-color shadow-1 absolute left-1 bottom-5 z-20 flex 
+                           className="border-color shadow-1 absolute left-1 bottom-5 z-20 flex
                         h-7 w-7 items-center justify-center rounded-full border bg-zinc-800 shadow"
                         >
                            <Image
@@ -306,33 +306,25 @@ const CharacterList = ({ chars }: any) => {
 
 const BANGBOOS = gql`
    query Bangboos {
-      Bangboos(
-         limit: 100
-         sort: "name"
-         where: { name: { not_equals: null } }
-      ) {
-         docs {
-            id
-            name
-            slug
-            hp
-            atk
-            def
-            impact
-            icon_full {
-               url
-            }
-            icon {
-               url
-            }
-            rarity {
-               id
-               name
-               icon {
-                  url
-               }
-            }
+   Bangboos(limit: 0 sort: "name") {
+      docs {
+         id
+         slug
+         name
+         rarity {
+         id
+         name
+         icon {
+            url
+         }
+         }
+         icon {
+         url
+         }
+         icon_full {
+         url
          }
       }
+   }
    }
 `;

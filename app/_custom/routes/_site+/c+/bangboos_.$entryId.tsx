@@ -72,34 +72,77 @@ export default function EntryPage() {
 
 const QUERY = gql`
    query Bangboo($entryId: String!) {
-      Bangboo(id: $entryId) {
+   Bangboo(id: $entryId) {
+      id
+      slug
+      name
+      desc
+      rarity {
          id
          name
-         desc
-         slug
-         hp
-         atk
-         def
-         hp_growth
-         atk_growth
-         def_growth
-         impact
-         attribute_mastery
-         crit
-         icon_full {
-            url
+         icon {
+         url
          }
+      }
+      icon {
+         url
+      }
+      icon_full {
+         url
+      }
+      stats {
+         stat {
+         id
+         name
          icon {
             url
          }
-         rarity {
+         }
+         base
+         growth
+      }
+      ascensions {
+         asc
+         lv_min
+         lv_max
+         stat_adv {
+         stat {
             id
             name
             icon {
                url
             }
          }
-         skills {
+         value
+         }
+         stat_add {
+         stat {
+            id
+            name
+            icon {
+               url
+            }
+         }
+         value
+         }
+         materials {
+         material {
+            id
+            slug
+            name
+            icon {
+               url
+            }
+         }
+         qty
+         }
+      }
+      skills {
+         relationTo
+         value {
+         __typename
+         ... on BangbooSkill {
+            id
             name
             desc
             icon {
@@ -110,37 +153,22 @@ const QUERY = gql`
                params
             }
          }
-         talents {
-            name
-            levels {
-               desc
-            }
+         ... on BangbooTalent {
+            id
             icon {
                url
             }
-         }
-         ascension_data {
-            asc
-            lv_min
-            lv_max
-            hp_adv
-            atk_adv
-            def_adv
-            materials {
-               material {
-                  id
-                  name
-                  slug
-                  rarity {
-                     id
-                  }
-                  icon {
-                     url
-                  }
+            levels {
+               rank
+               desc
+               params {
+               title
+               params
                }
-               qty
             }
          }
+         }
       }
+   }
    }
 `;
