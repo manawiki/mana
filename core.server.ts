@@ -148,13 +148,6 @@ async function startCore() {
          : createProductionRequestHandler(),
    );
 
-   app.get("/ads.txt", function (req, res) {
-      res.redirect(
-         301,
-         "https://config.playwire.com/dyn_ads/1022828/70684/ads.txt",
-      );
-   });
-
    const port = process.env.PORT || 3000;
 
    app.listen(port, () => {
