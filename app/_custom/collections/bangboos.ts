@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+
 export const Bangboos: CollectionConfig = {
    slug: "bangboos",
    labels: { singular: "bangboo", plural: "bangboos" },
@@ -9,10 +10,10 @@ export const Bangboos: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
@@ -20,7 +21,7 @@ export const Bangboos: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
+         name: "slug",
          type: "text",
       },
       {
@@ -33,63 +34,44 @@ export const Bangboos: CollectionConfig = {
       },
       {
          name: "desc",
-         type: "textarea",
+         type: "text",
       },
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarities",
+         relationTo: "rarities",
       },
       {
-         name: "hp",
-         type: "number",
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
-         name: "hp_growth",
-         type: "number",
+         name: "icon_full",
+         type: "upload",
+         relationTo: "images",
       },
       {
-         name: "atk",
-         type: "number",
+         name: "stats",
+         type: "array",
+         fields: [
+            {
+               name: "stat",
+               type: "relationship",
+               relationTo: "stats",
+            },
+            {
+               name: "base",
+               type: "number",
+            },
+            {
+               name: "growth",
+               type: "number",
+            }
+         ],
       },
       {
-         name: "atk_growth",
-         type: "number",
-      },
-      {
-         name: "def",
-         type: "number",
-      },
-      {
-         name: "def_growth",
-         type: "number",
-      },
-      {
-         name: "impact",
-         type: "number",
-      },
-      {
-         name: "attribute_mastery",
-         type: "number",
-      },
-      {
-         name: "crit",
-         type: "number",
-      },
-      {
-         name: "skills",
-         type: "relationship",
-         relationTo: "bangboo-skills",
-         hasMany: true,
-      },
-      {
-         name: "talents",
-         type: "relationship",
-         relationTo: "bangboo-talents",
-         hasMany: true,
-      },
-      {
-         name: "ascension_data",
+         name: "ascensions",
          type: "array",
          fields: [
             {
@@ -105,16 +87,34 @@ export const Bangboos: CollectionConfig = {
                type: "number",
             },
             {
-               name: "hp_adv",
-               type: "number",
+               name: "stat_adv",
+               type: "array",
+               fields: [
+                  {
+                     name: "stat",
+                     type: "relationship",
+                     relationTo: "stats",
+                  },
+                  {
+                     name: "value",
+                     type: "number",
+                  },
+               ],
             },
             {
-               name: "atk_adv",
-               type: "number",
-            },
-            {
-               name: "def_adv",
-               type: "number",
+               name: "stat_add",
+               type: "array",
+               fields: [
+                  {
+                     name: "stat",
+                     type: "relationship",
+                     relationTo: "stats",
+                  },
+                  {
+                     name: "value",
+                     type: "number",
+                  },
+               ],
             },
             {
                name: "materials",
@@ -124,7 +124,6 @@ export const Bangboos: CollectionConfig = {
                      name: "material",
                      type: "relationship",
                      relationTo: "materials",
-                     hasMany: false,
                   },
                   {
                      name: "qty",
@@ -135,34 +134,10 @@ export const Bangboos: CollectionConfig = {
          ],
       },
       {
-         name: "icon_path",
-         type: "text",
-      },
-      {
-         name: "icon_full_path",
-         type: "text",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon_full_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_full",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "slug",
-         type: "text",
+         name: "skills",
+         type: "relationship",
+         relationTo: ["bangboo-skills", "bangboo-talents"],
+         hasMany: true,
       },
       {
          name: "checksum",

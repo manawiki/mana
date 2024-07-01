@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+
 export const BangbooSkills: CollectionConfig = {
    slug: "bangboo-skills",
    labels: { singular: "bangboo-skill", plural: "bangboo-skills" },
@@ -9,18 +10,14 @@ export const BangbooSkills: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
          name: "id",
-         type: "text",
-      },
-      {
-         name: "data_key",
          type: "text",
       },
       {
@@ -32,9 +29,9 @@ export const BangbooSkills: CollectionConfig = {
          type: "textarea",
       },
       {
-         name: "bangboo",
-         type: "relationship",
-         relationTo: "bangboos",
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "params",
@@ -49,19 +46,6 @@ export const BangbooSkills: CollectionConfig = {
                type: "json",
             },
          ],
-      },
-      {
-         name: "icon_path",
-         type: "text",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
       },
       {
          name: "checksum",

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+
 export const BangbooTalents: CollectionConfig = {
    slug: "bangboo-talents",
    labels: { singular: "bangboo-talent", plural: "bangboo-talents" },
@@ -9,10 +10,10 @@ export const BangbooTalents: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: isStaff,
       read: () => true,
-      update: isStaff, //udpate in future to allow site admins as well
-      delete: isStaff, //udpate in future to allow site admins as well
+      update: isStaff,
+      delete: isStaff,
    },
    fields: [
       {
@@ -20,30 +21,18 @@ export const BangbooTalents: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
-         type: "text",
-      },
-      {
          name: "name",
          type: "text",
       },
       {
-         name: "slot",
-         type: "number",
-      },
-      {
-         name: "bangboo",
-         type: "relationship",
-         relationTo: "bangboos",
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "levels",
          type: "array",
          fields: [
-            {
-               name: "data_key",
-               type: "text",
-            },
             {
                name: "rank",
                type: "number",
@@ -52,20 +41,21 @@ export const BangbooTalents: CollectionConfig = {
                name: "desc",
                type: "textarea",
             },
+            {
+               name: "params",
+               type: "array",
+               fields: [
+                  {
+                     name: "title",
+                     type: "text",
+                  },
+                  {
+                     name: "params",
+                     type: "json",
+                  },
+               ],
+            }
          ],
-      },
-      {
-         name: "icon_path",
-         type: "text",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
       },
       {
          name: "checksum",
