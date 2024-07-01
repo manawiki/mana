@@ -65,25 +65,54 @@ export default function EntryPage() {
 
 const QUERY = gql`
    query DiskDriveSet($entryId: String!) {
-      DiskDriveSet(id: $entryId) {
+   DiskDriveSet(id: $entryId) {
+      id
+      slug
+      name
+      desc
+      icon {
+         url
+      }
+      rarity_possible {
          id
          name
-         desc
-         rarity_possible {
-            id
-            name
-            icon_item {
-               url
-            }
+         icon_item {
+         url
          }
-         icon {
-            url
-         }
-         set_effect {
-            num
-            desc
-         }
-         slug
       }
+      set_effect {
+         num
+         desc
+      }
+      partitions {
+         name
+         desc
+         partition {
+         name
+         }
+         main_stat_pool {
+         stats {
+            stat {
+               name
+               icon {
+               url
+               }
+            }
+            value
+         }
+         }
+         sub_stat_pool {
+         stats {
+            stat {
+               name
+               icon {
+               url
+               }
+            }
+            value
+         }
+         }
+      }
+   }
    }
 `;

@@ -360,31 +360,27 @@ const CharacterList = ({ chars }: any) => {
 
 const CHARACTERS = gql`
    query DiskDriveSets {
-      DiskDriveSets(
-         limit: 100
-         sort: "name"
-         where: { name: { not_equals: null } }
-      ) {
-         docs {
-            id
-            name
-            desc
-            rarity_possible {
-               id
-               name
-               icon_item {
-                  url
-               }
-            }
-            icon {
-               url
-            }
-            set_effect {
-               num
-               desc
-            }
-            slug
+   DiskDriveSets(limit: 0 sort: "name") {
+      docs {
+         id
+         slug
+         name
+         desc
+         rarity_possible {
+         id
+         name
+         icon_item {
+            url
+         }
+         }
+         icon {
+         url
+         }
+         set_effect {
+         num
+         desc
          }
       }
+   }
    }
 `;
