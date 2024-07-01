@@ -13,7 +13,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
    return new Response(body, {
       headers: {
          "content-type": "text/plain",
-         "Cache-Control": "public, max-age=604800, immutable",
+         "Cache-Control": "public, max-age=86400",
       },
    });
 }
