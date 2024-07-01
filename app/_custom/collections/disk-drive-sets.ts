@@ -78,11 +78,13 @@ export const DiskDriveSets: CollectionConfig = {
                name: "main_stat_pool",
                type: "relationship",
                relationTo: "disk-drive-pools",
+               hasMany: true,
             },
             {
                name: "sub_stat_pool",
                type: "relationship",
                relationTo: "disk-drive-pools",
+               hasMany: true,
             }
          ],
       },

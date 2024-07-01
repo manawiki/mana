@@ -48,7 +48,7 @@ export const Skills: CollectionConfig = {
                type: "text",
             },
             {
-               name: "modifers",
+               name: "params",
                type: "json",
             },
          ],
