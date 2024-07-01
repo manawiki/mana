@@ -83,44 +83,54 @@ export default function EntryPage() {
 
 const QUERY = gql`
    query WEngine($entryId: String!) {
-      WEngine(id: $entryId) {
+   WEngine(id: $entryId) {
+      id
+      slug
+      name
+      desc
+      comment
+      icon {
+         url
+      }
+      icon_full {
+         url
+      }
+      icon_big {
+         url
+      }
+      rarity {
+         name
+         icon_item {
+         url
+         }
+      }
+      specialty {
+         name
+         icon {
+         url
+         }
+      }
+      stat_primary {
+         stat {
          id
          name
-         desc
-         rarity {
-            id
-            name
-            icon_item {
-               url
-            }
          }
-         icon {
-            url
-         }
-         icon_full {
-            url
-         }
-         icon_big {
-            url
-         }
-         stat_primary {
-            id: name
-            name
-            value
-         }
-         stat_secondary {
-            id: name
-            name
-            value
-            pct
-         }
-         talent_title
-         talent {
-            level
-            desc
-         }
-         slug
+         value
       }
+      stat_secondary {
+         stat {
+         id
+         name
+         }
+         value
+         pct
+      }
+      talent_title
+      talent {
+         level
+         desc
+      }
+   }
    }
 `;
 

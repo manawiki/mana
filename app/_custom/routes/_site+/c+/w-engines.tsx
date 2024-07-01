@@ -418,41 +418,44 @@ const CharacterList = ({ chars }: any) => {
 
 const CHARACTERS = gql`
    query WEngines {
-      WEngines(
-         limit: 100
-         sort: "name"
-         where: { name: { not_equals: null } }
-      ) {
-         docs {
+   WEngines(limit: 0) {
+      docs {
+         id
+         slug
+         name
+         rarity {
+         name
+         icon_item {
+            url
+         }
+         }
+         specialty {
+         name
+         icon {
+            url
+         }
+         }
+         stat_primary {
+         stat {
             id
             name
-            rarity {
-               name
-               icon_item {
-                  url
-               }
-            }
-            icon {
-               url
-            }
-            stat_primary {
-               id: name
-               name
-               value
-            }
-            stat_secondary {
-               id: name
-               name
-               value
-               pct
-            }
-            talent_title
-            talent {
-               level
-               desc
-            }
-            slug
+         }
+         value
+         }
+         stat_secondary {
+         stat {
+            id
+            name
+         }
+         value
+         pct
+         }
+         talent_title
+         talent {
+         level
+         desc
          }
       }
+   }
    }
 `;
