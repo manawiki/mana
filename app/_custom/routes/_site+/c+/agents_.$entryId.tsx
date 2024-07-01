@@ -75,142 +75,152 @@ export default function EntryPage() {
 }
 
 const QUERY = gql`
-   query Agent($entryId: String!) {
-      Agent(id: $entryId) {
-         id
-         name
-         name_code
-         slug
-         hp
-         atk
-         def
-         hp_growth
-         atk_growth
-         def_growth
-         impact
-         crit
-         crit_damage
-         attribute_mastery
-         icon_full {
-            url
-         }
-         icon {
-            url
-         }
-         icon_round {
-            url
-         }
-         icon_general {
-            url
-         }
-         rarity {
-            id
-            name
-            icon {
-               url
-            }
-         }
-         damage_type {
-            id
-            name
-            icon {
-               url
-            }
-         }
-         damage_element {
-            id
-            name
-            icon {
-               url
-            }
-         }
-         character_camp {
-            id
-            name
-            icon {
-               url
-            }
-         }
-         skill_basic {
-            description {
-               name
-               desc
-            }
-            stats {
-               title
-               params
-            }
-         }
-         skill_dodge {
-            description {
-               name
-               desc
-            }
-            stats {
-               title
-               params
-            }
-         }
-         skill_special {
-            description {
-               name
-               desc
-            }
-            stats {
-               title
-               params
-            }
-         }
-         skill_chain {
-            description {
-               name
-               desc
-            }
-            stats {
-               title
-               params
-            }
-         }
-         skill_assist {
-            description {
-               name
-               desc
-            }
-            stats {
-               title
-               params
-            }
-         }
-         skill_core {
-            core_desc
-         }
-         talents {
-            name
-            desc
-            desc_flavor
-         }
-         ascension_data {
-            asc
-            lv_min
-            lv_max
-            hp_adv
-            atk_adv
-            def_adv
-            materials {
-               material {
-                  id
-                  slug
-                  name
-                  rarity {
-                     id
-                  }
-                  icon {
-                     url
-                  }
-               }
-               qty
-            }
-         }
+query Agent($entryId: String!) {
+  Agent(id: $entryId) {
+    id
+    slug
+    name
+    name_code
+    icon {
+      url
+    }
+    icon_full {
+      url
+    }
+    icon_general {
+      url
+    }
+    icon_round {
+      url
+    }
+    rarity {
+      id
+      name
+      icon {
+        url
       }
-   }
+    }
+    damage_type {
+      id
+      name
+      icon {
+        url
+      }
+    }
+    damage_element {
+      id
+      name
+      icon {
+        url
+      }
+    }
+    character_camp {
+      id
+      name
+      icon {
+        url
+      }
+    }
+    stats {
+      stat {
+        id
+        name
+        icon {
+          url
+        }
+      }
+      base
+      growth
+    }
+		skills {
+      skill_type {
+        name
+        icon {
+          url
+        }
+      }
+      description {
+        name
+        desc
+      }
+      modifiers {
+        title
+        params
+      }
+      materials {
+        lv
+        material {
+          name
+          icon {
+            url
+          }
+        }
+        qty
+      }
+    }
+    core_skill {
+      skill_type {
+        name
+        icon {
+          url
+        }
+      }
+      levels {
+        level
+        descs {
+          title
+          desc
+        }
+      }
+    }
+    talents {
+      name
+      desc
+      desc_flavor
+    }
+    ascension_data {
+      asc
+      lv_min
+      lv_max
+         stat_adv {
+         stat {
+            id
+            name
+            icon {
+               url
+            }
+         }
+         value
+         }
+         stat_add {
+         stat {
+            id
+            name
+            icon {
+               url
+            }
+         }
+         value
+         }
+      materials {
+        material {
+          id
+          slug
+          name
+          rarity {
+            id
+          }
+          icon {
+            url
+          }
+        }
+        qty
+      }
+    }
+  	profile_info
+    profile_desc
+    height
+    bday
+  }
+}
 `;
