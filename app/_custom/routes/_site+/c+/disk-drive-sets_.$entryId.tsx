@@ -85,8 +85,6 @@ const QUERY = gql`
          desc
       }
       partitions {
-         name
-         desc
          partition {
          name
          }
