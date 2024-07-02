@@ -125,7 +125,7 @@ query Agent($entryId: String!) {
       stat {
         id
         name
-        pct
+        fmt
         divisor
         icon {
           url
