@@ -67,12 +67,12 @@ const CharacterList = ({ chars }: any) => {
       {
          id: "3",
          //name: "A",
-         icon: "https://static.mana.wiki/zzz/IconRoleABig.png",
+         icon: "https://static.mana.wiki/zzz/RarityIcon_IconRoleABig.png",
       },
       {
          id: "4",
          //name: "S",
-         icon: "https://static.mana.wiki/zzz/IconRoleSBig.png",
+         icon: "https://static.mana.wiki/zzz/RarityIcon_IconRoleSBig.png",
       },
    ] as FilterOptionType[];
    const elementries = chars.map((c: any) => c.damage_element).flat();
@@ -315,7 +315,7 @@ const CharacterList = ({ chars }: any) => {
                   return (
                      <div
                         key={opt.field}
-                        className={`border-color text-1 relative cursor-pointer 
+                        className={`border-color text-1 relative cursor-pointer
                         rounded-full border px-4 py-1 text-center text-xs font-bold ${
                            sort == opt.field
                               ? `bg-zinc-50 dark:bg-zinc-500/10`
@@ -368,7 +368,7 @@ const CharacterList = ({ chars }: any) => {
                      <div className="relative w-full">
                         {/* Camp */}
                         <div
-                           className="border-color shadow-1 absolute left-1 bottom-5 z-20 flex 
+                           className="border-color shadow-1 absolute left-1 bottom-5 z-20 flex
                         h-7 w-7 items-center justify-center rounded-full border bg-zinc-800 shadow"
                         >
                            <Image
