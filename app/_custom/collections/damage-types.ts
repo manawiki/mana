@@ -36,6 +36,7 @@ export const DamageTypes: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

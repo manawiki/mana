@@ -60,6 +60,7 @@ export const BangbooTalents: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

@@ -48,6 +48,7 @@ export const DamageElements: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

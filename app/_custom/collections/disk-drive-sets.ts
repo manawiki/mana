@@ -91,6 +91,7 @@ export const DiskDriveSets: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

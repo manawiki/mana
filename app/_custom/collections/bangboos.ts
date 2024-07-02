@@ -142,6 +142,7 @@ export const Bangboos: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

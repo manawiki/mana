@@ -235,6 +235,7 @@ export const Agents: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

@@ -39,6 +39,7 @@ export const Talents: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

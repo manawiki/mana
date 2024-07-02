@@ -50,6 +50,7 @@ export const BangbooSkills: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

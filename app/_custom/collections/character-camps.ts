@@ -32,6 +32,7 @@ export const CharacterCamps: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

@@ -37,6 +37,7 @@ export const Rarities: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

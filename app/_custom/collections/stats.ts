@@ -40,6 +40,7 @@ export const Stats: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

@@ -76,6 +76,7 @@ export const Skills: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

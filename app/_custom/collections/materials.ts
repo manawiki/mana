@@ -54,6 +54,7 @@ export const Materials: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

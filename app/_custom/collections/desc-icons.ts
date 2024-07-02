@@ -44,6 +44,7 @@ export const DescIcons: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };

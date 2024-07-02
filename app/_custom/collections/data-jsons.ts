@@ -31,6 +31,7 @@ export const DataJsons: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
+         required: true,
       },
    ],
 };
