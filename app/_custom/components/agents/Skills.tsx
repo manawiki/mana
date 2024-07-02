@@ -32,30 +32,13 @@ export function Skills({ data: char }: { data: AgentType }) {
       },
    ];
 
-   const skills = [
-      {
-         id: "Basic Attack",
-         icon: "https://static.mana.wiki/zzz/SkillNormal.png",
-         skill: char.skill_basic,
-      },
-      {
-         id: "Dodge",
-         icon: "https://static.mana.wiki/zzz/SkillEvade.png",
-         skill: char.skill_dodge,
-      },
-      { id: "Assist Skill", icon: "", skill: char.skill_assist },
-      {
-         id: "Special Attack",
-         icon: "https://static.mana.wiki/zzz/SkillSpecial.png",
-         skill: char.skill_special,
-      },
-      {
-         id: "Chain Attack",
-         icon: "https://static.mana.wiki/zzz/SkillQTE.png",
-         skill: char.skill_chain,
-      },
-      { id: "Core Skill", icon: "", skill: char.skill_core },
-   ];
+   const skills = char?.skills?.map((sk: any) => {
+      return {
+         id: sk?.skill_type?.name,
+         icon: sk?.skill_type?.icon?.url,
+         skill: sk
+      }
+   });
 
    // Some general CSS stuff
    const skill_desc_header = "font-bold text-lg my-1";
@@ -75,7 +58,8 @@ export function Skills({ data: char }: { data: AgentType }) {
             const skill_name = sk.id;
 
             const desc_list = sk.skill?.description;
-            const stat_list = sk.skill?.stats;
+            const stat_list = sk.skill?.modifiers;
+            console.log(stat_list);
             return (
                <>
                   <div className="bg-zinc-50 dark:bg-dark350 shadow-sm shadow-1 border border-color-sub rounded-lg px-3 py-1 flex my-3 justify-between">
@@ -140,7 +124,7 @@ export function Skills({ data: char }: { data: AgentType }) {
                               // skillLevel should start at 0
                               return (
                                  <>
-                                    {stat.params?.length != 0 ? (
+                                    {stat.params?.length !== undefined ? (
                                        // Has parameters!
                                        <>
                                           <div className="bg-zinc-200 dark:bg-dark450 rounded-full w-full px-3 py-1 flex justify-between my-1">
