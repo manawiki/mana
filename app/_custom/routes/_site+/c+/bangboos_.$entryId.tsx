@@ -94,6 +94,8 @@ const QUERY = gql`
          stat {
          id
          name
+         pct
+         divisor
          icon {
             url
          }

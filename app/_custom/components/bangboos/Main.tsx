@@ -27,55 +27,29 @@ export function Main({ data: char }: { data: BangbooType }) {
          : 0);
 
    const dispasc = char?.ascension_data?.[asc_index]?.asc;
-   const basicStatDisplay = [
-      {
-         label: "HP",
-         value: calcStat(
-            level,
-            char?.hp,
-            char?.ascension_data?.[asc_index]?.hp_adv,
-            char?.hp_growth,
-         ),
-         icon: "https://static.mana.wiki/zzz/IconHpMax.png",
-      },
-      {
-         label: "ATK",
-         value: calcStat(
-            level,
-            char?.atk,
-            char?.ascension_data?.[asc_index]?.atk_adv,
-            char?.atk_growth,
-         ),
-         icon: "https://static.mana.wiki/zzz/IconAttack.png",
-      },
-
-      {
-         label: "DEF",
-         value: calcStat(
-            level,
-            char?.def,
-            char?.ascension_data?.[asc_index]?.def_adv,
-            char?.def_growth,
-         ),
-         icon: "https://static.mana.wiki/zzz/IconDef.png",
-      },
-      {
-         label: "CRIT Rate",
-         value: char?.crit,
-         icon: "https://static.mana.wiki/zzz/IconCrit.png",
-         percent: true,
-      },
-      {
-         label: "Impact",
-         value: char?.impact,
-         icon: "https://static.mana.wiki/zzz/IconBreakStun.png",
-      },
-      {
-         label: "Attribute Mastery",
-         value: char?.attribute_mastery,
-         icon: "https://static.mana.wiki/zzz/IconAddedElementAccumulationRatio.png",
-      },
-   ];
+   const basicStatDisplay = char?.stats.map((stat) => {
+      let data = {};
+      data["label"] = stat?.stat?.name;
+      if (stat?.stat?.id === "111" || stat?.stat?.id === "121" || stat?.stat?.id === "131") {
+        data["value"] = calcStat(
+          level,
+          stat?.base,
+          char?.ascensions?.[asc_index]?.stat_adv?.find(
+            (s) => s.stat?.id === stat?.stat?.id)
+         ?.value,
+          stat?.growth,
+          stat?.stat?.divisor
+        )
+      } else {
+         const add = char?.ascensions?.[asc_index]?.stat_add?.find(
+            (s) => s.stat?.id === stat?.stat?.id,
+         )?.value ?? 0;
+        data["value"] = (stat?.base + add) / stat?.stat?.divisor;
+      }
+      data["icon"] = stat?.stat?.icon?.url;
+      data["percent"] = stat?.stat?.pct;
+      return data;
+    });
 
    return (
       <>
@@ -263,7 +237,7 @@ const StatBlock = ({ attr }: any) => {
             </div>
             <div className="text-sm font-semibold">
                <span className="inline-block align-middle">
-                  {attr_perc ? attr_val / 100 + "%" : attr_val}
+                  {attr_perc ? attr_val * 100 + "%" : attr_val}
                </span>
             </div>
          </div>
