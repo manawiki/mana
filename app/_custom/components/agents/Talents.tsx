@@ -38,7 +38,7 @@ export function Talents({ data: char }: { data: AgentType }) {
 
    return (
       <>
-         <H2 text="Talents" />
+         <H2 text="Mindscape Cinema" />
          {talent_list.map((t, i) => {
             const ticon = t.icon;
             const tname = t.talent?.name;

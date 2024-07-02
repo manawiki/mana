@@ -55,8 +55,7 @@ export function Ascension({ data: char }: { data: any }) {
                         {promo.materials?.length > 0 ? (
                            <TableRow key={index}>
                               <TableCell center>
-                                 <div>{promo.asc}</div>
-                                 <div>(Lv {promo.lv_max})</div>
+                                 <div>Lv. {promo.lv_max}</div>
                               </TableCell>
                               <TableCell>
                                  {/* @ts-ignore */}

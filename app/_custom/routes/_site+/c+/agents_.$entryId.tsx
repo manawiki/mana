@@ -125,6 +125,7 @@ query Agent($entryId: String!) {
       stat {
         id
         name
+        pct
         icon {
           url
         }

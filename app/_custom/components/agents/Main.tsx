@@ -46,77 +46,23 @@ export function Main({ data: char }: { data: AgentType }) {
 
   const dispasc = char?.ascension_data?.[asc_index]?.asc;
 
-  const statDisplay = [
-    {
-      label: "HP",
-      value: calcStat(
+  const statDisplay = char?.stats.map((stat) => {
+    let data = {};
+    data["label"] = stat?.stat?.name;
+    if (stat?.stat?.id === "111" || stat?.stat?.id === "121" || stat?.stat?.id === "131") {
+      data["value"] = calcStat(
         level,
-        char?.hp,
-        char?.ascension_data?.[asc_index]?.hp_adv,
-        char?.hp_growth
-      ),
-      icon: "https://static.mana.wiki/zzz/IconHpMax.png",
-    },
-    {
-      label: "DEF",
-      value: calcStat(
-        level,
-        char?.def,
-        char?.ascension_data?.[asc_index]?.def_adv,
-        char?.def_growth
-      ),
-      icon: "https://static.mana.wiki/zzz/IconDef.png",
-    },
-    {
-      label: "CRIT Rate",
-      value: char?.crit,
-      icon: "https://static.mana.wiki/zzz/IconCrit.png",
-      percent: true,
-    },
-    {
-      label: "PEN Ratio",
-      value: 0,
-      icon: "https://static.mana.wiki/zzz/IconPenRatio.png",
-      percent: true,
-    },
-
-    {
-      label: "Energy Regen",
-      value: 1.2,
-      icon: "https://static.mana.wiki/zzz/IconSpRecover.png",
-    },
-    {
-      label: "ATK",
-      value: calcStat(
-        level,
-        char?.atk,
-        char?.ascension_data?.[asc_index]?.atk_adv,
-        char?.atk_growth
-      ),
-      icon: "https://static.mana.wiki/zzz/IconAttack.png",
-    },
-    {
-      label: "Impact",
-      value: char?.impact,
-      icon: "https://static.mana.wiki/zzz/IconBreakStun.png",
-    },
-    {
-      label: "Crit DMG",
-      value: char?.crit_damage,
-      icon: "https://static.mana.wiki/zzz/IconCritDam.png",
-      percent: true,
-    },
-    {
-      label: "PEN",
-      value: 0,
-      icon: "https://static.mana.wiki/zzz/IconPenValue.png",
-    },
-    {
-      label: "Attribute Mastery",
-      value: char?.attribute_mastery,
-      icon: "https://static.mana.wiki/zzz/IconAddedElementAccumulationRatio.png",
-    },
-  ];
+        stat?.base,
+        char?.ascension_data?.[asc_index]?.stat_adv?.find((s) => s.stat?.id === stat?.stat?.id)?.value,
+        stat?.growth,
+      )
+    } else {
+      data["value"] = stat?.base;
+    }
+    data["icon"] = stat?.stat?.icon?.url;
+    data["percent"] = stat?.stat?.pct;
+    return data;
+  });
 
   return (
     <>
@@ -134,7 +80,7 @@ export function Main({ data: char }: { data: AgentType }) {
         </section>
         <section>
           <div
-            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg 
+            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
           >
             {mainStatDisplay?.map((row) => (
@@ -160,6 +106,9 @@ export function Main({ data: char }: { data: AgentType }) {
                 </div>
               </div>
             ))}
+            <div className="px-3 py-2 justify-between flex items-center gap-2 text-sm italic text-zinc-500">
+                {char?.profile_info}
+            </div>
           </div>
         </section>
       </div>
@@ -169,7 +118,7 @@ export function Main({ data: char }: { data: AgentType }) {
         {/* First row of extra attributes */}
         <section>
           <div
-            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg 
+            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
           >
             {statDisplay
@@ -183,7 +132,7 @@ export function Main({ data: char }: { data: AgentType }) {
         {/* Second row of extra attributes */}
         <section>
           <div
-            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg 
+            className="border border-color-sub divide-y divide-color-sub shadow-sm shadow-1 rounded-lg
           [&>*:nth-of-type(odd)]:bg-zinc-50 dark:[&>*:nth-of-type(odd)]:bg-dark350 overflow-hidden"
           >
             {statDisplay
@@ -254,7 +203,7 @@ export function Main({ data: char }: { data: AgentType }) {
             </div>
             {/* Ascension Checkbox */}
             <input
-              className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center 
+              className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center
                      justify-between rounded-sm align-middle text-zinc-500"
               type="checkbox"
               aria-label="Ascension"
