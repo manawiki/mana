@@ -47,7 +47,6 @@ type FilterOptionType = {
 };
 
 const CharacterList = ({ chars }: any) => {
-   console.log(chars);
    const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("id");
    const [search, setSearch] = useState("");
@@ -63,20 +62,20 @@ const CharacterList = ({ chars }: any) => {
       {
          id: "2",
          //name: "B",
-         icon: "https://static.mana.wiki/zzz/ItemRarityB.png",
+         icon: "https://static.mana.wiki/zzz/ItemRarityIcon_ItemRarityB.png",
       },
       {
          id: "3",
          //name: "A",
-         icon: "https://static.mana.wiki/zzz/ItemRarityA.png",
+         icon: "https://static.mana.wiki/zzz/ItemRarityIcon_ItemRarityA.png",
       },
       {
          id: "4",
          //name: "S",
-         icon: "https://static.mana.wiki/zzz/ItemRarityS.png",
+         icon: "https://static.mana.wiki/zzz/ItemRarityIcon_ItemRarityS.png",
       },
    ] as FilterOptionType[];
-   const statsecondary = chars.map((c: any) => c.stat_secondary?.name).flat();
+   const statsecondary = chars.map((c: any) => c.stat_secondary?.stat?.name).flat();
    console.log(statsecondary);
    const secondarystats = [
       {
@@ -288,22 +287,17 @@ const CharacterList = ({ chars }: any) => {
             {cfiltered?.map((char, int) => {
                const raritynum = char?.rarity?.name;
                const rarityurl = char?.rarity?.icon_item?.url;
-               const basename = char?.stat_primary?.name;
+               const basename = char?.stat_primary?.stat?.name;
                const baseval = char?.stat_primary?.value;
                const talentname = char?.talent_title;
                const talentfirst = char?.talent?.[0]?.desc;
-               var secondname = char?.stat_secondary?.name;
-               switch (char?.stat_secondary?.name) {
-                  case "Anomaly Rate Bonus":
-                     secondname = "Anomaly Rate";
-                     break;
-                  case "Attribute Mastery":
-                     secondname = "Attr Mastery";
-                     break;
-                  default:
+               var secondname = char?.stat_secondary?.stat?.name;
+
+               let secondval = char?.stat_secondary?.value / char?.stat_secondary?.stat?.divisor;
+               if (char?.stat_secondary?.stat?.pct) {
+                  secondval *= 100;
                }
-               const secondval = char?.stat_secondary?.value;
-               const secondpct = char?.stat_secondary?.pct;
+               const secondpct = char?.stat_secondary?.stat?.pct;
                var rarityhex;
                switch (raritynum) {
                   case "B":
@@ -319,6 +313,7 @@ const CharacterList = ({ chars }: any) => {
                }
                const cid = char.slug ?? char?.id;
                const iconurl = char.icon?.url;
+               console.log(iconurl);
 
                return (
                   <Link
@@ -423,37 +418,41 @@ const CHARACTERS = gql`
          id
          slug
          name
-         rarity {
-         name
-         icon_item {
-            url
-         }
-         }
-         specialty {
-         name
          icon {
             url
          }
+         rarity {
+            name
+            icon_item {
+               url
+            }
+         }
+         specialty {
+            name
+            icon {
+               url
+            }
          }
          stat_primary {
-         stat {
-            id
-            name
-         }
-         value
+            stat {
+               id
+               name
+            }
+            value
          }
          stat_secondary {
-         stat {
-            id
-            name
-            pct
-         }
-         value
+            stat {
+               id
+               name
+               pct
+               divisor
+            }
+            value
          }
          talent_title
          talent {
-         level
-         desc
+            level
+            desc
          }
       }
    }
