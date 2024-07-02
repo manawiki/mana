@@ -446,9 +446,9 @@ const CHARACTERS = gql`
          stat {
             id
             name
+            pct
          }
          value
-         pct
          }
          talent_title
          talent {

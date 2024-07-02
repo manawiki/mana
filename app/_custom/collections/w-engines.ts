@@ -88,10 +88,6 @@ export const WEngines: CollectionConfig = {
             {
                name: "value",
                type: "text",
-            },
-            {
-               name: "pct",
-               type: "checkbox",
             }
          ],
       },

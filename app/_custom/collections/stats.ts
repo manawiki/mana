@@ -29,6 +29,10 @@ export const Stats: CollectionConfig = {
          type: "text",
       },
       {
+         name: "pct",
+         type: "checkbox",
+      },
+      {
          name: "divisor",
          type: "number",
       },

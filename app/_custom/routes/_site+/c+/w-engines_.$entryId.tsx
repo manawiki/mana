@@ -121,9 +121,9 @@ const QUERY = gql`
          stat {
          id
          name
+         pct
          }
          value
-         pct
       }
       talent_title
       talent {
