@@ -7,7 +7,11 @@ import type {
    MetaFunction,
 } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
-import { jsonWithSuccess, redirectWithSuccess } from "remix-toast";
+import {
+   jsonWithSuccess,
+   redirectWithSuccess,
+   jsonWithError,
+} from "remix-toast";
 import type { Descendant } from "slate";
 import invariant from "tiny-invariant";
 import urlSlug from "url-slug";
@@ -386,6 +390,10 @@ export async function action({
             siteSlug,
             user,
          });
+
+         if (postData.name == undefined || postData.name == "Untitled") {
+            return jsonWithError(null, "Add a title before publishing");
+         }
 
          //TODO Feature: Allow user to manually set a url alias at publish
 
