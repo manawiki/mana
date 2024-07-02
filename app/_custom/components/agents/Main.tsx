@@ -55,9 +55,10 @@ export function Main({ data: char }: { data: AgentType }) {
         stat?.base,
         char?.ascension_data?.[asc_index]?.stat_adv?.find((s) => s.stat?.id === stat?.stat?.id)?.value,
         stat?.growth,
+        stat?.stat?.divisor
       )
     } else {
-      data["value"] = stat?.base;
+      data["value"] = stat?.base / stat?.stat?.divisor;
     }
     data["icon"] = stat?.stat?.icon?.url;
     data["percent"] = stat?.stat?.pct;
@@ -262,7 +263,7 @@ const StatBlock = ({ attr }: any) => {
         </div>
         <div className="text-sm font-semibold">
           <span className="inline-block align-middle">
-            {attr_perc ? attr_val / 100 + "%" : attr_val}
+            {attr_perc ? attr_val * 100 + "%" : attr_val}
           </span>
         </div>
       </div>

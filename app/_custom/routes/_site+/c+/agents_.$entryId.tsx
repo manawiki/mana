@@ -126,6 +126,7 @@ query Agent($entryId: String!) {
         id
         name
         pct
+        divisor
         icon {
           url
         }
