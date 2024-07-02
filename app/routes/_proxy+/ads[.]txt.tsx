@@ -3,7 +3,7 @@ import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { cacheThis } from "~/utils/cache.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
-   const url = "https://config.playwire.com/dyn_ads/1022828/70684/ads.txt";
+   const url = "https://config.playwire.com/dyn_ads/1025133/74686/ads.txt";
 
    const body = await cacheThis(
       () => fetch(url).then((res) => res.text()),
