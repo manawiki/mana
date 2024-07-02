@@ -13,7 +13,7 @@ type Props = {
 };
 
 export function BlockLinkView({ element, children }: Props) {
-   const { hostname, pathname } = new URL(element.url as string);
+   const { hostname, pathname } = new URL(element?.url as string);
 
    const { site } = useSiteLoaderData();
 
@@ -36,8 +36,8 @@ export function BlockLinkView({ element, children }: Props) {
                <Image
                   width={30}
                   height={30}
-                  url={element.icon.url}
-                  alt={children ? "" : element.name}
+                  url={element?.icon?.url}
+                  alt={children ? "" : element?.name}
                   options="aspect_ratio=1:1&height=40&width=40"
                   loading="lazy"
                />
@@ -65,7 +65,7 @@ export function BlockLinkView({ element, children }: Props) {
       <a
          rel="nofollow"
          className="text-blue-600 visited:text-purple-600 hover:underline"
-         href={element.url}
+         href={element?.url}
       >
          {children}
       </a>
