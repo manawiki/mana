@@ -59,8 +59,8 @@ export default function EntryPage() {
          {/* <Entry customComponents={SECTIONS} customData={char} /> */}
          <Entry>
             <Main data={char} />
-            <Skills data={char} />
-            <Talents data={char} />
+            {/*<Skills data={char} />}
+            <Talents data={char} />*/}
             <Ascension data={char} />
             <ImageGallery data={char} />
 
@@ -94,7 +94,7 @@ const QUERY = gql`
          stat {
          id
          name
-         pct
+         fmt
          divisor
          icon {
             url

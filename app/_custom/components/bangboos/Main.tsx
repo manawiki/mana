@@ -3,6 +3,9 @@ import { Input } from "~/components/Input";
 import { Image } from "~/components/Image";
 import { useState } from "react";
 
+import { formatValue } from "~/_custom/utils/valueFormat";
+import { calculateAgentStat } from "~/_custom/utils/formulas";
+
 export function Main({ data: char }: { data: BangbooType }) {
    const [level, setLevel] = useState(60);
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
@@ -30,24 +33,27 @@ export function Main({ data: char }: { data: BangbooType }) {
    const basicStatDisplay = char?.stats.map((stat) => {
       let data = {};
       data["label"] = stat?.stat?.name;
+      data["value"] = stat?.base / stat?.stat?.divisor;
       if (stat?.stat?.id === "111" || stat?.stat?.id === "121" || stat?.stat?.id === "131") {
-        data["value"] = calcStat(
-          level,
-          stat?.base,
-          char?.ascensions?.[asc_index]?.stat_adv?.find(
-            (s) => s.stat?.id === stat?.stat?.id)
-         ?.value,
-          stat?.growth,
-          stat?.stat?.divisor
-        )
+        data["value"] = formatValue(
+          stat?.stat,
+          calculateAgentStat(
+            level,
+            stat?.base,
+            char?.ascensions?.[asc_index]?.stat_adv?.find(
+              (s) => s.stat?.id === stat?.stat?.id)
+              ?.value,
+            stat?.growth,
+            stat?.stat?.divisor
+          )
+        );
       } else {
          const add = char?.ascensions?.[asc_index]?.stat_add?.find(
             (s) => s.stat?.id === stat?.stat?.id,
          )?.value ?? 0;
-        data["value"] = (stat?.base + add) / stat?.stat?.divisor;
+        data["value"] = formatValue(stat?.stat, (stat?.base + add) / stat?.stat?.divisor);
       }
       data["icon"] = stat?.stat?.icon?.url;
-      data["percent"] = stat?.stat?.pct;
       return data;
     });
 
@@ -212,7 +218,6 @@ const StatBlock = ({ attr }: any) => {
    const attr_icon = attr?.icon;
    const attr_name = attr?.label;
    const attr_val = attr?.value;
-   const attr_perc = attr?.percent;
 
    return (
       <>
@@ -237,20 +242,10 @@ const StatBlock = ({ attr }: any) => {
             </div>
             <div className="text-sm font-semibold">
                <span className="inline-block align-middle">
-                  {attr_perc ? attr_val * 100 + "%" : attr_val}
+                  {attr_val}
                </span>
             </div>
          </div>
       </>
    );
 };
-
-function calcStat(
-   level: any,
-   base: any,
-   adv: any,
-   growth: any,
-   divisor: any = 1,
-) {
-   return Math.floor(base + adv + ((level - 1) * growth) / (10000 / divisor));
-}
