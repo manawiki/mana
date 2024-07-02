@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { ClientOnly } from "remix-utils/client-only";
+import { RampInit } from "./_components/RampInit";
 
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
@@ -66,8 +68,16 @@ export default function SiteLayout() {
             </section>
             <ColumnFour />
          </main>
-         <GAScripts gaTrackingId={gaTag} />
-         <RampScripts enableAds={enableAds} />
+
+         <ClientOnly fallback={<></>}>
+            {() => (
+               <>
+                  <GAScripts gaTrackingId={gaTag} />
+                  <RampInit enableAds={enableAds} />
+                  <RampScripts enableAds={enableAds} />
+               </>
+            )}
+         </ClientOnly>
       </>
    );
 }

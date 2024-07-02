@@ -13,20 +13,20 @@ type AdUnitType =
    | "desktopSquareATF"
    | "desktopSquareBTF"
    | "mobileSquareATF"
-   | "mobileSquareBTF";
+   | "mobileSquareBTF"
+   | "cornerVideo";
 
 type AdSlotType = {
    type: string;
-   platform: "desktop" | "mobile";
 };
 
 const AD_UNITS = {
-   desktopLeaderATF: { type: "leaderboard_atf", platform: "desktop" }, //728x90
-   desktopLeaderBTF: { type: "leaderboard_btf", platform: "desktop" }, //728x90
-   desktopSquareATF: { type: "med_rect_atf", platform: "desktop" }, //300x250
-   desktopSquareBTF: { type: "med_rect_btf", platform: "desktop" }, //300x250
-   mobileSquareATF: { type: "med_rect_atf", platform: "mobile" }, //300x250
-   mobileSquareBTF: { type: "med_rect_btf", platform: "mobile" }, //300x250
+   desktopLeaderATF: { type: "leaderboard_atf" }, //728x90
+   desktopLeaderBTF: { type: "leaderboard_btf" }, //728x90
+   desktopSquareATF: { type: "med_rect_atf" }, //300x250
+   desktopSquareBTF: { type: "med_rect_btf" }, //300x250
+   mobileSquareATF: { type: "med_rect_atf" }, //300x250
+   mobileSquareBTF: { type: "med_rect_btf" }, //300x250
 };
 
 function AdUnitSelector({
@@ -45,10 +45,9 @@ function AdUnitSelector({
    //Prepare units array to send to ramp
    const adSlot = AD_UNITS[adType] as AdSlotType;
 
-   const { platform, ...prunedPlatform } = adSlot;
+   const { ...prunedPlatform } = adSlot;
 
    const units = [{ selectorId, ...prunedPlatform }];
-
    const init = function () {
       //@ts-ignore
       window.ramp
@@ -103,26 +102,14 @@ function AdUnitSelector({
       }
    }, [pathname]);
 
-   if (adSlot.platform == "desktop")
-      return (
-         <div
-            data-pw-desk={adSlot.type}
-            className={className}
-            //@ts-ignore
-            ref={adsInit}
-            id={selectorId}
-         />
-      );
-   if (adSlot.platform == "mobile")
-      return (
-         <div
-            data-pw-mobi={adSlot.type}
-            className={className}
-            //@ts-ignore
-            ref={adsInit}
-            id={selectorId}
-         />
-      );
+   return (
+      <div
+         className={className}
+         //@ts-ignore
+         ref={adsInit}
+         id={selectorId}
+      />
+   );
 }
 
 export function AdUnit({
