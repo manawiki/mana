@@ -30,10 +30,10 @@ export function Main({ data }: { data: WEngineType }) {
    const dispasc = asc_index + 1;
 
    const wlevel = data.wLevelData?.find(
-      (j: any) => j.name == "WeaponLevelTemplateTb",
+      (j: any) => j.id == "WeaponLevelTemplateTb",
    )?.json;
    const wstar = data.wLevelData?.find(
-      (j: any) => j.name == "WeaponStarTemplateTb",
+      (j: any) => j.id == "WeaponStarTemplateTb",
    )?.json;
 
    const level_growth = wlevel?.find(

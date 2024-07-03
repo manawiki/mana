@@ -52,7 +52,6 @@ const SECTIONS = {
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
    const char = entry?.data?.Bangboo as BangbooType;
-   //console.log(char);
 
    return (
       <>

@@ -52,7 +52,6 @@ const SECTIONS = {
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
    const char = entry?.data?.Agent as AgentType;
-   // console.log(char);
 
    return (
       <>

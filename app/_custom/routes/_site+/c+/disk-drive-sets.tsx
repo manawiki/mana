@@ -47,7 +47,6 @@ type FilterOptionType = {
 };
 
 const CharacterList = ({ chars }: any) => {
-   console.log(chars);
    const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("id");
    const [search, setSearch] = useState("");

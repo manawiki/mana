@@ -46,7 +46,6 @@ type FilterOptionType = {
 };
 
 const CharacterList = ({ chars }: any) => {
-   console.log(chars);
    const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("id");
    const [search, setSearch] = useState("");
@@ -76,7 +75,6 @@ const CharacterList = ({ chars }: any) => {
       },
    ] as FilterOptionType[];
    const elementries = chars.map((c: any) => c.damage_element).flat();
-   console.log(elementries);
    const elements = [
       {
          id: "200",

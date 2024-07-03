@@ -76,7 +76,6 @@ const CharacterList = ({ chars }: any) => {
       },
    ] as FilterOptionType[];
    const statsecondary = chars.map((c: any) => c.stat_secondary?.stat?.name).flat();
-   console.log(statsecondary);
    const secondarystats = [
       {
          id: "HP",
@@ -313,7 +312,6 @@ const CharacterList = ({ chars }: any) => {
                }
                const cid = char.slug ?? char?.id;
                const iconurl = char.icon?.url;
-               console.log(iconurl);
 
                return (
                   <Link
@@ -444,7 +442,7 @@ const CHARACTERS = gql`
             stat {
                id
                name
-               pct
+               fmt
                divisor
             }
             value

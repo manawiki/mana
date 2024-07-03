@@ -65,7 +65,6 @@ const SECTIONS = {
 export default function EntryPage() {
    const loaderdata = useLoaderData<typeof loader>();
    const char = loaderdata?.entry?.data?.WEngine as WEngineType;
-   // console.log(loaderdata);
 
    return (
       <>
@@ -121,7 +120,7 @@ const QUERY = gql`
          stat {
          id
          name
-         pct
+         fmt
          }
          value
       }
@@ -136,10 +135,9 @@ const QUERY = gql`
 
 const WLEVEL_QUERY = gql`
    query {
-      _dataJsons {
+      DataJsons {
          docs {
             id
-            name
             json
          }
       }

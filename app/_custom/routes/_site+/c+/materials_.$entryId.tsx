@@ -43,7 +43,6 @@ const SECTIONS = {
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
    const char = entry?.data?.Material as MaterialType;
-   // console.log(char);
 
    return (
       <>

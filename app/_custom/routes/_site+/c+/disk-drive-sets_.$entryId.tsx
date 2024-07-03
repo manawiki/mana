@@ -48,7 +48,6 @@ const SECTIONS = {
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
    const char = entry?.data?.DiskDriveSet as DiskDriveSetType;
-   // console.log(char);
 
    return (
       <>
