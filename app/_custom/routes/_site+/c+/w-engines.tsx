@@ -11,6 +11,9 @@ import { fetchList } from "~/routes/_site+/c_+/$collectionId/utils/fetchList.ser
 import { listMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
 import { List } from "~/routes/_site+/c_+/_components/List";
 
+import { formatValue } from "~/_custom/utils/valueFormat";
+import { calculateAgentStat } from "~/_custom/utils/formulas";
+
 export { listMeta as meta };
 
 export async function loader({
@@ -286,17 +289,16 @@ const CharacterList = ({ chars }: any) => {
             {cfiltered?.map((char, int) => {
                const raritynum = char?.rarity?.name;
                const rarityurl = char?.rarity?.icon_item?.url;
-               const basename = char?.stat_primary?.stat?.name;
-               const baseval = char?.stat_primary?.value;
+
+               const mainname = char?.stat_primary?.stat?.name;
+               const mainval = char?.stat_primary?.value;
+
+               const secondname = char?.stat_secondary?.stat?.name;
+               const secondval = char?.stat_secondary?.value / char?.stat_secondary?.stat?.divisor;
+
                const talentname = char?.talent_title;
                const talentfirst = char?.talent?.[0]?.desc;
-               var secondname = char?.stat_secondary?.stat?.name;
 
-               let secondval = char?.stat_secondary?.value / char?.stat_secondary?.stat?.divisor;
-               if (char?.stat_secondary?.stat?.pct) {
-                  secondval *= 100;
-               }
-               const secondpct = char?.stat_secondary?.stat?.pct;
                var rarityhex;
                switch (raritynum) {
                   case "B":
@@ -359,10 +361,10 @@ const CharacterList = ({ chars }: any) => {
                            <div className="my-1 grid grid-cols-2 gap-1 w-full">
                               <div className="inline-flex justify-between rounded-full bg-black px-3 py-1">
                                  <div className="text-white text-sm font-bold">
-                                    {basename}
+                                    {mainname}
                                  </div>
                                  <div className="text-white text-sm">
-                                    {baseval}
+                                    {mainval}
                                  </div>
                               </div>
                               <div className="inline-flex justify-between rounded-full bg-black px-3 py-1">
@@ -370,7 +372,7 @@ const CharacterList = ({ chars }: any) => {
                                     {secondname}
                                  </div>
                                  <div className="text-white text-sm">
-                                    {parseFloat(secondval).toFixed(1)}{secondpct ? "%" : ""}
+                                    {secondval}
                                  </div>
                               </div>
                            </div>

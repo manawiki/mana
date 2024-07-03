@@ -62,19 +62,19 @@ const CharacterList = ({ chars }: any) => {
 
    const rarities = [
       {
-         id: "2",
-         //name: "B",
-         icon: "https://static.mana.wiki/zzz/IconRoleBBig.png",
+        id: "2",
+        //name: "B",
+        icon: "https://static.mana.wiki/zzz/IconRoleBBig.png",
       },
       {
          id: "3",
          //name: "A",
-         icon: "https://static.mana.wiki/zzz/IconRoleABig.png",
+         icon: "https://static.mana.wiki/zzz/RarityIcon_IconRoleABig.png",
       },
       {
          id: "4",
          //name: "S",
-         icon: "https://static.mana.wiki/zzz/IconRoleSBig.png",
+         icon: "https://static.mana.wiki/zzz/RarityIcon_IconRoleSBig.png",
       },
    ] as FilterOptionType[];
 
