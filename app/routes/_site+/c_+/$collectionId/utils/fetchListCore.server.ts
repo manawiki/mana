@@ -60,24 +60,9 @@ export async function fetchListCore({
    if (collectionEntry?.customDatabase) {
       const searchParams = new URL(request.url).search;
 
-      const where = qs.parse(searchParams, { ignoreQueryPrefix: true })?.where;
-      const sort = qs.parse(searchParams, { ignoreQueryPrefix: true })?.sort;
       const page = qs.parse(searchParams, { ignoreQueryPrefix: true })?.page;
 
-      const defaultSortParam =
-         collectionEntry?.sortGroups &&
-         collectionEntry?.sortGroups.find(
-            (element: any) => element?.default == true,
-         );
-
-      const defaultSort =
-         defaultSortParam && defaultSortParam.defaultSortType == "ascending"
-            ? `${defaultSortParam.value}`
-            : defaultSortParam?.value && `-${defaultSortParam.value}`;
-
-      const preparedQuery = `${where ? where : ""}${
-         sort || defaultSort ? `&sort=${sort || defaultSort}` : ""
-      }${page ? `&page=${page}` : ""}`;
+      const preparedQuery = `${page ? `&page=${page}` : ""}`;
 
       const restPath = `http://localhost:4000/api/${collectionEntry.slug}${
          preparedQuery ? `?${preparedQuery}&` : "?"

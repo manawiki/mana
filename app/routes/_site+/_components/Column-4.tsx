@@ -132,7 +132,7 @@ export function ColumnFour() {
                            <Link
                               to={row.path}
                               key={row.path}
-                              className="flex items-center gap-2 pl-3 p-2 group hover:bg-white dark:hover:bg-bg2Dark"
+                              className="flex items-center gap-2 pl-3.5 p-2 group hover:bg-white dark:hover:bg-bg2Dark"
                            >
                               <div
                                  className="text-sm flex-grow group-hover:underline decoration-zinc-400 dark:decoration-zinc-500
@@ -166,7 +166,7 @@ export function ColumnFour() {
                      </div>
                   </section>
                )}
-               <div className="p-3 laptop:w-[334px] bg-3 laptop:bg-2 z-50">
+               <div className="py-3 px-3.5 laptop:w-[334px] bg-3 laptop:bg-2 z-50">
                   <div className="justify-between w-full flex items-center max-laptop:max-w-[728px] mx-auto gap-3">
                      {!site.isWhiteLabel && (
                         <Link
