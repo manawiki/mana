@@ -21,25 +21,13 @@ export const DescIcons: CollectionConfig = {
          type: "text",
       },
       {
-         name: "name",
-         type: "text",
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "size",
          type: "number",
-      },
-      {
-         name: "icon_path",
-         type: "text",
-      },
-      {
-         name: "icon_name",
-         type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
       },
       {
          name: "checksum",

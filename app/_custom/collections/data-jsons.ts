@@ -21,10 +21,6 @@ export const DataJsons: CollectionConfig = {
          type: "text",
       },
       {
-         name: "name",
-         type: "text",
-      },
-      {
          name: "json",
          type: "json",
       },
