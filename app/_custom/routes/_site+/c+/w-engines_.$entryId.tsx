@@ -14,6 +14,7 @@ import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/ent
 import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
 
 import { WEngines } from "../../../collections/w-engines";
+import { fetchList } from "~/routes/_site+/c_+/$collectionId/utils/fetchList.server";
 
 // Custom Site / Collection Config Imports
 
@@ -35,7 +36,7 @@ export async function loader({
          query: QUERY,
       },
    });
-   const fetchWLevelData = fetchEntry({
+   const fetchWLevelData = fetchList({
       payload,
       params,
       request,
@@ -52,7 +53,7 @@ export async function loader({
 
    return json({
       entry,
-      wLevelData: wlevel?.entry?.data?._dataJsons?.docs,
+      wLevelData: wlevel?.list?.data?.DataJsons?.docs,
    });
 }
 
@@ -81,65 +82,67 @@ export default function EntryPage() {
 }
 
 const QUERY = gql`
-   query WEngine($entryId: String!) {
-   WEngine(id: $entryId) {
+query WEngine($entryId: String!) {
+  WEngine(id: $entryId) {
+    id
+    slug
+    name
+    desc
+    comment
+    icon {
+      url
+    }
+    icon_full {
+      url
+    }
+    icon_big {
+      url
+    }
+    rarity {
       id
-      slug
       name
-      desc
-      comment
+      icon_item {
+        url
+      }
+    }
+    specialty {
+      name
       icon {
-         url
+        url
       }
-      icon_full {
-         url
+    }
+    stat_primary {
+      stat {
+        id
+        name
       }
-      icon_big {
-         url
+      value
+    }
+    stat_secondary {
+      stat {
+        id
+        name
+        fmt
+        divisor
       }
-      rarity {
-         name
-         icon_item {
-         url
-         }
-      }
-      specialty {
-         name
-         icon {
-         url
-         }
-      }
-      stat_primary {
-         stat {
-         id
-         name
-         }
-         value
-      }
-      stat_secondary {
-         stat {
-         id
-         name
-         fmt
-         }
-         value
-      }
-      talent_title
-      talent {
-         level
-         desc
-      }
-   }
-   }
+      value
+    }
+    talent_title
+    talent {
+      level
+      desc
+    }
+  }
+}
 `;
 
 const WLEVEL_QUERY = gql`
-   query {
-      DataJsons {
-         docs {
-            id
-            json
-         }
-      }
-   }
+query {
+  DataJsons {
+    docs {
+      id
+      json
+    }
+  }
+}
 `;

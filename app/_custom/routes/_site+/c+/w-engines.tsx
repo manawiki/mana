@@ -12,7 +12,7 @@ import { listMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
 import { List } from "~/routes/_site+/c_+/_components/List";
 
 import { formatValue } from "~/_custom/utils/valueFormat";
-import { calculateAgentStat } from "~/_custom/utils/formulas";
+import { calculateStat } from "~/_custom/utils/formulas";
 
 export { listMeta as meta };
 
@@ -291,10 +291,12 @@ const CharacterList = ({ chars }: any) => {
                const rarityurl = char?.rarity?.icon_item?.url;
 
                const mainname = char?.stat_primary?.stat?.name;
-               const mainval = char?.stat_primary?.value;
+               const mainval = formatValue(char?.stat_primary?.stat, char?.stat_primary?.value);
 
                const secondname = char?.stat_secondary?.stat?.name;
-               const secondval = char?.stat_secondary?.value / char?.stat_secondary?.stat?.divisor;
+               const secondval = formatValue(
+                  char?.stat_secondary?.stat,
+                  char?.stat_secondary?.value / char?.stat_secondary?.stat?.divisor);
 
                const talentname = char?.talent_title;
                const talentfirst = char?.talent?.[0]?.desc;
@@ -412,49 +414,50 @@ const CharacterList = ({ chars }: any) => {
 // }
 
 const CHARACTERS = gql`
-   query WEngines {
-   WEngines(limit: 0) {
-      docs {
-         id
-         slug
-         name
-         icon {
-            url
-         }
-         rarity {
-            name
-            icon_item {
-               url
-            }
-         }
-         specialty {
-            name
-            icon {
-               url
-            }
-         }
-         stat_primary {
-            stat {
-               id
-               name
-            }
-            value
-         }
-         stat_secondary {
-            stat {
-               id
-               name
-               fmt
-               divisor
-            }
-            value
-         }
-         talent_title
-         talent {
-            level
-            desc
-         }
+query WEngines {
+  WEngines(limit: 0) {
+    docs {
+      id
+      slug
+      name
+      icon {
+        url
       }
-   }
-   }
+      rarity {
+        id
+        name
+        icon_item {
+          url
+        }
+      }
+      specialty {
+        name
+        icon {
+          url
+        }
+      }
+      stat_primary {
+        stat {
+          id
+          name
+        }
+        value
+      }
+      stat_secondary {
+        stat {
+          id
+          name
+          fmt
+          divisor
+        }
+        value
+      }
+      talent_title
+      talent {
+        level
+        desc
+      }
+    }
+  }
+}
 `;

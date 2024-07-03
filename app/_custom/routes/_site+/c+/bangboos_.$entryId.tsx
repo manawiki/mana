@@ -70,106 +70,106 @@ export default function EntryPage() {
 }
 
 const QUERY = gql`
-   query Bangboo($entryId: String!) {
-   Bangboo(id: $entryId) {
+query Bangboo($entryId: String!) {
+  Bangboo(id: $entryId) {
+    id
+    slug
+    name
+    desc
+    rarity {
       id
-      slug
       name
-      desc
-      rarity {
-         id
-         name
-         icon {
-         url
-         }
-      }
       icon {
-         url
+        url
       }
-      icon_full {
-         url
+    }
+    icon {
+      url
+    }
+    icon_full {
+      url
+    }
+    stats {
+      stat {
+        id
+        name
+        fmt
+        divisor
+        icon {
+          url
+        }
       }
-      stats {
-         stat {
-         id
-         name
-         fmt
-         divisor
-         icon {
+      base
+      growth
+    }
+    ascensions {
+      asc
+      lv_min
+      lv_max
+      stat_adv {
+        stat {
+          id
+          name
+          icon {
             url
-         }
-         }
-         base
-         growth
+          }
+        }
+        value
       }
-      ascensions {
-         asc
-         lv_min
-         lv_max
-         stat_adv {
-         stat {
-            id
-            name
-            icon {
-               url
-            }
-         }
-         value
-         }
-         stat_add {
-         stat {
-            id
-            name
-            icon {
-               url
-            }
-         }
-         value
-         }
-         materials {
-         material {
-            id
-            slug
-            name
-            icon {
-               url
-            }
-         }
-         qty
-         }
+      stat_add {
+        stat {
+          id
+          name
+          icon {
+            url
+          }
+        }
+        value
       }
-      skills {
-         relationTo
-         value {
-         __typename
-         ... on BangbooSkill {
-            id
-            name
+      materials {
+        material {
+          id
+          slug
+          name
+          icon {
+            url
+          }
+        }
+        qty
+      }
+    }
+    skills {
+      relationTo
+      value {
+        __typename
+        ... on BangbooSkill {
+          id
+          name
+          desc
+          icon {
+            url
+          }
+          params {
+            title
+            params
+          }
+        }
+        ... on BangbooTalent {
+          id
+          icon {
+            url
+          }
+          levels {
+            rank
             desc
-            icon {
-               url
-            }
             params {
-               title
-               params
+              title
+              params
             }
-         }
-         ... on BangbooTalent {
-            id
-            icon {
-               url
-            }
-            levels {
-               rank
-               desc
-               params {
-               title
-               params
-               }
-            }
-         }
-         }
+          }
+        }
       }
-   }
-   }
+    }
+  }
+}
 `;

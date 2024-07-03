@@ -8,7 +8,7 @@ import { H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
 import { formatValue } from "~/_custom/utils/valueFormat";
-import { calculateAgentStat } from "~/_custom/utils/formulas";
+import { calculateStat } from "~/_custom/utils/formulas";
 
 export function Main({ data: char }: { data: AgentType }) {
   const [level, setLevel] = useState(60);
@@ -56,7 +56,7 @@ export function Main({ data: char }: { data: AgentType }) {
     if (stat?.stat?.id === "111" || stat?.stat?.id === "121" || stat?.stat?.id === "131") {
       data["value"] = formatValue(
         stat?.stat,
-        calculateAgentStat(
+        calculateStat(
           level,
           stat?.base,
           char?.ascension_data?.[asc_index]?.stat_adv?.find(

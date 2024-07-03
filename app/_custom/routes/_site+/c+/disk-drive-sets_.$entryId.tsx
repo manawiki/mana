@@ -63,53 +63,53 @@ export default function EntryPage() {
 }
 
 const QUERY = gql`
-   query DiskDriveSet($entryId: String!) {
-   DiskDriveSet(id: $entryId) {
+query DiskDriveSet($entryId: String!) {
+  DiskDriveSet(id: $entryId) {
+    id
+    slug
+    name
+    desc
+    icon {
+      url
+    }
+    rarity_possible {
       id
-      slug
       name
+      icon_item {
+        url
+      }
+    }
+    set_effect {
+      num
       desc
-      icon {
-         url
+    }
+    partitions {
+      partition {
+        name
       }
-      rarity_possible {
-         id
-         name
-         icon_item {
-         url
-         }
-      }
-      set_effect {
-         num
-         desc
-      }
-      partitions {
-         partition {
-         name
-         }
-         main_stat_pool {
-         stats {
-            stat {
-               name
-               icon {
-               url
-               }
+      main_stat_pool {
+        stats {
+          stat {
+            name
+            icon {
+              url
             }
-            value
-         }
-         }
-         sub_stat_pool {
-         stats {
-            stat {
-               name
-               icon {
-               url
-               }
-            }
-            value
-         }
-         }
+          }
+          value
+        }
       }
-   }
-   }
+      sub_stat_pool {
+        stats {
+          stat {
+            name
+            icon {
+              url
+            }
+          }
+          value
+        }
+      }
+    }
+  }
+}
 `;

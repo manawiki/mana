@@ -58,25 +58,25 @@ export default function EntryPage() {
 }
 
 const QUERY = gql`
-   query Material($entryId: String!) {
-      Material(id: $entryId) {
-         id
-         name
-         desc
-         desc_flavor
-         slug
-         rarity {
-            name
-            icon {
-               url
-            }
-         }
-         class {
-            name
-         }
-         icon {
-            url
-         }
+query Material($entryId: String!) {
+  Material(id: $entryId) {
+    id
+    name
+    desc
+    desc_flavor
+    slug
+    rarity {
+      name
+      icon {
+        url
       }
-   }
+    }
+    class {
+      name
+    }
+    icon {
+      url
+    }
+  }
+}
 `;

@@ -305,26 +305,26 @@ const CharacterList = ({ chars }: any) => {
 // }
 
 const BANGBOOS = gql`
-   query Bangboos {
-   Bangboos(limit: 0 sort: "name") {
-      docs {
-         id
-         slug
-         name
-         rarity {
-         id
-         name
-         icon {
-            url
-         }
-         }
-         icon {
-         url
-         }
-         icon_full {
-         url
-         }
+query Bangboos {
+  Bangboos(limit: 0, sort: "name") {
+    docs {
+      id
+      slug
+      name
+      rarity {
+        id
+        name
+        icon {
+          url
+        }
       }
-   }
-   }
+      icon {
+        url
+      }
+      icon_full {
+        url
+      }
+    }
+  }
+}
 `;

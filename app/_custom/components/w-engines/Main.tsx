@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Input } from "~/components/Input";
 
+import { calculateEngineMainstat, calculateEngineSubstat } from "~/_custom/utils/formulas";
+
 import type { WEngine as WEngineType } from "payload/generated-custom-types";
 import { Image } from "~/components/Image";
+import { formatValue } from "~/_custom/utils/valueFormat";
+import { stat } from "fs";
 
 export function Main({ data }: { data: WEngineType }) {
    const [level, setLevel] = useState(60);
@@ -46,22 +50,32 @@ export function Main({ data }: { data: WEngineType }) {
       (w: any) => w.rarity == char?.rarity?.id,
    )?.[asc_index]?.second_stat_mod;
 
+   console.log(secondary_growth);
+
    const basicStatDisplay = [
       {
-         label: char?.stat_primary?.name?.replace("Base ", ""),
-         value: calcMainStat(
-            char?.stat_primary?.value,
-            level_growth,
-            star_growth,
+         label: char?.stat_primary?.stat?.name?.replace("Base ", ""),
+         value: formatValue(
+            char?.stat_primary?.stat,
+            calculateEngineMainstat(
+               char?.stat_primary?.value,
+               level_growth,
+               star_growth,
+            )
          ),
-         pct: false,
-         //icon: "https://static.mana.wiki/zzz/IconHpMax.png",
+         // they look ugly lol
+         //icon: char?.stat_primary?.stat?.icon?.url,
       },
       {
-         label: char?.stat_secondary?.name,
-         value: calcSecondStat(char?.stat_secondary?.value, secondary_growth),
-         pct: char?.stat_secondary?.pct,
-         //icon: "https://static.mana.wiki/zzz/IconAttack.png",
+         label: char?.stat_secondary?.stat?.name,
+         value: formatValue(
+            char?.stat_secondary?.stat,
+            calculateEngineSubstat(
+               char?.stat_secondary?.value,
+               secondary_growth,
+            ) / char?.stat_secondary?.stat?.divisor
+         ),
+         //icon: char?.stat_secondary?.stat?.icon?.url,
       },
    ];
 
@@ -231,7 +245,6 @@ const StatBlock = ({ attr }: any) => {
    const attr_icon = attr?.icon;
    const attr_name = attr?.label;
    const attr_val = attr?.value;
-   const attr_perc = attr?.pct;
 
    return (
       <>
@@ -256,7 +269,7 @@ const StatBlock = ({ attr }: any) => {
             </div>
             <div className="text-sm font-semibold">
                <span className="inline-block align-middle">
-                  {attr_perc ? attr_val + "%" : attr_val}
+                  {attr_val}
                </span>
             </div>
          </div>
@@ -264,10 +277,3 @@ const StatBlock = ({ attr }: any) => {
    );
 };
 
-function calcMainStat(base: any, level_growth: any, star_growth: any) {
-   return Math.floor(base * (level_growth / 10000 + 1 + star_growth / 10000));
-}
-
-function calcSecondStat(base: any, secondary_growth: any) {
-   return (base * (1 + secondary_growth / 10000)).toFixed(1);
-}

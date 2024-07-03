@@ -4,7 +4,7 @@ import { Image } from "~/components/Image";
 import { useState } from "react";
 
 import { formatValue } from "~/_custom/utils/valueFormat";
-import { calculateAgentStat } from "~/_custom/utils/formulas";
+import { calculateStat } from "~/_custom/utils/formulas";
 
 export function Main({ data: char }: { data: BangbooType }) {
    const [level, setLevel] = useState(60);
@@ -34,10 +34,10 @@ export function Main({ data: char }: { data: BangbooType }) {
       let data = {};
       data["label"] = stat?.stat?.name;
       data["value"] = stat?.base / stat?.stat?.divisor;
-      if (stat?.stat?.id === "111" || stat?.stat?.id === "121" || stat?.stat?.id === "131") {
+      if (stat?.growth) {
         data["value"] = formatValue(
           stat?.stat,
-          calculateAgentStat(
+          calculateStat(
             level,
             stat?.base,
             char?.ascensions?.[asc_index]?.stat_adv?.find(
@@ -49,7 +49,7 @@ export function Main({ data: char }: { data: BangbooType }) {
         );
       } else {
          const add = char?.ascensions?.[asc_index]?.stat_add?.find(
-            (s) => s.stat?.id === stat?.stat?.id,
+            (s) => s.stat?.id.substring(0, 3) === stat?.stat?.id, // correct?
          )?.value ?? 0;
         data["value"] = formatValue(stat?.stat, (stat?.base + add) / stat?.stat?.divisor);
       }

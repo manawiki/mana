@@ -454,46 +454,46 @@ const CharacterList = ({ chars }: any) => {
 // }
 
 const CHARACTERS = gql`
-   query Agents {
-      Agents(limit: 100, sort: "name", where: { name: { not_equals: null } }) {
-         docs {
-            id
-            name
-            name_code
-            slug
-            icon_round {
-               id
-               url
-            }
-            rarity {
-               id
-               name
-               icon {
-                  url
-               }
-            }
-            damage_type {
-               id
-               name
-               icon {
-                  url
-               }
-            }
-            damage_element {
-               id
-               name
-               icon {
-                  url
-               }
-            }
-            character_camp {
-               id
-               name
-               icon {
-                  url
-               }
-            }
-         }
+ query Agents {
+  Agents(limit: 100, sort: "name", where: { name: { not_equals: null } }) {
+    docs {
+      id
+      name
+      name_code
+      slug
+      icon_round {
+        id
+        url
       }
-   }
+      rarity {
+        id
+        name
+        icon {
+          url
+        }
+      }
+      damage_type {
+        id
+        name
+        icon {
+          url
+        }
+      }
+      damage_element {
+        id
+        name
+        icon {
+          url
+        }
+      }
+      character_camp {
+        id
+        name
+        icon {
+          url
+        }
+      }
+    }
+  }
+}
 `;

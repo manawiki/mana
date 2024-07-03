@@ -59,7 +59,6 @@ export function Skills({ data: char }: { data: AgentType }) {
 
             const desc_list = sk.skill?.description;
             const stat_list = sk.skill?.modifiers;
-            console.log(stat_list);
             return (
                <>
                   <div className="bg-zinc-50 dark:bg-dark350 shadow-sm shadow-1 border border-color-sub rounded-lg px-3 py-1 flex my-3 justify-between">

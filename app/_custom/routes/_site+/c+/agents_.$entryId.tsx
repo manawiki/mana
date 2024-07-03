@@ -133,7 +133,7 @@ query Agent($entryId: String!) {
       base
       growth
     }
-		skills {
+    skills {
       skill_type {
         name
         icon {
@@ -150,13 +150,15 @@ query Agent($entryId: String!) {
       }
       materials {
         lv
-        material {
-          name
-          icon {
-            url
+        materials {
+          material {
+            name
+            icon {
+              url
+            }
           }
+          qty
         }
-        qty
       }
     }
     core_skill {
@@ -183,26 +185,26 @@ query Agent($entryId: String!) {
       asc
       lv_min
       lv_max
-         stat_adv {
-         stat {
-            id
-            name
-            icon {
-               url
-            }
-         }
-         value
-         }
-         stat_add {
-         stat {
-            id
-            name
-            icon {
-               url
-            }
-         }
-         value
-         }
+      stat_adv {
+        stat {
+          id
+          name
+          icon {
+            url
+          }
+        }
+        value
+      }
+      stat_add {
+        stat {
+          id
+          name
+          icon {
+            url
+          }
+        }
+        value
+      }
       materials {
         material {
           id
@@ -218,7 +220,7 @@ query Agent($entryId: String!) {
         qty
       }
     }
-  	profile_info
+    profile_info
     profile_desc
     height
     bday
