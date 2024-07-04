@@ -238,6 +238,7 @@ export default function PrivacyPolicy() {
                      use them.
                   </div>
                </section>
+
                <section className="py-4">
                   <div className="pb-4 font-bold">
                      VI. CHANGES TO OUR PRIVACY POLICY
@@ -261,6 +262,18 @@ export default function PrivacyPolicy() {
                      the practices of this Site, please contact us by sending an
                      email to contact@mana.wiki.
                   </div>
+               </section>
+               <section className="py-4">
+                  All or partial advertising on this Website or App is managed
+                  by Playwire LLC. If Playwire publisher advertising services
+                  are used, Playwire LLC may collect and use certain aggregated
+                  and anonymized data for advertising purposes. To learn more
+                  about the types of data collected, how data is used and your
+                  choices as a user, please visit{" "}
+                  <a href="https://www.playwire.com/privacy-policy">
+                     https://www.playwire.com/privacy-policy
+                  </a>
+                  .
                </section>
                <div>
                   Last Updated: This Privacy Policy was last updated on July 24,

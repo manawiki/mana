@@ -25,7 +25,7 @@ export function ColumnFour() {
             h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px] justify-between"
          >
             <div className="laptop:h-full flex flex-col bg-zinc-50 dark:bg-bg2Dark">
-               <div className="laptop:sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark relative">
+               <div className="laptop:sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark relative flex-grow">
                   <div className="max-laptop:max-w-[760px] mx-auto">
                      <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
                         <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
