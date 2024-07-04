@@ -61,9 +61,6 @@ export default function EntryPage() {
             <Talents data={char} />
             <Ascension data={char} />
             <ImageGallery data={char} />
-            <div className="text-center w-full text-2xl">
-               Under Construction!
-            </div>
          </Entry>
       </>
    );
