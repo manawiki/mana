@@ -1755,10 +1755,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@headlessui-float/react@^0.13.3":
-  version "0.13.3"
-  resolved "https://registry.yarnpkg.com/@headlessui-float/react/-/react-0.13.3.tgz#700ac6cfe56a264dcdc4c6486253dd7573b1b970"
-  integrity sha512-wApuiUu2zcuETftdEJupEUG3XP6AUpwNN+kb6rrBadMf/jpOt1rVBjurgL+peKSW9AfxpNT7uqlL4se6u/epqw==
+"@headlessui-float/react@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@headlessui-float/react/-/react-0.14.0.tgz#23b5973b1de5d1fe4a91077fb37fb146815006c5"
+  integrity sha512-XD/hh/KeE5/SiV0cWplq94Yiikg9mDFreJRHU5F3XNnopEALghEk9YPj3lNfe5Xp5qcm8aq6P+k5zEZTrFS14g==
   dependencies:
     "@floating-ui/core" "^1.5.3"
     "@floating-ui/dom" "^1.5.4"
