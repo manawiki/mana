@@ -12,7 +12,6 @@ import { Main } from "~/_custom/components/agents/Main";
 import { Skills } from "~/_custom/components/agents/Skills";
 import { Talents } from "~/_custom/components/agents/Talents";
 import { Ascension } from "~/_custom/components/agents/Ascension";
-import { ZZZLoadingImage } from "~/_custom/components/ZZZLoadingImage";
 import type { Agent as AgentType } from "~/db/payload-custom-types";
 import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
 import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
@@ -62,9 +61,6 @@ export default function EntryPage() {
             <Talents data={char} />
             <Ascension data={char} />
             <ImageGallery data={char} />
-            <div className="my-4 dark:invert-0 invert h-28 w-full flex items-center justify-center">
-               <ZZZLoadingImage />
-            </div>
             <div className="text-center w-full text-2xl">
                Under Construction!
             </div>

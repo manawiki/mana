@@ -6,7 +6,6 @@ import { gql } from "graphql-request";
 
 import { Effects } from "~/_custom/components/disk-drive-sets/Effects";
 import { Main } from "~/_custom/components/disk-drive-sets/Main";
-import { ZZZUnderConstruction } from "~/_custom/components/ZZZUnderConstruction";
 import type { DiskDriveSet as DiskDriveSetType } from "~/db/payload-custom-types";
 import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
 import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
@@ -55,8 +54,6 @@ export default function EntryPage() {
          <Entry>
             <Main data={char} />
             <Effects data={char} />
-
-            <ZZZUnderConstruction />
          </Entry>
       </>
    );

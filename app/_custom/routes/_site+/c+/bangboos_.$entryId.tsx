@@ -12,7 +12,6 @@ import { Main } from "~/_custom/components/bangboos/Main";
 import { Skills } from "~/_custom/components/bangboos/Skills";
 import { Talents } from "~/_custom/components/bangboos/Talents";
 import { Ascension } from "~/_custom/components/bangboos/Ascension";
-import { ZZZUnderConstruction } from "~/_custom/components/ZZZUnderConstruction";
 import type { Bangboo as BangbooType } from "~/db/payload-custom-types";
 import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
 import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
@@ -62,8 +61,6 @@ export default function EntryPage() {
             <Talents data={char} />*/}
             <Ascension data={char} />
             <ImageGallery data={char} />
-
-            <ZZZUnderConstruction />
          </Entry>
       </>
    );

@@ -50,8 +50,6 @@ export default function EntryPage() {
          <Entry>
             <Main data={char} />
             {/* <ImageGallery data={char} /> */}
-
-            {/* <ZZZUnderConstruction /> */}
          </Entry>
       </>
    );

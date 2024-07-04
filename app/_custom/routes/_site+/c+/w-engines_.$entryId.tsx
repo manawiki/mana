@@ -7,7 +7,6 @@ import { gql } from "graphql-request";
 import { ImageGallery } from "~/_custom/components/w-engines/ImageGallery";
 import { Main } from "~/_custom/components/w-engines/Main";
 import { Talents } from "~/_custom/components/w-engines/Talents";
-import { ZZZUnderConstruction } from "~/_custom/components/ZZZUnderConstruction";
 import type { WEngine as WEngineType } from "~/db/payload-custom-types";
 import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
 import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
@@ -74,8 +73,6 @@ export default function EntryPage() {
             <Main data={loaderdata} />
             <Talents data={char} />
             <ImageGallery data={char} />
-
-            <ZZZUnderConstruction />
          </Entry>
       </>
    );
