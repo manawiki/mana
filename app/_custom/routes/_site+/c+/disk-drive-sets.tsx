@@ -325,8 +325,11 @@ const CharacterList = ({ chars }: any) => {
                                        <div className="text-left text-white text-sm font-bold col-span-1">
                                           {effect?.num}-Pc:
                                        </div>
-                                       <div className="text-left text-white text-sm col-span-5">
-                                          {effect?.desc}
+                                       <div className="text-left text-white text-sm col-span-5"
+                                          dangerouslySetInnerHTML={{
+                                             __html: effect?.desc
+                                          }}
+                                       >
                                        </div>
                                     </div>
                                  </>
