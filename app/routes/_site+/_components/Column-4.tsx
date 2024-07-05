@@ -25,7 +25,7 @@ export function ColumnFour() {
             h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px] justify-between"
          >
             <div className="laptop:h-full flex flex-col bg-zinc-50 dark:bg-bg2Dark">
-               <div className="laptop:sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark relative flex-grow">
+               <div className="laptop:sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark relative">
                   <div className="max-laptop:max-w-[760px] mx-auto">
                      <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
                         <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
@@ -106,67 +106,70 @@ export function ColumnFour() {
                            w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
                            pattern-size-2 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
                   />
-                  {/* @ts-ignore */}
-                  {site?.trendingPages && site?.trendingPages.length > 0 && (
-                     <div className="flex items-center gap-1.5 pt-4 pb-3 relative z-20 max-laptop:max-w-[760px] mx-auto pl-3">
-                        <Icon
-                           name="flame"
-                           className="dark:text-zinc-400 text-zinc-500"
-                           size={16}
-                        />
-                        <span className="text-sm text-1 font-bold">
-                           Trending
-                        </span>
-                     </div>
-                  )}
                </div>
+
                {/* @ts-ignore */}
                {site?.trendingPages && site?.trendingPages.length > 0 && (
-                  <section
-                     className="max-laptop:bg-3 flex-1 relative  shadow-sm shadow-1 max-laptop:min-h-[300px]
-                  bg-white/50 dark:bg-bg3Dark/30 border-y border-color"
-                  >
-                     <div className="absolute inset-0 overflow-auto divide-y divide-dotted divide-color">
-                        {/* @ts-ignore */}
-                        {site?.trendingPages?.map((row: any) => (
-                           <Link
-                              to={row.path}
-                              key={row.path}
-                              className="flex items-center gap-2 pl-3.5 p-2 group hover:bg-white dark:hover:bg-bg2Dark"
-                           >
-                              <div
-                                 className="text-sm flex-grow group-hover:underline decoration-zinc-400 dark:decoration-zinc-500
-                                 underline-offset-2 font-semibold"
-                              >
-                                 {row.data.name}
-                              </div>
-                              <div
-                                 className="h-[26px] w-[26px] flex items-center justify-center rounded-full bg-white
-                                    border border-color-sub shadow-sm shadow-1 overflow-hidden flex-none dark:bg-dark400"
-                              >
-                                 {row.data?.icon?.url ? (
-                                    <Image
-                                       width={40}
-                                       height={40}
-                                       url={row.data?.icon?.url}
-                                       options="aspect_ratio=1:1&height=40&width=40"
-                                       alt=""
-                                       loading="lazy"
-                                    />
-                                 ) : (
-                                    <Icon
-                                       name="component"
-                                       className="dark:text-zinc-500 text-zinc-400 mx-auto"
-                                       size={16}
-                                    />
-                                 )}
-                              </div>
-                           </Link>
-                        ))}
+                  <>
+                     <div className="dark:max-laptop:bg-bg3Dark max-laptop:bg-white pt-4 pb-3 w-full relative">
+                        <div className="max-laptop:max-w-[728px] max-tablet:px-3 laptop:px-3 mx-auto flex items-center gap-1.5">
+                           <Icon
+                              name="flame"
+                              className="dark:text-zinc-400 text-zinc-500"
+                              size={16}
+                           />
+                           <span className="text-sm text-1 font-bold">
+                              Trending
+                           </span>
+                        </div>
                      </div>
-                  </section>
+                     <section
+                        className="max-laptop:bg-3 flex-1 relative  shadow-sm shadow-1 max-laptop:min-h-[300px] laptop:min-h-[500px]
+                      bg-white/50 dark:bg-bg3Dark/30 border-y border-color"
+                     >
+                        <div className="absolute inset-0 overflow-auto divide-y divide-dotted divide-color">
+                           {/* @ts-ignore */}
+                           {site?.trendingPages?.map((row: any) => (
+                              <Link
+                                 to={row.path}
+                                 key={row.path}
+                                 className="flex items-center max-laptop:max-w-[750px] mx-auto
+                                  gap-2 pl-3.5 p-2 group hover:bg-white dark:hover:bg-bg2Dark"
+                              >
+                                 <div
+                                    className="text-sm flex-grow group-hover:underline decoration-zinc-400 dark:decoration-zinc-500
+                                 underline-offset-2 font-semibold"
+                                 >
+                                    {row.data.name}
+                                 </div>
+                                 <div
+                                    className="h-[26px] w-[26px] flex items-center justify-center rounded-full bg-white
+                                    border border-color-sub shadow-sm shadow-1 overflow-hidden flex-none dark:bg-dark400"
+                                 >
+                                    {row.data?.icon?.url ? (
+                                       <Image
+                                          width={40}
+                                          height={40}
+                                          url={row.data?.icon?.url}
+                                          options="aspect_ratio=1:1&height=40&width=40"
+                                          alt=""
+                                          loading="lazy"
+                                       />
+                                    ) : (
+                                       <Icon
+                                          name="component"
+                                          className="dark:text-zinc-500 text-zinc-400 mx-auto"
+                                          size={16}
+                                       />
+                                    )}
+                                 </div>
+                              </Link>
+                           ))}
+                        </div>
+                     </section>
+                  </>
                )}
-               <div className="py-3 px-3.5 laptop:w-[334px] bg-3 laptop:bg-2 z-50">
+               <div className="max-laptop:py-5 border-t border-color h-[54px] flex items-center px-3.5 laptop:w-[333px] bg-3 laptop:bg-2 z-10 laptop:fixed bottom-0 right-0">
                   <div className="justify-between w-full flex items-center max-laptop:max-w-[728px] mx-auto gap-3">
                      {!site.isWhiteLabel && (
                         <Link
@@ -204,7 +207,7 @@ export function ColumnFour() {
                         <LoggedOut>
                            <Link
                               to="/join"
-                              className="group relative inline-flex h-8 laptop:h-7 items-center justify-center overflow-hidden flex-none
+                              className="group relative inline-flex h-7 items-center justify-center overflow-hidden flex-none
                            rounded-lg laptop:rounded-md px-2.5 font-medium text-indigo-600 transition duration-300 ease-out shadow-sm shadow-1"
                            >
                               <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
