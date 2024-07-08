@@ -26,6 +26,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       604800000,
    );
 
+   // Replace ownerdomain with the current domain if not mana.wiki
    const updatedBody =
       ownerdomain == "mana.wiki"
          ? body
