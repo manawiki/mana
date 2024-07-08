@@ -8,7 +8,7 @@ import type { loader as entryLoaderType } from "~/routes/_site+/c_+/$collectionI
 
 import { ScrollToHashElement } from "./ScrollToHashElement";
 import { SectionParent } from "./SectionParent";
-import { AdPlaceholder, AdUnit } from "../../../_components/Ramp";
+import { AdPlaceholder, AdUnit } from "../../../_components/RampUnit";
 import { TableOfContents } from "../../_components/TableOfContents";
 
 export type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
@@ -83,7 +83,7 @@ export function Section({
                      >
                         <AdUnit
                            enableAds={section.showAd}
-                           adType="desktopLeaderBTF"
+                           adType="leaderboard_btf"
                            selectorId={`sectionDesktopLeaderBTF-${section.id}`}
                         />
                      </div>
