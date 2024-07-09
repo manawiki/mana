@@ -1,4 +1,4 @@
-import { AdPlaceholder, AdUnit } from "~/routes/_site+/_components/Ramp";
+import { AdPlaceholder, AdUnit } from "~/routes/_site+/_components/RampUnit";
 
 import type { InlineAdElement } from "../core/types";
 
@@ -8,7 +8,7 @@ export function BlockInlineAd({ element }: { element: InlineAdElement }) {
          <div className="flex items-center justify-center min-h-[90px]">
             <AdUnit
                enableAds
-               adType="desktopLeaderBTF"
+               adType="leaderboard_btf"
                selectorId={`desktop-${element.id}`}
             />
             {/* <AdUnit
