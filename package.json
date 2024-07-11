@@ -53,6 +53,8 @@
       "@remix-run/server-runtime": "^2.9.2",
       "@stripe/react-stripe-js": "^2.4.0",
       "@stripe/stripe-js": "^2.2.2",
+      "@tanstack/match-sorter-utils": "^8.15.1",
+      "@tanstack/react-table": "^8.19.2",
       "aos": "^3.0.0-beta.6",
       "chart.js": "^4.4.0",
       "clsx": "^2.0.0",
