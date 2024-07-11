@@ -42,6 +42,33 @@ export default function CollectionList() {
 
    const collectionId = useParams()?.collectionId ?? pathname.split("/")[2];
 
+   const gridView = columnHelper.accessor("name", {
+      header: "Name",
+      cell: (info) => (
+         <Link
+            to={`/c/${collectionId}/${info.row.original.slug}`}
+            className="group flex items-center justify-center gap-2 truncate flex-col"
+         >
+            <Avatar
+               className="size-12 flex-none"
+               initials={
+                  info.row.original.icon?.url
+                     ? undefined
+                     : info.row.original.name.charAt(0)
+               }
+               src={info.row.original.icon?.url}
+               options="aspect_ratio=1:1&height=120&width=120"
+            />
+            <div
+               className="font-semibold group-hover:underline text-xs truncate
+             text-center decoration-zinc-400 underline-offset-2"
+            >
+               {info.getValue()}
+            </div>
+         </Link>
+      ),
+   });
+
    const columns = [
       columnHelper.accessor("name", {
          header: "Name",
@@ -67,5 +94,12 @@ export default function CollectionList() {
          ),
       }),
    ];
-   return <List key={collectionId} columns={columns} />;
+   return (
+      <List
+         key={collectionId}
+         columns={columns}
+         gridView={gridView}
+         viewType="list"
+      />
+   );
 }
