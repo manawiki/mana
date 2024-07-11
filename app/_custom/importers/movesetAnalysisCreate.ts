@@ -1,17 +1,16 @@
 import path from "path";
 
+import { nanoid } from "nanoid";
 import Payload from "payload";
 
+import { deserializeSlate } from "./deserializeSlate";
 import { manaSlug } from "../../utils/url-slug";
-import { nanoid } from "nanoid";
 
 require("dotenv").config();
 
 const { PAYLOADCMS_SECRET } = process.env;
 
 const { JSDOM } = require("jsdom");
-
-import { deserializeSlate } from "./deserializeSlate";
 
 let payload = null as any;
 
@@ -32,10 +31,12 @@ start();
 
 // const data = require("./pokemon.json");
 
+// 157 rows
+
 async function mapper() {
-   const requests = Array.from({ length: 1 }, (_, i) =>
+   const requests = Array.from({ length: 10 }, (_, i) =>
       fetch(
-         `https://gamepress.gg/pokemongo/pokemongo-export-full?page=${i}&_format=json`,
+         `https://pogo.gamepress.gg/pokemongo-export-full?page=${i}&_format=json`,
       ).then((response) => response.json()),
    );
 

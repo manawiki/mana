@@ -10,7 +10,8 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 import type { Pokemon } from "~/db/payload-custom-types";
 import { fetchList } from "~/routes/_site+/c_+/$collectionId/utils/fetchList.server";
 import { listMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
-import { fuzzyFilter, List } from "~/routes/_site+/c_+/_components/List";
+import { List } from "~/routes/_site+/c_+/_components/List";
+import { fuzzyFilter } from "~/routes/_site+/c_+/_components/fuzzyFilter";
 
 import { RatingsLabel } from "./components/RatingsLabel";
 
@@ -37,9 +38,9 @@ export default function ListPage() {
    return (
       <List
          viewType="list"
+         gridView={gridView}
          columns={columns}
-         columnViewability={columnViewability}
-         //@ts-ignore
+         columnViewability={{ type: false, generation: false }}
          filters={filters}
       />
    );
@@ -47,48 +48,89 @@ export default function ListPage() {
 
 const columnHelper = createColumnHelper<Pokemon>();
 
-const columnViewability = { type: false, generation: false };
+const gridView = columnHelper.accessor("name", {
+   filterFn: fuzzyFilter,
+   cell: (info) => (
+      <Link
+         className="block relative"
+         prefetch="intent"
+         to={`/c/pokemon/${info.row.original.slug}`}
+      >
+         <div className="flex items-center gap-0.5 absolute top-0 left-0">
+            {info.row.original.type?.map((type) => (
+               <Tooltip key={type.name} placement="top">
+                  <TooltipTrigger>
+                     <Image
+                        height={14}
+                        width={14}
+                        url={type?.icon?.url}
+                        options="height=40&width=40"
+                        alt={type?.name}
+                     />
+                  </TooltipTrigger>
+                  <TooltipContent>{type?.name}</TooltipContent>
+               </Tooltip>
+            ))}
+         </div>
+         <Image
+            width={36}
+            height={36}
+            url={info.row.original.icon?.url}
+            className="mx-auto"
+            options="aspect_ratio=1:1&height=80&width=80"
+         />
+         <div
+            className="truncate text-xs font-semibold text-center pt-1
+               group-hover:underline decoration-zinc-400 underline-offset-2"
+         >
+            {info.getValue()}
+         </div>
+      </Link>
+   ),
+});
 
 const columns = [
    columnHelper.accessor("name", {
       header: "Pokemon",
       filterFn: fuzzyFilter,
-      cell: (info) => (
-         <Link
-            prefetch="intent"
-            to={`/c/pokemon/${info.row.original.slug}`}
-            className="flex items-center gap-3 group py-0.5"
-         >
-            <Image
-               width={36}
-               height={36}
-               url={info.row.original.icon?.url}
-               options="aspect_ratio=1:1&height=80&width=80"
-            />
-            <span
-               className="space-y-0.5 font-semibold group-hover:underline 
-               decoration-zinc-400 underline-offset-2 truncate"
+      cell: (info) => {
+         return (
+            <Link
+               prefetch="intent"
+               to={`/c/pokemon/${info.row.original.slug}`}
+               className="flex items-center gap-3 group py-0.5"
             >
-               <div className="truncate">{info.getValue()}</div>
-               <div className="flex items-center gap-0.5">
-                  {info.row.original.type?.map((type) => (
-                     <Tooltip key={type.name} placement="top">
-                        <TooltipTrigger>
-                           <Image
-                              height={14}
-                              width={14}
-                              url={type?.icon?.url}
-                              options="height=40&width=40"
-                              alt={type?.name}
-                           />
-                        </TooltipTrigger>
-                        <TooltipContent>{type?.name}</TooltipContent>
-                     </Tooltip>
-                  ))}
-               </div>
-            </span>
-         </Link>
-      ),
+               <Image
+                  width={36}
+                  height={36}
+                  url={info.row.original.icon?.url}
+                  options="aspect_ratio=1:1&height=80&width=80"
+               />
+               <span
+                  className="space-y-0.5 font-semibold group-hover:underline 
+                decoration-zinc-400 underline-offset-2 truncate"
+               >
+                  <div className="truncate">{info.getValue()}</div>
+                  <div className="flex items-center gap-0.5">
+                     {info.row.original.type?.map((type) => (
+                        <Tooltip key={type.name} placement="top">
+                           <TooltipTrigger>
+                              <Image
+                                 height={14}
+                                 width={14}
+                                 url={type?.icon?.url}
+                                 options="height=40&width=40"
+                                 alt={type?.name}
+                              />
+                           </TooltipTrigger>
+                           <TooltipContent>{type?.name}</TooltipContent>
+                        </Tooltip>
+                     ))}
+                  </div>
+               </span>
+            </Link>
+         );
+      },
    }),
    columnHelper.accessor("type", {
       filterFn: (row, columnId, filterValue) => {
