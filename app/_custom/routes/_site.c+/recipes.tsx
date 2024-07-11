@@ -3,9 +3,9 @@ import { useState } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+
 // import { characters } from "./characters";
 import type { Material } from "payload/generated-custom-types";
-
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { fetchList } from "~/routes/_site+/c_+/$collectionId/utils/fetchList.server";
@@ -15,25 +15,27 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
+   context: { payload, user },
+   params,
    request,
-   context: { payload },
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: QUERY_RECIPES,
       },
-      payload,
    });
 
-   //@ts-ignore
-   return json({ recipes: list.data.recipes.docs });
+   return json(list);
 }
 
 export default function HomePage() {
-   const { recipes } = useLoaderData<typeof loader>();
+   const list = useLoaderData<typeof loader>();
 
-   return <RecipeList chars={recipes} />;
+   return <RecipeList chars={list.listData.docs} />;
 }
 
 type FilterTypes = {
@@ -379,7 +381,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
 const QUERY_RECIPES = `
 query {
-   recipes: Recipes(limit: 100) {
+   listData: Recipes(limit: 5000) {
      docs {
        recipe_type {
          id

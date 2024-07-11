@@ -14,24 +14,25 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
+   context: { payload, user },
+   params,
    request,
-   context: { payload },
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: CHARACTERS,
       },
-      payload,
    });
-
-   //@ts-ignore
-   return json({ characters: list?.data?.Characters?.docs });
+   return json(list);
 }
 
 export default function CharactersList() {
-   const { characters } = useLoaderData<typeof loader>();
-   return <CharacterList chars={characters} />;
+   const list = useLoaderData<typeof loader>();
+   return <CharacterList chars={list.listData.docs} />;
 }
 
 type FilterTypes = {
@@ -413,25 +414,10 @@ const CharacterList = ({ chars }: any) => {
    );
 };
 
-// function filterUnique(input: any) {
-//    let output: any = [];
-//    for (let i = 0; i < input.length; i++) {
-//       if (!output.find((a) => a.id == input[i].id)) {
-//          output.push({
-//             id: input[i].id,
-//             name: input[i].name,
-//             icon: input[i].icon?.url,
-//          });
-//       }
-//    }
-
-//    return output;
-// }
-
 const CHARACTERS = gql`
-   query Characters {
-      Characters(
-         limit: 100
+   query {
+      listData: Characters(
+         limit: 5000
          sort: "name"
          where: { name: { not_equals: null } }
       ) {

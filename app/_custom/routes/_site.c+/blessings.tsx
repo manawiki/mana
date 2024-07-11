@@ -13,25 +13,26 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 
 export { listMeta as meta };
 export async function loader({
+   context: { payload, user },
+   params,
    request,
-   context: { payload },
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: QUERY_BLESSINGS,
       },
-      payload,
    });
-
-   //@ts-ignore
-   return json({ blessings: list.data.blessings.docs });
+   return json(list);
 }
 
 export default function HomePage() {
-   const { blessings } = useLoaderData<typeof loader>();
+   const list = useLoaderData<typeof loader>();
 
-   return <BlessingList chars={blessings} />;
+   return <BlessingList chars={list.listData.docs} />;
 }
 
 type FilterTypes = {
@@ -368,7 +369,7 @@ function removeTags(str: String) {
 
 const QUERY_BLESSINGS = `
 query {
-   blessings: Blessings(limit: 100) {
+   listData: Blessings(limit: 5000) {
      docs {
        rarity {
          id

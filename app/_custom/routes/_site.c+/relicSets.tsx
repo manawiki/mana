@@ -18,22 +18,24 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: QUERY_RELIC_SETS,
       },
-      payload,
    });
 
    //@ts-ignore
-   return json({ relicSets: list.data.relicSets.docs });
+   return json(list);
 }
 
 export default function HomePage() {
-   const { relicSets } = useLoaderData<typeof loader>();
+   const list = useLoaderData<typeof loader>();
 
-   return <RelicSetList chars={relicSets} />;
+   return <RelicSetList chars={list.listData.docs} />;
 }
 
 type FilterTypes = {
@@ -266,7 +268,7 @@ const EntryWithDescription = ({ char }: any) => {
 
 const QUERY_RELIC_SETS = gql`
    query {
-      relicSets: RelicSets(limit: 100) {
+      listData: RelicSets(limit: 5000) {
          docs {
             relicset_id
             name

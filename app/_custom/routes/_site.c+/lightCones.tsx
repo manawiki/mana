@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { gql } from "graphql-request";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
@@ -13,24 +14,27 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: QUERY_LIGHTCONES,
       },
-      payload,
    });
 
-   return json({ lightCones: list?.data?.lightcones?.docs });
+   return json(list);
 }
 
 export default function HomePage() {
-   const { lightCones } = useLoaderData<typeof loader>();
+   const list = useLoaderData<typeof loader>();
 
-   return <LightConeList chars={lightCones} />;
+   return <LightConeList chars={list.listData.docs} />;
 }
 
 type FilterTypes = {
@@ -287,21 +291,6 @@ const LightConeList = ({ chars }: any) => {
    );
 };
 
-// function filterUnique(input: any) {
-//    var output: any = [];
-//    for (var i = 0; i < input.length; i++) {
-//       if (!output.find((a: any) => a.id == input[i].id)) {
-//          output.push({
-//             id: input[i].id,
-//             name: input[i].name,
-//             icon: input[i].icon?.url,
-//          });
-//       }
-//    }
-
-//    return output;
-// }
-
 const EntryWithDescription = ({ char }: any) => {
    const pathsmall = char?.path?.icon?.url;
    const rarityurl = char?.rarity?.icon?.url;
@@ -409,35 +398,35 @@ const EntryIconOnly = ({ char }: any) => {
    );
 };
 
-const QUERY_LIGHTCONES = `
-query {
-   lightcones: LightCones(limit: 100) {
-     docs {
-       lightcone_id
-       name
-       rarity {
-         id
-         icon {
-           url
+const QUERY_LIGHTCONES = gql`
+   query {
+      listData: LightCones(limit: 5000, sort: "name") {
+         docs {
+            lightcone_id
+            name
+            rarity {
+               id
+               icon {
+                  url
+               }
+               display_number
+            }
+            path {
+               id
+            }
+            id
+            path {
+               icon {
+                  url
+               }
+            }
+            skill_data {
+               desc
+            }
+            icon {
+               url
+            }
          }
-         display_number
-       }
-       path {
-         id
-       }
-       id
-       path {
-         icon {
-           url
-         }
-       }
-       skill_data {
-         desc
-       }
-       icon {
-         url
-       }
-     }
+      }
    }
- }
 `;

@@ -13,35 +13,39 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: BANNERS,
       },
-      payload,
    });
 
    // Sort banners by banner_id
    //@ts-ignore
-   list?.data.Banners.docs.sort((a: any, b: any) =>
+   const finalList = list?.listData.docs.sort((a: any, b: any) =>
       parseInt(a.banner_id) > parseInt(b.banner_id)
          ? -1
          : parseInt(b.banner_id) > parseInt(a.banner_id)
            ? 1
            : 0,
    );
+
+   return json(finalList);
+
    //@ts-ignore
-   return json({ banners: list.data.Banners.docs });
 }
 
 export default function HomePage() {
-   const { banners } = useLoaderData<typeof loader>();
+   const list = useLoaderData<typeof loader>();
 
-   return <BannerList banners={banners} />;
+   return <BannerList banners={list} />;
 }
 
 const BannerList = ({ banners }: any) => {
@@ -163,8 +167,8 @@ const LightConeFrame = ({ char }: any) => {
 };
 
 const BANNERS = gql`
-   query Banners {
-      Banners(limit: 100) {
+   query {
+      listData: Banners(limit: 5000) {
          docs {
             name
             banner_id
