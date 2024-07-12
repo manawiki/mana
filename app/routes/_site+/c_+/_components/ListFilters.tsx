@@ -20,12 +20,16 @@ export function ListFilters({
    filters,
    columnFilters,
    setColumnFilters,
+   viewType,
+   setViewMode,
 }: {
    collection: Collection;
    setGlobalFilter: any;
    columnFilters: ColumnFiltersState;
    setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;
    filters?: TableFilters;
+   viewType?: "list" | "grid";
+   setViewMode: Dispatch<SetStateAction<"list" | "grid">>;
 }) {
    const [filterMenuToggle, setFilterToggle] = useState(false);
 
@@ -42,6 +46,31 @@ export function ListFilters({
 
    return (
       <div className="flex items-center justify-between w-full pb-2 gap-3 sticky top-32 laptop:top-[104px] z-20">
+         <div
+            className="overflow-hidden bg-3 dark:border-zinc-600 shadow-sm dark:shadow-zinc-800/80 rounded-md dark:divide-zinc-600
+            border border-zinc-300/80 h-9 grid grid-cols-2 flex-none divide-x divide-zinc-300/80"
+         >
+            <button
+               onClick={() => setViewMode("list")}
+               className={clsx(
+                  viewType == "list" &&
+                     "bg-blue-50 dark:bg-gray-800 text-blue-500 dark:text-blue-500",
+                  "px-3 text-1",
+               )}
+            >
+               <Icon name="rows" size={15} />
+            </button>
+            <button
+               onClick={() => setViewMode("grid")}
+               className={clsx(
+                  viewType == "grid" &&
+                     "bg-blue-50 dark:bg-gray-800 text-blue-500 dark:text-blue-500",
+                  "px-3 text-1",
+               )}
+            >
+               <Icon name="layout-grid" size={15} />
+            </button>
+         </div>
          <div
             className="relative flex items-center gap-2 w-full pl-2 pr-0.5 border bg-zinc-50 border-zinc-300
             dark:border-zinc-600/80 rounded-lg h-[37px] shadow-sm dark:shadow-zinc-800/80 dark:bg-dark450
