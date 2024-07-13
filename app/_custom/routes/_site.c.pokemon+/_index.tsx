@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { defer } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { gql } from "graphql-request";
@@ -10,8 +10,8 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 import type { Pokemon } from "~/db/payload-custom-types";
 import { fetchList } from "~/routes/_site+/c_+/$collectionId/utils/fetchList.server";
 import { listMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
-import { List } from "~/routes/_site+/c_+/_components/List";
 import { fuzzyFilter } from "~/routes/_site+/c_+/_components/fuzzyFilter";
+import { List } from "~/routes/_site+/c_+/_components/List";
 
 import { RatingsLabel } from "./components/RatingsLabel";
 
@@ -22,7 +22,7 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const list = fetchList({
+   const list = await fetchList({
       params,
       request,
       payload,
@@ -31,7 +31,7 @@ export async function loader({
          query: POKEMON,
       },
    });
-   return defer({ list });
+   return json({ list });
 }
 
 export default function ListPage() {
