@@ -12,7 +12,6 @@ import type { Site } from "~/db/payload-types";
 import { useDebouncedValue } from "~/utils/use-debounce";
 
 import type { loader } from "../_index";
-import { TextLink } from "~/components/Text";
 
 export function Discover() {
    const { q, sites, dev } = useLoaderData<typeof loader>() || {};

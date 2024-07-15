@@ -34,6 +34,7 @@ export async function fetchListCore({
            depth: 1,
            overrideAccess: false,
            user,
+           limit: 5000,
         })
       : await cacheThis(
            () =>
@@ -50,6 +51,7 @@ export async function fetchListCore({
                  depth: 1,
                  overrideAccess: false,
                  user,
+                 limit: 5000,
               }),
            `list-collection-${siteSlug}-${collectionId}`,
         );
@@ -60,30 +62,15 @@ export async function fetchListCore({
    if (collectionEntry?.customDatabase) {
       const searchParams = new URL(request.url).search;
 
-      const where = qs.parse(searchParams, { ignoreQueryPrefix: true })?.where;
-      const sort = qs.parse(searchParams, { ignoreQueryPrefix: true })?.sort;
       const page = qs.parse(searchParams, { ignoreQueryPrefix: true })?.page;
 
-      const defaultSortParam =
-         collectionEntry?.sortGroups &&
-         collectionEntry?.sortGroups.find(
-            (element: any) => element?.default == true,
-         );
-
-      const defaultSort =
-         defaultSortParam && defaultSortParam.defaultSortType == "ascending"
-            ? `${defaultSortParam.value}`
-            : defaultSortParam?.value && `-${defaultSortParam.value}`;
-
-      const preparedQuery = `${where ? where : ""}${
-         sort || defaultSort ? `&sort=${sort || defaultSort}` : ""
-      }${page ? `&page=${page}` : ""}`;
+      const preparedQuery = `${page ? `&page=${page}` : ""}`;
 
       const restPath = `http://localhost:4000/api/${collectionEntry.slug}${
          preparedQuery ? `?${preparedQuery}&` : "?"
-      }depth=1&limit=50`;
+      }depth=1&limit=5000`;
 
-      const { docs, ...entryMetaData } = user
+      const { docs } = user
          ? await authRestFetcher({
               method: "GET",
               path: restPath,
@@ -98,21 +85,23 @@ export async function fetchListCore({
             url: entry.icon?.url,
          },
       }));
-      return { entries: { docs: filteredDocs, ...entryMetaData } };
+      return { listData: { docs: filteredDocs } };
    }
 
    //Otherwise pull data from core
-   const { docs: coreEntries, ...pagination } = user
+   const { docs: coreEntries } = user
       ? await payload.find({
            collection: "entries",
            where: {
               site: {
+                 //@ts-ignore
                  equals: collectionEntry?.site.id,
               },
               "collectionEntity.slug": {
                  equals: collectionId,
               },
            },
+           limit: 5000,
            depth: 1,
            overrideAccess: false,
            user,
@@ -123,12 +112,14 @@ export async function fetchListCore({
                  collection: "entries",
                  where: {
                     site: {
+                       //@ts-ignore
                        equals: collectionEntry?.site.id,
                     },
                     "collectionEntity.slug": {
                        equals: collectionId,
                     },
                  },
+                 limit: 5000,
                  depth: 1,
                  overrideAccess: false,
                  user,
@@ -141,12 +132,11 @@ export async function fetchListCore({
       name: entry.name,
       slug: entry.slug,
       icon: {
+         //@ts-ignore
          url: entry.icon?.url,
       },
    }));
 
    //Combine filtered docs with pagination info
-   const entries = { docs: filtered, ...pagination };
-
-   return { entries };
+   return { listData: { docs: filtered } };
 }

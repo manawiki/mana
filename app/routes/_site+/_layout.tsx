@@ -4,6 +4,7 @@ import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunctionArgs } from "@remix-run/react";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import { ClientOnly } from "remix-utils/client-only";
 
 import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
@@ -13,7 +14,7 @@ import { ColumnTwo } from "./_components/Column-2";
 import { ColumnFour } from "./_components/Column-4";
 import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
-import { RampScripts } from "./_components/RampScripts";
+import { RampInit } from "./_components/RampInit";
 import { SiteHeader } from "./_components/SiteHeader";
 import { fetchSite } from "./_utils/fetchSite.server";
 
@@ -66,8 +67,14 @@ export default function SiteLayout() {
             </section>
             <ColumnFour />
          </main>
-         <GAScripts gaTrackingId={gaTag} />
-         <RampScripts enableAds={enableAds} />
+         <RampInit />
+         <ClientOnly fallback={<></>}>
+            {() => (
+               <>
+                  <GAScripts gaTrackingId={gaTag} />
+               </>
+            )}
+         </ClientOnly>
       </>
    );
 }

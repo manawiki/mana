@@ -1,15 +1,20 @@
-import { useState, type ReactNode } from "react";
+import { Suspense, useState, type ReactNode } from "react";
 
-import { useLocation, useMatches, useParams } from "@remix-run/react";
-import type { PaginatedDocs } from "payload/database";
+import { Await, useLoaderData, useLocation, useParams } from "@remix-run/react";
+import type {
+   VisibilityState,
+   AccessorKeyColumnDef,
+   AccessorKeyColumnDefBase,
+} from "@tanstack/react-table";
 
-import type { Collection, Entry } from "~/db/payload-types";
+import { Loading } from "~/components/Loading";
+import type { Collection } from "~/db/payload-types";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { AddEntry } from "./AddEntry";
 import { CollectionHeader } from "./CollectionHeader";
-import { CollectionListRows } from "./CollectionListRows";
-import { CustomDBFilters } from "./CustomDBFilters";
+import { ListTable } from "./ListTable";
+import { AdPlaceholder, AdUnit } from "../../_components/RampUnit";
 
 export type Section = {
    id: string;
@@ -29,19 +34,31 @@ export type Section = {
    ];
 };
 
+export type TableFilters = {
+   id: string;
+   label: string;
+   cols?: 1 | 2 | 3 | 4 | 5;
+   options: { label: string; value: string; icon?: string }[];
+}[];
+
 export function List({
    children,
-   CellComponent,
-   cellContainerClass,
+   columns,
+   columnViewability,
+   filters,
+   viewType,
+   gridView,
 }: {
    children?: ReactNode;
-   CellComponent?: any;
-   cellContainerClass?: string;
+   columns: AccessorKeyColumnDefBase<any>[];
+   filters?: TableFilters;
+   viewType: "list" | "grid";
+   gridView?: AccessorKeyColumnDef<any>;
+   columnViewability?: VisibilityState;
 }) {
-   const { site } = useSiteLoaderData();
-
    //@ts-ignore
-   const { entries } = useMatches()?.[2]?.data as PaginatedDocs<Entry>;
+   const { list } = useLoaderData();
+   const { site } = useSiteLoaderData();
 
    //Get path for custom site, cant use useParams since it doesn't exist when using a custom template
    const { pathname } = useLocation();
@@ -65,20 +82,34 @@ export function List({
             setIsChanged={setIsChanged}
             isChanged={isChanged}
          />
+         <AdPlaceholder>
+            <AdUnit
+               enableAds={site.enableAds}
+               adType="leaderboard_atf"
+               selectorId="listDesktopLeaderATF"
+            />
+         </AdPlaceholder>
          <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
             {!collection?.customDatabase && <AddEntry />}
-            {collection?.filterGroups?.length != 0 &&
-               !collection?.customListTemplate && (
-                  <CustomDBFilters collection={collection} />
-               )}
             {children ? (
                children
             ) : (
-               <CollectionListRows
-                  entries={entries}
-                  CellComponent={CellComponent}
-                  cellContainerClass={cellContainerClass}
-               />
+               <Suspense fallback={<Loading />}>
+                  <Await resolve={list}>
+                     {(list) => (
+                        <ListTable
+                           viewType={viewType}
+                           key={collectionId}
+                           data={list}
+                           columns={columns}
+                           collection={collection}
+                           filters={filters}
+                           columnViewability={columnViewability}
+                           gridView={gridView}
+                        />
+                     )}
+                  </Await>
+               </Suspense>
             )}
          </div>
       </>
