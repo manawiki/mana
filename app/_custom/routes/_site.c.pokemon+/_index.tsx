@@ -157,9 +157,9 @@ const columns = [
       header: "Lvl 50 CP",
       cell: (info) =>
          info.getValue() ? (
-            <div className="tabular-nums">
+            <span className="tabular-nums text-xs">
                {info.getValue()?.toLocaleString()}
-            </div>
+            </span>
          ) : (
             "-"
          ),
@@ -248,6 +248,24 @@ const columns = [
             "-"
          ),
    }),
+   columnHelper.accessor("baseAttack", {
+      header: "ATK",
+      cell: (info) => (
+         <span className="text-xs tabular-nums">{info.getValue()}</span>
+      ),
+   }),
+   columnHelper.accessor("baseDefense", {
+      header: "DEF",
+      cell: (info) => (
+         <span className="text-xs tabular-nums">{info.getValue()}</span>
+      ),
+   }),
+   columnHelper.accessor("baseStamina", {
+      header: "STA",
+      cell: (info) => (
+         <span className="text-xs tabular-nums">{info.getValue()}</span>
+      ),
+   }),
 ];
 
 const POKEMON = gql`
@@ -261,6 +279,9 @@ const POKEMON = gql`
             slug
             generation
             level50CP
+            baseAttack
+            baseDefense
+            baseStamina
             icon {
                url
             }
