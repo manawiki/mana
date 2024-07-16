@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 
 import {
    Menu,
@@ -23,7 +23,7 @@ import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";
-import SearchComboBox from "../action+/search";
+import SearchComboBox from "../search/_search";
 
 export function SiteHeader({
    setPrimaryMenuOpen,

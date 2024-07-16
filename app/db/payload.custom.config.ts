@@ -11,12 +11,7 @@ import { selectPlugin } from "payload-query";
 import { Logo } from "./components/Logo";
 import { CustomImages } from "./custom/CustomImages";
 import { Users } from "./custom/CustomUsers";
-import searchPlugin from "./plugins/search";
-import {
-   CustomCollections,
-   CustomSearchCollections,
-   CustomDefaultPriorities,
-} from "../_custom/collections";
+import { CustomCollections } from "../_custom/collections";
 
 const adapter = s3Adapter({
    config: {
@@ -72,30 +67,6 @@ export default buildConfig({
                },
                prefix: process.env.FILE_PREFIX,
             },
-         },
-      }),
-      searchPlugin({
-         collections: [...CustomSearchCollections],
-         defaultPriorities: CustomDefaultPriorities,
-         searchOverrides: {
-            fields: [
-               {
-                  name: "icon",
-                  type: "relationship",
-                  relationTo: "images",
-                  hasMany: false,
-                  admin: {
-                     readOnly: true,
-                  },
-               },
-            ],
-         },
-         beforeSync: ({ originalDoc, searchDoc }) => {
-            return {
-               ...searchDoc,
-               icon: originalDoc?.icon?.id ?? "",
-               name: originalDoc?.name,
-            };
          },
       }),
    ],
