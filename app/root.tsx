@@ -275,12 +275,12 @@ export function useChangeLanguage(locale: string) {
 }
 
 // don't revalidate loader when url param changes
-export function shouldRevalidate({
-   currentUrl,
-   nextUrl,
-   defaultShouldRevalidate,
-}: ShouldRevalidateFunctionArgs) {
-   return currentUrl.pathname === nextUrl.pathname
-      ? false
-      : defaultShouldRevalidate;
-}
+// export function shouldRevalidate({
+//    currentUrl,
+//    nextUrl,
+//    defaultShouldRevalidate,
+// }: ShouldRevalidateFunctionArgs) {
+//    return currentUrl.pathname === nextUrl.pathname
+//       ? false
+//       : defaultShouldRevalidate;
+// }
