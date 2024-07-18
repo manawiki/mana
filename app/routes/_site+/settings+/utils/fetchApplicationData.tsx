@@ -32,6 +32,7 @@ export async function fetchApplicationData({
             url: doc.createdBy.avatar?.url,
          },
       },
+      discordUsername: doc?.discordUsername,
       createdAt: doc.createdBy.createdAt,
       reviewMessage: doc.reviewMessage,
       status: doc.status,

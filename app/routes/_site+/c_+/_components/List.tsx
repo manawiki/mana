@@ -84,6 +84,7 @@ export function List({
          />
          <AdPlaceholder>
             <AdUnit
+               className="mt-5"
                enableAds={site.enableAds}
                adType="leaderboard_atf"
                selectorId="listDesktopLeaderATF"

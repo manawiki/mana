@@ -13,6 +13,7 @@ import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
 import { Description, Field, FieldGroup, Label } from "~/components/Fieldset";
+import { Input } from "~/components/Input";
 import { Textarea } from "~/components/Textarea";
 import { isAdding } from "~/utils/form";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
@@ -53,6 +54,7 @@ const SiteApplicationSchema = z.object({
    siteId: z.string(),
    primaryDetails: z.string(),
    additionalNotes: z.string(),
+   discordUsername: z.string().optional(),
 });
 
 export default function Apply() {
@@ -92,6 +94,18 @@ export default function Apply() {
          )}
          <fetcher.Form method="post" ref={zo.ref}>
             <FieldGroup>
+               <Field
+                  disabled={Boolean(application)}
+                  className="laptop:flex items-start justify-center gap-8"
+               >
+                  <div className="laptop:min-w-72 pb-2 space-y-0.5">
+                     <Label>Discord username</Label>
+                     <Description>
+                        We may reach out to you on Discord for further details.
+                     </Description>
+                  </div>
+                  <Input name={zo.fields.discordUsername()} />
+               </Field>
                <Field
                   disabled={Boolean(application)}
                   className="laptop:flex items-start justify-center gap-8"

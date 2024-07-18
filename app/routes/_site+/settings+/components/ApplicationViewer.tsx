@@ -76,6 +76,12 @@ export function ApplicationViewer({
                <div className="space-y-6 max-tablet:pb-6 py-6">
                   <div>
                      <div className="text-1 text-sm pb-1 font-semibold">
+                        Discord Username
+                     </div>
+                     <div>{application.discordUsername}</div>
+                  </div>
+                  <div>
+                     <div className="text-1 text-sm pb-1 font-semibold">
                         In what ways would you like to help?
                      </div>
                      <div>{application.primaryDetails}</div>
