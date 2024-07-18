@@ -91,9 +91,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 export function shouldRevalidate({
    currentUrl,
    nextUrl,
+   formMethod,
    defaultShouldRevalidate,
 }: ShouldRevalidateFunctionArgs) {
-   return currentUrl.pathname === nextUrl.pathname
+   return currentUrl.pathname === nextUrl.pathname && formMethod === "GET"
       ? false
       : defaultShouldRevalidate;
 }
