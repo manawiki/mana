@@ -14,21 +14,22 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
-   const fetchSonataList = fetchList({
+   const list = await fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: QUERY_SONATA_EFFECTS,
       },
-      payload,
    });
 
-   const [{ list }] = await Promise.all([fetchSonataList]);
-
    return json({
-      sonatas: list?.data?.sonataEffects?.docs,
+      sonatas: list?.listData?.docs,
    });
 }
 
@@ -387,7 +388,7 @@ const EntryWithDescription = ({ char }: any) => {
 
 const QUERY_SONATA_EFFECTS = `
 query {
-   sonataEffects: SonataEffects(limit: 1000, sort:"id") {
+   listData: SonataEffects(limit: 1000, sort:"id") {
      docs {
         id
         name
