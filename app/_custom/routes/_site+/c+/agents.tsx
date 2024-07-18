@@ -14,18 +14,23 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: CHARACTERS,
       },
-      payload,
    });
 
-   return json({ characters: list?.data?.Agents?.docs });
+   console.log(list);
+
+   return json({ characters: list?.listData?.docs });
 }
 
 export default function CharactersList() {
@@ -454,46 +459,50 @@ const CharacterList = ({ chars }: any) => {
 // }
 
 const CHARACTERS = gql`
- query Agents {
-  Agents(limit: 100, sort: "name", where: { name: { not_equals: null } }) {
-    docs {
-      id
-      name
-      name_code
-      slug
-      icon_round {
-        id
-        url
+   query {
+      listData: Agents(
+         limit: 100
+         sort: "name"
+         where: { name: { not_equals: null } }
+      ) {
+         docs {
+            id
+            name
+            name_code
+            slug
+            icon_round {
+               id
+               url
+            }
+            rarity {
+               id
+               name
+               icon {
+                  url
+               }
+            }
+            damage_type {
+               id
+               name
+               icon {
+                  url
+               }
+            }
+            damage_element {
+               id
+               name
+               icon {
+                  url
+               }
+            }
+            character_camp {
+               id
+               name
+               icon {
+                  url
+               }
+            }
+         }
       }
-      rarity {
-        id
-        name
-        icon {
-          url
-        }
-      }
-      damage_type {
-        id
-        name
-        icon {
-          url
-        }
-      }
-      damage_element {
-        id
-        name
-        icon {
-          url
-        }
-      }
-      character_camp {
-        id
-        name
-        icon {
-          url
-        }
-      }
-    }
-  }
-}
+   }
 `;

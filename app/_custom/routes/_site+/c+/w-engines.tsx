@@ -17,19 +17,22 @@ import { calculateStat } from "~/_custom/utils/formulas";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: CHARACTERS,
       },
-      payload,
    });
 
    //@ts-ignore
-   return json({ wengines: list?.data?.WEngines?.docs });
+   return json({ wengines: list?.listData?.docs });
 }
 
 export default function CharactersList() {
@@ -78,7 +81,9 @@ const CharacterList = ({ chars }: any) => {
          icon: "https://static.mana.wiki/zzz/ItemRarityIcon_ItemRarityS.png",
       },
    ] as FilterOptionType[];
-   const statsecondary = chars.map((c: any) => c.stat_secondary?.stat?.name).flat();
+   const statsecondary = chars
+      .map((c: any) => c.stat_secondary?.stat?.name)
+      .flat();
    const secondarystats = [
       {
          id: "HP",
@@ -291,12 +296,17 @@ const CharacterList = ({ chars }: any) => {
                const rarityurl = char?.rarity?.icon_item?.url;
 
                const mainname = char?.stat_primary?.stat?.name;
-               const mainval = formatValue(char?.stat_primary?.stat, char?.stat_primary?.value);
+               const mainval = formatValue(
+                  char?.stat_primary?.stat,
+                  char?.stat_primary?.value,
+               );
 
                const secondname = char?.stat_secondary?.stat?.name;
                const secondval = formatValue(
                   char?.stat_secondary?.stat,
-                  char?.stat_secondary?.value / char?.stat_secondary?.stat?.divisor);
+                  char?.stat_secondary?.value /
+                     char?.stat_secondary?.stat?.divisor,
+               );
 
                const talentname = char?.talent_title;
                const talentfirst = char?.talent?.[0]?.desc;
@@ -414,50 +424,50 @@ const CharacterList = ({ chars }: any) => {
 // }
 
 const CHARACTERS = gql`
-query WEngines {
-  WEngines(limit: 0) {
-    docs {
-      id
-      slug
-      name
-      icon {
-        url
+   query {
+      listData: WEngines(limit: 0) {
+         docs {
+            id
+            slug
+            name
+            icon {
+               url
+            }
+            rarity {
+               id
+               name
+               icon_item {
+                  url
+               }
+            }
+            specialty {
+               name
+               icon {
+                  url
+               }
+            }
+            stat_primary {
+               stat {
+                  id
+                  name
+               }
+               value
+            }
+            stat_secondary {
+               stat {
+                  id
+                  name
+                  fmt
+                  divisor
+               }
+               value
+            }
+            talent_title
+            talent {
+               level
+               desc
+            }
+         }
       }
-      rarity {
-        id
-        name
-        icon_item {
-          url
-        }
-      }
-      specialty {
-        name
-        icon {
-          url
-        }
-      }
-      stat_primary {
-        stat {
-          id
-          name
-        }
-        value
-      }
-      stat_secondary {
-        stat {
-          id
-          name
-          fmt
-          divisor
-        }
-        value
-      }
-      talent_title
-      talent {
-        level
-        desc
-      }
-    }
-  }
-}
+   }
 `;

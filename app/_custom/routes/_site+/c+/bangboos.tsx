@@ -14,19 +14,22 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: BANGBOOS,
       },
-      payload,
    });
 
    //@ts-ignore
-   return json({ bangboos: list?.data?.Bangboos?.docs });
+   return json({ bangboos: list?.listData?.docs });
 }
 
 export default function CharactersList() {
@@ -62,9 +65,9 @@ const CharacterList = ({ chars }: any) => {
 
    const rarities = [
       {
-        id: "2",
-        //name: "B",
-        icon: "https://static.mana.wiki/zzz/IconRoleBBig.png",
+         id: "2",
+         //name: "B",
+         icon: "https://static.mana.wiki/zzz/IconRoleBBig.png",
       },
       {
          id: "3",
@@ -305,26 +308,26 @@ const CharacterList = ({ chars }: any) => {
 // }
 
 const BANGBOOS = gql`
-query Bangboos {
-  Bangboos(limit: 0, sort: "name") {
-    docs {
-      id
-      slug
-      name
-      rarity {
-        id
-        name
-        icon {
-          url
-        }
+   query {
+      listData: Bangboos(limit: 0, sort: "name") {
+         docs {
+            id
+            slug
+            name
+            rarity {
+               id
+               name
+               icon {
+                  url
+               }
+            }
+            icon {
+               url
+            }
+            icon_full {
+               url
+            }
+         }
       }
-      icon {
-        url
-      }
-      icon_full {
-        url
-      }
-    }
-  }
-}
+   }
 `;

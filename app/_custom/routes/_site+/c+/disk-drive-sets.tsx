@@ -14,19 +14,22 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: CHARACTERS,
       },
-      payload,
    });
 
    //@ts-ignore
-   return json({ diskdrivesets: list?.data?.DiskDriveSets?.docs });
+   return json({ diskdrivesets: list?.listData?.docs });
 }
 
 export default function CharactersList() {
@@ -325,12 +328,12 @@ const CharacterList = ({ chars }: any) => {
                                        <div className="text-left text-white text-sm font-bold col-span-1">
                                           {effect?.num}-Pc:
                                        </div>
-                                       <div className="text-left text-white text-sm col-span-5"
+                                       <div
+                                          className="text-left text-white text-sm col-span-5"
                                           dangerouslySetInnerHTML={{
-                                             __html: effect?.desc
+                                             __html: effect?.desc,
                                           }}
-                                       >
-                                       </div>
+                                       ></div>
                                     </div>
                                  </>
                               );
@@ -361,28 +364,28 @@ const CharacterList = ({ chars }: any) => {
 // }
 
 const CHARACTERS = gql`
- query DiskDriveSets {
-  DiskDriveSets(limit: 0, sort: "name") {
-    docs {
-      id
-      slug
-      name
-      desc
-      rarity_possible {
-        id
-        name
-        icon_item {
-          url
-        }
+   query {
+      listData: DiskDriveSets(limit: 0, sort: "name") {
+         docs {
+            id
+            slug
+            name
+            desc
+            rarity_possible {
+               id
+               name
+               icon_item {
+                  url
+               }
+            }
+            icon {
+               url
+            }
+            set_effect {
+               num
+               desc
+            }
+         }
       }
-      icon {
-        url
-      }
-      set_effect {
-        num
-        desc
-      }
-    }
-  }
-}
+   }
 `;
