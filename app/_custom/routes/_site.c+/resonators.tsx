@@ -14,32 +14,37 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
    const fetchResonatorList = fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: QUERY_RESONATORS,
       },
-      payload,
    });
    const fetchElementList = fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: QUERY_ELEMENTS,
       },
-      payload,
    });
 
-   const [{ list }, element] = await Promise.all([
+   const [ResonatorsList, elementsList] = await Promise.all([
       fetchResonatorList,
       fetchElementList,
    ]);
 
    return json({
-      resonators: list?.data?.resonators?.docs,
-      elements: element?.list?.data?.elements?.docs,
+      resonators: ResonatorsList?.listData?.docs,
+      elements: elementsList?.listData?.docs,
    });
 }
 
@@ -399,7 +404,7 @@ const EntryIconOnly = ({ char }: any) => {
 
 const QUERY_RESONATORS = `
   query {
-    resonators: Resonators(limit: 1000) {
+    listData: Resonators(limit: 1000) {
       docs {
          id
          name
@@ -429,7 +434,7 @@ const QUERY_RESONATORS = `
 
 const QUERY_ELEMENTS = `
   query {
-    elements: Elements(limit: 1000) {
+    listData: Elements(limit: 1000) {
       docs {
         id
         name
