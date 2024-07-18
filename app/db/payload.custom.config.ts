@@ -105,5 +105,7 @@ export default buildConfig({
    collections: [Users, CustomImages, ...CustomCollections],
    globals: [],
    // disable ratelimit internally
-   rateLimit: { trustProxy: true },
+   rateLimit: {
+      skip: (req) => req.get("host")?.includes("localhost") ?? false,
+   },
 });
