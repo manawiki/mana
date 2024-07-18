@@ -106,6 +106,8 @@ export default buildConfig({
    globals: [],
    // disable ratelimit internally
    rateLimit: {
+      trustProxy: true,
+      max: 5000,
       skip: (req) => req.get("host")?.includes("localhost") ?? false,
    },
 });
