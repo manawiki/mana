@@ -14,18 +14,21 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: QUERY_WEAPONS,
       },
-      payload,
    });
 
-   return json({ weapons: list?.data?.weapons?.docs });
+   return json({ weapons: list?.listData?.docs });
 }
 
 export default function HomePage() {
@@ -435,7 +438,7 @@ const EntryIconOnly = ({ char }: any) => {
 
 const QUERY_WEAPONS = `
   query {
-    weapons: Weapons(limit: 500) {
+    listData: Weapons(limit: 500) {
       docs {
          id
          name
