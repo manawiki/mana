@@ -53,7 +53,7 @@ import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { fetchPost } from "./utils/fetchPost.server";
 import { fetchPostComments } from "./utils/fetchPostComments.server";
 import { fetchPostWithSlug } from "./utils/fetchPostWithSlug.server";
-import { AdPlaceholder, AdUnit } from "../_components/Ramp";
+import { AdPlaceholder, AdUnit } from "../_components/RampUnit";
 
 export async function loader({
    context: { payload, user },
@@ -136,7 +136,7 @@ export default function Post() {
                >
                   <AdUnit
                      enableAds={enableAds}
-                     adType="desktopLeaderATF"
+                     adType="leaderboard_atf"
                      selectorId="postDesktopLeaderATF"
                   />
                </div>

@@ -1,4 +1,5 @@
 export type IconName =
+  | "chevrons-left"
   | "square-plus"
   | "message-square-plus"
   | "corner-down-left"
