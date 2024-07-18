@@ -171,5 +171,7 @@ export default buildConfig({
       outputFile: path.resolve(__dirname, "./payload-types.ts"),
    },
    // disable ratelimit internally
-   rateLimit: { trustProxy: true },
+   rateLimit: {
+      skip: (req) => req.get("host")?.includes("localhost") ?? false,
+   },
 });
