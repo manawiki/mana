@@ -14,41 +14,48 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 export { listMeta as meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
+   params,
    request,
 }: LoaderFunctionArgs) {
    const fetchEchoList = fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: QUERY_ECHOES,
       },
-      payload,
    });
    const fetchSonataList = fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: QUERY_SONATA_EFFECTS,
       },
-      payload,
    });
    const fetchElementList = fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: QUERY_ELEMENTS,
       },
-      payload,
    });
 
-   const [{ list }, sonatadata, elemdata] = await Promise.all([
+   const [list, sonatadata, elemdata] = await Promise.all([
       fetchEchoList,
       fetchSonataList,
       fetchElementList,
    ]);
 
    return json({
-      echoes: list?.data?.echoes?.docs,
-      sonatas: sonatadata?.list?.data?.sonataEffects?.docs,
-      elements: elemdata?.list?.data?.elements?.docs,
+      echoes: list?.listData?.docs,
+      sonatas: sonatadata?.listData?.docs,
+      elements: elemdata?.listData?.docs,
    });
 }
 
@@ -529,7 +536,7 @@ const EntryIconOnly = ({ char }: any) => {
 
 const QUERY_ECHOES = `
   query {
-    echoes: Echoes(limit: 1000) {
+    listData: Echoes(limit: 1000) {
       docs {
          id
          code
@@ -569,7 +576,7 @@ const QUERY_ECHOES = `
 
 const QUERY_SONATA_EFFECTS = `
 query {
-   sonataEffects: SonataEffects(limit: 1000, sort:"id") {
+   listData: SonataEffects(limit: 1000, sort:"id") {
      docs {
         id
         name
@@ -585,7 +592,7 @@ query {
 
 const QUERY_ELEMENTS = `
   query {
-    elements: Elements(limit: 1000) {
+    listData: Elements(limit: 1000) {
       docs {
         id
         name
