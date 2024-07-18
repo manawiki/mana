@@ -15,18 +15,21 @@ export { listMeta as meta };
 
 export async function loader({
    request,
-   context: { payload },
+   params,
+   context: { payload, user },
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      payload,
+      user,
+      params,
       request,
       gql: {
          query: QUERY,
       },
-      payload,
    });
 
    //@ts-ignore
-   return json({ servants: list?.data?.Servants?.docs });
+   return json({ servants: list?.listData?.docs });
 }
 
 export default function Servants() {
@@ -502,7 +505,7 @@ const ServantList = ({ chars }: any) => {
 // Add stats under atk_lv120 later.
 const QUERY = gql`
    query {
-      Servants(
+      listData: Servants(
          limit: 2000
          sort: "library_id"
          where: {
