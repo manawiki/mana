@@ -91,8 +91,8 @@ export async function loader({
 export default function Members() {
    const { team, applications, user } = useLoaderData<typeof loader>();
    return (
-      <div className="space-y-3">
-         <H2Plain text="Team members" className="!text-lg pl-0.5 !mt-0" />
+      <div>
+         <h3 className="pb-2 mt-0">Team Members</h3>
          <Table framed dense>
             <TableBody>
                {team.map((member) => (
@@ -115,7 +115,7 @@ export default function Members() {
                ))}
             </TableBody>
          </Table>
-         <H2Plain text="Applications" className="!text-lg pl-0.5 !mt-6" />
+         <h3 className="pb-2 pt-3">Applications</h3>
          <Suspense fallback={<DotLoader />}>
             <Await resolve={applications}>
                {(applications) => (
