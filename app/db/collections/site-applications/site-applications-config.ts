@@ -7,7 +7,7 @@ import {
    canCreateApplication,
    canReadApplication,
    canUpdateDeleteApplication,
-} from "./access";
+} from "./site-applications-access";
 
 export const SiteApplications: CollectionConfig = {
    slug: "siteApplications",
@@ -58,6 +58,10 @@ export const SiteApplications: CollectionConfig = {
          access: {
             update: updateApplicationFieldAsSiteAdmin,
          },
+      },
+      {
+         name: "discordUsername",
+         type: "text",
       },
       {
          name: "primaryDetails",

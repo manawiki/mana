@@ -147,6 +147,7 @@ async function startCore() {
          ? createDevRequestHandler()
          : createProductionRequestHandler(),
    );
+
    const port = process.env.PORT || 3000;
 
    app.listen(port, () => {

@@ -8,8 +8,15 @@ import { Slate, Editable, withReact, ReactEditor } from "slate-react";
 import { EditorBlocks } from "./EditorBlocks";
 import { Leaf } from "./Leaf";
 import { BlockType } from "../types";
+import { initialValue } from "../utils";
 
-export function EditorView({ data }: { data: any }) {
+export function EditorView({
+   data,
+   autoWidth,
+}: {
+   data: any;
+   autoWidth?: boolean;
+}) {
    const editor = useMemo(() => withReact(createEditor()), []);
 
    const renderElement = useCallback((props: RenderElementProps) => {
@@ -24,7 +31,9 @@ export function EditorView({ data }: { data: any }) {
                width: isVariableWidth
                   ? //@ts-ignore
                     `${props.element.containerWidth}px`
-                  : "728px",
+                  : autoWidth
+                    ? "auto"
+                    : "728px",
             }}
             className="relative mx-auto max-tablet:!w-full"
          >
@@ -35,7 +44,7 @@ export function EditorView({ data }: { data: any }) {
       );
    }, []);
    return (
-      <Slate editor={editor} initialValue={data}>
+      <Slate editor={editor} initialValue={data ?? initialValue()}>
          <Editable
             renderElement={renderElement}
             renderLeaf={Leaf}

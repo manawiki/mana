@@ -14,6 +14,7 @@ import {
    Meta,
    Outlet,
    Scripts,
+   ShouldRevalidateFunctionArgs,
    useLoaderData,
    useMatches,
    useOutletContext,
@@ -146,7 +147,6 @@ function App() {
    const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
       site: null,
    };
-   const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
    // Hook to show the toasts
    useEffect(() => {
@@ -179,30 +179,41 @@ function App() {
                content="telephone=no, date=no, email=no, address=no"
             />
             {/* add preconnect to cdn to improve first bits */}
-            <link
-               sizes="32x32"
-               rel="icon"
-               type="image/x-icon"
-               href={`${favicon}?width=32&height=32`}
-            />
-            <link
-               sizes="128x128"
-               rel="icon"
-               type="image/x-icon"
-               href={`${favicon}?width=128&height=128`}
-            />
-            <link
-               sizes="180x180"
-               rel="icon"
-               type="image/x-icon"
-               href={`${favicon}?width=180&height=180`}
-            />
-            <link
-               sizes="192x192"
-               rel="icon"
-               type="image/x-icon"
-               href={`${favicon}?width=192&height=192`}
-            />
+            {site?.favicon?.url ? (
+               <>
+                  <link
+                     sizes="32x32"
+                     rel="icon"
+                     type="image/x-icon"
+                     href={`${site?.favicon?.url}?width=32&height=32`}
+                  />
+                  <link
+                     sizes="128x128"
+                     rel="icon"
+                     type="image/x-icon"
+                     href={`${site?.favicon?.url}?width=128&height=128`}
+                  />
+                  <link
+                     sizes="180x180"
+                     rel="icon"
+                     type="image/x-icon"
+                     href={`${site?.favicon?.url}?width=180&height=180`}
+                  />
+                  <link
+                     sizes="192x192"
+                     rel="icon"
+                     type="image/x-icon"
+                     href={`${site?.favicon?.url}?width=192&height=192`}
+                  />
+               </>
+            ) : (
+               <link
+                  sizes="32x32"
+                  rel="icon"
+                  type="image/x-icon"
+                  href="/favicon.ico"
+               />
+            )}
             {process.env.NODE_ENV === "production" && !isBot && (
                <Partytown
                   debug={false}
@@ -261,4 +272,16 @@ export function useChangeLanguage(locale: string) {
    useEffect(() => {
       i18n.changeLanguage(locale);
    }, [locale, i18n]);
+}
+
+// don't revalidate loader when url param changes
+export function shouldRevalidate({
+   currentUrl,
+   nextUrl,
+   formMethod,
+   defaultShouldRevalidate,
+}: ShouldRevalidateFunctionArgs) {
+   return currentUrl.pathname === nextUrl.pathname && formMethod === "GET"
+      ? false
+      : defaultShouldRevalidate;
 }

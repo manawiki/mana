@@ -140,22 +140,6 @@ const QUERY = gql`
             id
             name
             slug
-            sortGroups {
-               label
-               value
-               defaultSortType
-            }
-            filterGroups {
-               label
-               filterKey
-               queryLogic
-               queryOperator
-               filterItem {
-                  name
-                  icon
-                  value
-               }
-            }
             sections {
                id
                slug
