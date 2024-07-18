@@ -30,7 +30,10 @@ export function RampInit() {
       //@ts-ignore
       const slotsToRemove = Object.keys(window.ramp.settings.slots);
       //@ts-ignore
-      window.ramp.destroyUnits(slotsToRemove).then(addUnits);
+      if (slotToRemove) {
+         //@ts-ignore
+         window.ramp.destroyUnits(slotsToRemove).then(addUnits);
+      }
    };
 
    useEffect(() => {
