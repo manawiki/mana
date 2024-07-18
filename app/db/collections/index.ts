@@ -8,7 +8,7 @@ import { Images } from "./images/config";
 import { PostContents } from "./post-contents/config";
 import { PostTags } from "./post-tags/config";
 import { Posts } from "./posts/config";
-import { SiteApplications } from "./site-applications/config";
+import { SiteApplications } from "./site-applications/site-applications-config";
 import { Sites } from "./sites/site-config";
 import { Updates } from "./updates/config";
 import { UserData } from "./user-data/user-data.config";
