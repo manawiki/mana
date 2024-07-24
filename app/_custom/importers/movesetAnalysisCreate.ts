@@ -166,7 +166,17 @@ async function mapper() {
                                    },
                                    ...pveOffensive,
                                 ]
-                              : []),
+                              : [
+                                   {
+                                      type: "paragraph",
+                                      id: nanoid(),
+                                      children: [
+                                         {
+                                            text: "",
+                                         },
+                                      ],
+                                   },
+                                ]),
                            ...(pveDefensive[0].text !== ""
                               ? [
                                    {
@@ -229,7 +239,17 @@ async function mapper() {
                                    },
                                    ...pveDefensive,
                                 ]
-                              : []),
+                              : [
+                                   {
+                                      type: "paragraph",
+                                      id: nanoid(),
+                                      children: [
+                                         {
+                                            text: "",
+                                         },
+                                      ],
+                                   },
+                                ]),
                         ],
                      },
                   });
@@ -327,7 +347,17 @@ async function mapper() {
                                    },
                                    ...pvpOffensive,
                                 ]
-                              : []),
+                              : [
+                                   {
+                                      type: "paragraph",
+                                      id: nanoid(),
+                                      children: [
+                                         {
+                                            text: "",
+                                         },
+                                      ],
+                                   },
+                                ]),
                            ...(pvpLeagues[0].text !== ""
                               ? [
                                    ...pvpLeagues,
@@ -516,7 +546,17 @@ async function mapper() {
                                       tableStyle: "rounded",
                                    },
                                 ]
-                              : []),
+                              : [
+                                   {
+                                      type: "paragraph",
+                                      id: nanoid(),
+                                      children: [
+                                         {
+                                            text: "",
+                                         },
+                                      ],
+                                   },
+                                ]),
                         ],
                      },
                   });
