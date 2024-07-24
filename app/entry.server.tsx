@@ -13,7 +13,7 @@ import { IsBotProvider } from "~/utils/isBotProvider";
 
 import { createI18nextServerInstance } from "./utils/i18n/i18next.server";
 
-const ABORT_DELAY = 5000;
+const ABORT_DELAY = 10000;
 
 export default async function handleRequest(
    request: Request,

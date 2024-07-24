@@ -35,7 +35,7 @@ export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
    const location = useLocation();
    const gaTag = site?.gaTagId;
-   const enableAds = site?.enableAds;
+   const adWebId = site?.adWebId;
 
    const [, setSearchToggle] = useSearchToggleState();
 
@@ -67,7 +67,7 @@ export default function SiteLayout() {
             </section>
             <ColumnFour />
          </main>
-         <RampInit />
+         <RampInit adWebId={adWebId} />
          <ClientOnly fallback={<></>}>
             {() => (
                <>
@@ -91,9 +91,10 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 export function shouldRevalidate({
    currentUrl,
    nextUrl,
+   formMethod,
    defaultShouldRevalidate,
 }: ShouldRevalidateFunctionArgs) {
-   return currentUrl.pathname === nextUrl.pathname
+   return currentUrl.pathname === nextUrl.pathname && formMethod === "GET"
       ? false
       : defaultShouldRevalidate;
 }

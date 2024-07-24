@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useLocation } from "@remix-run/react";
 
-export function RampInit() {
+export function RampInit({ adWebId }: { adWebId?: string | null | undefined }) {
    const { pathname } = useLocation();
 
    const [rampComponentLoaded, setRampComponentLoaded] = useState(false);
@@ -30,7 +30,10 @@ export function RampInit() {
       //@ts-ignore
       const slotsToRemove = Object.keys(window.ramp.settings.slots);
       //@ts-ignore
-      window.ramp.destroyUnits(slotsToRemove).then(addUnits);
+      if (slotsToRemove && slotsToRemove.length > 0) {
+         //@ts-ignore
+         window.ramp.destroyUnits(slotsToRemove).then(addUnits);
+      }
    };
 
    useEffect(() => {
@@ -44,7 +47,9 @@ export function RampInit() {
          window.ramp.passiveMode = true;
          // Load the Ramp configuration script
          const configScript = document.createElement("script");
-         configScript.src = `https://cdn.intergient.com/1025133/74686/ramp.js`;
+         configScript.src = `https://cdn.intergient.com/1025133/${
+            adWebId ? adWebId : "74686"
+         }/ramp.js`;
          document.head.appendChild(configScript);
          configScript.onload = addUnits;
       }
