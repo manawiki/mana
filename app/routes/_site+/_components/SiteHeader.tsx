@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef } from "react";
 
 import {
    Menu,
@@ -8,6 +8,7 @@ import {
    Transition,
 } from "@headlessui/react";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { InstantSearch } from "react-instantsearch";
 
@@ -43,21 +44,47 @@ export function SiteHeader({
 
    const [searchToggle, setSearchToggle] = useSearchToggleState();
 
+   const ref = useRef<HTMLDivElement>(null);
+
+   useEffect(() => {
+      function handleClickOutside(event: MouseEvent): void {
+         if (ref.current && !ref.current.contains(event.target as Node)) {
+            setSearchToggle(false);
+         }
+      }
+      // Bind the event listener
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+         // Unbind the event listener on clean up
+         document.removeEventListener("mousedown", handleClickOutside);
+      };
+   });
+
    return (
       <section
          className="z-30 w-full laptop:z-50 fixed max-laptop:top-[56px] shadow-sm dark:shadow-zinc-900/30
-        laptop:sticky laptop:top-0 dark:bg-dark350 bg-white border-color border-b"
+        laptop:sticky laptop:top-0 dark:bg-dark350 bg-white border-color border-b border-zinc-200/50"
       >
          <div
             className="pattern-dots absolute left-0
             top-0 -z-0 h-full
-              w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
-              pattern-size-1 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+            w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
+            pattern-size-1 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
          />
-         <div className="relative mx-auto w-full laptop:max-w-[732px] laptop:rounded-b-2xl">
-            <div className="relative mx-auto flex h-[60px] items-center justify-between">
+         <div
+            ref={ref}
+            className="relative mx-auto w-full laptop:max-w-[732px] laptop:rounded-b-2xl"
+         >
+            <div
+               className={clsx(
+                  !searchToggle &&
+                     "relative mx-auto flex items-center justify-between",
+                  searchToggle && "flex items-center w-full",
+                  "h-[60px]",
+               )}
+            >
                {searchToggle ? (
-                  <InstantSearch indexName="posts" searchClient={searchClient}>
+                  <InstantSearch searchClient={searchClient}>
                      <Autocomplete
                         placeholder="Search..."
                         detachedMediaQuery="none"
@@ -243,18 +270,29 @@ export function SiteHeader({
                            </div>
                         </NotFollowingSite>
                         <button
-                           className="dark:bg-zinc-700 dark:border-zinc-600 shadow-1 flex h-10 w-10 items-center justify-center
-                            rounded-full border-2 shadow-sm bg-white hover:bg-zinc-50 dark:hover:bg-zinc-600"
+                           className="dark:bg-zinc-600 shadow-1 flex size-10 items-center 
+                           justify-center border-zinc-300 dark:border-zinc-500
+                           dark:hover:border-zinc-400 hover:border-zinc-400
+                           transition duration-300 active:translate-y-0.5
+                           rounded-full shadow-sm bg-zinc-100 border shadow-zinc-100"
                            aria-label="Search"
                            onClick={() => {
                               setSearchToggle(true);
                            }}
                         >
-                           <Icon name="search" title="Search" size={18} />
+                           <Icon
+                              className="mb-[1px]"
+                              name="search"
+                              title="Search"
+                              size={18}
+                           />
                         </button>
                         <button
-                           className="dark:bg-zinc-700 dark:border-zinc-600 dark:shadow-zinc-950/40 bg-white flex h-10 w-10 items-center justify-center rounded-full
-                                      border-2 shadow-sm transition duration-300 active:translate-y-0.5 laptop:hidden"
+                           className="dark:bg-zinc-600 shadow-1 flex size-10 items-center 
+                           justify-center border-zinc-300 dark:border-zinc-500
+                         dark:hover:border-zinc-400 hover:border-zinc-400
+                           transition duration-300 active:translate-y-0.5
+                           rounded-lg shadow-sm bg-zinc-100 border shadow-zinc-100 laptop:hidden"
                            aria-label="Menu"
                            onClick={() => setPrimaryMenuOpen(true)}
                         >

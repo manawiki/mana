@@ -3,12 +3,11 @@ import { createElement, Fragment, useEffect, useRef, useState } from "react";
 import type { BaseItem } from "@algolia/autocomplete-core";
 import type { AutocompleteOptions } from "@algolia/autocomplete-js";
 import { autocomplete } from "@algolia/autocomplete-js";
+import clsx from "clsx";
 import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import { usePagination, useSearchBox } from "react-instantsearch";
 import Typesense from "typesense";
-
-import "@algolia/autocomplete-theme-classic";
 
 type SetInstantSearchUiStateOptions = {
    query: string;
@@ -56,10 +55,24 @@ export function Autocomplete({
       }
       const client = typesense_client();
 
+      // https://www.algolia.com/doc/ui-libraries/autocomplete/api-reference/autocomplete-js/autocomplete/
+
       const autocompleteInstance = autocomplete({
          ...autocompleteProps,
          container: autocompleteContainer.current,
          initialState: { query },
+         autoFocus: true,
+         classNames: {
+            root: "relative w-full h-full",
+            input: "w-full h-full bg-transparent pl-8 [&::-webkit-search-cancel-button]:hidden focus:outline-none",
+            form: "w-full h-full",
+            inputWrapper: "w-full h-full",
+            inputWrapperPrefix: "absolute top-5 left-0",
+            inputWrapperSuffix: "absolute top-5 right-0",
+            sourceNoResults: "p-3 text-sm",
+            panel: "absolute bg-white dark:bg-dark400 z-50 rounded-lg drop-shadow-lg border border-zinc-300 dark:border-zinc-600 -mt-1.5 overflow-hidden",
+            item: "px-3 py-2 aria-selected:bg-zinc-100 dark:aria-selected:bg-dark450",
+         },
          onReset() {
             setInstantSearchUiState({ query: "" });
          },
@@ -98,6 +111,7 @@ export function Autocomplete({
             return [
                {
                   sourceId: "posts",
+
                   getItems() {
                      return results.hits;
                   },
@@ -129,5 +143,10 @@ export function Autocomplete({
       return () => autocompleteInstance.destroy();
    }, []);
 
-   return <div className={className} ref={autocompleteContainer} />;
+   return (
+      <div
+         className={clsx(className, "w-full h-full max-laptop:px-3")}
+         ref={autocompleteContainer}
+      />
+   );
 }
