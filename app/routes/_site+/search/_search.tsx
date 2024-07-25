@@ -20,7 +20,7 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
       query_by: "name",
    },
 });
-const searchClient = typesenseInstantsearchAdapter.searchClient;
+export const searchClient = typesenseInstantsearchAdapter.searchClient;
 
 export default function SearchList() {
    return (

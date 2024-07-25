@@ -9,6 +9,7 @@ import {
 } from "@headlessui/react";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import { InstantSearch } from "react-instantsearch";
 
 import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
@@ -23,7 +24,8 @@ import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";
-import SearchComboBox from "../search/_search";
+import { searchClient } from "../search/_search";
+import { Autocomplete } from "../search/components/Autocomplete";
 
 export function SiteHeader({
    setPrimaryMenuOpen,
@@ -55,7 +57,13 @@ export function SiteHeader({
          <div className="relative mx-auto w-full laptop:max-w-[732px] laptop:rounded-b-2xl">
             <div className="relative mx-auto flex h-[60px] items-center justify-between">
                {searchToggle ? (
-                  <SearchComboBox siteType={site.type} />
+                  <InstantSearch indexName="posts" searchClient={searchClient}>
+                     <Autocomplete
+                        placeholder="Search..."
+                        detachedMediaQuery="none"
+                        openOnFocus
+                     />
+                  </InstantSearch>
                ) : (
                   <>
                      <div className="flex items-center truncate max-laptop:pl-3">
