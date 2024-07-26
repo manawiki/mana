@@ -8,6 +8,8 @@ import type { Root } from "react-dom/client";
 import { createRoot } from "react-dom/client";
 import { usePagination, useSearchBox } from "react-instantsearch";
 import Typesense from "typesense";
+//@ts-ignore
+import { SearchResponseAdapter } from "typesense-instantsearch-adapter/lib/SearchResponseAdapter";
 
 type SetInstantSearchUiStateOptions = {
    query: string;
@@ -29,6 +31,13 @@ const typesense_client = () =>
       ],
       connectionTimeoutSeconds: 2,
    });
+
+const search_response_adapter = (result: any) =>
+   new SearchResponseAdapter(
+      result,
+      { params: {} },
+      { geoLocationField: "_geoloc" },
+   );
 
 export function Autocomplete({
    className,
@@ -97,39 +106,55 @@ export function Autocomplete({
 
             panelRootRef.current.render(children);
          },
+         //@ts-ignore
          async getSources({ query }) {
-            const results = await client
-               .collections("posts")
-               .documents()
-               .search({
-                  q: query,
-                  query_by: "name",
-                  highlight_full_fields: "name",
-                  include_fields: "name",
+            const results = await client.multiSearch
+               .perform({
+                  searches: [
+                     {
+                        collection: "posts",
+                        q: query,
+                        include_fields: "name",
+                        query_by: "name",
+                        highlight_full_fields: "name",
+                        highlight_start_tag: "__aa-highlight__",
+                        highlight_end_tag: "__/aa-highlight__",
+                     },
+                     {
+                        collection: "entries",
+                        q: query,
+                        include_fields: "name",
+                        query_by: "name",
+                        highlight_full_fields: "name",
+                        highlight_start_tag: "__aa-highlight__",
+                        highlight_end_tag: "__/aa-highlight__",
+                     },
+                  ],
+               })
+               .then((result) => {
+                  return result.results.flatMap(
+                     (result: any) =>
+                        search_response_adapter(result).adapt().hits,
+                  );
                });
 
             return [
                {
-                  sourceId: "posts",
-
+                  sourceId: "search",
                   getItems() {
-                     return results.hits;
+                     return results;
                   },
                   getItemInputValue({ item }) {
-                     return item.document.name;
+                     return item.name;
                   },
                   templates: {
-                     item({ item, html }) {
-                        // Get the highlighted HTML fragment from Typesense results
-                        const html_fragment = html`${item.highlights.find(
-                           (h) => h.field === "name" || {},
-                        )?.value || item.document["name"]}`;
-
-                        // Send the html_fragment to `html` tagged template
-                        // Reference: https://github.com/developit/htm/issues/226#issuecomment-1205526098
-                        return html`<div
-                           dangerouslySetInnerHTML=${{ __html: html_fragment }}
-                        ></div>`;
+                     item({ item, html, components }) {
+                        return html`<div>
+                           ${components.Highlight({
+                              hit: item,
+                              attribute: "name",
+                           })}
+                        </div>`;
                      },
                      noResults() {
                         return "No results found.";
