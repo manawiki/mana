@@ -68,6 +68,8 @@ export function Autocomplete({
 
       const autocompleteInstance = autocomplete({
          ...autocompleteProps,
+         detachedMediaQuery: "none",
+         openOnFocus: true,
          container: autocompleteContainer.current,
          initialState: { query },
          autoFocus: true,
@@ -79,8 +81,9 @@ export function Autocomplete({
             inputWrapperPrefix: "absolute top-5 left-0",
             inputWrapperSuffix: "absolute top-5 right-0",
             sourceNoResults: "p-3 text-sm",
-            panel: "absolute bg-white dark:bg-dark400 z-50 rounded-lg drop-shadow-lg border border-zinc-300 dark:border-zinc-600 -mt-1.5 overflow-hidden",
-            item: "px-3 py-2 aria-selected:bg-zinc-100 dark:aria-selected:bg-dark450",
+            panel: "absolute bg-white dark:bg-dark450 z-50 rounded-lg drop-shadow-lg border border-zinc-300 dark:border-zinc-600 -mt-1.5 overflow-hidden",
+            item: "px-2.5 py-2 aria-selected:bg-zinc-100 dark:aria-selected:bg-dark400 text-sm font-semibold",
+            list: "divide-y divide-zinc-200 dark:divide-zinc-600",
          },
          onReset() {
             setInstantSearchUiState({ query: "" });
@@ -114,7 +117,7 @@ export function Autocomplete({
                      {
                         collection: "posts",
                         q: query,
-                        include_fields: "name",
+                        include_fields: "name,icon,url,category",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -123,7 +126,7 @@ export function Autocomplete({
                      {
                         collection: "entries",
                         q: query,
-                        include_fields: "name",
+                        include_fields: "name,icon,url,category",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -147,14 +150,35 @@ export function Autocomplete({
                   getItemInputValue({ item }) {
                      return item.name;
                   },
+                  getItemUrl({ item }) {
+                     return item.url;
+                  },
                   templates: {
                      item({ item, html, components }) {
-                        return html`<div>
-                           ${components.Highlight({
-                              hit: item,
-                              attribute: "name",
-                           })}
-                        </div>`;
+                        return html`<a
+                           className="aa-ItemLink flex items-center justify-between gap-2"
+                        >
+                           <div>
+                              ${components.Highlight({
+                                 hit: item,
+                                 attribute: "name",
+                              })}
+                              <div
+                                 className="text-xs text-1 flex items-center gap-1 font-normal"
+                              >
+                                 ${item.category}
+                              </div>
+                           </div>
+                           ${item.icon && (
+                              <img
+                                 width={32}
+                                 height={32}
+                                 alt="icon"
+                                 className="rounded-lg overflow-hidden shadow-sm shadow-1"
+                                 src={`${item.icon}?aspect_ratio=1:1&height=80&width=80`}
+                              />
+                           )}
+                        </a>`;
                      },
                      noResults() {
                         return "No results found.";
