@@ -85,7 +85,6 @@ const SECTIONS = {
 
 export default function EntryPage() {
    const loaderdata = useLoaderData<typeof loader>();
-   console.log(loaderdata);
 
    return <Entry customComponents={SECTIONS} customData={loaderdata} />;
 }
