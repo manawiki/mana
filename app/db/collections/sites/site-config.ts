@@ -43,6 +43,10 @@ export const Sites: CollectionConfig = {
          defaultValue: false,
       },
       {
+         name: "adWebId",
+         type: "text",
+      },
+      {
          name: "collections",
          type: "relationship",
          relationTo: "collections",

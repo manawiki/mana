@@ -15,7 +15,7 @@ export const handle = {
 export default function PrivacyPolicy() {
    return (
       <>
-         <div className="relative z-20 mx-auto mt-24 max-w-[680px] max-laptop:px-4">
+         <div className="relative z-20 mx-auto pt-8 max-w-[680px] max-laptop:px-4">
             <h1 className="pb-4 font-header text-2xl font-bold">
                Privacy policy
             </h1>
@@ -32,10 +32,10 @@ export default function PrivacyPolicy() {
                   website, which can be accessed at{" "}
                   <a href="https://mana.wiki">https://mana.wiki</a> or through
                   our mobile application. “Service” refers to services accessed
-                  via the Site, in which users can build a site.
+                  via this website.
                </div>
                <div className="pb-4">
-                  The terms “we,” “us,” and “our” refer Mana. “You” refers to
+                  The terms “we,” “us,” and “our” refer to Mana. “You” refers to
                   you, as a user of our Site or our Service. By accessing our
                   Site or our Service, you accept our Privacy Policy and Terms
                   of Use and you consent to our collection, storage, use and
@@ -256,28 +256,23 @@ export default function PrivacyPolicy() {
                   </div>
                </section>
                <section className="py-4">
-                  <div className="pb-4 font-bold">VII. CONTACT US</div>
+                  <div className="pb-4 font-bold">VII. ADVERTISING</div>
                   <div className="pb-4">
-                     If you have any questions regarding this Privacy Policy or
-                     the practices of this Site, please contact us by sending an
-                     email to contact@mana.wiki.
+                     All or partial advertising on this Website or App is
+                     managed by Playwire LLC. If Playwire publisher advertising
+                     services are used, Playwire LLC may collect and use certain
+                     aggregated and anonymized data for advertising purposes. To
+                     learn more about the types of data collected, how data is
+                     used and your choices as a user, please visit{" "}
+                     <a href="https://www.playwire.com/privacy-policy">
+                        https://www.playwire.com/privacy-policy
+                     </a>
+                     .
                   </div>
-               </section>
-               <section className="py-4">
-                  All or partial advertising on this Website or App is managed
-                  by Playwire LLC. If Playwire publisher advertising services
-                  are used, Playwire LLC may collect and use certain aggregated
-                  and anonymized data for advertising purposes. To learn more
-                  about the types of data collected, how data is used and your
-                  choices as a user, please visit{" "}
-                  <a href="https://www.playwire.com/privacy-policy">
-                     https://www.playwire.com/privacy-policy
-                  </a>
-                  .
                </section>
                <div>
                   Last Updated: This Privacy Policy was last updated on July 24,
-                  2023.
+                  2024.
                </div>
             </div>
          </div>
