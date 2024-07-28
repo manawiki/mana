@@ -98,6 +98,7 @@ const QUERY = gql`
          domain
          followers
          enableAds
+         adWebId
          totalEntries
          totalPosts
          trendingPages
