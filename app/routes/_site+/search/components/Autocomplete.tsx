@@ -19,7 +19,7 @@ type AutocompleteProps = Partial<AutocompleteOptions<BaseItem>> & {
    className?: string;
 };
 
-const typesense_client = () =>
+const searchOnlyTypesenseClient = () =>
    new Typesense.Client({
       apiKey: "9QPWKRfSIdts42aQUyeqyNT1ct0levtm", // Be sure to use an API key that only allows search operations
       nodes: [
@@ -62,7 +62,7 @@ export function Autocomplete({
       if (!autocompleteContainer.current) {
          return;
       }
-      const client = typesense_client();
+      const client = searchOnlyTypesenseClient();
 
       // https://www.algolia.com/doc/ui-libraries/autocomplete/api-reference/autocomplete-js/autocomplete/
 
@@ -158,7 +158,9 @@ export function Autocomplete({
                         return html`<a
                            className="aa-ItemLink flex items-center justify-between gap-2"
                         >
-                           <div>
+                           <div
+                              className="[&>mark]:bg-zinc-300 dark:[&>mark]:bg-zinc-500 dark:[&>mark]:text-white [&>mark]:rounded-sm"
+                           >
                               ${components.Highlight({
                                  hit: item,
                                  attribute: "name",
