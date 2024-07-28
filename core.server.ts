@@ -38,11 +38,11 @@ const WATCH_PATH = path.resolve("./build/version.txt");
 let build = require(BUILD_PATH);
 
 const transport = nodemailer.createTransport({
-   host: process.env.NODEMAILER_HOST ?? "live.smtp.mailtrap.io",
-   port: parseInt(process.env.NODEMAILER_PORT ?? "587"),
-   secure: false,
+   host: process.env.NODEMAILER_HOST ?? "smtp.resend.com",
+   port: parseInt(process.env.NODEMAILER_PORT ?? "465"),
+   secure: true,
    auth: {
-      user: process.env.NODEMAILER_USER ?? "api",
+      user: process.env.NODEMAILER_USER ?? "resend",
       pass: process.env.NODEMAILER_PASSWORD,
    },
 });
