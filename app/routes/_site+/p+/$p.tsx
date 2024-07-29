@@ -416,17 +416,6 @@ export async function action({
 
             //If no collision and it's the first time we are generating the slug, publish with alias.
             if (existingPostsWithSlug.totalDocs == 0) {
-               //@ts-ignore
-               const updatedPost = await payload.update({
-                  collection: "posts",
-                  id: postData.id,
-                  data: {
-                     slug: newSlug,
-                     publishedAt: new Date().toISOString(),
-                  },
-                  overrideAccess: false,
-                  user,
-               });
                //Update the postContents collection to published
                const publishedPost = await payload.update({
                   collection: "postContents",
@@ -437,6 +426,18 @@ export async function action({
                   overrideAccess: false,
                   user,
                });
+
+               const updatedPost = await payload.update({
+                  collection: "posts",
+                  id: postData.id,
+                  data: {
+                     slug: newSlug,
+                     publishedAt: new Date().toISOString(),
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+
                if (updatedPost && publishedPost)
                   return redirectWithSuccess(
                      //@ts-ignore

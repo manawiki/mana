@@ -11,12 +11,15 @@ import Typesense from "typesense";
 //@ts-ignore
 import { SearchResponseAdapter } from "typesense-instantsearch-adapter/lib/SearchResponseAdapter";
 
+import { Image } from "~/components/Image";
+
 type SetInstantSearchUiStateOptions = {
    query: string;
 };
 
 type AutocompleteProps = Partial<AutocompleteOptions<BaseItem>> & {
    className?: string;
+   siteId: string;
 };
 
 const searchOnlyTypesenseClient = () =>
@@ -40,6 +43,7 @@ const search_response_adapter = (result: any) =>
    );
 
 export function Autocomplete({
+   siteId,
    className,
    ...autocompleteProps
 }: AutocompleteProps) {
@@ -115,7 +119,7 @@ export function Autocomplete({
                .perform({
                   searches: [
                      {
-                        collection: "posts",
+                        collection: "entries",
                         q: query,
                         include_fields: "name,icon,url,category",
                         query_by: "name",
@@ -124,9 +128,10 @@ export function Autocomplete({
                         highlight_end_tag: "__/aa-highlight__",
                      },
                      {
-                        collection: "entries",
+                        collection: "posts",
                         q: query,
-                        include_fields: "name,icon,url,category",
+                        filter_by: `site:=${siteId}`,
+                        include_fields: "name,icon,url,category,subtitle,site",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -168,16 +173,27 @@ export function Autocomplete({
                               <div
                                  className="text-xs text-1 flex items-center gap-1 font-normal"
                               >
-                                 ${item.category}
+                                 ${item.subtitle
+                                    ? item.subtitle ?? "Post"
+                                    : item.category}
                               </div>
                            </div>
                            ${item.icon && (
-                              <img
-                                 width={32}
-                                 height={32}
-                                 alt="icon"
-                                 className="rounded-lg overflow-hidden shadow-sm shadow-1"
-                                 src={`${item.icon}?aspect_ratio=1:1&height=80&width=80`}
+                              <Image
+                                 height={80}
+                                 alt="Post Banner"
+                                 options={`${
+                                    item.category == "Post"
+                                       ? "aspect_ratio=1.9:1"
+                                       : "aspect_ratio=1:1"
+                                 }`}
+                                 className={clsx(
+                                    item.category == "Post"
+                                       ? "w-16 h-9 rounded"
+                                       : "rounded-lg size-9",
+                                    "overflow-hidden shadow-sm shadow-1",
+                                 )}
+                                 url={`${item.icon}`}
                               />
                            )}
                         </a>`;

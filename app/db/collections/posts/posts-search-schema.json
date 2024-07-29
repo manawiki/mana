@@ -1,0 +1,29 @@
+{
+   "name": "posts",
+   "fields": [
+      {
+         "name": "name",
+         "type": "string",
+         "sort": true
+      },
+      {
+         "name": "url",
+         "type": "string"
+      },
+      {
+         "name": "icon",
+         "type": "string",
+         "optional": true
+      },
+      {
+         "name": "subtitle",
+         "type": "string",
+         "optional": true
+      },
+      {
+         "name": "site",
+         "type": "string",
+         "facet": true
+      }
+   ]
+}
