@@ -109,29 +109,23 @@ export default function Post() {
    return (
       <>
          <main className="mx-auto pb-3 max-tablet:px-3 pt-20 laptop:pt-6 relative">
-            {/* @ts-ignore */}
             <PostActionBar post={post} />
             {hasAccess ? (
                <>
-                  {/* @ts-ignore */}
-                  <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
-                  {/* @ts-ignore */}
+                  <PostHeaderEdit post={post} />
                   <PostBanner post={post} isShowBanner={isShowBanner} />
                </>
             ) : (
                <>
-                  {/* @ts-ignore */}
                   <PostHeaderView post={post} />
-                  {/* @ts-ignore */}
                   <PostBannerView post={post} />
                </>
             )}
-            {/* @ts-ignore */}
             <PostTableOfContents data={postContent} />
             <AdPlaceholder>
                <div
                   className={`flex items-center justify-center ${
-                     enableAds ? "min-h-[90px]" : ""
+                     enableAds ? "min-h-[90px] mb-4" : ""
                   }`}
                >
                   <AdUnit
@@ -561,6 +555,7 @@ export async function action({
             collection: "comments",
             id: commentParentId,
             data: {
+               //@ts-ignore
                replies: [commentReply.id, ...existingReplies],
             },
          });
@@ -594,6 +589,7 @@ export async function action({
                   data: {
                      //@ts-ignore
                      upVotes: existingVotes,
+                     //@ts-ignore
                      upVotesStatic: existingVoteStatic - 1,
                   },
                });
@@ -608,6 +604,7 @@ export async function action({
             id: commentId,
             data: {
                upVotes: [...existingVotes, userId],
+               //@ts-ignore
                upVotesStatic: existingVoteStatic + 1,
             },
          });
@@ -621,6 +618,7 @@ export async function action({
             id: commentId,
             depth: 0,
          });
+         //@ts-ignore
          if (comment.replies && comment?.replies?.length > 0) {
             return await payload.update({
                collection: "comments",

@@ -3,7 +3,7 @@ import type {
    CollectionAfterDeleteHook,
 } from "payload/types";
 
-import { typesensePrivateClient } from "~/utils/typsense.server";
+import { typesensePrivateClient } from "../../../utils/typsense.server";
 
 export const afterDeleteHook: CollectionAfterDeleteHook = async ({
    req: { payload, user },
@@ -11,13 +11,18 @@ export const afterDeleteHook: CollectionAfterDeleteHook = async ({
    doc,
 }) => {
    try {
+      console.log(doc);
       await payload.delete({
          collection: "postContents",
          id,
          overrideAccess: true,
          user,
       });
-      const bannerId = doc.banner.id;
+      await typesensePrivateClient
+         .collections("posts")
+         .documents(`${id}`)
+         .delete();
+      const bannerId = doc?.banner?.id;
 
       if (bannerId) {
          await payload.delete({
@@ -38,17 +43,24 @@ export const postAfterChangeHook: CollectionAfterChangeHook = async ({
    doc,
 }) => {
    try {
-      if (doc.status === "published") {
-         const content = doc.content;
+      if (
+         doc.content._status === "published" &&
+         previousDoc.name !== doc.name
+      ) {
+         const postUrl = `https://${
+            doc.site?.domain ? doc.site?.domain : `${doc.site.slug}.mana.wiki`
+         }/p/${doc.slug}`;
 
          return await typesensePrivateClient
             .collections("posts")
             .documents()
             .upsert({
                id: doc.id,
-               url: doc.url,
-               site: doc.site,
-               content: doc.content,
+               name: doc.name,
+               category: "Post",
+               ...(doc.subtitle && { subtitle: doc.subtitle }),
+               url: postUrl,
+               site: doc.site.id,
             });
       }
    } catch (err: unknown) {
