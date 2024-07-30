@@ -12,6 +12,7 @@ import Typesense from "typesense";
 import { SearchResponseAdapter } from "typesense-instantsearch-adapter/lib/SearchResponseAdapter";
 
 import { Image } from "~/components/Image";
+import type { Site } from "~/db/payload-types";
 
 type SetInstantSearchUiStateOptions = {
    query: string;
@@ -19,7 +20,7 @@ type SetInstantSearchUiStateOptions = {
 
 type AutocompleteProps = Partial<AutocompleteOptions<BaseItem>> & {
    className?: string;
-   siteId: string;
+   site: Site;
 };
 
 const searchOnlyTypesenseClient = () =>
@@ -43,7 +44,7 @@ const search_response_adapter = (result: any) =>
    );
 
 export function Autocomplete({
-   siteId,
+   site,
    className,
    ...autocompleteProps
 }: AutocompleteProps) {
@@ -119,9 +120,32 @@ export function Autocomplete({
                .perform({
                   searches: [
                      {
+                        collection: "customPages",
+                        q: query,
+                        filter_by: `site:=${site.id}`,
+                        include_fields:
+                           "name,category,icon,url,site,description",
+                        query_by: "name",
+                        highlight_full_fields: "name",
+                        highlight_start_tag: "__aa-highlight__",
+                        highlight_end_tag: "__/aa-highlight__",
+                     },
+                     {
                         collection: "entries",
                         q: query,
-                        include_fields: "name,icon,url,category",
+                        filter_by: `site:=${site.id}`,
+                        include_fields:
+                           "name,category,icon,url,site,collection",
+                        query_by: "name",
+                        highlight_full_fields: "name",
+                        highlight_start_tag: "__aa-highlight__",
+                        highlight_end_tag: "__/aa-highlight__",
+                     },
+                     {
+                        collection: "collections",
+                        q: query,
+                        filter_by: `site:=${site.id}`,
+                        include_fields: "name,category,icon,url,site",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -130,8 +154,9 @@ export function Autocomplete({
                      {
                         collection: "posts",
                         q: query,
-                        filter_by: `site:=${siteId}`,
-                        include_fields: "name,icon,url,category,subtitle,site",
+                        filter_by: `site:=${site.id}`,
+                        include_fields:
+                           "name,category,icon,url,site,description",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -173,15 +198,15 @@ export function Autocomplete({
                               <div
                                  className="text-xs text-1 flex items-center gap-1 font-normal"
                               >
-                                 ${item.subtitle
-                                    ? item.subtitle ?? "Post"
-                                    : item.category}
+                                 ${item?.description ??
+                                 item?.collection ??
+                                 item?.category}
                               </div>
                            </div>
                            ${item.icon && (
                               <Image
                                  height={80}
-                                 alt="Post Banner"
+                                 alt="Icon"
                                  options={`${
                                     item.category == "Post"
                                        ? "aspect_ratio=1.9:1"

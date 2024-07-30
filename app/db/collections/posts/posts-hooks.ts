@@ -5,7 +5,7 @@ import type {
 
 import { typesensePrivateClient } from "../../../utils/typsense.server";
 
-export const afterDeleteHook: CollectionAfterDeleteHook = async ({
+export const postsAfterDeleteHook: CollectionAfterDeleteHook = async ({
    req: { payload, user },
    id,
    doc,
@@ -44,12 +44,13 @@ export const postsAfterChangeHook: CollectionAfterChangeHook = async ({
 }) => {
    try {
       if (operation === "update" && doc.content._status === "published") {
-         const postUrl = `https://${
-            doc.site?.domain ? doc.site?.domain : `${doc.site.slug}.mana.wiki`
-         }/p/${doc.slug}`;
+         const postRelativeURL = `/p/${doc.slug}`;
+         const postAbsoluteURL = `https://${
+            doc?.site?.domain ? doc?.site?.domain : "mana.wiki"
+         }${postRelativeURL}`;
 
          const bannerUrl = doc?.banner?.url;
-         const subtitle = doc?.subtitle;
+         const description = doc?.subtitle;
 
          await typesensePrivateClient
             .collections("posts")
@@ -57,10 +58,12 @@ export const postsAfterChangeHook: CollectionAfterChangeHook = async ({
             .upsert({
                id: doc.id,
                name: doc.name,
-               url: postUrl,
+               relativeURL: postRelativeURL,
+               absoluteURL: postAbsoluteURL,
                site: doc.site.id,
+               category: "Post",
                ...(bannerUrl && { icon: bannerUrl }),
-               ...(subtitle && { subtitle: subtitle }),
+               ...(description && { description: description }),
             });
 
          return doc;

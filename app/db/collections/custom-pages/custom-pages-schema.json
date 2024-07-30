@@ -1,5 +1,5 @@
 {
-   "name": "posts",
+   "name": "customPages",
    "fields": [
       {
          "name": "name",
@@ -19,12 +19,12 @@
          "type": "string"
       },
       {
-         "name": "icon",
+         "name": "description",
          "type": "string",
          "optional": true
       },
       {
-         "name": "description",
+         "name": "icon",
          "type": "string",
          "optional": true
       },

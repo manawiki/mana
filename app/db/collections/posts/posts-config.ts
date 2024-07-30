@@ -8,7 +8,7 @@ import {
    canDeletePost,
    canUpdatePost,
 } from "./posts-access";
-import { afterDeleteHook, postsAfterChangeHook } from "./posts-hooks";
+import { postsAfterDeleteHook, postsAfterChangeHook } from "./posts-hooks";
 import { isStaffFieldLevel } from "../users/users.access";
 
 export const Posts: CollectionConfig = {
@@ -23,7 +23,7 @@ export const Posts: CollectionConfig = {
       delete: canDeletePost,
    },
    hooks: {
-      afterDelete: [afterDeleteHook],
+      afterDelete: [postsAfterDeleteHook],
       afterChange: [postsAfterChangeHook],
    },
    fields: [

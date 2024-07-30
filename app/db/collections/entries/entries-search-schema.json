@@ -7,18 +7,26 @@
          "sort": true
       },
       {
-         "name": "url",
+         "name": "relativeURL",
          "type": "string"
       },
       {
-         "name": "icon",
-         "type": "string",
-         "optional": true
+         "name": "absoluteURL",
+         "type": "string"
+      },
+      {
+         "name": "category",
+         "type": "string"
       },
       {
          "name": "collection",
          "type": "string",
          "facet": true
+      },
+      {
+         "name": "icon",
+         "type": "string",
+         "optional": true
       },
       {
          "name": "site",

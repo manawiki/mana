@@ -1,5 +1,5 @@
 {
-   "name": "posts",
+   "name": "collections",
    "fields": [
       {
          "name": "name",
@@ -20,11 +20,6 @@
       },
       {
          "name": "icon",
-         "type": "string",
-         "optional": true
-      },
-      {
-         "name": "description",
          "type": "string",
          "optional": true
       },

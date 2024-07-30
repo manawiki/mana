@@ -1,6 +1,11 @@
 import type { CollectionConfig } from "payload/types";
 
+import {
+   customPagesAfterChangeHook,
+   customPagesAfterDeleteHook,
+} from "./custom-pages-hooks";
 import { isStaff } from "../users/users.access";
+
 export const CustomPages: CollectionConfig = {
    slug: "customPages",
    access: {
@@ -12,6 +17,10 @@ export const CustomPages: CollectionConfig = {
    admin: {
       useAsTitle: "name",
       defaultColumns: ["name"],
+   },
+   hooks: {
+      afterDelete: [customPagesAfterDeleteHook],
+      afterChange: [customPagesAfterChangeHook],
    },
    fields: [
       {
@@ -25,6 +34,7 @@ export const CustomPages: CollectionConfig = {
       {
          name: "slug",
          type: "text",
+         required: true,
       },
       {
          name: "icon",
@@ -36,7 +46,7 @@ export const CustomPages: CollectionConfig = {
          type: "relationship",
          relationTo: "sites",
          required: true,
-         maxDepth: 0,
+         maxDepth: 1,
       },
    ],
 };
