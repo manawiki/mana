@@ -230,7 +230,12 @@ export const Quests: CollectionConfig = {
             {
                name: "mat",
                type: "relationship",
-               relationTo: "materials",
+               relationTo: [
+                  "materials",
+                  "craft-essences",
+                  "command-codes",
+                  "servants",
+               ],
                hasMany: false,
             },
             {
@@ -258,7 +263,12 @@ export const Quests: CollectionConfig = {
             {
                name: "mat",
                type: "relationship",
-               relationTo: "materials",
+               relationTo: [
+                  "materials",
+                  "craft-essences",
+                  "command-codes",
+                  "servants",
+               ],
                hasMany: false,
             },
             {
