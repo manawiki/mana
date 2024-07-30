@@ -1,0 +1,29 @@
+{
+   "name": "entries",
+   "fields": [
+      {
+         "name": "name",
+         "type": "string",
+         "sort": true
+      },
+      {
+         "name": "url",
+         "type": "string"
+      },
+      {
+         "name": "icon",
+         "type": "string",
+         "optional": true
+      },
+      {
+         "name": "collection",
+         "type": "string",
+         "facet": true
+      },
+      {
+         "name": "site",
+         "type": "string",
+         "facet": true
+      }
+   ]
+}

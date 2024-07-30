@@ -7,7 +7,7 @@ import {
    canUpdateEntry,
    canDeleteEntry,
 } from "./entries-access";
-import { afterDeleteHook } from "./entries-hooks";
+import { afterDeleteHook, entriesAfterChangeHook } from "./entries-hooks";
 
 export const entriesSlug = "entries";
 
@@ -18,6 +18,7 @@ export const Entries: CollectionConfig = {
    },
    hooks: {
       afterDelete: [afterDeleteHook],
+      afterChange: [entriesAfterChangeHook],
    },
    access: {
       create: canCreateEntry,

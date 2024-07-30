@@ -37,7 +37,7 @@ export const afterDeleteHook: CollectionAfterDeleteHook = async ({
    }
 };
 
-export const postAfterChangeHook: CollectionAfterChangeHook = async ({
+export const postsAfterChangeHook: CollectionAfterChangeHook = async ({
    req: { payload },
    operation,
    doc,
