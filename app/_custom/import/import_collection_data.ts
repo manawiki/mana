@@ -213,6 +213,9 @@ const seedUploads = async (result: any) => {
                else if (
                   !arrayRelField.hasMany &&
                   arrayRelField.relationIdField &&
+                  resulte?.[arrayRelField.name]?.[
+                     arrayRelField.relationIdField
+                  ] &&
                   Array.isArray(arrayRelField.collection)
                ) {
                   if (
