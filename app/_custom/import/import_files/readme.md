@@ -16,21 +16,49 @@ Special cases are listed below for specific types of fields.
 ### Relationship Fields (Single)
 
 Use the below format for relationship fields that are one-one relations (hasMany = false).
+
 ```
 "FIELD_NAME": {
 	"TARGET_COLLECTION_IDENTIFIER_FIELD_NAME": value
 }
 ```
+
 Example:
+
 ```
 "effect": {
 	"drupal_tid": 4701
 }
 ```
 
+### Relationship Fields (Single + Polymporphic)
+
+Use the below format for relationship fields that are one-one relations (hasMany = false).
+
+```
+"FIELD_NAME": {
+	"TARGET_COLLECTION_IDENTIFIER_FIELD_NAME": {
+		"relationTo": "TARGET_COLLECTION_SLUG",
+		"value": value1
+	}
+}
+```
+
+Example:
+
+```
+"mat": {
+	"drupal_nid": {
+		"relationTo": "materials",
+		"value": 5671
+	}
+}
+```
+
 ### Relationship Fields (Multiple)
 
 Use the below format for relationship fields that are many-one relations (hasMany = true).
+
 ```
 "FIELD_NAME": {
 	"TARGET_COLLECTION_IDENTIFIER_FIELD_NAME": [
@@ -41,7 +69,9 @@ Use the below format for relationship fields that are many-one relations (hasMan
 	]
 }
 ```
+
 Example:
+
 ```
 "bonus_item": {
 	"drupal_nid": [
@@ -54,7 +84,8 @@ Example:
 
 ### Relationship Fields (Multiple + Polymorphic)
 
-Use the below format for relationship fields that are many-one relations (hasMany = true) that are also *polymporphic* (relationTo: [ARRAY of collections]).
+Use the below format for relationship fields that are many-one relations (hasMany = true) that are also _polymporphic_ (relationTo: [ARRAY of collections]).
+
 ```
 "FIELD_NAME": {
 	"TARGET_COLLECTION_IDENTIFIER_FIELD_NAME": [
@@ -69,7 +100,9 @@ Use the below format for relationship fields that are many-one relations (hasMan
 	]
 }
 ```
+
 Example:
+
 ```
 "effect_condition": {
 	"drupal_tid": [
