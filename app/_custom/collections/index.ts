@@ -27,28 +27,6 @@ import { SkillTrees } from "./skillTrees";
 import { SubmittedWarps } from "./submittedWarps";
 import { Traces } from "./traces";
 
-export const CustomDefaultPriorities = {
-   characters: 70,
-   lightCones: 60,
-   relicSets: 60,
-   recipes: 40,
-   blessings: 40,
-   achievementSeries: 40,
-   enemies: 30,
-   materials: 30,
-};
-
-export const CustomSearchCollections = [
-   "characters",
-   "materials",
-   "recipes",
-   "blessings",
-   "achievementSeries",
-   "enemies",
-   "relicSets",
-   "lightCones",
-];
-
 export const CustomCollections = [
    Characters,
    Materials,
