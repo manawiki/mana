@@ -1,0 +1,37 @@
+{
+   "name": "posts",
+   "fields": [
+      {
+         "name": "name",
+         "type": "string",
+         "sort": true
+      },
+      {
+         "name": "relativeURL",
+         "type": "string"
+      },
+      {
+         "name": "absoluteURL",
+         "type": "string"
+      },
+      {
+         "name": "category",
+         "type": "string"
+      },
+      {
+         "name": "icon",
+         "type": "string",
+         "optional": true
+      },
+      {
+         "name": "description",
+         "type": "string",
+         "optional": true
+      },
+      {
+         "name": "site",
+         "type": "string",
+         "facet": true
+      }
+   ]
+}

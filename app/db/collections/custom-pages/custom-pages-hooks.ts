@@ -5,24 +5,17 @@ import type {
 
 import { typesensePrivateClient } from "../../../utils/typsense.server";
 
-export const entriesAfterDeleteHook: CollectionAfterDeleteHook = async ({
+export const customPagesAfterDeleteHook: CollectionAfterDeleteHook = async ({
    req: { payload, user },
    id,
    doc,
 }) => {
    try {
-      //Delete entries from search index
+      //Delete custom pages from search index
       await typesensePrivateClient
-         .collections("entries")
+         .collections("customPages")
          .documents(`${id}`)
          .delete();
-
-      await payload.delete({
-         collection: "contentEmbeds",
-         where: {
-            relationId: { equals: doc.id },
-         },
-      });
 
       const iconId = doc?.icon?.id;
 
@@ -39,30 +32,30 @@ export const entriesAfterDeleteHook: CollectionAfterDeleteHook = async ({
    }
 };
 
-export const entriesAfterChangeHook: CollectionAfterChangeHook = async ({
+export const customPagesAfterChangeHook: CollectionAfterChangeHook = async ({
    req: { payload },
    doc,
 }) => {
    try {
-      const entryRelativeURL = `/c/${doc.collectionEntity.slug}/${doc.slug}`;
-      const entryAbsoluteURL = `https://${
-         doc?.site?.domain ? doc?.site?.domain : `${doc?.site?.slug}.mana.wiki`
-      }${entryRelativeURL}`;
+      const customPageRelativeURL = `/${doc.slug}`;
+      const customPageAbsoluteURL = `https://${
+         doc.site.domain ? doc.site.domain : `${doc?.site?.slug}.mana.wiki`
+      }${customPageRelativeURL}`;
+
+      const description = doc?.description;
 
       const iconUrl = doc?.icon?.url;
-      const description = doc?.collectionEntity?.name;
 
       await typesensePrivateClient
-         .collections("entries")
+         .collections("customPages")
          .documents()
          .upsert({
             id: doc.id,
             name: doc.name,
-            relativeURL: entryRelativeURL,
-            absoluteURL: entryAbsoluteURL,
-            site: doc?.site?.id ?? doc.site,
-            collection: doc.collectionEntity.name,
-            category: "Entry",
+            relativeURL: customPageRelativeURL,
+            absoluteURL: customPageAbsoluteURL,
+            site: doc.site.id ?? doc.site,
+            category: "Page",
             ...(description && { description: description }),
             ...(iconUrl && { icon: iconUrl }),
          });
