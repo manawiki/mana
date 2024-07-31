@@ -260,7 +260,6 @@ export const action: ActionFunction = async ({
                   customEntryTemplate,
                   customDatabase,
                },
-               depth: 0,
                user,
                overrideAccess: false,
             });
@@ -285,7 +284,6 @@ export const action: ActionFunction = async ({
                      },
                   ],
                },
-               depth: 0,
                user,
                overrideAccess: false,
             });

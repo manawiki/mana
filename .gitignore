@@ -14,3 +14,4 @@ app/_custom/seed/images
 payload-types.ts
 schema.graphql
 payload-custom-types.ts
+app/_custom/site-config.ts

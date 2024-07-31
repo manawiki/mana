@@ -3,12 +3,20 @@ import type {
    CollectionAfterDeleteHook,
 } from "payload/types";
 
-export const afterDeleteHook: CollectionAfterDeleteHook = async ({
+import { typesensePrivateClient } from "../../../utils/typsense.server";
+
+export const collectionsAfterDeleteHook: CollectionAfterDeleteHook = async ({
    req: { payload, user },
    id, // id of document to delete
    doc, // deleted document
 }) => {
    try {
+      //Delete collections from search index
+      await typesensePrivateClient
+         .collections("collections")
+         .documents(`${id}`)
+         .delete();
+
       const siteId = doc?.site?.id ?? doc?.site;
 
       const iconId = doc?.icon?.id ?? doc?.icon;
@@ -43,12 +51,34 @@ export const afterDeleteHook: CollectionAfterDeleteHook = async ({
       payload.logger.error(`${err}`);
    }
 };
-export const afterChangeHook: CollectionAfterChangeHook = async ({
+export const collectionsAfterChangeHook: CollectionAfterChangeHook = async ({
    doc,
    req: { payload },
    operation, // name of the operation ie. 'create', 'update'
 }) => {
    try {
+      //Sync with search
+      const collectionRelativeURL = `/c/${doc.slug}`;
+      const collectionAbsoluteURL = `https://${
+         doc?.site?.domain ? doc?.site?.domain : `${doc?.site?.slug}.mana.wiki`
+      }${collectionRelativeURL}`;
+
+      const iconUrl = doc?.icon?.url;
+
+      await typesensePrivateClient
+         .collections("collections")
+         .documents()
+         .upsert({
+            id: doc.id,
+            name: doc.name,
+            relativeURL: collectionRelativeURL,
+            absoluteURL: collectionAbsoluteURL,
+            site: doc?.site?.id ?? doc.site,
+            category: "List",
+            ...(iconUrl && { icon: iconUrl }),
+         });
+
+      //Add collection to sites collection
       if (operation === "create") {
          //If depth is greater that 0, need to check the nested site
          const siteId = doc.site.id ?? doc.site;
