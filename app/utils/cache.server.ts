@@ -15,7 +15,7 @@ export { gql } from "graphql-request";
 export const lruCache = remember(
    "lruCache",
    new LRUCache<string, CacheEntry>({
-      max: 1000, // maximum number of items to store in the cache
+      max: 500, // maximum number of items to store in the cache
       // sizeCalculation: (value) => JSON.stringify(value).length,
       // maxSize: 80 * 1024 * 1024, // 200MB
       // ttl: 5 * 60 * 1000, // how long to live in ms
