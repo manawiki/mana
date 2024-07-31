@@ -156,7 +156,7 @@ export const Quests: CollectionConfig = {
                   {
                      name: "enemy",
                      type: "relationship",
-                     relationTo: "enemies",
+                     relationTo: ["enemies", "servants"],
                      hasMany: false,
                   },
                   {
@@ -190,7 +190,7 @@ export const Quests: CollectionConfig = {
                         {
                            name: "enemy",
                            type: "relationship",
-                           relationTo: "enemies",
+                           relationTo: ["enemies", "servants"],
                            hasMany: false,
                         },
                         {
