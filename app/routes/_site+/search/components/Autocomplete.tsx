@@ -124,7 +124,7 @@ export function Autocomplete({
                         q: query,
                         filter_by: `site:=${site.id}`,
                         include_fields:
-                           "name,category,icon,url,site,description",
+                           "name,category,icon,relativeURL,site,description",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -135,7 +135,7 @@ export function Autocomplete({
                         q: query,
                         filter_by: `site:=${site.id}`,
                         include_fields:
-                           "name,category,icon,url,site,collection",
+                           "name,category,icon,relativeURL,site,collection",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -145,7 +145,7 @@ export function Autocomplete({
                         collection: "collections",
                         q: query,
                         filter_by: `site:=${site.id}`,
-                        include_fields: "name,category,icon,url,site",
+                        include_fields: "name,category,icon,relativeURL,site",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -156,7 +156,7 @@ export function Autocomplete({
                         q: query,
                         filter_by: `site:=${site.id}`,
                         include_fields:
-                           "name,category,icon,url,site,description",
+                           "name,category,icon,relativeURL,site,description",
                         query_by: "name",
                         highlight_full_fields: "name",
                         highlight_start_tag: "__aa-highlight__",
@@ -181,7 +181,7 @@ export function Autocomplete({
                      return item.name;
                   },
                   getItemUrl({ item }) {
-                     return item.url;
+                     return item.relativeURL;
                   },
                   templates: {
                      item({ item, html, components }) {
@@ -216,7 +216,7 @@ export function Autocomplete({
                                     item.category == "Post"
                                        ? "w-16 h-9 rounded"
                                        : "rounded-lg size-9",
-                                    "overflow-hidden shadow-sm shadow-1",
+                                    "overflow-hidden",
                                  )}
                                  url={`${item.icon}`}
                               />

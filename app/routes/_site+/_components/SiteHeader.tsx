@@ -85,7 +85,7 @@ export function SiteHeader({
             >
                {searchToggle ? (
                   <InstantSearch searchClient={searchClient}>
-                     <Autocomplete siteId={site.id} placeholder="Search..." />
+                     <Autocomplete site={site} placeholder="Search..." />
                   </InstantSearch>
                ) : (
                   <>

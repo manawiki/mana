@@ -52,7 +52,7 @@ export const afterChangeSearchSyncHook: CollectionAfterChangeHook = async ({
       if (siteId && collectionName) {
          const entryRelativeURL = `/c/${collection.slug}/${doc.slug}`;
          const entryAbsoluteURL = `https://${
-            domain ? domain : "mana.wiki"
+            domain ? domain : `${process.env.SITE_SLUG}.mana.wiki`
          }${entryRelativeURL}`;
 
          const iconUrl = doc?.icon?.url;

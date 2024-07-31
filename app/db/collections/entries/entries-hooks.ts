@@ -46,7 +46,7 @@ export const entriesAfterChangeHook: CollectionAfterChangeHook = async ({
    try {
       const entryRelativeURL = `/c/${doc.collectionEntity.slug}/${doc.slug}`;
       const entryAbsoluteURL = `https://${
-         doc?.site?.domain ? doc?.site?.domain : "mana.wiki"
+         doc?.site?.domain ? doc?.site?.domain : `${doc?.site?.slug}.mana.wiki`
       }${entryRelativeURL}`;
 
       const iconUrl = doc?.icon?.url;

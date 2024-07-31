@@ -39,7 +39,7 @@ export const customPagesAfterChangeHook: CollectionAfterChangeHook = async ({
    try {
       const customPageRelativeURL = `/${doc.slug}`;
       const customPageAbsoluteURL = `https://${
-         doc.site.domain ? doc.site.domain : "mana.wiki"
+         doc.site.domain ? doc.site.domain : `${doc?.site?.slug}.mana.wiki`
       }${customPageRelativeURL}`;
 
       const description = doc?.description;

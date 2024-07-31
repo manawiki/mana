@@ -46,7 +46,9 @@ export const postsAfterChangeHook: CollectionAfterChangeHook = async ({
       if (operation === "update" && doc.content._status === "published") {
          const postRelativeURL = `/p/${doc.slug}`;
          const postAbsoluteURL = `https://${
-            doc?.site?.domain ? doc?.site?.domain : "mana.wiki"
+            doc?.site?.domain
+               ? doc?.site?.domain
+               : `${doc?.site?.slug}.mana.wiki`
          }${postRelativeURL}`;
 
          const bannerUrl = doc?.banner?.url;

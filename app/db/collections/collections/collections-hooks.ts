@@ -60,7 +60,7 @@ export const collectionsAfterChangeHook: CollectionAfterChangeHook = async ({
       //Sync with search
       const collectionRelativeURL = `/c/${doc.slug}`;
       const collectionAbsoluteURL = `https://${
-         doc?.site?.domain ? doc?.site?.domain : "mana.wiki"
+         doc?.site?.domain ? doc?.site?.domain : `${doc?.site?.slug}.mana.wiki`
       }${collectionRelativeURL}`;
 
       const iconUrl = doc?.icon?.url;
