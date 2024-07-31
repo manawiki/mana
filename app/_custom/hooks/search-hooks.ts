@@ -4,7 +4,6 @@ import type {
 } from "payload/types";
 
 import { typesensePrivateClient } from "../../utils/typsense.server";
-import { customConfig } from "../site-config";
 
 export const afterDeleteSearchSyncHook: CollectionAfterDeleteHook = async ({
    collection,
@@ -12,7 +11,7 @@ export const afterDeleteSearchSyncHook: CollectionAfterDeleteHook = async ({
    id,
 }) => {
    try {
-      const siteId = customConfig?.siteId;
+      const siteId = process.env.SITE_ID;
 
       if (siteId) {
          //Delete entries from search index
@@ -32,8 +31,8 @@ export const afterChangeSearchSyncHook: CollectionAfterChangeHook = async ({
    doc,
 }) => {
    try {
-      const siteId = customConfig?.siteId;
-      const domain = customConfig?.domain;
+      const siteId = process.env.SITE_ID;
+      const domain = process.env.HOST_DOMAIN;
 
       const collectionName = collection?.labels?.singular;
 
