@@ -285,7 +285,7 @@ const seedUploads = async (result: any) => {
       }
    });
 
-   // !! 2nd level nested array relationships
+   // !! 2nd level nested array relationships (non polymorphic)
 
    var relationNested2 = flatFields
       .filter((a) => a.type == "array")
@@ -294,7 +294,11 @@ const seedUploads = async (result: any) => {
             .filter((a) => a.type == "array")
             .map((lv2) => {
                return lv2.fields
-                  .filter((a) => a.type == "relationship")
+                  .filter(
+                     (a) =>
+                        a.type == "relationship" &&
+                        !Array.isArray(a.relationTo),
+                  )
                   .map((lv3) => {
                      // Get first instance of ID that exists for nested relationship
                      var idtemp = result[lv1.name]
@@ -359,7 +363,11 @@ const seedUploads = async (result: any) => {
                   .filter((a) => a.type == "array")
                   .map((lv3) => {
                      return lv3.fields
-                        .filter((a) => a.type == "relationship")
+                        .filter(
+                           (a) =>
+                              a.type == "relationship" &&
+                              !Array.isArray(a.relationTo),
+                        )
                         .map((lv4) => {
                            // Get first instance of ID that exists for nested relationship
                            var idtemp = result[lv1.name]

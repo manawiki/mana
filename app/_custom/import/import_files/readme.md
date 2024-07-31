@@ -55,6 +55,24 @@ Example:
 }
 ```
 
+! For 2nd level nested and above, do not include TARGET_COLLECTION_DENTIFIER_FIELD_NAME; Note in this case the value must be the ID:
+
+```
+"FIELD_NAME": {
+		"relationTo": "TARGET_COLLECTION_SLUG",
+		"value": value1
+}
+```
+
+Example:
+
+```
+"mat": {
+		"relationTo": "materials",
+		"value": 5671
+}
+```
+
 ### Relationship Fields (Multiple)
 
 Use the below format for relationship fields that are many-one relations (hasMany = true).
