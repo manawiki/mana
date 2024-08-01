@@ -73,22 +73,33 @@ export function Autocomplete({
 
       const autocompleteInstance = autocomplete({
          ...autocompleteProps,
-         detachedMediaQuery: "none",
+         detachedMediaQuery: "",
          openOnFocus: true,
          container: autocompleteContainer.current,
          initialState: { query },
          autoFocus: true,
          classNames: {
-            root: "relative w-full h-full",
-            input: "w-full h-full bg-transparent pl-8 [&::-webkit-search-cancel-button]:hidden focus:outline-none",
-            form: "w-full h-full",
+            input: "w-full h-full bg-transparent [&::-webkit-search-cancel-button]:hidden focus:outline-none",
+            form: "w-full h-full flex items-center gap-3",
             inputWrapper: "w-full h-full",
-            inputWrapperPrefix: "absolute top-5 left-0",
-            inputWrapperSuffix: "absolute top-5 right-0",
+            label: "flex items-center",
             sourceNoResults: "p-3 text-sm",
-            panel: "absolute bg-white dark:bg-dark450 z-50 rounded-lg drop-shadow-lg border border-zinc-300 dark:border-zinc-600 -mt-1.5 overflow-hidden",
-            item: "px-2.5 py-2 aria-selected:bg-zinc-100 dark:aria-selected:bg-dark400 text-sm font-semibold",
-            list: "divide-y divide-zinc-200 dark:divide-zinc-600",
+            inputWrapperSuffix: "flex items-center",
+            item: "p-3 aria-selected:bg-zinc-100 dark:aria-selected:bg-dark350 text-sm font-semibold",
+            list: "divide-y divide-zinc-200 dark:divide-zinc-700",
+            //Modal
+            detachedOverlay:
+               "fixed inset-0 flex items-start justify-center overflow-hidden bg-black/50 z-50 tablet:p-40",
+            detachedContainer:
+               "z-40 bg-white dark:bg-dark400 max-w-2xl w-full tablet:rounded-lg drop-shadow-lg overflow-hidden tablet:border border-color-sub",
+            detachedFormContainer:
+               "flex items-center p-3 pr-4 border-b dark:border-zinc-700",
+            detachedCancelButton:
+               "text-xs text-1 hover:text-light dark:hover:text-dark ml-4 border-l dark:border-zinc-600 pl-4",
+            detachedSearchButton:
+               "flex items-center justify-center gap-2 hover:border-zinc-400 shadow-sm bg-zinc-100 dark:bg-dark500 border border-zinc-300 dark:border-zinc-500 dark:hover:border-zinc-400 rounded-full p-1 size-10",
+            detachedSearchButtonQuery: "hidden",
+            detachedSearchButtonPlaceholder: "hidden",
          },
          onReset() {
             setInstantSearchUiState({ query: "" });
@@ -96,6 +107,7 @@ export function Autocomplete({
          onSubmit({ state }) {
             setInstantSearchUiState({ query: state.query });
          },
+
          onStateChange({ prevState, state }) {
             if (prevState.query !== state.query) {
                setInstantSearchUiState({
@@ -186,6 +198,7 @@ export function Autocomplete({
                   templates: {
                      item({ item, html, components }) {
                         return html`<a
+                           href="${item.relativeURL}"
                            className="aa-ItemLink flex items-center justify-between gap-2"
                         >
                            <div
@@ -235,10 +248,5 @@ export function Autocomplete({
       return () => autocompleteInstance.destroy();
    }, []);
 
-   return (
-      <div
-         className={clsx(className, "w-full h-full max-laptop:px-3")}
-         ref={autocompleteContainer}
-      />
-   );
+   return <div ref={autocompleteContainer} />;
 }

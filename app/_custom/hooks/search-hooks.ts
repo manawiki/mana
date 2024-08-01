@@ -34,7 +34,7 @@ export const afterChangeSearchSyncHook: CollectionAfterChangeHook = async ({
       const siteId = process.env.SITE_ID;
       const domain = process.env.HOST_DOMAIN;
 
-      const collectionName = collection?.labels?.singular;
+      const collectionName = collection?.labels?.singular ?? collection?.slug;
 
       if (!siteId) {
          return payload.logger.error(
