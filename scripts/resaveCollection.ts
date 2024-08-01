@@ -1,5 +1,7 @@
 import Payload from "payload";
 
+import { manaSlug } from "../app/utils/url-slug";
+
 require("dotenv").config();
 
 const { PAYLOADCMS_SECRET } = process.env;
@@ -36,17 +38,12 @@ const resaveCollection = async () => {
             const { id } = result;
             if (collectionSlug) {
                try {
-                  await payload.create({
-                     collection: "search",
+                  await payload.update({
+                     collection: collectionSlug,
                      id,
                      data: {
-                        name: result.name,
-                        icon: result.icon.id,
-                        priority: 9,
-                        doc: {
-                           relationTo: collectionSlug,
-                           value: id,
-                        },
+                        updatedAt: new Date(),
+                        // slug: manaSlug(result.name),
                      },
                   });
                   console.log(
