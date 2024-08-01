@@ -1,9 +1,14 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+import {
+   afterDeleteSearchSyncHook,
+   afterChangeSearchSyncHook,
+} from "../hooks/search-hooks";
 
 export const Moves: CollectionConfig = {
    slug: "moves",
+   labels: { singular: "Move", plural: "Moves" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -13,6 +18,10 @@ export const Moves: CollectionConfig = {
       read: () => true,
       update: isStaff,
       delete: isStaff,
+   },
+   hooks: {
+      afterDelete: [afterDeleteSearchSyncHook],
+      afterChange: [afterChangeSearchSyncHook],
    },
    fields: [
       {

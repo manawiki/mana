@@ -1,6 +1,10 @@
 import type { CollectionConfig, FieldHook } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+import {
+   afterDeleteSearchSyncHook,
+   afterChangeSearchSyncHook,
+} from "../hooks/search-hooks";
 
 interface CPMType {
    cpm: number;
@@ -35,6 +39,10 @@ export const Pokemon: CollectionConfig = {
    admin: {
       group: "Custom",
       useAsTitle: "name",
+   },
+   hooks: {
+      afterDelete: [afterDeleteSearchSyncHook],
+      afterChange: [afterChangeSearchSyncHook],
    },
    access: {
       create: isStaff,
