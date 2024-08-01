@@ -128,7 +128,7 @@ export function EntryEdit({ entry }: { entry: any }) {
                      value={entry.icon?.id}
                   />
                </FieldGroup>
-               <div className="z-50 fixed bottom-3 left-3 w-full">
+               <div className="z-50 fixed left-0 bottom-0 tablet:bottom-3 tablet:left-3 w-full tablet:w-[376px] tablet:rounded-b-lg overflow-hidden">
                   <div className="flex gap-2 items-center justify-between bg-2-sub p-4 border-t border-color-sub">
                      <Button
                         color="light/zinc"

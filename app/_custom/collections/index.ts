@@ -13,11 +13,3 @@ export const CustomCollections = [
    EvolutionRequirements,
    RaidGuides,
 ];
-
-export const CustomSearchCollections = ["pokemon", "moves", "raid-guides"];
-
-export const CustomDefaultPriorities = {
-   pokemon: 70,
-   "raid-guides": 70,
-   moves: 60,
-};
