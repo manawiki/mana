@@ -43,7 +43,7 @@ const EffectSection = ({ dispData }: any) => {
    return (
       <>
          {dispData.map((data) => {
-            console.log(data.value);
+            // console.log(data.value);
             return (
                <>
                   <H2 text={data.header} />

@@ -46,7 +46,7 @@ const SECTIONS = {
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
    const ce = entry?.data?.CraftEssence as CraftEssenceType;
-   console.log(ce);
+   // console.log(ce);
 
    return <Entry customComponents={SECTIONS} customData={ce} />;
 }
@@ -99,6 +99,7 @@ const QUERY = gql`
                }
                ce_With_Effect {
                   id
+                  slug
                   name
                   is_bond_ce
                   _rarity {

@@ -56,7 +56,7 @@ function Bond_CE({ ce }: { ce: any }) {
                <>
                   <div className="my-1 border border-color-sub rounded-sm p-3">
                      <div className="inline-block mr-1 align-middle">
-                        <a href={`/c/craft-essences/${bc?.id}`}>
+                        <a href={`/c/craft-essences/${bc?.slug ?? bc?.id}`}>
                            <div className="relative mr-0.5 inline-block h-14 w-14 align-middle text-xs">
                               <img
                                  src={bc?.icon?.url ?? "no_image_42df124128"}
@@ -69,7 +69,7 @@ function Bond_CE({ ce }: { ce: any }) {
                      </div>
                      <div className="inline-block align-middle">
                         <div>
-                           <a href={`/c/craft-essences/${bc?.id}`}>
+                           <a href={`/c/craft-essences/${bc?.slug ?? bc?.id}`}>
                               <div className="text-base text-blue-500">
                                  {bc?.name}
                               </div>

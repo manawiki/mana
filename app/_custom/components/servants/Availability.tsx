@@ -47,7 +47,7 @@ function Future_Banners({ data }: { data: any }) {
       (a) => !a.na_end_date || new Date(a.na_end_date).getTime() >= today,
    );
    const servant = data.servant;
-   console.log(banners);
+   // console.log(banners);
 
    return (
       <>

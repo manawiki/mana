@@ -133,6 +133,7 @@ const SERVANT_ASCENSION_QUERY = gql`
       ) {
          docs {
             id
+            slug
             library_id
             name
             icon {
@@ -163,6 +164,7 @@ const SERVANT_SKILL_QUERY = gql`
       ) {
          docs {
             id
+            slug
             library_id
             name
             icon {
@@ -193,6 +195,7 @@ const SERVANT_APPEND_QUERY = gql`
       ) {
          docs {
             id
+            slug
             library_id
             name
             icon {

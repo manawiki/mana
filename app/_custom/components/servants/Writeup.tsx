@@ -381,7 +381,7 @@ function CE_List({ data }: { data: any }) {
                   <>
                      <div className="px-3 p-2">
                         <div className="inline-block mr-2 align-middle">
-                           <a href={`/c/craft-essences/${bc?.id}`}>
+                           <a href={`/c/craft-essences/${bc?.slug ?? bc.id}`}>
                               <div className="relative mr-0.5 inline-block h-11 w-11 align-middle text-xs">
                                  <img
                                     src={bc?.icon?.url ?? "no_image_42df124128"}
@@ -394,7 +394,9 @@ function CE_List({ data }: { data: any }) {
                         </div>
                         <div className="inline-block align-middle">
                            <div>
-                              <a href={`/c/craft-essences/${bc?.id}`}>
+                              <a
+                                 href={`/c/craft-essences/${bc?.slug ?? bc.id}`}
+                              >
                                  <div className="text-base text-blue-500">
                                     {bc?.name}
                                  </div>

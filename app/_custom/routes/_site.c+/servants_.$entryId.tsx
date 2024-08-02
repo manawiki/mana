@@ -97,7 +97,7 @@ const SECTIONS = {
 
 export default function EntryPage() {
    const loaderdata = useLoaderData<typeof loader>();
-   console.log(loaderdata);
+   // console.log(loaderdata);
 
    return (
       <>
@@ -442,6 +442,7 @@ const WRITEUP_QUERY = gql`
          writeup_recommended_ces
          recommended_ces {
             id
+            slug
             name
             icon {
                url

@@ -222,7 +222,7 @@ export default function Post() {
          <div className="pt-10">
             <CommentHeader totalComments={post.totalComments ?? undefined} />
             <Suspense fallback={<Loading />}>
-               <Await resolve={comments}>
+               <Await resolve={comments} errorElement={<Loading />}>
                   {(comments) => <Comments comments={comments} />}
                </Await>
             </Suspense>

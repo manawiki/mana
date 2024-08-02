@@ -414,6 +414,7 @@ function CalculateTotals(inputdata, materialid, matfieldname) {
          servant: {
             name: asc.name,
             id: asc.id,
+            slug: asc.slug,
             icon: {
                url: asc.icon.url,
             },
@@ -449,7 +450,7 @@ const ServantTotalTable = ({ tabledata }: any) => {
                {tabledata?.map((row, index) => (
                   <TableRow key={index + "tdata"}>
                      <td className={`text-left ${tdformat}`}>
-                        <a href={`/c/servants/${row.servant?.id}`}>
+                        <a href={`/c/servants/${row.servant?.slug}`}>
                            <div className="inline-block align-middle">
                               <Image
                                  options="height=45&width=45"
