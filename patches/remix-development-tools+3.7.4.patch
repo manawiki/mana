@@ -1,0 +1,14 @@
+diff --git a/node_modules/remix-development-tools/dist/server.cjs b/node_modules/remix-development-tools/dist/server.cjs
+index b86835a..7be7778 100644
+--- a/node_modules/remix-development-tools/dist/server.cjs
++++ b/node_modules/remix-development-tools/dist/server.cjs
+@@ -694,6 +694,9 @@ var analyzeDeferred = (id, start, response) => {
+       response.data[key].then(() => {
+         const end = diffInMs(start);
+         infoLog(`Deferred value ${source_default.white(key)} resolved in ${source_default.blueBright(id)} - ${source_default.white(`${end}ms`)}`);
++      }).catch((e) => {
++        errorLog(`Deferred value ${source_default.white(key)} rejected in ${source_default.blueBright(id)}`);
++        errorLog(e?.message ? e.message : e)
+       });
+     });
+   }
