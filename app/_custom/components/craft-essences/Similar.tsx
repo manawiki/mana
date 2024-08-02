@@ -19,7 +19,7 @@ const CEWithSameEffect = ({ ce }: any) => {
       <>
          {ce.effect_list?.map((eff: any) => {
             // console.log(eff);
-            const name = eff.effect.name;
+            const name = eff.effect?.name;
             const icon = eff.effect.icon?.url;
             const celist = eff.effect.ce_With_Effect;
             return (

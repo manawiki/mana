@@ -70,8 +70,8 @@ const DropLocationList = ({ data }: any) => {
       a.ap_per_drop > b.ap_per_drop
          ? 1
          : b.ap_per_drop > a.ap_per_drop
-         ? -1
-         : 0,
+           ? -1
+           : 0,
    );
 
    return (
@@ -96,10 +96,10 @@ const DropLocationList = ({ data }: any) => {
                {sorted?.map((loc, index) => (
                   <TableRow key={index}>
                      <td className={`text-left ${tdformat}`}>
-                        <div>{loc.quest_dropped_from.name}</div>
+                        <div>{loc?.quest_dropped_from?.name}</div>
                         <div className="text-xs">
-                           {loc.quest_dropped_from.main_quest?.name} -{" "}
-                           {loc.quest_dropped_from.main_quest_chapter?.name}
+                           {loc?.quest_dropped_from?.main_quest?.name} -{" "}
+                           {loc?.quest_dropped_from?.main_quest_chapter?.name}
                         </div>
                      </td>
                      <td className={`text-center ${tdformat}`}>
