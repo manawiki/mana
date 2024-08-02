@@ -60,8 +60,6 @@ export function List({
    const { list } = useLoaderData();
    const { site } = useSiteLoaderData();
 
-   console.log("List", list);
-
    //Get path for custom site, cant use useParams since it doesn't exist when using a custom template
    const { pathname } = useLocation();
    const collectionSlug = pathname.split("/")[2];
