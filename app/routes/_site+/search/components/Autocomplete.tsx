@@ -74,26 +74,28 @@ export function Autocomplete({
       const autocompleteInstance = autocomplete({
          ...autocompleteProps,
          detachedMediaQuery: "",
-         openOnFocus: true,
          container: autocompleteContainer.current,
          initialState: { query },
          autoFocus: true,
+         placeholder: "Search...",
          classNames: {
             input: "w-full h-full bg-transparent [&::-webkit-search-cancel-button]:hidden focus:outline-none",
             form: "w-full h-full flex items-center gap-3",
             inputWrapper: "w-full h-full",
             label: "flex items-center",
-            sourceNoResults: "p-3 text-sm",
+            sourceNoResults:
+               "p-3 text-sm flex items-center justify-center pt-24 text-1",
             inputWrapperSuffix: "flex items-center",
-            item: "p-3 aria-selected:bg-zinc-100 dark:aria-selected:bg-dark350 text-sm font-semibold",
-            list: "divide-y divide-zinc-200 dark:divide-zinc-700",
+            item: "m-2 px-2.5 py-2 rounded-md bg-zinc-50 dark:bg-dark500 dark:border-zinc-500/50 aria-selected:bg-blue-50 dark:aria-selected:bg-zinc-500/70 aria-selected:border-blue-100 dark:aria-selected:border-zinc-400/50 text-sm font-semibold border border-zinc-200/50",
+            panel: "h-full overflow-y-auto  flex-grow bg-white shadow-md dark:bg-dark450 -mt-2 scrollbar dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450 scrollbar-thumb-zinc-300 scrollbar-track-zinc-100",
+            panelLayout: "mt-2",
             //Modal
             detachedOverlay:
-               "fixed inset-0 flex items-start justify-center overflow-hidden bg-black/50 z-50 tablet:p-40",
+               "fixed inset-0 flex items-start justify-center overflow-hidden bg-black/50 h-full z-50 tablet:pt-12 tablet:pb-20",
             detachedContainer:
-               "z-40 bg-white dark:bg-dark400 max-w-2xl w-full tablet:rounded-lg drop-shadow-lg overflow-hidden tablet:border border-color-sub",
+               "overflow-hidden tablet:max-w-2xl w-full flex flex-col tablet:rounded-lg max-h-full tablet:max-h-[540px] min-h-[320px]",
             detachedFormContainer:
-               "flex items-center p-3 pr-4 border-b dark:border-zinc-700",
+               "flex items-center p-4 pr-5 bg-white shadow-md dark:bg-dark450 tablet:rounded-lg",
             detachedCancelButton:
                "text-xs text-1 hover:text-light dark:hover:text-dark ml-4 border-l dark:border-zinc-600 pl-4",
             detachedSearchButton:
@@ -195,6 +197,7 @@ export function Autocomplete({
                   getItemUrl({ item }) {
                      return item.relativeURL;
                   },
+
                   templates: {
                      item({ item, html, components }) {
                         return html`<a
