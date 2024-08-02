@@ -65,7 +65,6 @@ export function List({
    const collectionSlug = pathname.split("/")[2];
    const collectionId = useParams()?.collectionId ?? collectionSlug;
    const collection = site?.collections?.find(
-      //@ts-ignore
       (collection) => collection.slug === collectionId,
    ) as Collection;
 
@@ -97,7 +96,7 @@ export function List({
                children
             ) : (
                <Suspense fallback={<Loading />}>
-                  <Await resolve={list}>
+                  <Await resolve={list} errorElement={<Loading />}>
                      {(list) => (
                         <ListTable
                            viewType={viewType}
