@@ -127,10 +127,9 @@ export function MobileHeader() {
                </Link>
                <div className="relative z-10 flex w-full items-center justify-end gap-3 py-4 border-b border-color">
                   <Link
-                     prefetch="intent"
                      to="/join"
-                     className="dark:shadow-zinc-950/40 group relative inline-flex h-8 items-center justify-center overflow-hidden 
-                                 rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
+                     className="group relative inline-flex h-8 items-center justify-center overflow-hidden 
+                                 rounded-lg px-3 font-medium text-indigo-600  transition duration-300 ease-out"
                   >
                      <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
                      <span
@@ -142,10 +141,9 @@ export function MobileHeader() {
                      </span>
                   </Link>
                   <Link
-                     prefetch="intent"
-                     className="dark:border-zinc-600 dark:bg-dark450 dark:shadow-zinc-950/40 flex h-8 items-center
-                                 justify-center rounded-lg border px-3 text-center bg-white
-                                 text-xs font-bold uppercase shadow-sm shadow-zinc-300"
+                     className="dark:border-zinc-600 dark:bg-dark450 flex h-8 items-center shadow-sm shadow-1
+                                 justify-center rounded-lg border border-zinc-300 px-3 text-center bg-white
+                                 text-xs font-bold uppercase"
                      to={`/login?redirectTo=${location.pathname}`}
                   >
                      {t("login.action", { ns: "auth" })}

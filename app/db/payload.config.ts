@@ -10,7 +10,6 @@ import { selectPlugin } from "payload-query";
 
 import { collections } from "./collections";
 import { Logo } from "./components/Logo";
-import searchPlugin from "./plugins/search";
 
 const adapter = s3Adapter({
    config: {
@@ -27,7 +26,7 @@ const adapter = s3Adapter({
 export default buildConfig({
    editor: slateEditor({}),
    db: mongooseAdapter({
-      url: `${process.env.MONGODB_URI}/mana-prod`,
+      url: `${process.env.DB_URI}/mana-prod?replicaSet=mana-west&tls=true&authSource=admin`,
       transactionOptions: false, //disable mongo transactions
    }),
    cors: "*",
@@ -65,103 +64,6 @@ export default buildConfig({
                   return `https://static.mana.wiki/${filename}`;
                },
             },
-         },
-      }),
-      searchPlugin({
-         collections: ["customPages", "entries", "posts", "collections"],
-         searchOverrides: {
-            fields: [
-               {
-                  name: "slug",
-                  label: "Slug",
-                  type: "text",
-                  admin: {
-                     readOnly: true,
-                  },
-               },
-               {
-                  name: "site",
-                  type: "relationship",
-                  relationTo: "sites",
-                  hasMany: false,
-                  maxDepth: 1,
-                  index: true,
-                  admin: {
-                     readOnly: true,
-                  },
-               },
-               {
-                  name: "icon",
-                  type: "relationship",
-                  relationTo: "images",
-                  hasMany: false,
-                  admin: {
-                     readOnly: true,
-                  },
-               },
-               {
-                  name: "collectionEntity",
-                  type: "relationship",
-                  relationTo: "collections",
-                  hasMany: false,
-                  admin: {
-                     readOnly: true,
-                  },
-               },
-            ],
-         },
-         beforeSync: ({ originalDoc, searchDoc }) => {
-            const type = searchDoc.doc.relationTo;
-            switch (type) {
-               case "customPages": {
-                  return {
-                     ...searchDoc,
-                     name: originalDoc?.name,
-                     site: originalDoc?.site.id ?? originalDoc?.site,
-                     icon: originalDoc?.icon.id,
-                     slug: originalDoc?.slug,
-                  };
-               }
-               case "collections": {
-                  return {
-                     ...searchDoc,
-                     name: originalDoc?.name,
-                     site: originalDoc?.site.id ?? originalDoc?.site,
-                     icon: originalDoc?.icon?.id,
-                     slug: originalDoc?.slug,
-                  };
-               }
-               case "entries": {
-                  return {
-                     ...searchDoc,
-                     name: originalDoc?.name,
-                     site: originalDoc?.site.id ?? originalDoc?.site,
-                     icon: originalDoc?.icon?.id,
-                     collectionEntity: originalDoc?.collectionEntity.id,
-                  };
-               }
-               case "posts": {
-                  return {
-                     ...searchDoc,
-                     name: originalDoc?.name,
-                     site: originalDoc?.site.id ?? originalDoc?.site,
-                     slug: originalDoc?.slug,
-                     postId: originalDoc?.id,
-                  };
-               }
-               default:
-                  return {
-                     ...searchDoc,
-                     site: originalDoc?.site.id ?? originalDoc?.site,
-                     name: originalDoc?.name,
-                  };
-            }
-         },
-         defaultPriorities: {
-            collections: 10,
-            customPages: 10,
-            entries: 9,
-            posts: 8,
          },
       }),
    ],

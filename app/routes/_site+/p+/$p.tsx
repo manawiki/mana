@@ -109,29 +109,23 @@ export default function Post() {
    return (
       <>
          <main className="mx-auto pb-3 max-tablet:px-3 pt-20 laptop:pt-6 relative">
-            {/* @ts-ignore */}
             <PostActionBar post={post} />
             {hasAccess ? (
                <>
-                  {/* @ts-ignore */}
-                  <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
-                  {/* @ts-ignore */}
+                  <PostHeaderEdit post={post} />
                   <PostBanner post={post} isShowBanner={isShowBanner} />
                </>
             ) : (
                <>
-                  {/* @ts-ignore */}
                   <PostHeaderView post={post} />
-                  {/* @ts-ignore */}
                   <PostBannerView post={post} />
                </>
             )}
-            {/* @ts-ignore */}
             <PostTableOfContents data={postContent} />
             <AdPlaceholder>
                <div
                   className={`flex items-center justify-center ${
-                     enableAds ? "min-h-[90px]" : ""
+                     enableAds ? "min-h-[90px] mb-4" : ""
                   }`}
                >
                   <AdUnit
@@ -222,7 +216,7 @@ export default function Post() {
          <div className="pt-10">
             <CommentHeader totalComments={post.totalComments ?? undefined} />
             <Suspense fallback={<Loading />}>
-               <Await resolve={comments}>
+               <Await resolve={comments} errorElement={<Loading />}>
                   {(comments) => <Comments comments={comments} />}
                </Await>
             </Suspense>
@@ -422,17 +416,6 @@ export async function action({
 
             //If no collision and it's the first time we are generating the slug, publish with alias.
             if (existingPostsWithSlug.totalDocs == 0) {
-               //@ts-ignore
-               const updatedPost = await payload.update({
-                  collection: "posts",
-                  id: postData.id,
-                  data: {
-                     slug: newSlug,
-                     publishedAt: new Date().toISOString(),
-                  },
-                  overrideAccess: false,
-                  user,
-               });
                //Update the postContents collection to published
                const publishedPost = await payload.update({
                   collection: "postContents",
@@ -443,6 +426,18 @@ export async function action({
                   overrideAccess: false,
                   user,
                });
+
+               const updatedPost = await payload.update({
+                  collection: "posts",
+                  id: postData.id,
+                  data: {
+                     slug: newSlug,
+                     publishedAt: new Date().toISOString(),
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+
                if (updatedPost && publishedPost)
                   return redirectWithSuccess(
                      //@ts-ignore
@@ -561,6 +556,7 @@ export async function action({
             collection: "comments",
             id: commentParentId,
             data: {
+               //@ts-ignore
                replies: [commentReply.id, ...existingReplies],
             },
          });
@@ -594,6 +590,7 @@ export async function action({
                   data: {
                      //@ts-ignore
                      upVotes: existingVotes,
+                     //@ts-ignore
                      upVotesStatic: existingVoteStatic - 1,
                   },
                });
@@ -608,6 +605,7 @@ export async function action({
             id: commentId,
             data: {
                upVotes: [...existingVotes, userId],
+               //@ts-ignore
                upVotesStatic: existingVoteStatic + 1,
             },
          });
@@ -621,6 +619,7 @@ export async function action({
             id: commentId,
             depth: 0,
          });
+         //@ts-ignore
          if (comment.replies && comment?.replies?.length > 0) {
             return await payload.update({
                collection: "comments",

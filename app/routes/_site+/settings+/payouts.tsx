@@ -12,11 +12,7 @@ export async function loader({
 }
 
 export default function AdPayouts() {
-   return (
-      <div>
-         <div>Ad Payouts</div>
-      </div>
-   );
+   return <div>{/* <div>Ad Payouts</div> */}</div>;
 }
 
 export const meta: MetaFunction = ({ matches }) => {

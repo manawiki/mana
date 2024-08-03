@@ -53,21 +53,3 @@ export const CustomCollections = [
    Talents,
    WEngines,
 ];
-
-export const CustomSearchCollections = [
-   "achievements",
-   "agents",
-   "bangboos",
-   "disk-drive-sets",
-   "materials",
-   "w-engines",
-];
-
-export const CustomDefaultPriorities = {
-   "achievements": 50,
-   "agents": 90,
-   "bangboos": 70,
-   "disk-drive-sets": 80,
-   "materials": 40,
-   "w-engines": 60,
-};
