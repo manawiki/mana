@@ -15,6 +15,7 @@ export { listMeta as meta };
 type ListRowDefault = {
    name: string;
    slug: string;
+   id: string;
    icon: {
       url: string;
    };
@@ -46,7 +47,9 @@ export default function CollectionList() {
       header: "Name",
       cell: (info) => (
          <Link
-            to={`/c/${collectionId}/${info.row.original.slug}`}
+            to={`/c/${collectionId}/${
+               info.row.original.slug ?? info.row.original.id
+            }`}
             className="group flex items-center justify-center gap-2 truncate flex-col"
          >
             <Avatar
@@ -74,7 +77,9 @@ export default function CollectionList() {
          header: "Name",
          cell: (info) => (
             <Link
-               to={`/c/${collectionId}/${info.row.original.slug}`}
+               to={`/c/${collectionId}/${
+                  info.row.original.slug ?? info.row.original.id
+               }`}
                className="flex items-center gap-2 group py-0.5"
             >
                <Avatar

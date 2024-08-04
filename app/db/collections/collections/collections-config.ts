@@ -1,6 +1,9 @@
 import type { CollectionConfig } from "payload/types";
 
-import { afterDeleteHook, afterChangeHook } from "./collection-hooks";
+import {
+   collectionsAfterDeleteHook,
+   collectionsAfterChangeHook,
+} from "./collections-hooks";
 import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
 import { isStaffFieldLevel } from "../users/users.access";
 
@@ -18,8 +21,8 @@ export const Collections: CollectionConfig = {
       delete: canMutateAsSiteAdmin("collections"),
    },
    hooks: {
-      afterChange: [afterChangeHook],
-      afterDelete: [afterDeleteHook],
+      afterChange: [collectionsAfterChangeHook],
+      afterDelete: [collectionsAfterDeleteHook],
    },
    fields: [
       {

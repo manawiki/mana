@@ -7,7 +7,7 @@ projects:
      secrets:
         prd:
            METRONOME_API_KEY: ${mana.prd.METRONOME_API_KEY}
-           MONGODB_URI: ${mana.prd.MONGODB_URI}
+           DB_URI: ${mana.prd.DB_URI}
            PAYLOADCMS_SECRET: ${mana.prd.PAYLOADCMS_SECRET}
            NODEMAILER_PASSWORD: ${mana.prd.NODEMAILER_PASSWORD}
            BACKBLAZE_APPLICATION_KEY: ${mana.prd.BACKBLAZE_APPLICATION_KEY}
@@ -15,5 +15,5 @@ projects:
            STRIPE_PUBLIC_KEY: ${mana.prd.STRIPE_PUBLIC_KEY}
            STRIPE_SECRET_KEY: ${mana.prd.STRIPE_SECRET_KEY}
            FLY_API_TOKEN: ${mana.prd.FLY_API_TOKEN}
-           CUSTOM_DB_NAME: "UPDATE"
+           CUSTOM_DB_URI: "UPDATE"
            FILE_PREFIX: "UPDATE"

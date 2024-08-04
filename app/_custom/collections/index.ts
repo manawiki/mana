@@ -31,17 +31,3 @@ export const CustomCollections = [
    SkinQuotes,
    Skins,
 ];
-
-export const CustomSearchCollections = [
-   "materials",
-   "medals",
-   "operators",
-   "skins",
-];
-
-export const CustomDefaultPriorities = {
-   medals: 20,
-   materials: 30,
-   skins: 40,
-   operators: 60,
-};
