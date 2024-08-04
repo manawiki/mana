@@ -117,7 +117,7 @@ export default function Members() {
          </Table>
          <h3 className="pb-2 pt-3">Applications</h3>
          <Suspense fallback={<DotLoader />}>
-            <Await resolve={applications}>
+            <Await resolve={applications} errorElement={<DotLoader />}>
                {(applications) => (
                   <>
                      {applications.length > 0 ? (

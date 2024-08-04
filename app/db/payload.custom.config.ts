@@ -11,12 +11,7 @@ import { selectPlugin } from "payload-query";
 import { Logo } from "./components/Logo";
 import { CustomImages } from "./custom/CustomImages";
 import { Users } from "./custom/CustomUsers";
-import searchPlugin from "./plugins/search";
-import {
-   CustomCollections,
-   CustomSearchCollections,
-   CustomDefaultPriorities,
-} from "../_custom/collections";
+import { CustomCollections } from "../_custom/collections";
 
 const adapter = s3Adapter({
    config: {
@@ -33,7 +28,13 @@ const adapter = s3Adapter({
 export default buildConfig({
    editor: slateEditor({}),
    db: mongooseAdapter({
-      url: `${process.env.MONGODB_URI}/${process.env.CUSTOM_DB_NAME}`,
+      //@ts-ignore
+      url:
+         process.env.CUSTOM_DB_URI ??
+         process.env.DB_URI?.replace(
+            /\/[^/]*\?/,
+            `/${process.env.CUSTOM_DB_NAME}?` ?? "/dummy?",
+         ),
       transactionOptions: false, //disable mongo transactions
    }),
    cors: "*",
@@ -72,30 +73,6 @@ export default buildConfig({
                },
                prefix: process.env.FILE_PREFIX,
             },
-         },
-      }),
-      searchPlugin({
-         collections: [...CustomSearchCollections],
-         defaultPriorities: CustomDefaultPriorities,
-         searchOverrides: {
-            fields: [
-               {
-                  name: "icon",
-                  type: "relationship",
-                  relationTo: "images",
-                  hasMany: false,
-                  admin: {
-                     readOnly: true,
-                  },
-               },
-            ],
-         },
-         beforeSync: ({ originalDoc, searchDoc }) => {
-            return {
-               ...searchDoc,
-               icon: originalDoc?.icon?.id ?? "",
-               name: originalDoc?.name,
-            };
          },
       }),
    ],

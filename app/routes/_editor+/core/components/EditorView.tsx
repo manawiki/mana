@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 
+import { useLocation } from "@remix-run/react";
 import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact, ReactEditor } from "slate-react";
@@ -18,6 +19,7 @@ export function EditorView({
    autoWidth?: boolean;
 }) {
    const editor = useMemo(() => withReact(createEditor()), []);
+   const location = useLocation();
 
    const renderElement = useCallback((props: RenderElementProps) => {
       const path = ReactEditor.findPath(editor, props.element);
@@ -44,7 +46,11 @@ export function EditorView({
       );
    }, []);
    return (
-      <Slate editor={editor} initialValue={data ?? initialValue()}>
+      <Slate
+         key={location.pathname}
+         editor={editor}
+         initialValue={data ?? initialValue()}
+      >
          <Editable
             renderElement={renderElement}
             renderLeaf={Leaf}

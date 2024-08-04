@@ -14,13 +14,6 @@ import { FactorySkills } from "./factory-skills";
 import { Materials } from "./materials";
 import { Skills } from "./skills";
 
-export const CustomDefaultPriorities = {
-   characters: 90,
-   materials: 30,
-};
-
-export const CustomSearchCollections = ["characters", "materials"];
-
 export const CustomCollections = [
    Characters,
    Materials,
@@ -38,3 +31,4 @@ export const CustomCollections = [
    _Stats,
    _WeaponTypes,
 ];
+

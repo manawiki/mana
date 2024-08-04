@@ -96,7 +96,7 @@ export function List({
                children
             ) : (
                <Suspense fallback={<Loading />}>
-                  <Await resolve={list}>
+                  <Await resolve={list} errorElement={<Loading />}>
                      {(list) => (
                         <ListTable
                            viewType={viewType}
