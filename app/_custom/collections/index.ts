@@ -54,20 +54,6 @@ import { ServantRedirects } from "./servant-redirects";
 import { ServantSkills } from "./servant-skills";
 import { SummonEvents } from "./summon-events";
 
-export const CustomDefaultPriorities = {
-   servants: 90,
-   "craft-essences": 70,
-   "command-codes": 50,
-   materials: 30,
-};
-
-export const CustomSearchCollections = [
-   "servants",
-   "craft-essences",
-   "command-codes",
-   "materials",
-];
-
 export const CustomCollections = [
    Servants,
    ServantSkills,
@@ -125,3 +111,4 @@ export const CustomCollections = [
    _Targets,
    _Traits,
 ];
+

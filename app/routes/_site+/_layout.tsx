@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunctionArgs } from "@remix-run/react";
-import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import { Outlet, useLoaderData } from "@remix-run/react";
 import { ClientOnly } from "remix-utils/client-only";
 
-import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 
 import { ColumnOne } from "./_components/Column-1";
@@ -33,18 +32,10 @@ export async function loader({
 
 export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
-   const location = useLocation();
    const gaTag = site?.gaTagId;
    const adWebId = site?.adWebId;
 
-   const [, setSearchToggle] = useSearchToggleState();
-
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
-
-   useEffect(() => {
-      //Hide the search on path change
-      setSearchToggle(false);
-   }, [setSearchToggle, location]);
 
    return (
       <>

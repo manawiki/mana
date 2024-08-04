@@ -4,8 +4,7 @@ import {
    canCreatePostContent,
    canReadPostContent,
    canUpdateOrDeletePostContent,
-} from "./access";
-import { replaceVersionAuthor } from "../../hooks/replaceVersionAuthor";
+} from "./post-contents-access";
 import type { User } from "../../payload-types";
 import { isStaffFieldLevel } from "../users/users.access";
 
@@ -48,9 +47,6 @@ export const PostContents: CollectionConfig = {
          },
       },
    ],
-   hooks: {
-      beforeChange: [replaceVersionAuthor],
-   },
    versions: {
       drafts: {
          autosave: true,
