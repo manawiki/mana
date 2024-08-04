@@ -14,20 +14,21 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { list } = await fetchList({
+   const list = await fetchList({
+      params,
       request,
+      payload,
+      user,
       gql: {
          query: QUERY,
          variables: {},
       },
-      payload,
-      user,
    });
    return json({ list });
 }
 
 export default function ListPage() {
-   const { list } = useLoaderData<typeof loader>();
+   const list = useLoaderData<typeof loader>();
 
    return (
       <List>

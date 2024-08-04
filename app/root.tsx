@@ -8,16 +8,15 @@ import type {
    LoaderFunctionArgs,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
+import type { ShouldRevalidateFunctionArgs } from "@remix-run/react";
 import {
    Links,
    LiveReload,
    Meta,
    Outlet,
    Scripts,
-   ShouldRevalidateFunctionArgs,
    useLoaderData,
    useMatches,
-   useOutletContext,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
@@ -45,10 +44,6 @@ type ContextType = [
    setSearchToggle: Dispatch<SetStateAction<boolean>>,
 ];
 
-export function useSearchToggleState() {
-   return useOutletContext<ContextType>();
-}
-
 export const loader = async ({
    context: { user, payload },
    request,
@@ -67,6 +62,7 @@ export const loader = async ({
         })
       : undefined;
 
+   //@ts-ignore
    const following = userData?.sites?.map((site) => ({
       id: site?.id,
       icon: {

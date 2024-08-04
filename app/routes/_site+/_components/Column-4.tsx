@@ -3,23 +3,21 @@ import clsx from "clsx";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import { AdUnit } from "~/routes/_site+/_components/Ramp";
+import { LogoText } from "~/components/Logo";
+import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
+import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
+import { useTheme } from "~/utils/client-hints";
 
 import { Contributors } from "./Contributors";
-import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
-import { LogoText } from "~/components/Logo";
-import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { DarkModeToggle } from "../action+/theme-toggle";
-import { t } from "i18next";
-import { useTheme } from "~/utils/client-hints";
 
 export function ColumnFour() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
    const theme = useTheme();
 
    return (
-      <section className="relative laptop:z-50 laptop:block max-laptop:bg-2-sub">
+      <section className="relative laptop:z-50 laptop:block max-laptop:bg-2-sub max-laptop:border-t max-laptop:border-color">
          <div
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 no-scrollbar 
             h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px] justify-between"
