@@ -26,7 +26,7 @@ const adapter = s3Adapter({
 export default buildConfig({
    editor: slateEditor({}),
    db: mongooseAdapter({
-      url: `${process.env.DB_URI}/mana-prod?replicaSet=mana-west&tls=true&authSource=admin`,
+      url: `${process.env.DB_URI}`,
       transactionOptions: false, //disable mongo transactions
    }),
    cors: "*",
