@@ -29,11 +29,12 @@ export default buildConfig({
    editor: slateEditor({}),
    db: mongooseAdapter({
       //@ts-ignore
-      url: process.env.CUSTOM_DB_URI
-         ? process.env.CUSTOM_DB_URI
-         : process.env.DB_URI
-           ? process.env.DB_URI.replace(/\/[^/]*\?/, "/dummy?")
-           : undefined,
+      url:
+         process.env.CUSTOM_DB_URI ??
+         process.env.DB_UR?.replace(
+            /\/[^/]*\?/,
+            `/${process.env.CUSTOM_DB_NAME}?` ?? "/dummy?",
+         ),
       transactionOptions: false, //disable mongo transactions
    }),
    cors: "*",
