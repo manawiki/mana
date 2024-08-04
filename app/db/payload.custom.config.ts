@@ -28,10 +28,13 @@ const adapter = s3Adapter({
 export default buildConfig({
    editor: slateEditor({}),
    db: mongooseAdapter({
-      url: `${
+      //@ts-ignore
+      url:
          process.env.CUSTOM_DB_URI ??
-         `${process.env.DB_URI}/dummy?replicaSet=mana-west&tls=true&authSource=admin`
-      }`,
+         process.env.DB_URI?.replace(
+            /\/[^/]*\?/,
+            `/${process.env.CUSTOM_DB_NAME}?` ?? "/dummy?",
+         ),
       transactionOptions: false, //disable mongo transactions
    }),
    cors: "*",
