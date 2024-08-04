@@ -31,7 +31,7 @@ export default buildConfig({
       //@ts-ignore
       url:
          process.env.CUSTOM_DB_URI ??
-         process.env.DB_UR?.replace(
+         process.env.DB_URI?.replace(
             /\/[^/]*\?/,
             `/${process.env.CUSTOM_DB_NAME}?` ?? "/dummy?",
          ),
