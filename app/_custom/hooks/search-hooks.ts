@@ -54,7 +54,16 @@ export const afterChangeSearchSyncHook: CollectionAfterChangeHook = async ({
             domain ? domain : `${process.env.SITE_SLUG}.mana.wiki`
          }${entryRelativeURL}`;
 
-         const iconUrl = doc?.icon?.url;
+         //Due to the way Payload handles depth in relationships, we need to fetch the icon URL if it exists
+         const { url: iconUrl } = doc?.icon?.url
+            ? doc?.icon
+            : doc?.icon
+              ? await payload.findByID({
+                   collection: "images",
+                   id: doc?.icon,
+                   depth: 0,
+                })
+              : null;
 
          await typesensePrivateClient
             .collections("entries")
