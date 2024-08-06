@@ -38,6 +38,7 @@ export async function loader({
 export default function ListPage() {
    return (
       <List
+         defaultSort={[{ id: "name", desc: false }]}
          viewType="list"
          gridView={gridView}
          columns={columns}
@@ -93,7 +94,7 @@ const columns = [
                src={info.row.original.icon?.url}
                options="aspect_ratio=1:1&height=120&width=120"
             />
-            <span className="font-semibold space-y-1 group-hover:underline decoration-zinc-400 underline-offset-2">
+            <span className="font-bold space-y-0.5 group-hover:underline decoration-zinc-400 underline-offset-2">
                <span>{info.getValue()}</span>
                <ChargeBar value={info.row.original.pve?.energyDeltaCharge} />
             </span>
