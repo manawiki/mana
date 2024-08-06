@@ -125,7 +125,11 @@ export function ColumnFour() {
                         className="max-laptop:bg-3 flex-1 relative  shadow-sm shadow-1 max-laptop:min-h-[300px] laptop:min-h-[500px]
                       bg-white/50 dark:bg-bg3Dark/30 border-y border-color"
                      >
-                        <div className="absolute inset-0 overflow-auto divide-y divide-dotted divide-color">
+                        <div
+                           className="absolute inset-0 overflow-auto divide-y divide-dotted divide-color 
+                           dark:scrollbar-thumb-dark500 dark:scrollbar-track-bg3Dark pb-[50px]
+                           scrollbar-thumb-zinc-200 scrollbar-track-white scrollbar"
+                        >
                            {/* @ts-ignore */}
                            {site?.trendingPages?.map((row: any) => (
                               <Link

@@ -31,6 +31,7 @@ export function ListTable({
    filters,
    viewType,
    gridView,
+   defaultSort,
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[];
@@ -39,13 +40,15 @@ export function ListTable({
    viewType: "list" | "grid";
    filters?: TableFilters;
    gridView?: AccessorKeyColumnDef<any>;
+   defaultSort?: SortingState;
 }) {
    // Table state definitions
-   const [tabletData] = useState(() => [...data?.listData?.docs]);
+   const [tableData] = useState(() => [...data?.listData?.docs]);
+
    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
    const [globalFilter, setGlobalFilter] = useState("");
    const [viewMode, setViewMode] = useState(viewType ?? "list");
-   const [sorting, setSorting] = useState<SortingState>([]);
+   const [sorting, setSorting] = useState<SortingState>(defaultSort ?? []);
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
       columnViewability ?? {},
    );
@@ -61,7 +64,7 @@ export function ListTable({
          : columns;
 
    const table = useReactTable({
-      data: tabletData,
+      data: tableData,
       columns: updatedColumns,
       filterFns: {},
       state: {

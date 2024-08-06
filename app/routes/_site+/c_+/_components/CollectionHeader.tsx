@@ -95,12 +95,13 @@ export function CollectionHeader({
                                  <>
                                     <EntryEdit entry={entry} />
                                     <span className="h-4 w-[1px] bg-zinc-300 dark:bg-zinc-600 rounded" />
+
                                     <Button
                                        className="size-8 !p-0"
                                        color="violet"
                                        target="_blank"
                                        href={`/admin/collections/${collection.slug}/${entry.id}`}
-                                       onClick={(e: any) => {
+                                       onMouseOver={(e: any) => {
                                           e.target.port = 4000;
                                        }}
                                     >

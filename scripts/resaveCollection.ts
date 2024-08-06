@@ -41,6 +41,7 @@ const resaveCollection = async () => {
                   await payload.update({
                      collection: collectionSlug,
                      id,
+                     depth: 0,
                      data: {
                         updatedAt: new Date(),
                         // slug: manaSlug(result.name),
