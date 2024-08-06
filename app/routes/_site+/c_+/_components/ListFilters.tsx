@@ -274,7 +274,7 @@ export function ListFilters({
                         target="_blank"
                         className="text-sm flex-none h-9"
                         href={`/admin/collections/${collection?.slug}/create`}
-                        onClick={(e: any) => {
+                        onMouseOver={(e: any) => {
                            e.target.port = 4000;
                         }}
                      >

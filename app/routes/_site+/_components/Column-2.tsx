@@ -1,15 +1,15 @@
+import { useEffect, useState } from "react";
+
 import { useLoaderData, useLocation } from "@remix-run/react";
 
+import { Icon } from "~/components/Icon";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
-import { SideMenu } from "./sidemenu/SideMenu";
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
-import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
-import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
 import { PrimaryMenu } from "./PrimaryMenu";
-import { Icon } from "~/components/Icon";
-import { useEffect, useState } from "react";
-import { Button } from "~/components/Button";
+import { SideMenu } from "./sidemenu/SideMenu";
+import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
 
 export function ColumnTwo({
    setPrimaryMenuOpen,
