@@ -1,7 +1,10 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 
-import type { ColumnFiltersState } from "@tanstack/react-table";
+import type {
+   AccessorKeyColumnDef,
+   ColumnFiltersState,
+} from "@tanstack/react-table";
 import clsx from "clsx";
 
 import { Avatar } from "~/components/Avatar";
@@ -21,6 +24,7 @@ export function ListFilters({
    columnFilters,
    setColumnFilters,
    viewType,
+   gridView,
    setViewMode,
 }: {
    collection: Collection;
@@ -29,6 +33,7 @@ export function ListFilters({
    setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;
    filters?: TableFilters;
    viewType?: "list" | "grid";
+   gridView?: AccessorKeyColumnDef<any>;
    setViewMode: Dispatch<SetStateAction<"list" | "grid">>;
 }) {
    const [filterMenuToggle, setFilterToggle] = useState(false);
@@ -60,16 +65,19 @@ export function ListFilters({
             >
                <Icon name="rows" size={15} />
             </button>
-            <button
-               onClick={() => setViewMode("grid")}
-               className={clsx(
-                  viewType == "grid" &&
-                     "bg-blue-50 dark:bg-gray-800 text-blue-500 dark:text-blue-500",
-                  "px-3 text-1",
-               )}
-            >
-               <Icon name="layout-grid" size={15} />
-            </button>
+            {/* Only show this button if gridView exists */}
+            {gridView && (
+               <button
+                  onClick={() => setViewMode("grid")}
+                  className={clsx(
+                     viewType == "grid" &&
+                        "bg-blue-50 dark:bg-gray-800 text-blue-500 dark:text-blue-500",
+                     "px-3 text-1",
+                  )}
+               >
+                  <Icon name="layout-grid" size={15} />
+               </button>
+            )}
          </div>
          <div
             className="relative flex items-center gap-2 w-full pl-2 pr-0.5 border bg-zinc-50 border-zinc-300

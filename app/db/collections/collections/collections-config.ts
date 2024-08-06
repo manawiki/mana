@@ -63,6 +63,22 @@ export const Collections: CollectionConfig = {
          },
       },
       {
+         name: "defaultViewType",
+         type: "select",
+         required: true,
+         defaultValue: "list",
+         options: [
+            {
+               label: "List",
+               value: "list",
+            },
+            {
+               label: "Grid",
+               value: "grid",
+            },
+         ],
+      },
+      {
          name: "hiddenCollection",
          type: "checkbox",
          label: "Hide Collection",
