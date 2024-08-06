@@ -47,14 +47,14 @@ export function List({
    columns,
    columnViewability,
    filters,
-   viewType,
+   defaultViewType,
    gridView,
    defaultSort,
 }: {
    children?: ReactNode;
    columns: AccessorKeyColumnDefBase<any>[];
    filters?: TableFilters;
-   viewType: "list" | "grid";
+   defaultViewType?: "list" | "grid";
    gridView?: AccessorKeyColumnDef<any>;
    columnViewability?: VisibilityState;
    defaultSort?: SortingState;
@@ -103,7 +103,7 @@ export function List({
                      {(list) => (
                         <ListTable
                            defaultSort={defaultSort}
-                           viewType={viewType}
+                           defaultViewType={defaultViewType}
                            key={collectionId}
                            data={list}
                            columns={columns}

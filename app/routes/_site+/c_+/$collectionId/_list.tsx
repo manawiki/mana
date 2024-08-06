@@ -104,7 +104,7 @@ export default function CollectionList() {
          key={collectionId}
          columns={columns}
          gridView={gridView}
-         viewType="list"
+         defaultViewType="list"
       />
    );
 }

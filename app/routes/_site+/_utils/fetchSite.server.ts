@@ -141,6 +141,7 @@ const QUERY = gql`
             id
             name
             slug
+
             sections {
                id
                slug
@@ -156,6 +157,7 @@ const QUERY = gql`
                   type
                }
             }
+            defaultViewType
             customDatabase
             customEntryTemplate
             customListTemplate
