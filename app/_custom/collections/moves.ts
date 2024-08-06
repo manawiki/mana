@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+import { movesBeforeChangeHook } from "../hooks/move-hooks";
 import {
    afterDeleteSearchSyncHook,
    afterChangeSearchSyncHook,
@@ -22,6 +23,7 @@ export const Moves: CollectionConfig = {
    hooks: {
       afterDelete: [afterDeleteSearchSyncHook],
       afterChange: [afterChangeSearchSyncHook],
+      beforeChange: [movesBeforeChangeHook],
    },
    fields: [
       {
@@ -48,6 +50,12 @@ export const Moves: CollectionConfig = {
          hasMany: false,
       },
       {
+         name: "pokemonWithMove",
+         type: "relationship",
+         relationTo: "pokemon",
+         hasMany: true,
+      },
+      {
          name: "category",
          type: "select",
          required: true,
@@ -72,7 +80,20 @@ export const Moves: CollectionConfig = {
                type: "number",
             },
             {
-               name: "duration", //Move Duration Ms
+               name: "duration",
+               label: "Duration (Seconds)", //Move Duration Ms
+               type: "number",
+            },
+            {
+               name: "damagePerSecond",
+               type: "number",
+            },
+            {
+               name: "damagePerEnergy",
+               type: "number",
+            },
+            {
+               name: "energyPerSecond",
                type: "number",
             },
             {
@@ -85,6 +106,10 @@ export const Moves: CollectionConfig = {
             },
             {
                name: "energyDeltaFast", //Energy Delta Quick
+               type: "number",
+            },
+            {
+               name: "damagePerEnergyDamagePerSecond",
                type: "number",
             },
             {
@@ -122,6 +147,10 @@ export const Moves: CollectionConfig = {
          fields: [
             {
                name: "power", //PvP Power - Fast
+               type: "number",
+            },
+            {
+               name: "damagePerEnergy",
                type: "number",
             },
             {

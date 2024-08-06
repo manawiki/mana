@@ -1,6 +1,7 @@
 import type { CollectionConfig, FieldHook } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
+import { pokemonAfterChangeHook } from "../hooks/pokemon-hooks";
 import {
    afterDeleteSearchSyncHook,
    afterChangeSearchSyncHook,
@@ -42,7 +43,7 @@ export const Pokemon: CollectionConfig = {
    },
    hooks: {
       afterDelete: [afterDeleteSearchSyncHook],
-      afterChange: [afterChangeSearchSyncHook],
+      afterChange: [pokemonAfterChangeHook, afterChangeSearchSyncHook],
    },
    access: {
       create: isStaff,
