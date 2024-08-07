@@ -10,6 +10,10 @@ export const movesBeforeChangeHook: CollectionBeforeChangeHook = async ({
 
       const damagePerSecond = (pvePower * (1 / duration)).toFixed(2);
 
+      const dodgeWindow = (
+         data?.pve?.damageWindowEnd - data?.pve?.damageWindowStart
+      ).toFixed(2);
+
       const energyPerSecond =
          data.category == "fast"
             ? (
@@ -48,6 +52,9 @@ export const movesBeforeChangeHook: CollectionBeforeChangeHook = async ({
             ...data.pve,
             ...(damagePerSecond && {
                damagePerSecond,
+            }),
+            ...(dodgeWindow && {
+               dodgeWindow,
             }),
             ...(damagePerEnergyDamagePerSecond && {
                damagePerEnergyDamagePerSecond,

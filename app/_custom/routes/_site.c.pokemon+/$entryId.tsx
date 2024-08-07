@@ -92,11 +92,17 @@ const QUERY = gql`
                category
                pve {
                   power
+                  duration
+                  dodgeWindow
+                  damagePerEnergy
+                  damagePerSecond
+                  energyPerSecond
                }
                icon {
                   url
                }
                type {
+                  name
                   boostedWeather {
                      name
                      icon {
@@ -115,12 +121,18 @@ const QUERY = gql`
                category
                pve {
                   power
+                  duration
+                  dodgeWindow
+                  damagePerEnergy
+                  damagePerSecond
+                  energyPerSecond
                   energyDeltaCharge
                }
                icon {
                   url
                }
                type {
+                  name
                   boostedWeather {
                      name
                      icon {

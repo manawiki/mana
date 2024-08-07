@@ -98,6 +98,13 @@ const QUERY = gql`
             baseAttack
             slug
             level50CP
+            type {
+               name
+               slug
+               icon {
+                  url
+               }
+            }
             icon {
                url
             }

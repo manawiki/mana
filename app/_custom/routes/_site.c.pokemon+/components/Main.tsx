@@ -12,6 +12,11 @@ export function Main({ data: pokemon }: { data: PokemonType }) {
    const images = useMemo(
       () => [
          {
+            id: pokemon?.icon?.id,
+            name: "Default",
+            imageUrl: pokemon?.icon?.url,
+         },
+         {
             id: pokemon?.images?.goImage?.id,
             name: "GO",
             imageUrl: pokemon?.images?.goImage?.url,
@@ -21,11 +26,7 @@ export function Main({ data: pokemon }: { data: PokemonType }) {
             name: "GO Shiny",
             imageUrl: pokemon?.images?.goShinyImage?.url,
          },
-         {
-            id: pokemon?.icon?.id,
-            name: "Sugimori",
-            imageUrl: pokemon?.icon?.url,
-         },
+
          {
             id: pokemon?.images?.florkImage?.id,
             name: "Flork",
@@ -74,13 +75,12 @@ export function Main({ data: pokemon }: { data: PokemonType }) {
                      ))}
                   </div>
                </div>
-               <div className="flex items-center h-60 justify-center">
+               <div className="flex items-center justify-center p-3">
                   <Image
                      height={240}
                      width={240}
-                     className="object-contain"
                      url={selectedImage?.imageUrl}
-                     options="height=240"
+                     options="height=400"
                      alt={selectedImage?.name}
                   />
                </div>

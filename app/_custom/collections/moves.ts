@@ -105,6 +105,10 @@ export const Moves: CollectionConfig = {
                type: "number",
             },
             {
+               name: "dodgeWindow",
+               type: "number",
+            },
+            {
                name: "energyDeltaFast", //Energy Delta Quick
                type: "number",
             },
