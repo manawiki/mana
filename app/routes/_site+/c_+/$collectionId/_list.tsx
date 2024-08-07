@@ -99,12 +99,5 @@ export default function CollectionList() {
          ),
       }),
    ];
-   return (
-      <List
-         key={collectionId}
-         columns={columns}
-         gridView={gridView}
-         defaultViewType="list"
-      />
-   );
+   return <List key={collectionId} columns={columns} gridView={gridView} />;
 }

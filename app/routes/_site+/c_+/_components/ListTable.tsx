@@ -96,7 +96,6 @@ export function ListTable({
             setColumnFilters={setColumnFilters}
             setGlobalFilter={setGlobalFilter}
             viewType={viewMode}
-            gridView={gridView}
             setViewMode={setViewMode}
          />
          {viewMode === "list" ? (
