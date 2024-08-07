@@ -122,7 +122,7 @@ export function ColumnFour() {
                         </div>
                      </div>
                      <section
-                        className="max-laptop:bg-3 flex-1 relative  shadow-sm shadow-1 max-laptop:min-h-[300px] laptop:min-h-[500px]
+                        className="max-laptop:bg-3 flex-1 relative  shadow-sm shadow-1 min-h-[480px]
                       bg-white/50 dark:bg-bg3Dark/30 border-y border-color"
                      >
                         <div
