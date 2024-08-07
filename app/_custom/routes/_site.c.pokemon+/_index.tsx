@@ -37,7 +37,6 @@ export async function loader({
 export default function ListPage() {
    return (
       <List
-         viewType="list"
          gridView={gridView}
          columns={columns}
          columnViewability={{ type: false, generation: false }}

@@ -39,7 +39,6 @@ export default function ListPage() {
    return (
       <List
          defaultSort={[{ id: "name", desc: false }]}
-         viewType="list"
          gridView={gridView}
          columns={columns}
          columnViewability={{ type: false }}
@@ -54,7 +53,7 @@ const gridView = columnHelper.accessor("name", {
    filterFn: fuzzyFilter,
    cell: (info) => (
       <Link
-         className="block relative"
+         className="relative flex flex-col items-center gap-1 p-2 group"
          prefetch="intent"
          to={`/c/pokemon/${info.row.original.slug}`}
       >

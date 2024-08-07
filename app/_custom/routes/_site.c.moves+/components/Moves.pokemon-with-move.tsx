@@ -53,7 +53,6 @@ export function PokemonWithMove({ data: move }: { data: Move }) {
    return (
       <>
          <ListTable
-            viewType="list"
             defaultSort={[{ id: "baseAttack", desc: true }]}
             data={{ listData: { docs: move.pokemonWithMove } }}
             //@ts-ignore

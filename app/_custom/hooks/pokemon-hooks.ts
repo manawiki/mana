@@ -36,7 +36,9 @@ export const pokemonAfterChangeHook: CollectionAfterChangeHook = async ({
                pokemonWithMove: finalPokemonWithMove,
             },
          });
+         //@ts-ignore
       }
+      console.log(doc.name);
       return doc;
    } catch (err: unknown) {
       payload.logger.error(`${err}`);
