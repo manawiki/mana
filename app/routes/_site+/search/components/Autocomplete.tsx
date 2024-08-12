@@ -12,6 +12,7 @@ import Typesense from "typesense";
 import { SearchResponseAdapter } from "typesense-instantsearch-adapter/lib/SearchResponseAdapter";
 
 import { Image } from "~/components/Image";
+import { settings } from "~/config";
 import type { Site } from "~/db/payload-types";
 
 type SetInstantSearchUiStateOptions = {
@@ -25,10 +26,11 @@ type AutocompleteProps = Partial<AutocompleteOptions<BaseItem>> & {
 
 const searchOnlyTypesenseClient = () =>
    new Typesense.Client({
-      apiKey: "9QPWKRfSIdts42aQUyeqyNT1ct0levtm", // Be sure to use an API key that only allows search operations
+      apiKey:
+         settings?.typesenseSearchOnlyKey ?? "RHiNS3SKaBlvYQOcp9zi7qUOBJbhxJEo",
       nodes: [
          {
-            host: "tif2s7d9m8bqwypzp-1.a1.typesense.net",
+            host: settings.typesenseHost ?? "search.mana.wiki",
             port: 443,
             protocol: "https",
          },
@@ -184,7 +186,6 @@ export function Autocomplete({
                         search_response_adapter(result).adapt().hits,
                   );
                });
-
             return [
                {
                   sourceId: "search",

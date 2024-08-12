@@ -95,7 +95,7 @@ export const loader = async ({
 };
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => [
-   { title: settings.title },
+   { title: settings?.title ?? "Mana - The all-in-one wiki builder" },
    { charSet: "utf-8" },
 ];
 

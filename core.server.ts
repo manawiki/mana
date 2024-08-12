@@ -64,8 +64,8 @@ async function startCore() {
          ? {
               email: {
                  transport,
-                 fromName: settings.fromName,
-                 fromAddress: settings.fromEmail,
+                 fromName: settings?.fromName ?? "No Reply - Mana Wiki",
+                 fromAddress: settings?.fromEmail ?? "dev@mana.wiki",
               },
            }
          : {
