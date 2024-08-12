@@ -27,6 +27,7 @@
       "seed:core": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts ts-node -T app/_custom/seed/index.ts",
       "seed:custom": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/seed/index.ts",
       "resave": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T ./scripts/resaveCollection",
+      "typesense": "cross-env ts-node -T ./scripts/typesenseActions",
       "postinstall": "patch-package"
    },
    "dependencies": {
