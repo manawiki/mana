@@ -15,8 +15,7 @@ const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
       //@ts-ignore
-      mongoURL:
-         `${process.env.MONGODB_URI}/${process.env.CUSTOM_DB_NAME}` as any,
+      mongoURL: `${process.env.CUSTOM_DB_URI}` as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -29,9 +28,9 @@ start();
 // const data = require("./pokemon.json");
 
 async function mapper() {
-   const requests = Array.from({ length: 15 }, (_, i) =>
+   const requests = Array.from({ length: 156 }, (_, i) =>
       fetch(
-         `https://gamepress.gg/pokemongo/pokemongo-export-full?page=${i}&_format=json`,
+         `https://pogo.gamepress.gg/pokemongo-export-full?page=${i}&_format=json`,
       ).then((response) => response.json()),
    );
 
@@ -72,7 +71,7 @@ async function mapper() {
                const mainImage =
                   row.field_pokemon_image &&
                   (await fetch(
-                     `https://gamepress.gg/${row.field_pokemon_image}`,
+                     `https://pogo.gamepress.gg/${row.field_pokemon_image}`,
                   )
                      .then((response) => response.blob())
                      .then(async (blob) => {
@@ -107,7 +106,9 @@ async function mapper() {
 
                const florkImage =
                   row.field_flork_image &&
-                  (await fetch(`https://gamepress.gg/${row.field_flork_image}`)
+                  (await fetch(
+                     `https://pogo.gamepress.gg/${row.field_flork_image}`,
+                  )
                      .then((response) => response.blob())
                      .then(async (blob) => {
                         const arrayBuffer = await blob.arrayBuffer();
@@ -142,7 +143,7 @@ async function mapper() {
                const goImage =
                   row.field_pokemon_go_image &&
                   (await fetch(
-                     `https://gamepress.gg/${row.field_pokemon_go_image}`,
+                     `https://pogo.gamepress.gg/${row.field_pokemon_go_image}`,
                   )
                      .then((response) => response.blob())
                      .then(async (blob) => {
@@ -178,7 +179,7 @@ async function mapper() {
                const goShinyImage =
                   row.field_pokemon_go_shiny_image &&
                   (await fetch(
-                     `https://gamepress.gg/${row.field_pokemon_go_shiny_image}`,
+                     `https://pogo.gamepress.gg/${row.field_pokemon_go_shiny_image}`,
                   )
                      .then((response) => response.blob())
                      .then(async (blob) => {
@@ -214,7 +215,7 @@ async function mapper() {
                const shuffleImage =
                   row.field_shuffle_sprites &&
                   (await fetch(
-                     `https://gamepress.gg/${row.field_shuffle_sprites}`,
+                     `https://pogo.gamepress.gg/${row.field_shuffle_sprites}`,
                   )
                      .then((response) => response.blob())
                      .then(async (blob) => {

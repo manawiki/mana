@@ -13,8 +13,7 @@ const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
       //@ts-ignore
-      mongoURL:
-         `${process.env.MONGODB_URI}/${process.env.CUSTOM_DB_NAME}` as any,
+      mongoURL: `${process.env.CUSTOM_DB_URI}` as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;

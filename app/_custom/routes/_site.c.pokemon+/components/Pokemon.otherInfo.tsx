@@ -1,4 +1,7 @@
-import type { Pokemon as PokemonType } from "~/db/payload-custom-types";
+import type {
+   PokemonFamily,
+   Pokemon as PokemonType,
+} from "~/db/payload-custom-types";
 
 import { Label } from "./Label";
 import {
@@ -8,7 +11,13 @@ import {
    InfoBlock_Row,
 } from "../../../classes";
 
-export function OtherInfo({ data: pokemon }: { data: PokemonType }) {
+export function OtherInfo({
+   data,
+}: {
+   data: { pokemon: PokemonType; family: PokemonFamily };
+}) {
+   const pokemon = data.pokemon;
+
    return (
       <>
          <div className={InfoBlock_Container}>

@@ -3,15 +3,19 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
 
-import type { Pokemon as PokemonType } from "~/db/payload-custom-types";
+import type {
+   PokemonFamily as PokemonFamilyType,
+   Pokemon as PokemonType,
+} from "~/db/payload-custom-types";
 import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
 import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
 import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
 
-import { Main } from "./components/Main";
-import { Moves } from "./components/Moves";
-import { OtherInfo } from "./components/OtherInfo";
-import { Ratings } from "./components/Ratings";
+import { PokemonFamily } from "./components/Pokemon.family";
+import { Main } from "./components/Pokemon.main";
+import { Moves } from "./components/Pokemon.moves";
+import { OtherInfo } from "./components/Pokemon.otherInfo";
+import { Ratings } from "./components/Pokemon.ratings";
 import { TypeChart } from "./components/TypeChart";
 
 export { entryMeta as meta };
@@ -28,6 +32,10 @@ export async function loader({
       user,
       gql: {
          query: QUERY,
+         //Need to familyEntryID as its own variable sine the query is expecting it as a JSON object.
+         variables: {
+            familyEntryId: params.entryId,
+         },
       },
    });
 
@@ -38,6 +46,7 @@ export async function loader({
 
 const SECTIONS = {
    main: Main,
+   family: PokemonFamily,
    ratings: Ratings,
    moves: Moves,
    "type-chart": TypeChart,
@@ -47,13 +56,16 @@ const SECTIONS = {
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
 
-   const pokemon = entry.data.pokemon as PokemonType;
+   const data = {
+      pokemon: entry.data.pokemon as PokemonType,
+      family: entry.data.family.docs[0] as PokemonFamilyType,
+   };
 
-   return <Entry customComponents={SECTIONS} customData={pokemon} />;
+   return <Entry customComponents={SECTIONS} customData={data} />;
 }
 
 const QUERY = gql`
-   query ($entryId: String!) {
+   query ($entryId: String!, $familyEntryId: JSON) {
       pokemon: Pokemon(id: $entryId) {
          id
          slug
@@ -168,6 +180,63 @@ const QUERY = gql`
             shuffleImage {
                id
                url
+            }
+         }
+      }
+      family: PokemonFamilies(
+         where: { pokemonInFamily: { equals: $familyEntryId } }
+      ) {
+         docs {
+            name
+            basePokemon {
+               id
+               name
+               slug
+               icon {
+                  url
+               }
+            }
+            stage2Pokemon {
+               evolutionRequirements {
+                  id
+                  name
+               }
+               pokemon {
+                  id
+                  name
+                  slug
+                  icon {
+                     url
+                  }
+               }
+            }
+            stage3Pokemon {
+               evolutionRequirements {
+                  id
+                  name
+               }
+               pokemon {
+                  id
+                  name
+                  slug
+                  icon {
+                     url
+                  }
+               }
+            }
+            stage4Pokemon {
+               evolutionRequirements {
+                  id
+                  name
+               }
+               pokemon {
+                  id
+                  name
+                  slug
+                  icon {
+                     url
+                  }
+               }
             }
          }
       }

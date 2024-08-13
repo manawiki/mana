@@ -3,11 +3,20 @@ import { Link } from "@remix-run/react";
 import { Badge } from "~/components/Badge";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import type { Pokemon as PokemonType } from "~/db/payload-custom-types";
+import type {
+   PokemonFamily,
+   Pokemon as PokemonType,
+} from "~/db/payload-custom-types";
 
 import { RatingsLabel } from "./RatingsLabel";
 
-export function Ratings({ data: pokemon }: { data: PokemonType }) {
+export function Ratings({
+   data,
+}: {
+   data: { pokemon: PokemonType; family: PokemonFamily };
+}) {
+   const pokemon = data.pokemon;
+
    return (
       <>
          <div className="space-y-3">

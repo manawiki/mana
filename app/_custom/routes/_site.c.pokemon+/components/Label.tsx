@@ -5,7 +5,7 @@ export function Label({
    value,
 }: {
    fieldName: string;
-   value: string | undefined;
+   value: string | undefined | null;
 }) {
    //@ts-ignore
    const getLabel = Pokemon?.fields

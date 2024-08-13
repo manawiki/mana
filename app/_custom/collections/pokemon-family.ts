@@ -2,8 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
 
-export const EvolutionRequirements: CollectionConfig = {
+export const PokemonFamilies: CollectionConfig = {
    slug: "pokemon-families",
+   labels: { singular: "Family", plural: "Families" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -22,6 +23,12 @@ export const EvolutionRequirements: CollectionConfig = {
       {
          name: "name",
          type: "text",
+      },
+      {
+         name: "pokemonInFamily",
+         type: "relationship",
+         relationTo: "pokemon",
+         hasMany: true,
       },
       {
          name: "basePokemon",

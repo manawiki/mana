@@ -12,10 +12,17 @@ import {
    TableRow,
 } from "~/components/Table";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
-import type { Pokemon as PokemonType } from "~/db/payload-custom-types";
+import type {
+   PokemonFamily,
+   Pokemon as PokemonType,
+} from "~/db/payload-custom-types";
 
-export function TypeChart({ data: pokemon }: { data: PokemonType }) {
-   const types = pokemon.type;
+export function TypeChart({
+   data,
+}: {
+   data: { pokemon: PokemonType; family: PokemonFamily };
+}) {
+   const types = data.pokemon.type;
 
    if (types && types.length == 0) return undefined;
 

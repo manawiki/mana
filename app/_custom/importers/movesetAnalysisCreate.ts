@@ -19,7 +19,7 @@ const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
       //@ts-ignore
-      mongoURL: `${process.env.MONGODB_URI}/mana-prod` as any,
+      mongoURL: `${process.env.DB_URI}` as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -34,7 +34,7 @@ start();
 // 157 rows
 
 async function mapper() {
-   const requests = Array.from({ length: 10 }, (_, i) =>
+   const requests = Array.from({ length: 156 }, (_, i) =>
       fetch(
          `https://pogo.gamepress.gg/pokemongo-export-full?page=${i}&_format=json`,
       ).then((response) => response.json()),
