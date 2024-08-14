@@ -74,20 +74,20 @@ export function EditorBlocks({
          return (
             <h2
                id={id}
-               className="dark:text-zinc-100 mt-8 mb-3 pl-3.5 leading-7 dark:bg-dark400 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200/70
-               font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-700"
+               className="dark:text-zinc-100 mt-8 mb-3 pl-3.5 leading-7 dark:bg-dark400 bg-zinc-100 block shadow-sm dark:shadow-zinc-800/70 border-zinc-300
+      font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-600"
                {...attributes}
             >
                <span className="z-10 relative">{children}</span>
                <span
                   contentEditable={false}
-                  className="h-full inline-flex top-0 w-1.5 dark:bg-zinc-600/30 bg-zinc-200/70 absolute left-0 z-10"
+                  className="h-full inline-flex top-0 w-1.5 dark:bg-zinc-600 bg-zinc-200 absolute left-0 z-10"
                />
                <div
                   contentEditable={false}
                   className="pattern-dots absolute left-0
                   top-0 z-0 h-full
-                  w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
+                  w-full pattern-bg-white pattern-zinc-600 pattern-opacity-10 
                   pattern-size-1 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
                />
             </h2>
