@@ -83,7 +83,11 @@ export function TableOfContents({
                                  bg-zinc-200 dark:bg-dark450 rounded-r-sm dark:group-hover:bg-dark500"
                                       />
                                       <Link
-                                         to={`?section=${subSection?.slug}#${section?.slug}`}
+                                         to={
+                                            section.viewType == "rows"
+                                               ? `#${subSection?.slug}`
+                                               : `?section=${subSection?.slug}#${section?.slug}`
+                                         }
                                          className="font-semibold text-sm rounded-lg pl-2.5 mx-3 dark:hover:bg-dark400 hover:bg-zinc-100 text-1 w-full py-1 block"
                                       >
                                          {subSection.name}

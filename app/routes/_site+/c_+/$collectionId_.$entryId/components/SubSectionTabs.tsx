@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 
-import { Tab } from "@headlessui/react";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { useSearchParams } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import clsx from "clsx";
@@ -68,17 +68,17 @@ export function SubSectionTabs({
          <div
             data-section
             id={section?.slug ?? ""}
-            className="scroll-mt-32 laptop:scroll-mt-[126px]"
+            className="scroll-mt-32 laptop:scroll-mt-20"
          >
             <SectionTitle section={section} />
             <>
                {viewType == "tabs" && (
                   <div className="shadow-sm dark:shadow-zinc-800/60 bg-clip-padding border-y tablet:border border-color-sub tablet:rounded-xl max-w-[754px] mx-auto max-tablet:-mx-3">
-                     <Tab.Group
+                     <TabGroup
                         selectedIndex={selectedIndex}
                         onChange={setSelectedIndex}
                      >
-                        <Tab.List
+                        <TabList
                            className="relative flex bg-zinc-50 dark:bg-dark350 scrollbar 
                             dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
                             scrollbar-thumb-zinc-300 scrollbar-track-zinc-100
@@ -106,27 +106,31 @@ export function SubSectionTabs({
                                  </Tab>
                               );
                            })}
-                        </Tab.List>
-                        <Tab.Panels className="p-3">
+                        </TabList>
+                        <TabPanels className="p-3">
                            {section?.subSections?.map((subSection) => (
-                              <Tab.Panel key={subSection.id} unmount={false}>
+                              <TabPanel key={subSection.id} unmount={false}>
                                  <SubSection
                                     customData={customData}
                                     //@ts-ignore
                                     subSection={subSection}
                                     customComponents={customComponents}
                                  />
-                              </Tab.Panel>
+                              </TabPanel>
                            ))}
-                        </Tab.Panels>
-                     </Tab.Group>
+                        </TabPanels>
+                     </TabGroup>
                   </div>
                )}
                {viewType == "rows" && (
                   <div className="space-y-6">
                      {tabs?.map((section) => {
                         return (
-                           <div key={section.id}>
+                           <div
+                              id={section?.slug ?? ""}
+                              className="scroll-mt-32 laptop:scroll-mt-20"
+                              key={section.id}
+                           >
                               {section.showTitle && (
                                  <H2Plain
                                     text={section?.name}
