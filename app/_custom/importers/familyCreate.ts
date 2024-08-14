@@ -28,13 +28,15 @@ async function mapper() {
       `https://pogo.gamepress.gg/family-export?_format=json`,
    ).then((response) => response.json());
 
-   const familyRequests = Array.from({ length: 1 }, (_, i) =>
+   const familyRequests = Array.from({ length: 52 }, (_, i) =>
       fetch(
          `https://pogo.gamepress.gg/families-feed?page=${i}&_format=json`,
       ).then((response) => response.json()),
    );
 
    const families = await Promise.all(familyRequests);
+
+   console.log(families.length, "families");
 
    try {
       await Promise.all(
@@ -142,7 +144,7 @@ async function mapper() {
                   data: {
                      id: manaSlug(row?.title),
                      pokemonInFamily: [
-                        manaSlug(row?.base),
+                        ...(row?.base ? manaSlug(row?.base) : []),
                         ...(row.stage_2.length > 0
                            ? row.stage_2.split(",").map((row: any) => {
                                 return manaSlug(row);

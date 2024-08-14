@@ -58,7 +58,7 @@ export default function EntryPage() {
 
    const data = {
       pokemon: entry.data.pokemon as PokemonType,
-      family: entry.data.family.docs[0] as PokemonFamilyType,
+      family: entry?.data?.family?.docs[0] as PokemonFamilyType,
    };
 
    return <Entry customComponents={SECTIONS} customData={data} />;
