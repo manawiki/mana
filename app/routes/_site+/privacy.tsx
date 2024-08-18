@@ -1,6 +1,8 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
 import { Text, TextLink } from "~/components/Text";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 export const meta: MetaFunction = () => {
    return [
@@ -14,7 +16,18 @@ export const handle = {
    i18n: "auth",
 };
 
+export async function loader({ request }: LoaderFunctionArgs) {
+   const hostname = new URL(request.url).hostname;
+
+   let domain = hostname.split(".").slice(-2).join(".");
+
+   return { domain };
+}
+
 export default function PrivacyPolicy() {
+   const { domain } = useLoaderData<typeof loader>();
+   const { site } = useSiteLoaderData();
+
    return (
       <>
          <div className="relative z-20 mx-auto pt-24 laptop:pt-8 max-w-[680px] max-laptop:px-4">
@@ -23,28 +36,27 @@ export default function PrivacyPolicy() {
             </h1>
             <div className="pb-10">
                <Text className="pb-4">
-                  Mana is committed to maintaining robust privacy protections
-                  for its users. Our Privacy Policy (“Privacy Policy”) is
-                  designed to help you understand how we collect, use and
-                  safeguard the information you provide to us and to assist you
-                  in making informed decisions when using our Service.
+                  {site.name} is committed to maintaining robust privacy
+                  protections for its users. Our Privacy Policy (“Privacy
+                  Policy”) is designed to help you understand how we collect,
+                  use and safeguard the information you provide to us and to
+                  assist you in making informed decisions when using our
+                  Service.
                </Text>
                <Text className="pb-4">
-                  For purposes of this Agreement, “Site” refers to the mana.wiki
+                  For purposes of this Agreement, “Site” refers to the {domain}
                   website, which can be accessed at{" "}
-                  <TextLink href="https://mana.wiki">
-                     https://mana.wiki
-                  </TextLink>{" "}
-                  or through our mobile application. “Service” refers to
-                  services accessed via this website.
+                  <TextLink href={`https://${domain}`}>{domain}</TextLink> or
+                  through our mobile application. “Service” refers to services
+                  accessed via this website.
                </Text>
                <Text className="pb-4">
-                  The terms “we,” “us,” and “our” refer to Mana. “You” refers to
-                  you, as a user of our Site or our Service. By accessing our
-                  Site or our Service, you accept our Privacy Policy and Terms
-                  of Use and you consent to our collection, storage, use and
-                  disclosure of your Personal Information as described in this
-                  Privacy Policy.
+                  The terms “we,” “us,” and “our” refer to {domain}. “You”
+                  refers to you, as a user of our Site or our Service. By
+                  accessing our Site or our Service, you accept our Privacy
+                  Policy and Terms of Use and you consent to our collection,
+                  storage, use and disclosure of your Personal Information as
+                  described in this Privacy Policy.
                </Text>
                <section className="py-4">
                   <Text className="pb-4 font-bold">
@@ -118,7 +130,7 @@ export default function PrivacyPolicy() {
                         of 13 without the consent of a parent or guardian, we
                         will delete that information as soon as possible. If you
                         believe we have collected such information, please
-                        contact us at info@mana.wiki
+                        contact us at info@{domain}.
                      </Text>
                   </div>
                </section>
@@ -259,21 +271,24 @@ export default function PrivacyPolicy() {
                      the Site and this privacy page for updates.
                   </Text>
                </section>
-               <section className="py-4">
-                  <Text className="pb-4 font-bold">VII. ADVERTISING</Text>
-                  <Text className="pb-4">
-                     All or partial advertising on this Website or App is
-                     managed by Playwire LLC. If Playwire publisher advertising
-                     services are used, Playwire LLC may collect and use certain
-                     aggregated and anonymized data for advertising purposes. To
-                     learn more about the types of data collected, how data is
-                     used and your choices as a user, please visit{" "}
-                     <TextLink href="https://www.playwire.com/privacy-policy">
-                        https://www.playwire.com/privacy-policy
-                     </TextLink>
-                     .
-                  </Text>
-               </section>
+               {site?.enableAds && (
+                  <section className="py-4">
+                     <Text className="pb-4 font-bold">VII. ADVERTISING</Text>
+                     <Text className="pb-4">
+                        All or partial advertising on this Website or App is
+                        managed by Playwire LLC. If Playwire publisher
+                        advertising services are used, Playwire LLC may collect
+                        and use certain aggregated and anonymized data for
+                        advertising purposes. To learn more about the types of
+                        data collected, how data is used and your choices as a
+                        user, please visit{" "}
+                        <TextLink href="https://www.playwire.com/privacy-policy">
+                           https://www.playwire.com/privacy-policy
+                        </TextLink>
+                        .
+                     </Text>
+                  </section>
+               )}
             </div>
          </div>
       </>
