@@ -28,7 +28,12 @@ function AboutSection({
    hasTrending: boolean;
 }) {
    return (
-      <div className="relative z-20 mx-4 space-y-4">
+      <div
+         className={clsx(
+            site?.trendingPages?.length == 0 ? "laptop:px-4" : "mx-4 py-4",
+            "relative max-tablet:px-4 z-20 space-y-3 w-auto tablet:w-[728px] laptop:w-auto max-laptop:mx-auto",
+         )}
+      >
          {site?.banner && (
             <section
                className="flex items-center rounded-lg
@@ -45,7 +50,7 @@ function AboutSection({
          )}
          <div
             className={clsx(
-               hasTrending ? "" : "border-b py-3 my-5 border-color",
+               hasTrending ? "" : "border-b pt-2 pb-5 border-color",
                "space-y-1",
             )}
          >
@@ -93,8 +98,8 @@ export function ColumnFour() {
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 
             h-full bg-2-sub laptop:bg-2 border-color laptop:w-[334px] justify-between"
          >
-            <div className="max-laptop:max-w-[760px] mx-auto">
-               <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
+            <div>
+               <section className="grid grid-cols-3 gap-4 py-4 relative z-20 max-laptop:max-w-[728px] max-tablet:px-4 max-laptop:mx-auto mx-4 max-laptop:w-full">
                   <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
                      <div className="text-xs font-bold text-center">
                         {site.followers ? site.followers : "-"}
@@ -118,30 +123,31 @@ export function ColumnFour() {
                   <AboutSection site={site} hasTrending={false} />
                ) : undefined}
                <Contributors site={site} />
+
+               <span
+                  className="bg-gradient-to-t dark:from-bg3Dark dark:laptop:from-bg2Dark dark:to-transparent 
+                           from-white laptop:from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
+               />
+               <div
+                  className="pattern-dots absolute left-0 top-0 z-0 h-full
+                           w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
+                           pattern-size-2 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
+               />
             </div>
             <AdUnit
                className={clsx(
                   groupedTrendingPages.length == 0
                      ? "laptop:mb-[72px] my-6"
-                     : "mb-4",
-                  "h-[250px] w-[300px] mx-auto  laptop:mt-2 rounded-lg bg-white dark:bg-dark350 z-40 relative",
+                     : "mb-6 max-laptop:mt-3 laptop:mb-4",
+                  "h-[250px] w-[300px] flex-none mx-auto laptop:mt-2 rounded-lg bg-white max-laptop:dark:bg-dark450 dark:bg-dark350 z-20 laptop:z-40 relative",
                )}
                enableAds={site.enableAds}
                adType="med_rect_atf"
                selectorId="sidebar-med-rect-atf"
             />
-            <span
-               className="bg-gradient-to-t dark:from-bg3Dark dark:laptop:from-bg2Dark dark:to-transparent 
-                           from-white laptop:from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
-            />
-            <div
-               className="pattern-dots absolute left-0 top-0 z-0 h-full
-                           w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
-                           pattern-size-2 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
-            />
             {groupedTrendingPages.length > 0 ? (
                <>
-                  <TabGroup className="flex-grow overflow-auto max-h-[652px]">
+                  <TabGroup className="flex-grow overflow-auto max-h-[652px] z-20">
                      <TabList
                         className="grid grid-cols-2 py-2 bg-white dark:bg-dark400 dark:laptop:bg-bg3Dark/80 sticky top-0 
                   border-y dark:border-zinc-600/50 dark:laptop:border-zinc-700/30 dark:divide-zinc-600/50 dark:laptop:divide-zinc-700 laptop:border-color divide-x laptop:divide-color z-10"
@@ -206,9 +212,9 @@ export function ColumnFour() {
                                              <Link
                                                 key={nestedRow.path}
                                                 to={nestedRow.path}
-                                                className="flex items-center laptop:rounded-lg dark:laptop:hover:bg-dark350
+                                                className="flex items-center rounded-lg dark:laptop:hover:bg-dark350 max-laptop:mx-auto
                                           gap-2.5 p-1.5 group bg-white hover:bg-zinc-200/50 dark:bg-dark400 shadow-sm shadow-zinc-100
-                                          dark:laptop:shadow-zinc-800 dark:shadow-zinc-700/80 dark:laptop:bg-bg3Dark laptop:w-[310px] laptop:ml-3 dark:hover:bg-dark450"
+                                          dark:laptop:shadow-zinc-800 dark:shadow-zinc-700/80 dark:laptop:bg-bg3Dark max-laptop:w-[728px] laptop:w-[310px] laptop:ml-3 dark:hover:bg-dark450"
                                              >
                                                 <div className="size-8 flex items-center justify-center flex-none">
                                                    {nestedRow.data?.icon
@@ -268,7 +274,7 @@ export function ColumnFour() {
                   </TabGroup>
                </>
             ) : undefined}
-            <div className="max-laptop:py-5 border-t border-color h-[54px] flex items-center px-3.5 laptop:w-[333px] z-10 laptop:fixed bottom-0 right-0">
+            <div className="max-laptop:py-5 border-t border-color h-[54px] bg-2 flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
                <div className="justify-between w-full flex items-center max-laptop:max-w-[728px] mx-auto gap-3">
                   {!site.isWhiteLabel && (
                      <Link

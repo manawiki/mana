@@ -1,5 +1,6 @@
 import { Link } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
+import clsx from "clsx";
 
 import { Avatar } from "~/components/Avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -12,7 +13,12 @@ export function Contributors({
 }) {
    return (
       <>
-         <section className="ml-4 py-4 pr-4 relative z-20">
+         <section
+            className={clsx(
+               site?.trendingPages?.length == 0 ? "w-full py-4" : "pb-4",
+               "relative z-20 mx-auto max-laptop:max-w-[728px] laptop:px-4  max-tablet:px-4",
+            )}
+         >
             <div className="flex items-center pb-3">
                <span className="text-1 text-sm font-bold">Contributors</span>
             </div>
