@@ -1,228 +1,324 @@
+import { Fragment } from "react";
+
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { Link, useLoaderData } from "@remix-run/react";
+//@ts-ignore
+import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import clsx from "clsx";
 
+import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { LogoText } from "~/components/Logo";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
+import type { Site } from "~/db/payload-types";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { useTheme } from "~/utils/client-hints";
 
 import { Contributors } from "./Contributors";
+import { AdUnit } from "./RampUnit";
 import { DarkModeToggle } from "../action+/theme-toggle";
+
+function AboutSection({
+   site,
+   hasTrending,
+}: {
+   site: Site;
+   hasTrending: boolean;
+}) {
+   return (
+      <div className="relative z-20 mx-4 space-y-4">
+         {site?.banner && (
+            <section
+               className="flex items-center rounded-lg
+      justify-center overflow-hidden shadow dark:shadow-zinc-800 relative z-20"
+            >
+               <Image
+                  height={600}
+                  url={site?.banner?.url}
+                  options="aspect_ratio=1.9:1"
+                  alt="Site Banner"
+                  loading="lazy"
+               />
+            </section>
+         )}
+         <div
+            className={clsx(
+               hasTrending ? "" : "border-b py-3 my-5 border-color",
+               "space-y-1",
+            )}
+         >
+            <div
+               className="font-header
+             font-bold relative flex items-center gap-1.5 z-20"
+            >
+               {site.status === "verified" && (
+                  <Tooltip placement="top">
+                     <TooltipTrigger>
+                        <Icon
+                           name="badge-check"
+                           size={16}
+                           className="text-teal-500"
+                        />
+                     </TooltipTrigger>
+                     <TooltipContent>Verified</TooltipContent>
+                  </Tooltip>
+               )}
+               {site.name}
+            </div>
+            {site.about && <div className="text-xs text-1">{site.about}</div>}
+         </div>
+      </div>
+   );
+}
 
 export function ColumnFour() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
    const theme = useTheme();
 
+   //@ts-ignore
+   const trendingPages = (site?.trendingPages || []).slice(0, 50);
+   const groupedTrendingPages = [];
+
+   //@ts-ignore
+   for (let i = 0; i < trendingPages.length; i += 10) {
+      //@ts-ignore
+      groupedTrendingPages.push(trendingPages.slice(i, i + 10));
+   }
+
    return (
       <section className="relative laptop:z-50 laptop:block max-laptop:bg-2-sub max-laptop:border-t max-laptop:border-color">
          <div
-            className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 no-scrollbar 
-            h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px] justify-between"
+            className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 
+            h-full bg-2-sub laptop:bg-2 border-color laptop:w-[334px] justify-between"
          >
-            <div className="laptop:h-full flex flex-col bg-zinc-50 dark:bg-bg2Dark">
-               <div className="laptop:sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg2Dark relative">
-                  <div className="max-laptop:max-w-[760px] mx-auto">
-                     <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
-                        <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
-                           <div className="text-xs font-bold text-center">
-                              {site.followers ? site.followers : "-"}
-                           </div>
-                           <div className="text-xs text-1 text-center">
-                              Followers
-                           </div>
-                        </div>
-                        <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
-                           <div className="text-xs font-bold text-center">
-                              {site.totalPosts ? site.totalPosts : "-"}
-                           </div>
-                           <div className="text-xs text-1 text-center">
-                              Posts
-                           </div>
-                        </div>
-                        <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
-                           <div className="text-xs text-center font-bold">
-                              {site.totalEntries ? site.totalEntries : "-"}
-                           </div>
-                           <div className="text-xs text-center text-1">
-                              Entries
-                           </div>
-                        </div>
-                     </section>
-                     {site?.banner && (
-                        <section
-                           className="flex items-center rounded-lg mx-4
-                              justify-center overflow-hidden shadow dark:shadow-zinc-800 relative z-20"
-                        >
-                           <Image
-                              height={600}
-                              url={site?.banner?.url}
-                              options="aspect_ratio=1.9:1"
-                              alt="Site Banner"
-                              loading="lazy"
-                           />
-                        </section>
-                     )}
-                     <div
-                        className={clsx(
-                           site?.banner ? "mt-4" : "mt-0",
-                           "relative z-20 mx-4 pb-4 space-y-1 border-b border-dotted border-zinc-200 dark:border-zinc-700",
-                        )}
-                     >
-                        <div
-                           className="font-header
-                                     font-bold relative flex items-center gap-1.5 z-20"
-                        >
-                           {site.status === "verified" && (
-                              <Tooltip placement="top">
-                                 <TooltipTrigger>
-                                    <Icon
-                                       name="badge-check"
-                                       size={16}
-                                       className="text-teal-500"
-                                    />
-                                 </TooltipTrigger>
-                                 <TooltipContent>Verified</TooltipContent>
-                              </Tooltip>
-                           )}
-                           {site.name}
-                        </div>
-                        {site.about && (
-                           <div className="text-xs text-1">{site.about}</div>
-                        )}
+            <div className="max-laptop:max-w-[760px] mx-auto">
+               <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
+                  <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
+                     <div className="text-xs font-bold text-center">
+                        {site.followers ? site.followers : "-"}
                      </div>
-                     <Contributors site={site} />
+                     <div className="text-xs text-1 text-center">Followers</div>
                   </div>
-                  <span
-                     className="bg-gradient-to-t dark:from-bg3Dark dark:laptop:from-bg2Dark dark:to-transparent 
+                  <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
+                     <div className="text-xs font-bold text-center">
+                        {site.totalPosts ? site.totalPosts : "-"}
+                     </div>
+                     <div className="text-xs text-1 text-center">Posts</div>
+                  </div>
+                  <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
+                     <div className="text-xs text-center font-bold">
+                        {site.totalEntries ? site.totalEntries : "-"}
+                     </div>
+                     <div className="text-xs text-center text-1">Entries</div>
+                  </div>
+               </section>
+               {groupedTrendingPages.length == 0 ? (
+                  <AboutSection site={site} hasTrending={false} />
+               ) : undefined}
+               <Contributors site={site} />
+            </div>
+            <AdUnit
+               className={clsx(
+                  groupedTrendingPages.length == 0
+                     ? "laptop:mb-[72px] my-6"
+                     : "mb-4",
+                  "h-[250px] w-[300px] mx-auto  laptop:mt-2 rounded-lg bg-white dark:bg-dark350 z-40 relative",
+               )}
+               enableAds={site.enableAds}
+               adType="med_rect_atf"
+               selectorId="sidebar-med-rect-atf"
+            />
+            <span
+               className="bg-gradient-to-t dark:from-bg3Dark dark:laptop:from-bg2Dark dark:to-transparent 
                            from-white laptop:from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
-                  />
-                  <div
-                     className="pattern-dots absolute left-0 top-0 z-0 h-full
+            />
+            <div
+               className="pattern-dots absolute left-0 top-0 z-0 h-full
                            w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
                            pattern-size-2 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
-                  />
-               </div>
-
-               {/* @ts-ignore */}
-               {site?.trendingPages && site?.trendingPages.length > 0 && (
-                  <>
-                     <div className="dark:max-laptop:bg-bg3Dark max-laptop:bg-white pt-4 pb-3 w-full relative">
-                        <div className="max-laptop:max-w-[728px] max-tablet:px-3 laptop:px-3 mx-auto flex items-center gap-1.5">
-                           <Icon
-                              name="flame"
-                              className="dark:text-zinc-400 text-zinc-500"
-                              size={16}
-                           />
-                           <span className="text-sm text-1 font-bold">
-                              Trending
-                           </span>
-                        </div>
-                     </div>
-                     <section
-                        className="max-laptop:bg-3 flex-1 relative  shadow-sm shadow-1 min-h-[480px]
-                      bg-white/50 dark:bg-bg3Dark/30 border-y border-color"
+            />
+            {groupedTrendingPages.length > 0 ? (
+               <>
+                  <TabGroup className="flex-grow overflow-auto max-h-[652px]">
+                     <TabList
+                        className="grid grid-cols-2 py-2 bg-white dark:bg-dark400 dark:laptop:bg-bg3Dark/80 sticky top-0 
+                  border-y dark:border-zinc-600/50 dark:laptop:border-zinc-700/30 dark:divide-zinc-600/50 dark:laptop:divide-zinc-700 laptop:border-color divide-x laptop:divide-color z-10"
                      >
-                        <div
-                           className="absolute inset-0 overflow-auto divide-y divide-dotted divide-color 
-                           dark:scrollbar-thumb-dark500 dark:scrollbar-track-bg3Dark pb-[50px]
-                           scrollbar-thumb-zinc-200 scrollbar-track-white scrollbar"
-                        >
-                           {/* @ts-ignore */}
-                           {site?.trendingPages?.map((row: any) => (
-                              <Link
-                                 to={row.path}
-                                 key={row.path}
-                                 className="flex items-center max-laptop:max-w-[750px] mx-auto
-                                  gap-2 pl-3.5 p-2 group hover:bg-white dark:hover:bg-bg2Dark"
+                        <Tab as={Fragment}>
+                           {({ selected }) => (
+                              <button className="dark:data-[selected]:text-white hover:text-light dark:hover:text-dark text-1 focus:outline-none flex items-center justify-center gap-1.5 px-2 py-1 relative">
+                                 <Icon
+                                    name="flame"
+                                    className="dark:text-zinc-400 text-zinc-500"
+                                    size={14}
+                                 />
+                                 <span className="text-sm font-bold">
+                                    Trending
+                                 </span>
+                                 {selected && (
+                                    <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-zinc-200 dark:bg-dark500 rounded-t ml-1 w-24 h-1"></span>
+                                 )}
+                              </button>
+                           )}
+                        </Tab>
+                        <Tab as={Fragment}>
+                           {({ selected }) => (
+                              <button className="dark:data-[selected]:text-white hover:text-light dark:hover:text-dark text-1 focus:outline-none flex items-center justify-center gap-1.5 px-2 py-1 relative">
+                                 <Icon
+                                    name="info"
+                                    className="dark:text-zinc-400 text-zinc-500"
+                                    size={14}
+                                 />
+                                 <span className="text-sm font-bold">
+                                    About
+                                 </span>
+                                 {selected && (
+                                    <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-zinc-200 dark:bg-dark500 rounded-t ml-1 w-24 h-1"></span>
+                                 )}
+                              </button>
+                           )}
+                        </Tab>
+                     </TabList>
+                     <TabPanels>
+                        <TabPanel>
+                           {groupedTrendingPages && (
+                              <Splide
+                                 hasTrack={false}
+                                 options={{
+                                    perPage: 1,
+                                    rewind: true,
+                                    classes: {
+                                       page: "splide__pagination__page [&.is-active]:bg-zinc-500 [&.is-active]:dark:bg-zinc-300 bg-zinc-300 dark:bg-zinc-500 size-2.5 rounded-lg",
+                                    },
+                                 }}
+                                 className="relative overflow-auto pt-1.5 laptop:pt-2.5 laptop:pb-[100px]"
+                                 aria-label="Trending Pages"
                               >
+                                 <SplideTrack>
+                                    {groupedTrendingPages.map((row) => (
+                                       <SplideSlide
+                                          className="space-y-1.5"
+                                          key={row.path}
+                                       >
+                                          {row.map((nestedRow: any) => (
+                                             <Link
+                                                key={nestedRow.path}
+                                                to={nestedRow.path}
+                                                className="flex items-center laptop:rounded-lg dark:laptop:hover:bg-dark350
+                                          gap-2.5 p-1.5 group bg-white hover:bg-zinc-200/50 dark:bg-dark400 shadow-sm shadow-zinc-100
+                                          dark:laptop:shadow-zinc-800 dark:shadow-zinc-700/80 dark:laptop:bg-bg3Dark laptop:w-[310px] laptop:ml-3 dark:hover:bg-dark450"
+                                             >
+                                                <div className="size-8 flex items-center justify-center flex-none">
+                                                   {nestedRow.data?.icon
+                                                      ?.url ? (
+                                                      <Image
+                                                         width={80}
+                                                         height={80}
+                                                         url={
+                                                            nestedRow.data?.icon
+                                                               ?.url
+                                                         }
+                                                         options="aspect_ratio=1:1"
+                                                         alt=""
+                                                         loading="lazy"
+                                                      />
+                                                   ) : (
+                                                      <Icon
+                                                         name="component"
+                                                         className="dark:text-zinc-500 text-zinc-400 mx-auto"
+                                                         size={16}
+                                                      />
+                                                   )}
+                                                </div>
+                                                <div className="text-sm font-semibold">
+                                                   {nestedRow.data.name}
+                                                </div>
+                                             </Link>
+                                          ))}
+                                       </SplideSlide>
+                                    ))}
+                                 </SplideTrack>
                                  <div
-                                    className="text-sm flex-grow group-hover:underline decoration-zinc-400 dark:decoration-zinc-500
-                                 underline-offset-2 font-semibold"
+                                    className="splide__arrows bg-gradient-to-t dark:laptop:from-bg2Dark laptop:to-bg2Dark/20 flex items-center justify-between 
+                           w-full laptop:w-[333px] gap-1.5 px-3 laptop:fixed laptop:bottom-[54px] right-0 z-30"
                                  >
-                                    {row.data.name}
+                                    <Button
+                                       plain
+                                       className="splide__arrow splide__arrow--prev !p-1"
+                                    >
+                                       <Icon name="chevron-left" size={18} />
+                                    </Button>
+                                    <ul className="splide__pagination flex items-center gap-2.5 py-4"></ul>
+                                    <Button
+                                       plain
+                                       className="splide__arrow splide__arrow--next !p-1"
+                                    >
+                                       <Icon name="chevron-right" size={18} />
+                                    </Button>
                                  </div>
-                                 <div
-                                    className="h-[26px] w-[26px] flex items-center justify-center rounded-full bg-white
-                                    border border-color-sub shadow-sm shadow-1 overflow-hidden flex-none dark:bg-dark400"
-                                 >
-                                    {row.data?.icon?.url ? (
-                                       <Image
-                                          width={40}
-                                          height={40}
-                                          url={row.data?.icon?.url}
-                                          options="aspect_ratio=1:1&height=40&width=40"
-                                          alt=""
-                                          loading="lazy"
-                                       />
-                                    ) : (
-                                       <Icon
-                                          name="component"
-                                          className="dark:text-zinc-500 text-zinc-400 mx-auto"
-                                          size={16}
-                                       />
-                                    )}
-                                 </div>
-                              </Link>
-                           ))}
-                        </div>
-                     </section>
-                  </>
-               )}
-               <div className="max-laptop:py-5 border-t border-color h-[54px] flex items-center px-3.5 laptop:w-[333px] bg-3 laptop:bg-2 z-10 laptop:fixed bottom-0 right-0">
-                  <div className="justify-between w-full flex items-center max-laptop:max-w-[728px] mx-auto gap-3">
-                     {!site.isWhiteLabel && (
+                              </Splide>
+                           )}
+                        </TabPanel>
+                        <TabPanel>
+                           <AboutSection site={site} hasTrending={true} />
+                        </TabPanel>
+                     </TabPanels>
+                  </TabGroup>
+               </>
+            ) : undefined}
+            <div className="max-laptop:py-5 border-t border-color h-[54px] flex items-center px-3.5 laptop:w-[333px] z-10 laptop:fixed bottom-0 right-0">
+               <div className="justify-between w-full flex items-center max-laptop:max-w-[728px] mx-auto gap-3">
+                  {!site.isWhiteLabel && (
+                     <Link
+                        to="https://mana.wiki"
+                        className="flex items-center gap-1.5 justify-start laptop:justify-end group"
+                     >
+                        <span className="dark:text-zinc-500 text-zinc-400 text-xs font-semibold">
+                           Powered by
+                        </span>
+                        <LogoText className="w-12 text-1 group-hover:dark:text-zinc-300 group-hover:text-zinc-600" />
+                     </Link>
+                  )}
+                  {site.isWhiteLabel &&
+                     site?.logoDarkImage?.url &&
+                     site?.logoLightImage?.url &&
+                     site?.logoURL && (
                         <Link
-                           to="https://mana.wiki"
-                           className="flex items-center gap-1.5 justify-start laptop:justify-end group"
+                           to={site?.logoURL}
+                           className="flex-grow flex items-center justify-start"
                         >
-                           <span className="dark:text-zinc-500 text-zinc-400 text-xs font-semibold">
-                              Powered by
-                           </span>
-                           <LogoText className="w-12 text-1 group-hover:dark:text-zinc-300 group-hover:text-zinc-600" />
+                           <Image
+                              className="object-contain flex-grow text-left h-6 max-w-[140px]"
+                              width={280}
+                              height={48}
+                              url={
+                                 theme === "light"
+                                    ? site?.logoLightImage?.url
+                                    : site?.logoDarkImage?.url
+                              }
+                           />
                         </Link>
                      )}
-                     {site.isWhiteLabel &&
-                        site?.logoDarkImage?.url &&
-                        site?.logoLightImage?.url &&
-                        site?.logoURL && (
-                           <Link
-                              to={site?.logoURL}
-                              className="flex-grow flex items-center justify-start"
-                           >
-                              <Image
-                                 className="object-contain flex-grow text-left h-6 max-w-[140px]"
-                                 width={280}
-                                 height={48}
-                                 url={
-                                    theme === "light"
-                                       ? site?.logoLightImage?.url
-                                       : site?.logoDarkImage?.url
-                                 }
-                              />
-                           </Link>
-                        )}
-                     <div className="flex items-center gap-4 text-xs text-1">
-                        <DarkModeToggle className="!size-3.5" />
-                        <LoggedOut>
-                           <Link
-                              to="/join"
-                              className="group relative inline-flex h-7 items-center justify-center overflow-hidden flex-none
+                  <div className="flex items-center gap-4 text-xs text-1">
+                     <DarkModeToggle className="!size-3.5" />
+                     <LoggedOut>
+                        <Link
+                           to="/join"
+                           className="group relative inline-flex h-7 items-center justify-center overflow-hidden flex-none
                            rounded-lg laptop:rounded-md px-2.5 font-medium text-indigo-600 transition duration-300 ease-out shadow-sm shadow-1"
-                           >
-                              <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                              <span
-                                 className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                        >
+                           <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                           <span
+                              className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
                               rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                              ></span>
-                              <span className="relative text-xs laptop:text-[10px] font-bold text-white uppercase">
-                                 Sign up
-                              </span>
-                           </Link>
-                        </LoggedOut>
-                     </div>
+                           ></span>
+                           <span className="relative text-xs laptop:text-[10px] font-bold text-white uppercase">
+                              Sign up
+                           </span>
+                        </Link>
+                     </LoggedOut>
                   </div>
                </div>
             </div>
