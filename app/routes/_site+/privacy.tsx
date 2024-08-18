@@ -1,5 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 
+import { Text, TextLink } from "~/components/Text";
+
 export const meta: MetaFunction = () => {
    return [
       {
@@ -15,38 +17,40 @@ export const handle = {
 export default function PrivacyPolicy() {
    return (
       <>
-         <div className="relative z-20 mx-auto pt-8 max-w-[680px] max-laptop:px-4">
-            <h1 className="pb-4 font-header text-2xl font-bold">
+         <div className="relative z-20 mx-auto pt-24 laptop:pt-8 max-w-[680px] max-laptop:px-4">
+            <h1 className="pb-4 font-header text-xl font-bold">
                Privacy policy
             </h1>
-            <div className="pb-40">
-               <div className="pb-4">
+            <div className="pb-10">
+               <Text className="pb-4">
                   Mana is committed to maintaining robust privacy protections
                   for its users. Our Privacy Policy (“Privacy Policy”) is
                   designed to help you understand how we collect, use and
                   safeguard the information you provide to us and to assist you
                   in making informed decisions when using our Service.
-               </div>
-               <div className="pb-4">
+               </Text>
+               <Text className="pb-4">
                   For purposes of this Agreement, “Site” refers to the mana.wiki
                   website, which can be accessed at{" "}
-                  <a href="https://mana.wiki">https://mana.wiki</a> or through
-                  our mobile application. “Service” refers to services accessed
-                  via this website.
-               </div>
-               <div className="pb-4">
+                  <TextLink href="https://mana.wiki">
+                     https://mana.wiki
+                  </TextLink>{" "}
+                  or through our mobile application. “Service” refers to
+                  services accessed via this website.
+               </Text>
+               <Text className="pb-4">
                   The terms “we,” “us,” and “our” refer to Mana. “You” refers to
                   you, as a user of our Site or our Service. By accessing our
                   Site or our Service, you accept our Privacy Policy and Terms
                   of Use and you consent to our collection, storage, use and
                   disclosure of your Personal Information as described in this
                   Privacy Policy.
-               </div>
+               </Text>
                <section className="py-4">
-                  <div className="pb-4 font-bold">
+                  <Text className="pb-4 font-bold">
                      I. INFORMATION WE COLLECT
-                  </div>
-                  <div className="pb-4">
+                  </Text>
+                  <Text className="pb-4">
                      We collect “Non-Personal Information” and “Personal
                      Information.” Non-Personal Information includes information
                      that cannot be used to personally identify you, such as
@@ -56,12 +60,12 @@ export default function PrivacyPolicy() {
                      based on the data you submit and number of clicks. Personal
                      Information includes your email which you submit to us
                      through the registration process at the Site.
-                  </div>
+                  </Text>
                   <div className="pb-2">
-                     <div className="pb-2">
+                     <Text className="pb-2">
                         1. Information collected via Technology
-                     </div>
-                     <div className="pb-4">
+                     </Text>
+                     <Text className="pb-4">
                         To activate the Service you do not need to submit any
                         Personal Information other than your email address. To
                         use the Service thereafter, you do not need to submit
@@ -87,12 +91,12 @@ export default function PrivacyPolicy() {
                         remain on your computer after you close your session and
                         until you delete them, while session cookies expire when
                         you close your browser.
-                     </div>
-                     <div className="pb-2">
+                     </Text>
+                     <Text className="pb-2">
                         2. Information you provide us by registering for an
                         account
-                     </div>
-                     <div className="pb-4">
+                     </Text>
+                     <Text className="pb-4">
                         In addition to the information provided automatically by
                         your browser when you visit the Site, to become a
                         subscriber to the Service you will need to create a
@@ -102,9 +106,9 @@ export default function PrivacyPolicy() {
                         registering, you are authorizing us to collect, store
                         and use your email address in accordance with this
                         Privacy Policy.
-                     </div>
-                     <div className="pb-2">3. Children's Privacy</div>
-                     <div className="pb-4">
+                     </Text>
+                     <Text className="pb-2">3. Children's Privacy</Text>
+                     <Text className="pb-4">
                         The Site and the Service are not directed to anyone
                         under the age of 13. The Site does not knowingly collect
                         or solicit information from anyone under the age of 13,
@@ -114,16 +118,16 @@ export default function PrivacyPolicy() {
                         of 13 without the consent of a parent or guardian, we
                         will delete that information as soon as possible. If you
                         believe we have collected such information, please
-                        contact us at contact@mana.wiki.
-                     </div>
+                        contact us at info@mana.wiki
+                     </Text>
                   </div>
                </section>
                <section className="py-4">
-                  <div className="pb-4 font-bold">
+                  <Text className="pb-4 font-bold">
                      II. HOW WE USE AND SHARE INFORMATION
-                  </div>
-                  <div className="pb-2">Personal Information</div>
-                  <div className="pb-4">
+                  </Text>
+                  <Text className="pb-2">Personal Information</Text>
+                  <Text className="pb-4">
                      Except as otherwise stated in this Privacy Policy, we do
                      not sell, trade, rent or otherwise share for marketing
                      purposes your Personal Information with third parties
@@ -148,9 +152,9 @@ export default function PrivacyPolicy() {
                      or to protect against harm to the rights, property, or
                      safety of our users or the public as required or permitted
                      by law.
-                  </div>
-                  <div className="pb-2">Non-Personal Information</div>
-                  <div className="pb-4">
+                  </Text>
+                  <Text className="pb-2">Non-Personal Information</Text>
+                  <Text className="pb-4">
                      In general, we use Non-Personal Information to help us
                      improve the Service and customize the user experience. We
                      also aggregate Non-Personal Information in order to track
@@ -171,13 +175,13 @@ export default function PrivacyPolicy() {
                      to the Site so that you may opt out of the new information
                      practices. We suggest that you check the Site periodically
                      if you are concerned about how your information is used.
-                  </div>
+                  </Text>
                </section>
                <section className="py-4">
-                  <div className="pb-4 font-bold">
+                  <Text className="pb-4 font-bold">
                      III. HOW WE PROTECT INFORMATION
-                  </div>
-                  <div className="pb-4">
+                  </Text>
+                  <Text className="pb-4">
                      We implement security measures designed to protect your
                      information from unauthorized access. Your account is
                      protected by your account password and we urge you to take
@@ -192,15 +196,15 @@ export default function PrivacyPolicy() {
                      of such firewalls and secure server software. By using our
                      Service, you acknowledge that you understand and agree to
                      assume these risks.
-                  </div>
+                  </Text>
                </section>
 
                <section className="py-4">
-                  <div className="pb-4 font-bold">
+                  <Text className="pb-4 font-bold">
                      IV. YOUR RIGHTS REGARDING THE USE OF YOUR PERSONAL
                      INFORMATION
-                  </div>
-                  <div className="pb-4">
+                  </Text>
+                  <Text className="pb-4">
                      You have the right at any time to prevent us from
                      contacting you for marketing purposes. When we send a
                      promotional communication to a user, the user can opt out
@@ -214,13 +218,13 @@ export default function PrivacyPolicy() {
                      section of the Site, we may continue to send you
                      administrative emails including, for example, periodic
                      updates to our Privacy Policy.
-                  </div>
+                  </Text>
                </section>
                <section className="py-4">
-                  <div className="pb-4 font-bold">
+                  <Text className="pb-4 font-bold">
                      V. LINKS TO OTHER WEBSITES
-                  </div>
-                  <div className="pb-4">
+                  </Text>
+                  <Text className="pb-4">
                      As part of the Service, we may provide links to or
                      compatibility with other websites or applications. However,
                      we are not responsible for the privacy practices employed
@@ -236,14 +240,14 @@ export default function PrivacyPolicy() {
                      site or application. We encourage our users to read the
                      privacy statements of other websites before proceeding to
                      use them.
-                  </div>
+                  </Text>
                </section>
 
                <section className="py-4">
-                  <div className="pb-4 font-bold">
+                  <Text className="pb-4 font-bold">
                      VI. CHANGES TO OUR PRIVACY POLICY
-                  </div>
-                  <div className="pb-4">
+                  </Text>
+                  <Text className="pb-4">
                      The Company reserves the right to change this policy and
                      our Terms of Service at any time. We will notify you of
                      significant changes to our Privacy Policy by sending a
@@ -253,27 +257,23 @@ export default function PrivacyPolicy() {
                      such notification. Non-material changes or clarifications
                      will take effect immediately. You should periodically check
                      the Site and this privacy page for updates.
-                  </div>
+                  </Text>
                </section>
                <section className="py-4">
-                  <div className="pb-4 font-bold">VII. ADVERTISING</div>
-                  <div className="pb-4">
+                  <Text className="pb-4 font-bold">VII. ADVERTISING</Text>
+                  <Text className="pb-4">
                      All or partial advertising on this Website or App is
                      managed by Playwire LLC. If Playwire publisher advertising
                      services are used, Playwire LLC may collect and use certain
                      aggregated and anonymized data for advertising purposes. To
                      learn more about the types of data collected, how data is
                      used and your choices as a user, please visit{" "}
-                     <a href="https://www.playwire.com/privacy-policy">
+                     <TextLink href="https://www.playwire.com/privacy-policy">
                         https://www.playwire.com/privacy-policy
-                     </a>
+                     </TextLink>
                      .
-                  </div>
+                  </Text>
                </section>
-               <div>
-                  Last Updated: This Privacy Policy was last updated on July 24,
-                  2024.
-               </div>
             </div>
          </div>
       </>
