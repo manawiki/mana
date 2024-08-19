@@ -78,7 +78,7 @@ export function Section({
                   <AdPlaceholder>
                      <div
                         className={`flex items-center justify-center mx-auto ${
-                           section.showAd ? "laptop:min-h-[90px]" : ""
+                           section.showAd ? "laptop:min-h-[90px] my-8" : ""
                         }`}
                      >
                         <AdUnit
