@@ -429,7 +429,7 @@ export const updateSiteAnalytics = inngest.createFunction(
                   if (collection.customDatabase == true) {
                      const totalCustomEntries = await authRestFetcher({
                         method: "GET",
-                        path: `http://${
+                        path: `https://${
                            siteDomain ? siteDomain : `${siteSlug}.mana.wiki`
                         }:4000/api/${collection.slug}`,
                      });
