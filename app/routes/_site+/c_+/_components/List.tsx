@@ -15,7 +15,7 @@ import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 import { AddEntry } from "./AddEntry";
 import { CollectionHeader } from "./CollectionHeader";
 import { ListTable } from "./ListTable";
-import { AdPlaceholder, AdUnit } from "../../_components/RampUnit";
+import { AdUnit } from "../../_components/RampUnit";
 
 export type Section = {
    id: string;
@@ -85,14 +85,16 @@ export function List({
             setIsChanged={setIsChanged}
             isChanged={isChanged}
          />
-         <AdPlaceholder>
-            <AdUnit
-               className="mt-5"
-               enableAds={site.enableAds}
-               adType="leaderboard_atf"
-               selectorId="listDesktopLeaderATF"
-            />
-         </AdPlaceholder>
+         <AdUnit
+            className="mt-5"
+            enableAds={site.enableAds}
+            adType={{
+               desktop: "leaderboard_atf",
+               tablet: "leaderboard_atf",
+               mobile: "med_rect_atf",
+            }}
+            selectorId="listDesktopLeaderATF"
+         />
          <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
             {!collection?.customDatabase && <AddEntry />}
             {children ? (

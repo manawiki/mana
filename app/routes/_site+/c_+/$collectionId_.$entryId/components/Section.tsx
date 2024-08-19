@@ -78,13 +78,17 @@ export function Section({
                   <AdPlaceholder>
                      <div
                         className={`flex items-center justify-center mx-auto ${
-                           section.showAd ? "min-h-[90px]" : ""
+                           section.showAd ? "laptop:min-h-[90px]" : ""
                         }`}
                      >
                         <AdUnit
                            enableAds={section.showAd}
-                           adType="leaderboard_btf"
-                           selectorId={`sectionDesktopLeaderBTF-${section.id}`}
+                           adType={{
+                              desktop: "leaderboard_btf",
+                              tablet: "leaderboard_btf",
+                              mobile: "med_rect_btf",
+                           }}
+                           selectorId={`sectionBTF-${section.id}`}
                         />
                      </div>
                   </AdPlaceholder>

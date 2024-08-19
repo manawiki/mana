@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useLocation } from "@remix-run/react";
 import { ClientOnly } from "remix-utils/client-only";
@@ -19,7 +19,7 @@ function AdUnitSelector({
    className,
    selectorId,
 }: {
-   adType: AdUnitType;
+   adType: AdUnitType | undefined;
    selectorId: string;
    className?: string;
 }) {
@@ -68,22 +68,72 @@ export function AdUnit({
    className,
    enableAds,
 }: {
-   adType: AdUnitType;
+   adType: {
+      mobile?: AdUnitType;
+      tablet?: AdUnitType;
+      desktop?: AdUnitType;
+   };
    selectorId: string;
    className?: string;
    enableAds?: boolean | undefined | null;
 }) {
+   const { pathname } = useLocation();
+
+   const [deviceType, setDeviceType] = useState({
+      isDesktop: false,
+      isTablet: false,
+      isMobile: false,
+   });
+
+   useEffect(() => {
+      // Check screen size on initial load and resize
+      const checkScreenSize = () => {
+         if (typeof window !== "undefined") {
+            setDeviceType({
+               isDesktop: window.innerWidth > 1240,
+               isTablet: window.innerWidth >= 768 && window.innerWidth <= 1240,
+               isMobile: window.innerWidth < 767,
+            });
+         }
+      };
+      checkScreenSize();
+      window.addEventListener("resize", checkScreenSize);
+      return () => {
+         window.removeEventListener("resize", checkScreenSize);
+      };
+   }, [pathname]);
+
    if (enableAds) {
       return (
-         <ClientOnly fallback={<></>}>
-            {() => (
-               <AdUnitSelector
-                  adType={adType}
-                  selectorId={selectorId}
-                  className={className}
-               />
-            )}
-         </ClientOnly>
+         <>
+            <ClientOnly fallback={<></>}>
+               {() => (
+                  <>
+                     {deviceType.isMobile && adType.mobile ? (
+                        <AdUnitSelector
+                           adType={adType.mobile}
+                           selectorId={selectorId}
+                           className={className}
+                        />
+                     ) : undefined}
+                     {deviceType.isTablet && adType.tablet ? (
+                        <AdUnitSelector
+                           adType={adType.tablet}
+                           selectorId={selectorId}
+                           className={className}
+                        />
+                     ) : undefined}
+                     {deviceType.isDesktop && adType.desktop ? (
+                        <AdUnitSelector
+                           adType={adType.desktop}
+                           selectorId={selectorId}
+                           className={className}
+                        />
+                     ) : undefined}
+                  </>
+               )}
+            </ClientOnly>
+         </>
       );
    }
 }
