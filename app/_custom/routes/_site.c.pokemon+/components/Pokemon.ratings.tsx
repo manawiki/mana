@@ -30,7 +30,7 @@ export function Ratings({
                      <Image
                         height={32}
                         width={32}
-                        url="https://static.mana.wiki/entry-icon-MvlMIm49ktCGFbwNma2Gd.png"
+                        url="https://static.mana.wiki/entry-icon-l4FBMpUP6D-klgH3zLS_e.png"
                         options="height=120&width=120"
                         alt="Attacker Tier List"
                      />
