@@ -30,7 +30,7 @@ function AboutSection({
    return (
       <div
          className={clsx(
-            site?.trendingPages?.length == 0 ? "laptop:px-4" : "mx-4 py-4",
+            hasTrending ? "mx-4 py-4" : "laptop:px-4",
             "relative max-tablet:px-4 z-20 space-y-3 w-auto tablet:w-[728px] laptop:w-auto max-laptop:mx-auto",
          )}
       >
@@ -93,10 +93,25 @@ export function ColumnFour() {
    }
 
    return (
-      <section className="relative laptop:z-50 laptop:block max-laptop:bg-2-sub max-laptop:border-t max-laptop:border-color">
+      <section className="relative laptop:z-50 laptop:block">
+         {site.enableAds && (
+            <div className="laptop:hidden border-t border-color-sub bg-zinc-50 dark:bg-dark350 px-4 py-6">
+               <AdUnit
+                  className="h-[250px] w-[300px] tablet:h-[90px] tablet:w-[728px] laptop:h-[250px] laptop:w-[300px] 
+                  flex-none mx-auto rounded-lg relative"
+                  enableAds={site.enableAds}
+                  adType={{
+                     mobile: "med_rect_btf",
+                     tablet: "leaderboard_btf",
+                  }}
+                  selectorId="mobile-tablet-btf"
+               />
+            </div>
+         )}
          <div
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 
-            h-full bg-2-sub laptop:bg-2 border-color laptop:w-[334px] justify-between"
+            h-full bg-2-sub laptop:bg-2 border-color laptop:w-[334px] justify-between relative
+             max-laptop:bg-2-sub max-laptop:border-t max-laptop:border-color-sub"
          >
             <div>
                <section className="grid grid-cols-3 gap-4 py-4 relative z-20 max-laptop:max-w-[728px] max-tablet:px-4 max-laptop:mx-auto mx-4 max-laptop:w-full">
@@ -123,7 +138,6 @@ export function ColumnFour() {
                   <AboutSection site={site} hasTrending={false} />
                ) : undefined}
                <Contributors site={site} />
-
                <span
                   className="bg-gradient-to-t dark:from-bg3Dark dark:laptop:from-bg2Dark dark:to-transparent 
                            from-white laptop:from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
@@ -134,15 +148,18 @@ export function ColumnFour() {
                            pattern-size-2 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
                />
             </div>
+            {/* Desktop Right Sidebar 300x250 */}
             <AdUnit
                className={clsx(
                   groupedTrendingPages.length == 0
                      ? "laptop:mb-[72px] my-6"
                      : "mb-6 max-laptop:mt-3 laptop:mb-4",
-                  "h-[250px] w-[300px] flex-none mx-auto laptop:mt-2 rounded-lg bg-white max-laptop:dark:bg-dark450 dark:bg-dark350 z-20 laptop:z-40 relative",
+                  "max-laptop:hidden laptop:h-[250px] laptop:w-[300px] flex-none mx-auto laptop:mt-2 rounded-lg z-20 laptop:z-40 relative",
                )}
                enableAds={site.enableAds}
-               adType="med_rect_atf"
+               adType={{
+                  desktop: "med_rect_atf",
+               }}
                selectorId="sidebar-med-rect-atf"
             />
             {groupedTrendingPages.length > 0 ? (
@@ -212,7 +229,7 @@ export function ColumnFour() {
                                              <Link
                                                 key={nestedRow.path}
                                                 to={nestedRow.path}
-                                                className="flex items-center rounded-lg dark:laptop:hover:bg-dark350 max-laptop:mx-auto
+                                                className="flex items-center tablet:rounded-lg dark:laptop:hover:bg-dark350 max-laptop:mx-auto
                                           gap-2.5 p-1.5 group bg-white hover:bg-zinc-200/50 dark:bg-dark400 shadow-sm shadow-zinc-100
                                           dark:laptop:shadow-zinc-800 dark:shadow-zinc-700/80 dark:laptop:bg-bg3Dark max-laptop:w-[728px] laptop:w-[310px] laptop:ml-3 dark:hover:bg-dark450"
                                              >

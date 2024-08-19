@@ -8,15 +8,13 @@ export function BlockInlineAd({ element }: { element: InlineAdElement }) {
          <AdUnit
             className="mt-4"
             enableAds
-            adType="leaderboard_btf"
-            selectorId={`desktop-${element.id}`}
+            adType={{
+               desktop: "leaderboard_btf",
+               tablet: "leaderboard_btf",
+               mobile: "med_rect_btf",
+            }}
+            selectorId={`inline-${element.id}`}
          />
-         {/* <AdUnit
-               enableAds
-               adType="mobileSquareBTF"
-               selectorId={`mobile-${element.id}`}
-               className="flex items-center justify-center"
-            /> */}
       </AdPlaceholder>
    );
 }

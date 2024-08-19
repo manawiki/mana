@@ -53,7 +53,7 @@ import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { fetchPost } from "./utils/fetchPost.server";
 import { fetchPostComments } from "./utils/fetchPostComments.server";
 import { fetchPostWithSlug } from "./utils/fetchPostWithSlug.server";
-import { AdPlaceholder, AdUnit } from "../_components/RampUnit";
+import { AdUnit } from "../_components/RampUnit";
 
 export async function loader({
    context: { payload, user },
@@ -122,19 +122,15 @@ export default function Post() {
                </>
             )}
             <PostTableOfContents data={postContent} />
-            <AdPlaceholder>
-               <div
-                  className={`flex items-center justify-center ${
-                     enableAds ? "min-h-[90px] mb-4" : ""
-                  }`}
-               >
-                  <AdUnit
-                     enableAds={enableAds}
-                     adType="leaderboard_atf"
-                     selectorId="postDesktopLeaderATF"
-                  />
-               </div>
-            </AdPlaceholder>
+            <AdUnit
+               enableAds={enableAds}
+               adType={{
+                  desktop: "leaderboard_atf",
+                  tablet: "leaderboard_atf",
+                  mobile: "med_rect_atf",
+               }}
+               selectorId="postDesktopLeaderATF"
+            />
             {hasAccess ? (
                <>
                   <ManaEditor
