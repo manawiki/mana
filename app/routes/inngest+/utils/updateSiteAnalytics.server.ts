@@ -282,9 +282,9 @@ export const updateSiteAnalytics = inngest.createFunction(
                await authGQLFetcher({
                   customPath:
                      customCollection && !!siteDomain
-                        ? `https://${siteDomain}:4000/api/graphql`
+                        ? `http://${siteDomain}:4000/api/graphql`
                         : customCollection && !!siteSlug
-                          ? `https://${siteSlug}.mana.wiki:4000/api/graphql`
+                          ? `http://${siteSlug}.mana.wiki:4000/api/graphql`
                           : "https://mana.wiki/api/graphql",
                   variables: {
                      entrySlug: doc.entrySlug,
@@ -351,9 +351,9 @@ export const updateSiteAnalytics = inngest.createFunction(
                await authGQLFetcher({
                   customPath:
                      customCollection && !!siteDomain
-                        ? `https://${siteDomain}:4000/api/graphql`
+                        ? `http://${siteDomain}:4000/api/graphql`
                         : customCollection && !!siteSlug
-                          ? `https://${siteSlug}.mana.wiki:4000/api/graphql`
+                          ? `http://${siteSlug}.mana.wiki:4000/api/graphql`
                           : "https://mana.wiki/api/graphql",
                   variables: {
                      listSlug: doc.listSlug,
@@ -429,7 +429,7 @@ export const updateSiteAnalytics = inngest.createFunction(
                   if (collection.customDatabase == true) {
                      const totalCustomEntries = await authRestFetcher({
                         method: "GET",
-                        path: `https://${
+                        path: `http://${
                            siteDomain ? siteDomain : `${siteSlug}.mana.wiki`
                         }:4000/api/${collection.slug}`,
                      });
