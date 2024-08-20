@@ -75,23 +75,16 @@ export function Section({
          {entry.sections?.map((section: any) => (
             <Fragment key={section.id}>
                {section.showAd ? (
-                  <AdPlaceholder>
-                     <div
-                        className={`flex items-center justify-center mx-auto ${
-                           section.showAd ? "laptop:min-h-[90px] my-8" : ""
-                        }`}
-                     >
-                        <AdUnit
-                           enableAds={section.showAd}
-                           adType={{
-                              desktop: "leaderboard_btf",
-                              tablet: "leaderboard_btf",
-                              mobile: "med_rect_btf",
-                           }}
-                           selectorId={`sectionBTF-${section.id}`}
-                        />
-                     </div>
-                  </AdPlaceholder>
+                  <AdUnit
+                     enableAds={section.showAd}
+                     adType={{
+                        desktop: "leaderboard_btf",
+                        tablet: "leaderboard_btf",
+                        mobile: "med_rect_btf",
+                     }}
+                     className="my-8 mx-auto"
+                     selectorId={`sectionBTF-${section.id}`}
+                  />
                ) : null}
                <SectionParent
                   activeSection={activeSection}
