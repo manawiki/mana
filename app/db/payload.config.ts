@@ -72,10 +72,8 @@ export default buildConfig({
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),
    },
-   // disable ratelimit internally
+   // disable Payload ratelimit, rely on flyio request limit instead
    rateLimit: {
-      trustProxy: true,
-      max: 5000,
-      skip: (req) => req.get("host")?.includes("localhost") ?? false,
+      skip: () => true,
    },
 });

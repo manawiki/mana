@@ -81,10 +81,8 @@ export default buildConfig({
    },
    collections: [Users, CustomImages, ...CustomCollections],
    globals: [],
-   // disable ratelimit internally
+   // disable Payload ratelimit, rely on flyio request limit instead
    rateLimit: {
-      trustProxy: true,
-      max: 5000,
-      skip: (req) => req.get("host")?.includes("localhost") ?? false,
+      skip: () => true,
    },
 });
