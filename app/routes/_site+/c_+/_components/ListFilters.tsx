@@ -21,6 +21,7 @@ export function ListFilters({
    columnFilters,
    setColumnFilters,
    viewType,
+   searchPlaceholder,
    setViewMode,
 }: {
    collection: Collection;
@@ -29,6 +30,7 @@ export function ListFilters({
    setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;
    filters?: TableFilters;
    viewType?: "list" | "grid";
+   searchPlaceholder?: string;
    setViewMode: Dispatch<SetStateAction<"list" | "grid">>;
 }) {
    const [filterMenuToggle, setFilterToggle] = useState(false);
@@ -45,7 +47,13 @@ export function ListFilters({
    }, [debouncedSearchQuery]);
 
    return (
-      <div className="flex items-center justify-between w-full pb-2 gap-3 sticky top-32 laptop:top-[104px] z-20">
+      <div
+         className={clsx(
+            viewType == "list" && "top-32 laptop:top-[104px]",
+            viewType == "grid" && "top-32 laptop:top-20",
+            "flex items-center justify-between w-full pb-2 gap-3 sticky  z-20",
+         )}
+      >
          <div
             className="overflow-hidden bg-3 dark:border-zinc-600 shadow-sm dark:shadow-zinc-800/80 rounded-md dark:divide-zinc-600
             border border-zinc-300/80 h-9 grid grid-cols-2 flex-none divide-x divide-zinc-300/80"
@@ -79,7 +87,13 @@ export function ListFilters({
             <Icon name="search" size={14} />
             <input
                type="text"
-               placeholder={`Search ${collection?.name}...`}
+               placeholder={`${
+                  searchPlaceholder
+                     ? searchPlaceholder
+                     : collection?.name
+                       ? `Search ${collection?.name}...`
+                       : "Search..."
+               }`}
                className="border-0 bg-transparent focus:outline-none h-full w-full text-sm"
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
