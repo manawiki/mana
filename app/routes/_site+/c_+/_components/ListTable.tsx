@@ -32,6 +32,7 @@ export function ListTable({
    defaultViewType,
    gridView,
    defaultSort,
+   searchPlaceholder,
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[];
@@ -41,6 +42,7 @@ export function ListTable({
    filters?: TableFilters;
    gridView?: AccessorKeyColumnDef<any>;
    defaultSort?: SortingState;
+   searchPlaceholder?: string;
 }) {
    // Table state definitions
    const [tableData] = useState(() => [...data?.listData?.docs]);
@@ -90,6 +92,7 @@ export function ListTable({
    return (
       <>
          <ListFilters
+            searchPlaceholder={searchPlaceholder}
             collection={collection}
             filters={filters}
             columnFilters={columnFilters}

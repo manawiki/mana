@@ -113,31 +113,58 @@ export function ColumnFour() {
             h-full bg-2-sub laptop:bg-2 border-color laptop:w-[334px] justify-between relative
              max-laptop:bg-2-sub max-laptop:border-t max-laptop:border-color-sub"
          >
-            <div>
-               <section className="grid grid-cols-3 gap-4 py-4 relative z-20 max-laptop:max-w-[728px] max-tablet:px-4 max-laptop:mx-auto mx-4 max-laptop:w-full">
-                  <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
-                     <div className="text-xs font-bold text-center">
-                        {site.followers ? site.followers : "-"}
+            <div className="flex flex-col justify-between flex-grow">
+               <div>
+                  <section className="grid grid-cols-3 gap-4 py-4 relative z-20 max-laptop:max-w-[728px] max-tablet:px-4 max-laptop:mx-auto mx-4 max-laptop:w-full">
+                     <div
+                        className="dark:bg-dark400 dark:laptop:bg-bg3Dark max-laptop:dark:border-zinc-600/50 bg-white max-laptop:dark:shadow-zinc-800/60
+                       dark:laptop:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg"
+                     >
+                        <div className="text-xs font-bold text-center">
+                           {site.followers ? site.followers : "-"}
+                        </div>
+                        <div className="text-xs text-1 text-center">
+                           Followers
+                        </div>
                      </div>
-                     <div className="text-xs text-1 text-center">Followers</div>
-                  </div>
-                  <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
-                     <div className="text-xs font-bold text-center">
-                        {site.totalPosts ? site.totalPosts : "-"}
+                     <div
+                        className="dark:bg-dark400 dark:laptop:bg-bg3Dark max-laptop:dark:border-zinc-600/50 bg-white max-laptop:dark:shadow-zinc-800/60
+                       dark:laptop:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg"
+                     >
+                        <div className="text-xs font-bold text-center">
+                           {site.totalPosts ? site.totalPosts : "-"}
+                        </div>
+                        <div className="text-xs text-1 text-center">Posts</div>
                      </div>
-                     <div className="text-xs text-1 text-center">Posts</div>
-                  </div>
-                  <div className="dark:bg-bg3Dark bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
-                     <div className="text-xs text-center font-bold">
-                        {site.totalEntries ? site.totalEntries : "-"}
+                     <div
+                        className="dark:bg-dark400 dark:laptop:bg-bg3Dark max-laptop:dark:border-zinc-600/50 bg-white max-laptop:dark:shadow-zinc-800/60
+                       dark:laptop:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg"
+                     >
+                        <div className="text-xs text-center font-bold">
+                           {site.totalEntries ? site.totalEntries : "-"}
+                        </div>
+                        <div className="text-xs text-center text-1">
+                           Entries
+                        </div>
                      </div>
-                     <div className="text-xs text-center text-1">Entries</div>
-                  </div>
-               </section>
-               {groupedTrendingPages.length == 0 ? (
-                  <AboutSection site={site} hasTrending={false} />
-               ) : undefined}
-               <Contributors site={site} />
+                  </section>
+                  {groupedTrendingPages.length == 0 ? (
+                     <AboutSection site={site} hasTrending={false} />
+                  ) : undefined}
+                  <Contributors site={site} />
+               </div>
+               {/* Desktop Right Sidebar 300x250 */}
+               <AdUnit
+                  className={clsx(
+                     groupedTrendingPages.length == 0 ? "laptop:mb-[72px]" : "",
+                     "max-laptop:hidden laptop:h-[250px] laptop:w-[300px] flex-none mx-auto my-5 rounded-lg z-20 laptop:z-40 relative",
+                  )}
+                  enableAds={site.enableAds}
+                  adType={{
+                     desktop: "med_rect_atf",
+                  }}
+                  selectorId="sidebar-med-rect-atf"
+               />
                <span
                   className="bg-gradient-to-t dark:from-bg3Dark dark:laptop:from-bg2Dark dark:to-transparent 
                            from-white laptop:from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
@@ -148,26 +175,12 @@ export function ColumnFour() {
                            pattern-size-2 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
                />
             </div>
-            {/* Desktop Right Sidebar 300x250 */}
-            <AdUnit
-               className={clsx(
-                  groupedTrendingPages.length == 0
-                     ? "laptop:mb-[72px] my-6"
-                     : "mb-6 max-laptop:mt-3 laptop:mb-4",
-                  "max-laptop:hidden laptop:h-[250px] laptop:w-[300px] flex-none mx-auto laptop:mt-2 rounded-lg z-20 laptop:z-40 relative",
-               )}
-               enableAds={site.enableAds}
-               adType={{
-                  desktop: "med_rect_atf",
-               }}
-               selectorId="sidebar-med-rect-atf"
-            />
             {groupedTrendingPages.length > 0 ? (
                <>
                   <TabGroup className="flex-grow overflow-auto max-h-[652px] z-20">
                      <TabList
                         className="grid grid-cols-2 py-2 bg-white dark:bg-dark400 dark:laptop:bg-bg3Dark/80 sticky top-0 
-                  border-y dark:border-zinc-600/50 dark:laptop:border-zinc-700/30 dark:divide-zinc-600/50 dark:laptop:divide-zinc-700 laptop:border-color divide-x laptop:divide-color z-10"
+                        border-y dark:divide-zinc-600/50 max-laptop:dark:border-zinc-700 dark:laptop:divide-zinc-700 border-color divide-x z-10"
                      >
                         <Tab as={Fragment}>
                            {({ selected }) => (
@@ -181,7 +194,7 @@ export function ColumnFour() {
                                     Trending
                                  </span>
                                  {selected && (
-                                    <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-zinc-200 dark:bg-dark500 rounded-t ml-1 w-24 h-1"></span>
+                                    <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-zinc-300 dark:bg-dark500 rounded-t ml-1 w-24 h-[3px]"></span>
                                  )}
                               </button>
                            )}
@@ -198,7 +211,7 @@ export function ColumnFour() {
                                     About
                                  </span>
                                  {selected && (
-                                    <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-zinc-200 dark:bg-dark500 rounded-t ml-1 w-24 h-1"></span>
+                                    <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-zinc-300 dark:bg-dark500 rounded-t ml-1 w-24 h-[3px]"></span>
                                  )}
                               </button>
                            )}
@@ -216,22 +229,24 @@ export function ColumnFour() {
                                        page: "splide__pagination__page [&.is-active]:bg-zinc-500 [&.is-active]:dark:bg-zinc-300 bg-zinc-300 dark:bg-zinc-500 size-2.5 rounded-lg",
                                     },
                                  }}
-                                 className="relative overflow-auto pt-1.5 laptop:pt-2.5 laptop:pb-[100px]"
+                                 className="relative overflow-auto pt-2.5 laptop:pb-[100px] max-laptop:bg-zinc-50 dark:max-laptop:bg-dark350"
                                  aria-label="Trending Pages"
                               >
                                  <SplideTrack>
-                                    {groupedTrendingPages.map((row) => (
+                                    {groupedTrendingPages.map((row, index) => (
                                        <SplideSlide
                                           className="space-y-1.5"
-                                          key={row.path}
+                                          key={index}
                                        >
                                           {row.map((nestedRow: any) => (
                                              <Link
                                                 key={nestedRow.path}
                                                 to={nestedRow.path}
-                                                className="flex items-center tablet:rounded-lg dark:laptop:hover:bg-dark350 max-laptop:mx-auto
-                                          gap-2.5 p-1.5 group bg-white hover:bg-zinc-200/50 dark:bg-dark400 shadow-sm shadow-zinc-100
-                                          dark:laptop:shadow-zinc-800 dark:shadow-zinc-700/80 dark:laptop:bg-bg3Dark max-laptop:w-[728px] laptop:w-[310px] laptop:ml-3 dark:hover:bg-dark450"
+                                                className="flex items-center tablet:rounded-xl dark:laptop:hover:bg-dark350 max-laptop:mx-auto
+                                                gap-2.5 p-1.5 group bg-white hover:border-zinc-200/80 dark:bg-dark400 shadow-sm shadow-zinc-100
+                                              dark:laptop:shadow-zinc-800 dark:shadow-zinc-800/20 dark:laptop:bg-bg3Dark max-laptop:w-[728px] 
+                                                laptop:w-[310px] laptop:ml-3 dark:hover:bg-dark450 tablet:border tablet:border-zinc-100 
+                                                dark:tablet:border-zinc-700 dark:laptop:border-zinc-700/50"
                                              >
                                                 <div className="size-8 flex items-center justify-center flex-none">
                                                    {nestedRow.data?.icon
@@ -243,19 +258,22 @@ export function ColumnFour() {
                                                             nestedRow.data?.icon
                                                                ?.url
                                                          }
+                                                         className="rounded-lg"
                                                          options="aspect_ratio=1:1"
                                                          alt=""
                                                          loading="lazy"
                                                       />
                                                    ) : (
-                                                      <Icon
-                                                         name="component"
-                                                         className="dark:text-zinc-500 text-zinc-400 mx-auto"
-                                                         size={16}
-                                                      />
+                                                      <div className="size-8 bg-zinc-50 dark:bg-bg2Dark border border-color-sub flex items-center justify-center rounded-lg">
+                                                         <Icon
+                                                            name="component"
+                                                            className="dark:text-zinc-500 text-zinc-400 mx-auto"
+                                                            size={16}
+                                                         />
+                                                      </div>
                                                    )}
                                                 </div>
-                                                <div className="text-sm font-semibold">
+                                                <div className="text-sm font-semibold truncate">
                                                    {nestedRow.data.name}
                                                 </div>
                                              </Link>
@@ -264,8 +282,8 @@ export function ColumnFour() {
                                     ))}
                                  </SplideTrack>
                                  <div
-                                    className="splide__arrows bg-gradient-to-t dark:laptop:from-bg2Dark laptop:to-bg2Dark/20 flex items-center justify-between 
-                           w-full laptop:w-[333px] gap-1.5 px-3 laptop:fixed laptop:bottom-[54px] right-0 z-30"
+                                    className="splide__arrows bg-gradient-to-t laptop:from-white laptop:to-white/10 dark:laptop:from-bg2Dark laptop:to-bg2Dark/20 flex items-center justify-between 
+                                    w-full laptop:w-[333px] gap-1.5 px-3 laptop:fixed laptop:bottom-[54px] right-0 z-30"
                                  >
                                     <Button
                                        plain
