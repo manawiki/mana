@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Adjust NODE_VERSION as desired
-ARG NODE_VERSION=20.8.0
+ARG NODE_VERSION=22.6.0
 FROM node:${NODE_VERSION}-alpine as base
 
 LABEL fly_launch_runtime="Remix"
