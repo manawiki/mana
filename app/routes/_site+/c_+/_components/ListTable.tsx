@@ -48,7 +48,7 @@ export function ListTable({
    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
    const [globalFilter, setGlobalFilter] = useState("");
    const [viewMode, setViewMode] = useState(
-      defaultViewType ?? collection.defaultViewType ?? "list",
+      defaultViewType ?? collection?.defaultViewType ?? "list",
    );
    const [sorting, setSorting] = useState<SortingState>(defaultSort ?? []);
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
