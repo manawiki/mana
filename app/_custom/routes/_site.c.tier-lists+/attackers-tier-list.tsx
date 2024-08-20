@@ -80,6 +80,7 @@ const query = {
             },
             type: {
                name: true,
+               slug: true,
                icon: {
                   url: true,
                },
@@ -105,6 +106,7 @@ const query = {
             },
             type: {
                name: true,
+               slug: true,
                icon: {
                   url: true,
                },
@@ -130,6 +132,7 @@ const query = {
             },
             type: {
                name: true,
+               slug: true,
                icon: {
                   url: true,
                },
@@ -155,6 +158,7 @@ const query = {
             },
             type: {
                name: true,
+               slug: true,
                icon: {
                   url: true,
                },
@@ -180,6 +184,7 @@ const query = {
             },
             type: {
                name: true,
+               slug: true,
                icon: {
                   url: true,
                },
@@ -205,6 +210,7 @@ const query = {
             },
             type: {
                name: true,
+               slug: true,
                icon: {
                   url: true,
                },

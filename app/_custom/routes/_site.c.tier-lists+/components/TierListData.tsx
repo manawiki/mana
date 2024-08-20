@@ -9,6 +9,7 @@ export type TierListData = {
    type: [
       {
          name: string;
+         slug: string;
          icon: {
             url: string;
          };

@@ -1,18 +1,17 @@
-import { GridCell } from "./GridCell";
-import type { TierListData } from "./TierListData";
+import { ListTable } from "~/routes/_site+/c_+/_components/ListTable";
+
+import { columns, filters, gridView } from "./ListTierList";
 
 export function TierThree({ data }: { data: any }) {
    return (
-      <div className="grid grid-cols-2 tablet:grid-cols-4 gap-3">
-         {data.tier3.docs.map((row: TierListData) => (
-            <GridCell
-               key={row.id}
-               href={`/c/pokemon/${row.slug}`}
-               icon={row?.icon?.url}
-               name={row.name}
-               type={row.type}
-            />
-         ))}
-      </div>
+      <ListTable
+         gridView={gridView}
+         defaultViewType="grid"
+         defaultSort={[{ id: "name", desc: true }]}
+         data={{ listData: { docs: data.tier3.docs } }}
+         columns={columns}
+         columnViewability={{ type: false }}
+         filters={filters}
+      />
    );
 }
