@@ -47,7 +47,7 @@ export async function loader({
 const SECTIONS = {
    main: Main,
    family: PokemonFamily,
-   ratings: Ratings,
+   // ratings: Ratings,
    moves: Moves,
    "type-chart": TypeChart,
    other: OtherInfo,

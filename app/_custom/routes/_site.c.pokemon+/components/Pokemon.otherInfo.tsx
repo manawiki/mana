@@ -21,15 +21,17 @@ export function OtherInfo({
    return (
       <>
          <div className={InfoBlock_Container}>
-            <div className={InfoBlock_Row}>
-               <div className={InfoBlock_Label}>Purification Cost</div>
-               <div className={InfoBlock_Content}>
-                  <Label
-                     fieldName="purificationCost"
-                     value={pokemon.purificationCost}
-                  />
+            {pokemon.purificationCost && (
+               <div className={InfoBlock_Row}>
+                  <div className={InfoBlock_Label}>Purification Cost</div>
+                  <div className={InfoBlock_Content}>
+                     <Label
+                        fieldName="purificationCost"
+                        value={pokemon.purificationCost}
+                     />
+                  </div>
                </div>
-            </div>
+            )}
             {pokemon.secondChargeMoveCost && (
                <div className={InfoBlock_Row}>
                   <div className={InfoBlock_Label}>Second Charge Move Cost</div>
