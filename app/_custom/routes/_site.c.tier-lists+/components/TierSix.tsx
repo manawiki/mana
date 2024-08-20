@@ -6,6 +6,7 @@ export function TierSix({ data }: { data: any }) {
    return (
       <ListTable
          gridView={gridView}
+         searchPlaceholder="Filter by Pokemon name..."
          defaultViewType="grid"
          defaultSort={[{ id: "name", desc: true }]}
          data={{ listData: { docs: data.tier6.docs } }}

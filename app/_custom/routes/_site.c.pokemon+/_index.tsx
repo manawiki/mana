@@ -119,7 +119,7 @@ const columns = [
                                  width={14}
                                  url={type?.icon?.url}
                                  options="height=40&width=40"
-                                 alt={type?.name}
+                                 alt={type?.name ?? ""}
                               />
                            </TooltipTrigger>
                            <TooltipContent>{type?.name}</TooltipContent>
@@ -135,7 +135,7 @@ const columns = [
       filterFn: (row, columnId, filterValue) => {
          const existingFilter =
             filterValue && filterValue.length > 0
-               ? row?.original?.type?.every((type: any) =>
+               ? row?.original?.type?.some((type: any) =>
                     filterValue.includes(type.slug),
                  )
                : true;

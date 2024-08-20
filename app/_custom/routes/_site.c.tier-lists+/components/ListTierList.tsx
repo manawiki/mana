@@ -79,7 +79,7 @@ export const columns = [
       filterFn: (row, columnId, filterValue) => {
          const existingFilter =
             filterValue && filterValue.length > 0
-               ? row?.original?.type?.every((type: any) =>
+               ? row?.original?.type?.some((type: any) =>
                     filterValue.includes(type.slug),
                  )
                : true;

@@ -5,6 +5,7 @@ import { columns, filters, gridView } from "./ListTierList";
 export function TierOne({ data }: { data: any }) {
    return (
       <ListTable
+         searchPlaceholder="Filter by Pokemon name..."
          defaultViewType="grid"
          gridView={gridView}
          defaultSort={[{ id: "name", desc: true }]}

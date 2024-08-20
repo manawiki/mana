@@ -15,7 +15,6 @@ import { PokemonFamily } from "./components/Pokemon.family";
 import { Main } from "./components/Pokemon.main";
 import { Moves } from "./components/Pokemon.moves";
 import { OtherInfo } from "./components/Pokemon.otherInfo";
-import { Ratings } from "./components/Pokemon.ratings";
 import { TypeChart } from "./components/TypeChart";
 
 export { entryMeta as meta };
@@ -47,7 +46,6 @@ export async function loader({
 const SECTIONS = {
    main: Main,
    family: PokemonFamily,
-   // ratings: Ratings,
    moves: Moves,
    "type-chart": TypeChart,
    other: OtherInfo,
