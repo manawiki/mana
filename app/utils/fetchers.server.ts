@@ -27,7 +27,7 @@ export function authRestFetcher({
             headers: {
                Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
                "Content-Type": "application/json",
-               connection: "keep-alive",
+               // connection: "keep-alive",
             },
          }),
          ...(body &&
@@ -68,7 +68,7 @@ export function authGQLFetcher({
             ...(process.env.MANA_APP_KEY && {
                Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
             }),
-            connection: "keep-alive",
+            // connection: "keep-alive",
          },
       );
    } catch (err) {
