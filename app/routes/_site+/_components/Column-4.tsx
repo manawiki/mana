@@ -83,7 +83,7 @@ export function ColumnFour() {
    const theme = useTheme();
 
    //@ts-ignore
-   const trendingPages = (site?.trendingPages || []).slice(0, 50);
+   const trendingPages = site?.trendingPages || [];
    const groupedTrendingPages = [];
 
    //@ts-ignore
