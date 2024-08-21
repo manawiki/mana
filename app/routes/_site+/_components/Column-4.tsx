@@ -177,7 +177,7 @@ export function ColumnFour() {
             </div>
             {groupedTrendingPages.length > 0 ? (
                <>
-                  <TabGroup className="flex-grow overflow-auto max-h-[652px] z-20">
+                  <TabGroup className="flex-grow overflow-auto max-h-[670px] z-20">
                      <TabList
                         className="grid grid-cols-2 py-2 bg-white dark:bg-dark400 dark:laptop:bg-bg3Dark/80 sticky top-0 
                         border-y dark:divide-zinc-600/50 max-laptop:dark:border-zinc-700 dark:laptop:divide-zinc-700 border-color divide-x z-10"
