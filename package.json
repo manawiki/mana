@@ -1,5 +1,7 @@
 {
+   "name": "mana",
    "private": true,
+   "license": "MIT",
    "sideEffects": false,
    "scripts": {
       "dev": "run-p dev:core dev:custom",
@@ -68,7 +70,7 @@
       "dotenv": "^16.0.3",
       "express": "^4.18.2",
       "graphql": "^16.8.0",
-      "graphql-request": "^7.1.0",
+      "graphql-request": "7.1.0",
       "html-to-image": "^1.11.11",
       "i18next": "^23.10.0",
       "i18next-browser-languagedetector": "^7.2.0",
