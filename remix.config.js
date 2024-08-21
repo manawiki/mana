@@ -8,6 +8,7 @@ module.exports = {
    serverDependenciesToBundle: [
       "nanoid",
       "react-code-block",
+      "graphql-request",
       /^remix-utils.*/,
       /^remix-i18next*/,
       /^@epic-web.*/,

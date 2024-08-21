@@ -1,0 +1,43 @@
+diff --git a/node_modules/graphql-request/package.json b/node_modules/graphql-request/package.json
+index 88817cf..c370592 100644
+--- a/node_modules/graphql-request/package.json
++++ b/node_modules/graphql-request/package.json
+@@ -2,36 +2,11 @@
+   "name": "graphql-request",
+   "version": "7.1.0",
+   "packageManager": "pnpm@9.4.0",
+-  "type": "module",
+   "bin": {
+     "graffle": "./build/cli/generate.js"
+   },
+-  "exports": {
+-    ".": {
+-      "import": {
+-        "types": "./build/entrypoints/main.d.ts",
+-        "default": "./build/entrypoints/main.js"
+-      }
+-    },
+-    "./alpha/client": {
+-      "import": {
+-        "types": "./build/entrypoints/alpha/client.d.ts",
+-        "default": "./build/entrypoints/alpha/client.js"
+-      }
+-    },
+-    "./alpha/schema": {
+-      "import": {
+-        "types": "./build/entrypoints/alpha/schema.d.ts",
+-        "default": "./build/entrypoints/alpha/schema.js"
+-      }
+-    },
+-    "./alpha/schema/scalars": {
+-      "import": {
+-        "types": "./build/entrypoints/alpha/scalars.d.ts",
+-        "default": "./build/entrypoints/alpha/scalars.js"
+-      }
+-    }
+-  },
++  "main": "./build/entrypoints/main.js",
++  "types": "./build/entrypoints/main.d.ts",
+   "files": [
+     "build",
+     "src"

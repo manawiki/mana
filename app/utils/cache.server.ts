@@ -47,7 +47,7 @@ export async function fetchWithCache<T>(
       async getFreshValue() {
          const response = await fetch(url, init);
          // console.log("cached: ", key);
-         return response.json();
+         return response.json() as T;
       },
       checkValue<T>(value: T) {
          // console.log(value);
