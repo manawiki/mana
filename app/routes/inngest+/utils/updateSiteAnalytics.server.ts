@@ -109,7 +109,8 @@ export const updateSiteAnalytics = inngest.createFunction(
                   pageViews,
                   path,
                };
-            });
+            })
+            .slice(0, 50);
 
       async function getEntryData(doc: {
          customPageSlug?: string;
