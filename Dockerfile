@@ -28,7 +28,7 @@ RUN apk update && \
     apk add build-base gyp pkgconfig python3 
 
 # Install node modules
-COPY --link ./package.json ./yarn.lock ./patches ./
+ADD ./package.json ./yarn.lock ./patches ./
 RUN yarn install --frozen-lockfile --production=false
 
 # Copy application code
