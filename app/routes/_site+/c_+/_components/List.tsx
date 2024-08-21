@@ -86,13 +86,13 @@ export function List({
             isChanged={isChanged}
          />
          <AdUnit
-            className="mt-5"
             enableAds={site.enableAds}
             adType={{
                desktop: "leaderboard_atf",
                tablet: "leaderboard_atf",
                mobile: "med_rect_atf",
             }}
+            className="mt-6 mb-4 mx-auto flex items-center justify-center"
             selectorId="listDesktopLeaderATF"
          />
          <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
