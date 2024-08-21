@@ -94,20 +94,17 @@ export function ColumnFour() {
 
    return (
       <section className="relative laptop:z-50 laptop:block">
-         {site.enableAds && (
-            <div className="laptop:hidden border-t border-color-sub bg-zinc-50 dark:bg-dark350 px-4 py-6">
-               <AdUnit
-                  className="h-[250px] w-[300px] tablet:h-[90px] tablet:w-[728px] laptop:h-[250px] laptop:w-[300px] 
-                  flex-none mx-auto rounded-lg relative"
-                  enableAds={site.enableAds}
-                  adType={{
-                     mobile: "med_rect_btf",
-                     tablet: "leaderboard_btf",
-                  }}
-                  selectorId="mobile-tablet-btf"
-               />
-            </div>
-         )}
+         {site.enableAds ? (
+            <AdUnit
+               className="laptop:hidden my-8 flex-none mx-auto rounded-lg relative"
+               enableAds={site.enableAds}
+               adType={{
+                  mobile: "med_rect_btf",
+                  tablet: "leaderboard_btf",
+               }}
+               selectorId="mobile-tablet-btf"
+            />
+         ) : undefined}
          <div
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 
             h-full bg-2-sub laptop:bg-2 border-color laptop:w-[334px] justify-between relative
