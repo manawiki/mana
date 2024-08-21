@@ -38,7 +38,7 @@ COPY --link . .
 RUN yarn run build
 
 # Remove development dependencies
-RUN yarn install --production=true
+RUN yarn install --frozen-lockfile --production=true
 
 # Final stage for app image
 FROM base
