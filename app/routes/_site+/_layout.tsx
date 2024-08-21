@@ -43,7 +43,7 @@ export default function SiteLayout() {
          <MobileHeader />
          <main
             className="laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr_334px] 
-           laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr_334px] max-laptop:pb-[50px]"
+           laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr_334px] max-laptop:mb-[50px] max-laptop:border-b max-laptop:border-color"
          >
             <ColumnOne />
             <ColumnTwo
