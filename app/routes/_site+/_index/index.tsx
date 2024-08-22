@@ -5,6 +5,7 @@ import type {
    MetaFunction,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
 import { jsonWithSuccess } from "remix-toast";
 import type { Descendant } from "slate";
 import { z } from "zod";
@@ -65,7 +66,12 @@ export default function SiteIndexMain() {
 
    return (
       <>
-         <main className="pb-3 max-tablet:px-3 pt-20 laptop:pt-6 relative">
+         <main
+            className={clsx(
+               hasAccess ? "laptop:pb-32" : "laptop:pb-14",
+               "max-tablet:px-3 pt-20 laptop:pt-6 relative ",
+            )}
+         >
             {hasAccess ? (
                <>
                   <ManaEditor
@@ -76,6 +82,7 @@ export default function SiteIndexMain() {
                   />
                   <EditorCommandBar
                      collectionSlug="homeContents"
+                     //@ts-ignore
                      homeContentId={homeContentId}
                      fetcher={fetcher}
                      isChanged={isChanged}
