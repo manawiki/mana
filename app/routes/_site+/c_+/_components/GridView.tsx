@@ -6,7 +6,7 @@ export function GridView({ table }: { table: TableType<any> }) {
          {table.getRowModel().rows.map((row) => {
             return (
                <div
-                  className="p-2 dark:hover:border-zinc-600 border rounded-md bg-zinc-50 
+                  className="p-2 dark:hover:border-zinc-600 border rounded-md bg-zinc-50 truncate
                   dark:bg-dark350 border-color-sub shadow-sm dark:shadow-zinc-800/80 hover:border-zinc-300"
                   key={row.id}
                >

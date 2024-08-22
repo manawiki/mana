@@ -14,9 +14,9 @@ import { ColumnFour } from "./_components/Column-4";
 import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
 import { RampInit } from "./_components/RampInit";
+import { AdUnit } from "./_components/RampUnit";
 import { SiteHeader } from "./_components/SiteHeader";
 import { fetchSite } from "./_utils/fetchSite.server";
-import { AdUnit } from "./_components/RampUnit";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 

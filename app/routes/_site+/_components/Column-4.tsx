@@ -96,7 +96,7 @@ export function ColumnFour() {
       <section className="relative laptop:z-50 laptop:block">
          {site.enableAds ? (
             <AdUnit
-               className="laptop:hidden my-8 flex-none mx-auto rounded-lg relative"
+               className="laptop:hidden mt-6 mb-10 flex-none flex items-center justify-center mx-auto rounded-lg relative"
                enableAds={site.enableAds}
                adType={{
                   mobile: "med_rect_btf",
