@@ -175,7 +175,7 @@ export function ColumnFour() {
             {groupedTrendingPages.length > 0 ? (
                <>
                   <TabGroup
-                     className="flex-grow overflow-auto max-h-[670px] z-20 dark:bg-dark350 scrollbar 
+                     className="flex-grow overflow-auto max-h-[672px] z-20 scrollbar 
                             dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
                             scrollbar-thumb-zinc-300 scrollbar-track-zinc-100"
                   >

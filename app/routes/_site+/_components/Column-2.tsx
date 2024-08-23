@@ -34,7 +34,7 @@ export function ColumnTwo({
       <section className="bg-2 border-color shadow-1 z-50 border-r laptop:shadow-sm laptop:shadow-1">
          <div
             className="fixed bottom-0 flex flex-col top-0 z-50 mx-auto h-full overflow-y-auto shadow-sm  
-            max-laptop:hidden laptop:w-[60px] desktop:w-[229px] pb-28
+            max-laptop:hidden laptop:w-[60px] desktop:w-[229px] laptop:pb-72
             dark:scrollbar-thumb-dark500 dark:scrollbar-track-bg2Dark
             scrollbar-thumb-zinc-200 scrollbar-track-zinc-50 scrollbar"
          >
