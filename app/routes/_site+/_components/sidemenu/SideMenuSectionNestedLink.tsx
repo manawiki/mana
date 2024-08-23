@@ -1,11 +1,13 @@
-import { Link, NavLink, useLocation } from "@remix-run/react";
-import { CSS } from "@dnd-kit/utilities";
-import { Icon } from "~/components/Icon";
-import { Avatar } from "~/components/Avatar";
-import clsx from "clsx";
-import { useSortable } from "@dnd-kit/sortable";
 import { useState } from "react";
+
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Link, useLocation } from "@remix-run/react";
+import clsx from "clsx";
 import { nanoid } from "nanoid";
+
+import { Avatar } from "~/components/Avatar";
+import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 
 export function SideMenuSectionNestedLink({

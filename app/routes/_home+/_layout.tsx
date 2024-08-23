@@ -1,4 +1,5 @@
-import { Link, Outlet } from "@remix-run/react";
+import { Link, Outlet, useLocation } from "@remix-run/react";
+import clsx from "clsx";
 
 import { LogoFull } from "~/components/Logo";
 
@@ -17,8 +18,14 @@ export default function IndexLayout() {
 }
 
 function Header() {
+   const { pathname } = useLocation();
    return (
-      <header className="z-50 w-full absolute">
+      <header
+         className={clsx(
+            pathname === "/" ? "bg-transparent" : " bg-zinc-900",
+            "z-50 w-full absolute",
+         )}
+      >
          <div className="mx-auto max-w-5xl p-4 flex items-center justify-between w-full">
             <Link className="block text-white" to="/" aria-label="Mana Wiki">
                <LogoFull />

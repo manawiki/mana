@@ -42,6 +42,11 @@ async function manaRoutes(defineRoutes) {
             parentId: "routes/_site+/_layout",
             file: "routes/_home+/_index.tsx",
          },
+         "routes/_site+/privacy": {
+            id: "routes/_site+/privacy",
+            parentId: "root",
+            file: "routes/_site+/privacy.tsx",
+         },
       };
       return routes;
    }
@@ -57,6 +62,12 @@ async function manaRoutes(defineRoutes) {
          id: "routes/_home+/_index",
          parentId: "routes/_home+/_layout",
          file: "routes/_site+/_index/index.tsx",
+      },
+      "routes/_home+/privacy": {
+         index: true,
+         id: "routes/_home+/privacy",
+         parentId: "root",
+         file: "routes/_site+/privacy.tsx",
       },
    };
    return routes;
