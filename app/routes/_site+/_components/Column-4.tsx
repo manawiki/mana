@@ -174,9 +174,13 @@ export function ColumnFour() {
             </div>
             {groupedTrendingPages.length > 0 ? (
                <>
-                  <TabGroup className="flex-grow overflow-auto max-h-[670px] z-20">
+                  <TabGroup
+                     className="flex-grow overflow-auto max-h-[670px] z-20 dark:bg-dark350 scrollbar 
+                            dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
+                            scrollbar-thumb-zinc-300 scrollbar-track-zinc-100"
+                  >
                      <TabList
-                        className="grid grid-cols-2 py-2 bg-white dark:bg-dark400 dark:laptop:bg-bg3Dark/80 sticky top-0 
+                        className="grid grid-cols-2 py-2 bg-white dark:bg-dark400 dark:laptop:bg-bg3Dark sticky top-0 
                         border-y dark:divide-zinc-600/50 max-laptop:dark:border-zinc-700 dark:laptop:divide-zinc-700 border-color divide-x z-10"
                      >
                         <Tab as={Fragment}>
@@ -229,7 +233,7 @@ export function ColumnFour() {
                                  className="relative overflow-auto pt-2.5 laptop:pb-[100px] max-laptop:bg-zinc-50 dark:max-laptop:bg-dark350"
                                  aria-label="Trending Pages"
                               >
-                                 <SplideTrack>
+                                 <SplideTrack className="pb-0.5">
                                     {groupedTrendingPages.map((row, index) => (
                                        <SplideSlide
                                           className="space-y-1.5"

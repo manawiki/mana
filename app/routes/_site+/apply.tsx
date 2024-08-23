@@ -86,12 +86,12 @@ export default function Apply() {
                )}
             </div>
          </div>
-         {application?.reviewMessage && (
+         {application?.reviewMessage ? (
             <div className="py-3 px-4 text-sm rounded-xl border border-color-sub bg-2-sub shadow-sm dark:shadow-zinc-800/50 mb-6">
-               <div className="text-1 text-xs pb-1">Reviewer reply:</div>
-               {application?.reviewMessage}
+               <div className="text-1 text-xs pb-1">Reviewer reply</div>
+               {`${application?.reviewMessage}`}
             </div>
-         )}
+         ) : undefined}
          <fetcher.Form method="post" ref={zo.ref}>
             <FieldGroup>
                <Field
@@ -182,7 +182,7 @@ export async function action({
    switch (intent) {
       case "createApplication": {
          try {
-            const { siteId, primaryDetails, additionalNotes } =
+            const { siteId, primaryDetails, additionalNotes, discordUsername } =
                await zx.parseForm(request, SiteApplicationSchema);
             return await payload.create({
                collection: "siteApplications",
@@ -191,6 +191,7 @@ export async function action({
                   primaryDetails: primaryDetails as any,
                   additionalNotes: additionalNotes as any,
                   createdBy: user.id as any,
+                  discordUsername: discordUsername,
                   site: siteId as any,
                   status: "under-review",
                },

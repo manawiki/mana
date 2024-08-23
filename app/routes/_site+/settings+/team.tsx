@@ -14,7 +14,6 @@ import { zx } from "zodix";
 
 import { Avatar } from "~/components/Avatar";
 import { DotLoader } from "~/components/DotLoader";
-import { H2Plain } from "~/components/Headers";
 import {
    Table,
    TableBody,

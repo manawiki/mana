@@ -78,19 +78,19 @@ export function ApplicationViewer({
                      <div className="text-1 text-sm pb-1 font-semibold">
                         Discord Username
                      </div>
-                     <div>{application.discordUsername}</div>
+                     <div>{application.discordUsername ?? "-"}</div>
                   </div>
                   <div>
                      <div className="text-1 text-sm pb-1 font-semibold">
                         In what ways would you like to help?
                      </div>
-                     <div>{application.primaryDetails}</div>
+                     <div>{application.primaryDetails ?? "-"}</div>
                   </div>
                   <div>
                      <div className="text-1 text-sm pb-1 font-semibold">
                         Anything else you'd like to share?
                      </div>
-                     <div>{application.additionalNotes}</div>
+                     <div>{application.additionalNotes ?? "-"}</div>
                   </div>
                </div>
                <div className="border-t border-color -mx-5 px-5 pt-5">
@@ -99,7 +99,7 @@ export function ApplicationViewer({
                         <div className="text-1 pb-1 text-sm font-semibold">
                            Review Notes
                         </div>
-                        <div>{application.reviewMessage}</div>
+                        <div>{application.reviewMessage ?? "-"}</div>
                      </div>
                   ) : (
                      <fetcher.Form method="post" ref={zo.ref}>
