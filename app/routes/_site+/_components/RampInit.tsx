@@ -33,6 +33,8 @@ export function RampInit({ adWebId }: { adWebId?: string | null | undefined }) {
       if (slotsToRemove && slotsToRemove.length > 0) {
          //@ts-ignore
          window.ramp.destroyUnits(slotsToRemove).then(addUnits);
+         //@ts-ignore
+         window.PageOS.session.newPageView();
       }
    };
 
