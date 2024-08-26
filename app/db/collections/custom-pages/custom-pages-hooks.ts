@@ -44,7 +44,15 @@ export const customPagesAfterChangeHook: CollectionAfterChangeHook = async ({
 
       const description = doc?.description;
 
-      const iconUrl = doc?.icon?.url;
+      const { url: iconUrl } = doc?.icon?.url
+         ? { url: doc?.icon?.url }
+         : doc?.icon
+           ? await payload.findByID({
+                collection: "images",
+                id: doc?.icon,
+                depth: 0,
+             })
+           : { url: null };
 
       await typesensePrivateClient
          .collections("customPages")

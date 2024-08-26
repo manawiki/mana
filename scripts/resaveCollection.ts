@@ -1,6 +1,6 @@
 import Payload from "payload";
 
-import { manaSlug } from "../app/utils/url-slug";
+// import { manaSlug } from "../app/utils/url-slug";
 
 require("dotenv").config();
 
@@ -41,7 +41,7 @@ const resaveCollection = async () => {
                   await payload.update({
                      collection: collectionSlug,
                      id,
-                     depth: 0,
+                     depth: 2,
                      data: {
                         updatedAt: new Date(),
                         // slug: manaSlug(result.name),
