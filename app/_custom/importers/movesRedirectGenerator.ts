@@ -28,7 +28,7 @@ start();
 
 async function mapper() {
    const results = await payload.find({
-      collection: "pokemon",
+      collection: "moves",
       sort: "-id",
       limit: 5000,
    });
@@ -38,15 +38,9 @@ async function mapper() {
 
    // Generate CSV rows
    const csvRows = results.docs.map((row: any) => {
-      const { name, slug, number, isShadow } = row;
+      const { name, slug } = row;
 
-      return `${name},https://pokemongo.gamepress.gg/c/pokemon/${slug},https://pogo.gamepress.gg/pokemon/${number}${
-         isShadow ? "-shadow" : ""
-      }${name.startsWith("Alolan") ? "-alolan" : ""}${
-         name.startsWith("Hisuian") ? "-hisuian" : ""
-      }${name.startsWith("Galarian") ? "-galarian" : ""}${
-         name.startsWith("Mega") ? "-mega" : ""
-      }\n`;
+      return `${name},https://pokemongo.gamepress.gg/c/moves/${slug},https://pogo.gamepress.gg/pokemon-move/${slug}\n`;
    });
 
    // Combine header and rows
