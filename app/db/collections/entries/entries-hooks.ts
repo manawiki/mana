@@ -49,7 +49,16 @@ export const entriesAfterChangeHook: CollectionAfterChangeHook = async ({
          doc?.site?.domain ? doc?.site?.domain : `${doc?.site?.slug}.mana.wiki`
       }${entryRelativeURL}`;
 
-      const iconUrl = doc?.icon?.url;
+      const { url: iconUrl } = doc?.icon?.url
+         ? { url: doc?.icon?.url }
+         : doc?.icon
+           ? await payload.findByID({
+                collection: "images",
+                id: doc?.icon,
+                depth: 0,
+             })
+           : { url: null };
+
       const description = doc?.collectionEntity?.name;
 
       await typesensePrivateClient

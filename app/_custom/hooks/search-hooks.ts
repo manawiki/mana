@@ -56,14 +56,14 @@ export const afterChangeSearchSyncHook: CollectionAfterChangeHook = async ({
 
          //Due to the way Payload handles depth in relationships, we need to fetch the icon URL if it exists
          const { url: iconUrl } = doc?.icon?.url
-            ? doc?.icon
+            ? { url: doc?.icon?.url }
             : doc?.icon
               ? await payload.findByID({
                    collection: "images",
                    id: doc?.icon,
                    depth: 0,
                 })
-              : null;
+              : { url: null };
 
          await typesensePrivateClient
             .collections("entries")

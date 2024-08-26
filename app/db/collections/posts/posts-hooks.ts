@@ -51,7 +51,16 @@ export const postsAfterChangeHook: CollectionAfterChangeHook = async ({
                : `${doc?.site?.slug}.mana.wiki`
          }${postRelativeURL}`;
 
-         const bannerUrl = doc?.banner?.url;
+         //Due to the way Payload handles depth in relationships, we need to fetch the icon URL if it exists
+         const { url: bannerUrl } = doc?.banner?.url
+            ? { url: doc?.banner?.url }
+            : doc?.banner
+              ? await payload.findByID({
+                   collection: "images",
+                   id: doc?.banner,
+                   depth: 0,
+                })
+              : { url: null };
          const description = doc?.subtitle;
 
          await typesensePrivateClient

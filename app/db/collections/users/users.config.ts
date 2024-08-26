@@ -26,7 +26,9 @@ export const Users: CollectionConfig = {
                     }/verify?token=${token}`;
 
             return `
-            <span>Hey ${user.email}, thanks for registering at Mana.</span>
+            <span>Hey ${user.email}, thanks for registering at ${
+               process.env.HOST_DOMAIN ?? "mana.wiki"
+            }</span>
             <br><br>
             <table width="100%" cellspacing="0" cellpadding="0">
                <tr>
