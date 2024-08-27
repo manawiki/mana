@@ -85,6 +85,9 @@ async function startCore() {
    const getHost = (req: { get: (key: string) => string | undefined }) =>
       req.get("X-Forwarded-Host") ?? req.get("host") ?? "";
 
+   // fly is our proxy
+   app.set("trust proxy", true);
+
    app.use((req, res, next) => {
       //enforce https connection to make sure the site uses http2 protocol
       const proto = req.get("X-Forwarded-Proto");
