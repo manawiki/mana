@@ -6,7 +6,7 @@ import { Entries } from "./entries/entries-config";
 import { HomeContents } from "./home-contents/config";
 import { Images } from "./images/config";
 import { PostContents } from "./post-contents/post-contents-config";
-import { PostTags } from "./post-tags/config";
+import { PostTags } from "./post-tags/post-tags-config";
 import { Posts } from "./posts/posts-config";
 import { SiteApplications } from "./site-applications/site-applications-config";
 import { Sites } from "./sites/site-config";
