@@ -45,7 +45,7 @@ export function SubSectionTabs({
                //@ts-ignore
                getContent?.content[0]?.children[0]?.text == "";
 
-            if (isEmpty && !hasAccess) {
+            if ((isEmpty && !hasAccess) || (!getContent && !hasAccess)) {
                return false;
             }
          }
