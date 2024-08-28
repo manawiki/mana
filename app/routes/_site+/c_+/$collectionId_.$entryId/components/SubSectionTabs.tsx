@@ -32,10 +32,20 @@ export function SubSectionTabs({
       ?.filter((subSection) => {
          if (subSection.type == "editor") {
             const embeddedContent = entry?.embeddedContent;
-            const hasContent = embeddedContent?.find(
+            const getContent = embeddedContent?.find(
                ({ subSectionId }) => subSectionId == subSection.id,
             );
-            if (!hasContent && !hasAccess) {
+            const isEmpty =
+               //@ts-ignore
+               (getContent?.content?.length == 1 ||
+                  //@ts-ignore
+                  getContent?.content?.length == 0) &&
+               //@ts-ignore
+               getContent?.content[0]?.type == "paragraph" &&
+               //@ts-ignore
+               getContent?.content[0]?.children[0]?.text == "";
+
+            if (isEmpty && !hasAccess) {
                return false;
             }
          }
