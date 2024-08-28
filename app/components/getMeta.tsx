@@ -7,6 +7,7 @@ export type MetaType = {
    image?: string;
    icon?: string;
    url?: string;
+   canonicalURL?: string;
    keywords?: string;
 };
 
@@ -21,6 +22,7 @@ export function getMeta({
    image,
    icon,
    url,
+   canonicalURL,
    keywords,
 }: MetaType) {
    const meta = [{ title }] as MetaDescriptor[];
@@ -47,6 +49,10 @@ export function getMeta({
          content: icon,
       });
    if (url) meta.push({ property: "og:url", content: url });
+
+   //insert canonical link
+   if (canonicalURL)
+      meta.push({ tagName: "link", rel: "canonical", href: canonicalURL });
 
    //insert twitter metadata
    meta.push({ name: "twitter:site", content: "@mana_wiki" });
