@@ -30,5 +30,12 @@ export const entryMeta: MetaFunction = ({
       (value) => value?.url && typeof value.url === "string",
    )?.url;
 
-   return getMeta({ title, description, image, siteName });
+   const siteDomain = matches?.[1]?.data?.site?.domain;
+   const siteSlug = matches?.[1]?.data?.site?.slug;
+
+   const canonicalURL = `https://${
+      siteDomain ?? `${siteSlug}.mana.wiki`
+   }/c/${data?.entry?.collectionSlug}/${data?.entry?.slug}`;
+
+   return getMeta({ title, description, image, siteName, canonicalURL });
 };

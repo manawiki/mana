@@ -24,5 +24,18 @@ export const listMeta: MetaFunction = ({ matches }: { matches: any }) => {
       sections?.join(", ") +
       ` on ${site?.name}. `;
 
-   return getMeta({ title, description, icon, siteName: site?.name });
+   const siteDomain = matches?.[1]?.data?.site?.domain;
+   const siteSlug = matches?.[1]?.data?.site?.slug;
+
+   const canonicalURL = `https://${siteDomain ?? `${siteSlug}.mana.wiki`}/c/${
+      collection.slug
+   }`;
+
+   return getMeta({
+      title,
+      description,
+      icon,
+      siteName: site?.name,
+      canonicalURL,
+   });
 };

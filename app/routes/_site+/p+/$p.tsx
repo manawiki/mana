@@ -86,7 +86,6 @@ export async function loader({
    });
 
    return defer({
-      postPath: request.url,
       post,
       postContent,
       comments,
@@ -656,14 +655,18 @@ export const meta: MetaFunction<typeof loader, any> = ({ data, matches }) => {
    const siteName = matches.find(
       ({ id }: { id: string }) => id === "routes/_site+/_layout",
    )?.data?.site.name;
-
+   const siteDomain = matches?.[1]?.data?.site?.domain;
+   const siteSlug = matches?.[1]?.data?.site?.slug;
    invariant(data?.post);
 
    const { name, subtitle, slug } = data?.post;
 
    const postBannerUrl = data?.post?.banner?.url;
    const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
-   const postUrl = `${data.postPath}/p/${slug}`;
+
+   const canonicalURL = `https://${
+      siteDomain ?? `${siteSlug}.mana.wiki`
+   }/p/${slug}`;
 
    return [
       {
@@ -673,6 +676,7 @@ export const meta: MetaFunction<typeof loader, any> = ({ data, matches }) => {
          property: "og:title",
          content: `${name} - ${siteName}`,
       },
+      { tagName: "link", rel: "canonical", href: canonicalURL },
       { property: "og:site_name", content: siteName },
       ...(subtitle
          ? [
@@ -681,6 +685,6 @@ export const meta: MetaFunction<typeof loader, any> = ({ data, matches }) => {
            ]
          : []),
       ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
-      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
+      ...(canonicalURL ? [{ property: "og:url", content: canonicalURL }] : []),
    ];
 };
