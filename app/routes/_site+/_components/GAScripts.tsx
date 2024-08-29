@@ -11,7 +11,6 @@ declare global {
          gaTrackingId: string,
          options: Record<string, unknown>,
       ) => void;
-      dataLayer?: Object[];
    }
 }
 
@@ -25,7 +24,6 @@ export function GAScripts({
 
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
-         console.log("GA Scripts attempt: pageview", location.pathname);
          pageview(location.pathname, gaTrackingId);
       }
    }, [location, gaTrackingId]);
@@ -36,21 +34,23 @@ export function GAScripts({
       !isBot && (
          <>
             <script
-               type="text/partytown"
-               suppressHydrationWarning={true} // to get rid of "text/partytown-x" hydration error warning
-               dangerouslySetInnerHTML={{
-                  __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', '${gaTrackingId}');`,
-               }}
+               async
+               src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
             />
             <script
-               type="text/partytown"
-               suppressHydrationWarning={true} // to get rid of "text/partytown-x" hydration error warning
-               src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+               async
+               id="gtag-init"
+               dangerouslySetInnerHTML={{
+                  __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '${gaTrackingId}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+               }}
             />
          </>
       )
@@ -62,16 +62,15 @@ export function GAScripts({
  * https://developers.google.com/analytics/devguides/collection/gtagjs/pages
  */
 export const pageview = (url: string, trackingId: string) => {
-   if (!window.dataLayer) {
+   if (!window.gtag) {
       console.warn(
-         "window.dataLayer is not defined. This could mean your google analytics script has not loaded on the page yet.",
+         "window.gtag is not defined. This could mean your google analytics script has not loaded on the page yet.",
       );
       return;
    }
-   window.dataLayer?.push("config", trackingId, {
+   window.gtag("config", trackingId, {
       page_path: url,
    });
-   console.log(`gtag pageview: ${url}`);
 };
 
 /**
@@ -84,16 +83,15 @@ export const event = ({
    label,
    value,
 }: Record<string, string>) => {
-   if (!window.dataLayer) {
+   if (!window.gtag) {
       console.warn(
-         "window.dataLayer is not defined. This could mean your google analytics script has not loaded on the page yet.",
+         "window.gtag is not defined. This could mean your google analytics script has not loaded on the page yet.",
       );
       return;
    }
-   window.dataLayer?.push("event", action!, {
+   window.gtag("event", action!, {
       event_category: category,
       event_label: label,
       value: value,
    });
-   console.log(`gtag event: ${action}`);
 };

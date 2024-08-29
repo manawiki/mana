@@ -214,7 +214,7 @@ function App() {
                   href="/favicon.ico"
                />
             )}
-            {process.env.NODE_ENV === "production" && !isBot && (
+            {/* {process.env.NODE_ENV === "production" && !isBot && (
                <Partytown
                   debug={false}
                   forward={["dataLayer.push"]}
@@ -234,7 +234,7 @@ function App() {
                      return url;
                   }}
                />
-            )}
+            )} */}
             <Meta />
             <Links />
          </head>
