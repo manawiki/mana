@@ -44,6 +44,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                               height={300}
                               options="height=300"
                               url={element?.iconUrl}
+                              loading="lazy"
                            />
                         </div>
                      )}
