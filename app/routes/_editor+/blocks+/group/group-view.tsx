@@ -30,7 +30,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      reloadDocument={element?.isCustomSite ?? false}
                      key={element?.id}
                      to={element?.path ?? ""}
-                     prefetch="intent"
+                     // prefetch="intent"
                      className="flex items-center w-full gap-5 group p-3"
                   >
                      {element.iconUrl && (
@@ -141,7 +141,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                   reloadDocument={element?.isCustomSite ?? false}
                   key={element?.id}
                   to={element?.path ?? ""}
-                  prefetch="intent"
+                  // prefetch="intent"
                   className={({ isActive, isPending }) =>
                      clsx(
                         isActive
