@@ -25,6 +25,7 @@ export function GAScripts({
 
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
+         console.log("GA Scripts attempt: pageview", location.pathname);
          pageview(location.pathname, gaTrackingId);
       }
    }, [location, gaTrackingId]);
@@ -61,16 +62,16 @@ export function GAScripts({
  * https://developers.google.com/analytics/devguides/collection/gtagjs/pages
  */
 export const pageview = (url: string, trackingId: string) => {
-   if (!window.gtag) {
+   if (!window.dataLayer) {
       console.warn(
-         "window.gtag is not defined. This could mean your google analytics script has not loaded on the page yet.",
+         "window.dataLayer is not defined. This could mean your google analytics script has not loaded on the page yet.",
       );
       return;
    }
-   window.gtag("config", trackingId, {
+   window.dataLayer?.push("config", trackingId, {
       page_path: url,
    });
-   console.log(`pageview: ${url}`);
+   console.log(`gtag pageview: ${url}`);
 };
 
 /**
@@ -83,16 +84,16 @@ export const event = ({
    label,
    value,
 }: Record<string, string>) => {
-   if (!window.gtag) {
+   if (!window.dataLayer) {
       console.warn(
-         "window.gtag is not defined. This could mean your google analytics script has not loaded on the page yet.",
+         "window.dataLayer is not defined. This could mean your google analytics script has not loaded on the page yet.",
       );
       return;
    }
-   window.gtag("event", action!, {
+   window.dataLayer?.push("event", action!, {
       event_category: category,
       event_label: label,
       value: value,
    });
-   console.log(`event: ${action}`);
+   console.log(`gtag event: ${action}`);
 };
