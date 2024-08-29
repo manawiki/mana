@@ -21,7 +21,7 @@ export function PrimaryMenu({
          )}
       >
          <NavLink
-            prefetch="intent"
+            // prefetch="intent"
             end
             className={({ isActive }) =>
                clsx(
@@ -68,7 +68,7 @@ export function PrimaryMenu({
             )}
          </NavLink>
          <NavLink
-            prefetch="intent"
+            // prefetch="intent"
             className={({ isActive }) =>
                clsx(
                   isActive
@@ -114,7 +114,7 @@ export function PrimaryMenu({
             )}
          </NavLink>
          <NavLink
-            prefetch="intent"
+            // prefetch="intent"
             className={({ isActive }) =>
                clsx(
                   isActive

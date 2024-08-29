@@ -24,7 +24,7 @@ export function BlockLinkView({ element, children }: Props) {
    if (element.icon) {
       return (
          <Link
-            prefetch="intent"
+            // prefetch="intent"
             to={pathname}
             className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
           text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
@@ -51,7 +51,7 @@ export function BlockLinkView({ element, children }: Props) {
    if (isSelfLink) {
       return (
          <Link
-            prefetch="intent"
+            // prefetch="intent"
             className="text-blue-600 visited:text-purple-600 hover:underline"
             to={pathname}
          >

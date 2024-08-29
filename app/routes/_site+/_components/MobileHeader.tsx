@@ -108,7 +108,7 @@ export function MobileHeader() {
                   </div>
                   <AvatarButton
                      square
-                     prefetch="intent"
+                     // prefetch="intent"
                      href="/user/account"
                      src={user?.avatar?.url}
                      initials={user?.username.charAt(0)}
