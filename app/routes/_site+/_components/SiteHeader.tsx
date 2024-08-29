@@ -61,7 +61,7 @@ export function SiteHeader({
                <>
                   <div className="flex items-center truncate max-laptop:pl-3">
                      <Link
-                        prefetch="intent"
+                        // prefetch="intent"
                         to="/"
                         className="flex items-center group h-14 truncate"
                      >
@@ -200,7 +200,7 @@ export function SiteHeader({
                      <LoggedOut>
                         <div className="flex items-center">
                            <Link
-                              prefetch="intent"
+                              // prefetch="intent"
                               reloadDocument={true}
                               to={`/login?redirectTo=/`}
                               className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5

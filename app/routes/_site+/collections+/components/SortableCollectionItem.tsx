@@ -37,7 +37,7 @@ export function SortableCollectionItem({
             }
             className="w-full h-full flex items-center justify-between   shadow-zinc-100 gap-2 dark:bg-dark350 dark:hover:border-zinc-600/70
             group  p-2 border-color-sub shadow-sm dark:shadow-black/20 overflow-hidden rounded-2xl border hover:border-zinc-200 bg-zinc-50"
-            prefetch="intent"
+            // prefetch="intent"
             to={`/c/${collection.slug}`}
          >
             <div className="flex items-center flex-grow">

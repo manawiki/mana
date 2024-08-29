@@ -65,7 +65,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      reloadDocument={element?.isCustomSite ?? false}
                      key={element?.id}
                      to={element?.path ?? ""}
-                     prefetch="intent"
+                     // prefetch="intent"
                      className="flex items-center flex-grow gap-2 p-3 group"
                   >
                      {element?.iconUrl ? (
