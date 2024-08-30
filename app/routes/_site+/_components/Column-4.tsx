@@ -112,7 +112,7 @@ export function ColumnFour() {
          >
             <div className="flex flex-col justify-between flex-grow">
                <div>
-                  <div>Remove Ads</div>
+                  {/* <div>Remove Ads</div> */}
                   <section className="grid grid-cols-3 gap-4 py-4 relative z-20 max-laptop:max-w-[728px] max-tablet:px-4 max-laptop:mx-auto mx-4 max-laptop:w-full">
                      <div
                         className="dark:bg-dark400 dark:laptop:bg-bg3Dark max-laptop:dark:border-zinc-600/50 bg-white max-laptop:dark:shadow-zinc-800/60
