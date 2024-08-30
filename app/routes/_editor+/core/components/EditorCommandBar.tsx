@@ -82,7 +82,7 @@ export const EditorCommandBar = ({
    if (!_secondaryOptions) _secondaryOptions = secondaryOptions;
    return (
       <>
-         <div className={clsx(isSection ? "" : "fixed h-full z-50")}>
+         <div className={clsx(isSection ? "" : "fixed h-full z-10")}>
             <div
                className={clsx(
                   isSection

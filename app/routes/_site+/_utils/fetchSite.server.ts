@@ -104,6 +104,15 @@ const QUERY = gql`
          trendingPages
          isWhiteLabel
          logoURL
+         partnerSites {
+            id
+            slug
+            name
+            domain
+            icon {
+               url
+            }
+         }
          logoDarkImage {
             url
          }

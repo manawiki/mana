@@ -221,7 +221,7 @@ export function BlockSelector({ element, editor, isSelectorOpen }: Props) {
                      type: BlockType.Table,
                      id: nanoid(),
                      tableLayout: "fixed",
-                     tableStyle: "default",
+                     tableStyle: "rounded",
                      children: [
                         //@ts-ignore
                         {
