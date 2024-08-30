@@ -1,9 +1,10 @@
 import { useState } from "react";
 
 import { Link, useFetcher, useLocation } from "@remix-run/react";
+import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 
-import { AvatarButton } from "~/components/Avatar";
+import { Avatar, AvatarButton } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -11,11 +12,10 @@ import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
 import { isAdding } from "~/utils/form";
 import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
-import { FollowingListMobile } from "./FollowingListMobile";
 import { MobileTray } from "./MobileTray";
 
 export function MobileHeader() {
-   const { user } = useRootLoaderData();
+   const { user, following } = useRootLoaderData();
 
    const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });
@@ -39,9 +39,9 @@ export function MobileHeader() {
                   {/* Following menu modal */}
                   <div className="flex items-center gap-3">
                      <Link
-                        className="border border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200/70 dark:shadow-zinc-800/80
+                        className="border border-zinc-300/80 dark:border-zinc-500/80 transition duration-300 shadow-zinc-200/70 dark:shadow-zinc-800/80
                      active:translate-y-0.5 dark:hover:border-zinc-500 rounded-xl flex items-center from-white to-zinc-100
-                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow-sm hover:border-zinc-300 mx-auto"
+                     justify-center size-9 dark:from-dark500 dark:to-dark400 bg-gradient-to-br shadow-sm hover:border-zinc-300 mx-auto"
                         to={
                            process.env.NODE_ENV === "development"
                               ? "/"
@@ -92,12 +92,13 @@ export function MobileHeader() {
                         </NotFollowingSite>
                      )}
                      <button
-                        className="bg-3-sub border-zinc-200 shadow-zinc-200/80 dark:shadow-zinc-800/80 flex items-center justify-center
-                                       rounded-full border pr-1.5 pl-3 text-sm font-bold shadow h-9 dark:border-zinc-700"
+                        className="dark:bg-dark450 bg-white border-zinc-200 shadow-zinc-100 
+                      dark:shadow-zinc-800/70 flex items-center justify-center hover:border-zinc-300/80
+                        rounded-xl border pr-1.5 pl-3 text-sm font-bold shadow h-9 dark:border-zinc-600 dark:hover:border-zinc-500/60"
                         onClick={() => setFollowerMenuOpen(true)}
                      >
-                        <div className="pr-2 text-xs">My Follows</div>
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-zinc-100 dark:bg-dark450">
+                        <div className="pr-2 text-xs">Follows</div>
+                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-zinc-100 dark:bg-dark500">
                            <Icon
                               name="chevron-down"
                               className="dark:text-white"
@@ -161,16 +162,63 @@ export function MobileHeader() {
             open={isFollowerMenuOpen}
          >
             <menu className="flex h-full flex-col">
-               <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />
                <LoggedIn>
-                  <Link
-                     reloadDocument={true}
-                     className="mx-20 my-9 rounded-full bg-zinc-800 px-5 py-3
-                   text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
-                     to="https://mana.wiki"
-                  >
-                     Explore
-                  </Link>
+                  <>
+                     {following && following.length > 0 && (
+                        <div className="z-20 laptop:hidden">
+                           <div className="max-w-[728px] mx-auto shadow-sm overflow-hidden shadow-zinc-50 dark:shadow-zinc-800/30 divide-y dark:divide-zinc-600/70 border dark:border-zinc-600/70 gap-2 rounded-xl bg-zinc-50 dark:bg-dark400">
+                              {following.map((partnerSite: any) => {
+                                 const path = partnerSite.domain
+                                    ? `https://${partnerSite.domain}`
+                                    : `https://${partnerSite.slug}.mana.wiki`;
+                                 const currentHostname =
+                                    typeof window !== "undefined"
+                                       ? window.location.hostname
+                                       : "";
+                                 const hostname = new URL(path).hostname;
+                                 const isCurrentSite =
+                                    hostname === currentHostname;
+                                 return (
+                                    <Link
+                                       to={path}
+                                       key={partnerSite.id}
+                                       className={clsx(
+                                          isCurrentSite
+                                             ? "font-bold bg-zinc-100 dark:bg-dark450"
+                                             : "",
+                                          "flex items-center relative gap-2.5 p-2 hover:bg-zinc-100 dark:hover:bg-dark450",
+                                       )}
+                                    >
+                                       {isCurrentSite && (
+                                          <div className="h-6 w-[3px] block rounded-r-sm absolute left-0 bg-zinc-200 dark:bg-zinc-400" />
+                                       )}
+                                       <Avatar
+                                          src={partnerSite?.icon?.url}
+                                          initials={partnerSite?.name?.charAt(
+                                             0,
+                                          )}
+                                          alt="Site Logo"
+                                          options="aspect_ratio=1:1&height=120&width=120"
+                                          className="size-9 transition duration-300 active:translate-y-0.5"
+                                       />
+                                       <span className="font-semibold text-sm">
+                                          {partnerSite?.name}
+                                       </span>
+                                    </Link>
+                                 );
+                              })}
+                           </div>
+                        </div>
+                     )}
+                     <Link
+                        reloadDocument={true}
+                        className="my-4 rounded-xl bg-zinc-800 px-5 py-3
+                        text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
+                        to="https://mana.wiki"
+                     >
+                        Explore
+                     </Link>
+                  </>
                </LoggedIn>
             </menu>
          </MobileTray>
