@@ -155,22 +155,22 @@ html.dark {
 /* --------------- Rounded Table  ---------------*/
 
 table.rounded-table {
-   @apply rounded-lg border border-color-sub border-spacing-0 border-separate;
+   @apply rounded-lg border border-zinc-300/60 dark:border-zinc-600/60 border-spacing-0 border-separate shadow-sm shadow-zinc-100 dark:shadow-zinc-800/50;
 }
 
 table.default-table {
-   @apply border border-color-sub;
+   @apply border border-zinc-300/60 dark:border-zinc-600/60;
 }
 
 table.default-table th,
 table.default-table td {
-   @apply border border-color-sub;
+   @apply border border-zinc-300/60 dark:border-zinc-600/60;
 }
 
 /* Apply a border to the right of all but the last column */
 table.rounded-table th:not(:last-child),
 table.rounded-table td:not(:last-child) {
-   @apply border-color-sub border-r;
+   @apply border-zinc-300/60 dark:border-zinc-600/60 border-r;
 }
 
 /* Apply a border to the bottom of all but the last row */
@@ -185,7 +185,7 @@ table.rounded-table > tr:not(:last-child) > th,
 table.rounded-table > thead:not(:last-child),
 table.rounded-table > tbody:not(:last-child),
 table.rounded-table > tfoot:not(:last-child) {
-   @apply border-color-sub border-b;
+   @apply border-zinc-300/60 dark:border-zinc-600/60 border-b;
 }
 
 /* --------------- Date/Time Picker  ---------------*/

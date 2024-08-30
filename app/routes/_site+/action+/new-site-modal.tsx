@@ -67,11 +67,6 @@ export function NewSiteModal() {
             open={isOpen}
          >
             <LoggedOut>
-               <div className="space-y-2 pb-8 pt-6">
-                  <div className="text-center font-header text-xl font-bold">
-                     Login to create a new wiki on Mana!
-                  </div>
-               </div>
                <div className="grid grid-cols-2 gap-4">
                   <Link
                      to="/join"
@@ -88,8 +83,8 @@ export function NewSiteModal() {
                      </span>
                   </Link>
                   <Link
-                     className="border-color bg-3 shadow-1 flex h-10 items-center
-                           justify-center rounded-full border text-center text-sm
+                     className="border-color dark:bg-white bg-zinc-900 dark:text-zinc-800 shadow-1 flex h-10 items-center
+                           justify-center rounded-full border text-center text-sm text-white
                            font-bold shadow-sm"
                      to="/login"
                   >

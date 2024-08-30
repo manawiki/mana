@@ -1,13 +1,13 @@
 import { Link, useLocation } from "@remix-run/react";
 
-import { Avatar } from "~/components/Avatar";
+import { Avatar, AvatarButton } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
+import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { Staff } from "~/routes/_auth+/components/Staff";
 import { NewSiteModal } from "~/routes/_site+/action+/new-site-modal";
-import { DarkModeToggle } from "~/routes/_site+/action+/theme-toggle";
 import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { SidebarItem } from "./SidebarItem";
@@ -23,8 +23,49 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
       <>
          {site && (
             <LoggedOut>
-               <div className="relative flex items-center justify-center pb-3">
+               <div className="relative flex items-center flex-col justify-center pb-3 gap-3">
                   <SidebarItem isLoggedOut site={site} />
+                  {site?.partnerSites && site?.partnerSites?.length > 0 && (
+                     <>
+                        <div className="px-4 w-full h-full">
+                           <div className="border-t h-1 w-full border-zinc-300 dark:border-dark400 border-dashed block" />
+                        </div>
+                        <div className="relative flex flex-col items-center gap-3.5 py-0.5">
+                           {site?.partnerSites?.map((partnerSite) => {
+                              const path = partnerSite.domain
+                                 ? `https://${partnerSite.domain}`
+                                 : `https://${partnerSite.slug}.mana.wiki`;
+                              return (
+                                 <Tooltip
+                                    key={partnerSite.id}
+                                    placement="right"
+                                 >
+                                    <TooltipTrigger asChild>
+                                       <AvatarButton
+                                          href={path}
+                                          square
+                                          src={partnerSite?.icon?.url}
+                                          initials={partnerSite?.name?.charAt(
+                                             0,
+                                          )}
+                                          alt="Site Logo"
+                                          options="aspect_ratio=1:1&height=120&width=120"
+                                          className="size-9 transition duration-300 active:translate-y-0.5"
+                                       />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                       {partnerSite.name}
+                                    </TooltipContent>
+                                 </Tooltip>
+                              );
+                           })}
+                        </div>
+                        <div className="px-4 w-full h-full">
+                           <div className="border-t h-1 w-full border-zinc-300 dark:border-dark400 border-dashed block" />
+                        </div>
+                        <NewSiteModal />
+                     </>
+                  )}
                </div>
             </LoggedOut>
          )}
@@ -66,7 +107,7 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                         className="text-center max-laptop:flex max-laptop:flex-grow
                            max-laptop:gap-3 laptop:mb-4 laptop:space-y-3"
                      >
-                        {following?.map((item) => (
+                        {following?.map((item: any) => (
                            <li key={item.id}>
                               <div className="relative flex items-center justify-center">
                                  <SidebarItem site={item} siteSlug={siteSlug} />

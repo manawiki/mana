@@ -53,6 +53,12 @@ export const Sites: CollectionConfig = {
          hasMany: true,
       },
       {
+         name: "partnerSites",
+         type: "relationship",
+         relationTo: "sites",
+         hasMany: true,
+      },
+      {
          name: "menu",
          type: "array",
          maxRows: 10,

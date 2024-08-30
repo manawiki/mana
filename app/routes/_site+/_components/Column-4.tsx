@@ -6,7 +6,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import clsx from "clsx";
 
-import { Button } from "~/components/Button";
+import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { LogoText } from "~/components/Logo";
@@ -175,7 +175,7 @@ export function ColumnFour() {
             {groupedTrendingPages.length > 0 ? (
                <>
                   <TabGroup
-                     className="flex-grow overflow-auto max-h-[672px] z-20 scrollbar 
+                     className="flex-grow overflow-auto z-20 scrollbar 
                             dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
                             scrollbar-thumb-zinc-300 scrollbar-track-zinc-100"
                   >
@@ -249,7 +249,7 @@ export function ColumnFour() {
                                                 laptop:w-[310px] laptop:ml-3 dark:hover:bg-dark450 tablet:border tablet:border-zinc-100 
                                                 dark:tablet:border-zinc-700 dark:laptop:border-zinc-700/50"
                                              >
-                                                <div className="size-8 flex items-center justify-center flex-none">
+                                                <div className="size-[30px] flex items-center justify-center flex-none">
                                                    {nestedRow.data?.icon
                                                       ?.url ? (
                                                       <Image
@@ -283,22 +283,16 @@ export function ColumnFour() {
                                     ))}
                                  </SplideTrack>
                                  <div
-                                    className="splide__arrows bg-gradient-to-t laptop:from-white laptop:to-white/10 dark:laptop:from-bg2Dark laptop:to-bg2Dark/20 flex items-center justify-between 
-                                    w-full laptop:w-[333px] gap-1.5 px-3 laptop:fixed laptop:bottom-[54px] right-0 z-30"
+                                    className="splide__arrows bg-gradient-to-t laptop:from-white laptop:to-white/10 dark:laptop:from-bg2Dark max-laptop:mt-3 pb-3 flex items-center justify-between 
+                                    w-full laptop:w-[333px] max-laptop:mx-auto max-w-[752px] gap-1.5 px-3 laptop:fixed laptop:bottom-[54px] right-0 z-30"
                                  >
-                                    <Button
-                                       plain
-                                       className="splide__arrow splide__arrow--prev !p-1"
-                                    >
+                                    <button className="splide__arrow splide__arrow--prev size-7 flex items-center justify-center bg-zinc-200 laptop:bg-zinc-100 hover:bg-zinc-200/80 dark:hover:bg-dark500 laptop:dark:hover:bg-dark400 dark:bg-dark450 laptop:dark:bg-dark350 rounded-lg">
                                        <Icon name="chevron-left" size={18} />
-                                    </Button>
-                                    <ul className="splide__pagination flex items-center gap-2.5 py-4"></ul>
-                                    <Button
-                                       plain
-                                       className="splide__arrow splide__arrow--next !p-1"
-                                    >
+                                    </button>
+                                    <ul className="splide__pagination flex items-center gap-2.5"></ul>
+                                    <button className="splide__arrow splide__arrow--next size-7 flex items-center  justify-center bg-zinc-200 laptop:bg-zinc-100 hover:bg-zinc-200/80 dark:hover:bg-dark500 laptop:dark:hover:bg-dark400 dark:bg-dark450 laptop:dark:bg-dark350 rounded-lg">
                                        <Icon name="chevron-right" size={18} />
-                                    </Button>
+                                    </button>
                                  </div>
                               </Splide>
                            )}
@@ -310,7 +304,38 @@ export function ColumnFour() {
                   </TabGroup>
                </>
             ) : undefined}
-            <div className="max-laptop:py-5 border-t border-color h-[54px] bg-2 flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
+            <LoggedOut>
+               {site?.partnerSites && site?.partnerSites?.length > 0 && (
+                  <div className="z-20 laptop:hidden py-4 px-3 border-t border-color">
+                     <div className="max-w-[728px] mx-auto shadow-sm overflow-hidden shadow-zinc-50 dark:shadow-zinc-800/30 divide-y dark:divide-zinc-600/40 border dark:border-zinc-600/40 gap-2 rounded-xl bg-zinc-50 dark:bg-dark400">
+                        {site?.partnerSites?.map((partnerSite) => {
+                           const path = partnerSite.domain
+                              ? `https://${partnerSite.domain}`
+                              : `https://${partnerSite.slug}.mana.wiki`;
+                           return (
+                              <Link
+                                 to={path}
+                                 className="flex items-center gap-2.5 p-2 dark:hover:bg-dark400"
+                                 key={partnerSite.id}
+                              >
+                                 <Avatar
+                                    src={partnerSite?.icon?.url}
+                                    initials={partnerSite?.name?.charAt(0)}
+                                    alt="Site Logo"
+                                    options="aspect_ratio=1:1&height=120&width=120"
+                                    className="size-7 transition duration-300 active:translate-y-0.5"
+                                 />
+                                 <span className="font-semibold text-sm">
+                                    {partnerSite?.name}
+                                 </span>
+                              </Link>
+                           );
+                        })}
+                     </div>
+                  </div>
+               )}
+            </LoggedOut>
+            <div className="max-laptop:py-4 border-t border-color laptop:h-[54px] bg-zinc-50 laptop:bg-white dark:bg-dark350 laptop:dark:bg-dark350/20 flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
                <div className="justify-between w-full flex items-center max-laptop:max-w-[728px] mx-auto gap-3">
                   {!site.isWhiteLabel && (
                      <Link
@@ -332,7 +357,7 @@ export function ColumnFour() {
                            className="flex-grow flex items-center justify-start"
                         >
                            <Image
-                              className="object-contain flex-grow text-left h-6 max-w-[140px]"
+                              className="object-contain flex-grow text-left laptop:h-6 max-w-[170px] laptop:max-w-[140px]"
                               width={280}
                               height={48}
                               url={
@@ -348,7 +373,7 @@ export function ColumnFour() {
                      <LoggedOut>
                         <Link
                            to="/join"
-                           className="group relative inline-flex h-7 items-center justify-center overflow-hidden flex-none
+                           className="group relative inline-flex h-8 laptop:h-7 items-center justify-center overflow-hidden flex-none
                            rounded-lg laptop:rounded-md px-2.5 font-medium text-indigo-600 transition duration-300 ease-out shadow-sm shadow-1"
                         >
                            <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
