@@ -15,8 +15,6 @@ import {
    Outlet,
    Scripts,
    useLoaderData,
-   useLocation,
-   useMatches,
 } from "@remix-run/react";
 import splideCSS from "@splidejs/splide/dist/css/splide-core.min.css";
 import { useTranslation } from "react-i18next";
@@ -39,9 +37,6 @@ import tailwindStylesheetUrl from "./styles/global.css";
 import { useSiteLoaderData } from "./utils/useSiteLoaderData";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
-
-import * as gtag from "~/utils/gtags.client";
-import { useSiteLoaderData } from "./utils/useSiteLoaderData";
 
 type ContextType = [
    searchToggle: boolean,
@@ -161,16 +156,6 @@ function App() {
 
    const [searchToggle, setSearchToggle] = useState(false);
 
-   const location = useLocation();
-
-   const gaTrackingId = site?.gaTagId;
-
-   useEffect(() => {
-      if (gaTrackingId?.length) {
-         gtag.pageview(location.pathname, gaTrackingId);
-      }
-   }, [location, gaTrackingId]);
-
    return (
       <html
          lang={locale}
@@ -229,29 +214,6 @@ function App() {
             <Links />
          </head>
          <body className="text-light dark:text-dark">
-            {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
-               <>
-                  <script
-                     async
-                     src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-                  />
-                  <script
-                     async
-                     id="gtag-init"
-                     dangerouslySetInnerHTML={{
-                        __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-
-                gtag('config', '${gaTrackingId}', {
-                  page_path: window.location.pathname,
-                });
-              `,
-                     }}
-                  />
-               </>
-            )}
             <div
                vaul-drawer-wrapper=""
                className="max-laptop:min-h-screen bg-white dark:bg-bg3Dark"
