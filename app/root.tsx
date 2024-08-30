@@ -42,6 +42,7 @@ import tailwindStylesheetUrl from "./styles/global.css";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 import * as gtag from "~/utils/gtags.client";
+import { useSiteLoaderData } from "./utils/useSiteLoaderData";
 
 type ContextType = [
    searchToggle: boolean,
@@ -147,9 +148,7 @@ function App() {
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
-      site: null,
-   };
+   const { site } = useSiteLoaderData();
 
    // Hook to show the toasts
    useEffect(() => {
@@ -165,7 +164,7 @@ function App() {
 
    const location = useLocation();
 
-   const gaTrackingId = "G-FVWZ0RM4DH"; // deseperate measure
+   const gaTrackingId = site?.gaTagId;
 
    useEffect(() => {
       if (gaTrackingId?.length) {
