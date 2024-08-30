@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunctionArgs } from "@remix-run/react";
-import { Outlet, useLoaderData } from "@remix-run/react";
-import { ClientOnly } from "remix-utils/client-only";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import * as gtag from "~/utils/gtags.client";
 
 import { ColumnOne } from "./_components/Column-1";
 import { ColumnTwo } from "./_components/Column-2";
@@ -32,13 +32,44 @@ export async function loader({
 
 export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
-   const gaTag = site?.gaTagId;
    const adWebId = site?.adWebId;
+   const location = useLocation();
 
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
 
+   const gaTrackingId = site?.gaTagId;
+
+   useEffect(() => {
+      if (gaTrackingId) {
+         gtag.pageview(location.pathname, gaTrackingId);
+      }
+   }, [location, gaTrackingId]);
+
    return (
       <>
+         {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
+            <>
+               <script
+                  async
+                  src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+               />
+               <script
+                  async
+                  id="gtag-init"
+                  dangerouslySetInnerHTML={{
+                     __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '${gaTrackingId}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+                  }}
+               />
+            </>
+         )}
          <MobileHeader />
          <main
             className="laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr_334px] 
