@@ -16,6 +16,7 @@ import {
    Outlet,
    Scripts,
    useLoaderData,
+   useLocation,
    useMatches,
 } from "@remix-run/react";
 import splideCSS from "@splidejs/splide/dist/css/splide-core.min.css";
@@ -39,6 +40,8 @@ import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
+
+import * as gtag from "~/utils/gtags.client";
 
 type ContextType = [
    searchToggle: boolean,
@@ -160,6 +163,16 @@ function App() {
 
    const [searchToggle, setSearchToggle] = useState(false);
 
+   const location = useLocation();
+
+   const gaTrackingId = "G-FVWZ0RM4DH"; // deseperate measure
+
+   useEffect(() => {
+      if (gaTrackingId?.length) {
+         gtag.pageview(location.pathname, gaTrackingId);
+      }
+   }, [location, gaTrackingId]);
+
    return (
       <html
          lang={locale}
@@ -214,31 +227,33 @@ function App() {
                   href="/favicon.ico"
                />
             )}
-            {/* {process.env.NODE_ENV === "production" && !isBot && (
-               <Partytown
-                  debug={false}
-                  forward={["dataLayer.push"]}
-                  resolveUrl={(url, location, type) => {
-                     //proxy gtag requests to avoid cors issues
-                     if (
-                        type === "script" &&
-                        url.host === "www.googletagmanager.com"
-                     ) {
-                        return new URL(
-                           location.origin +
-                              "/proxy" +
-                              url.pathname +
-                              url.search,
-                        );
-                     }
-                     return url;
-                  }}
-               />
-            )} */}
             <Meta />
             <Links />
          </head>
          <body className="text-light dark:text-dark">
+            {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
+               <>
+                  <script
+                     async
+                     src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+                  />
+                  <script
+                     async
+                     id="gtag-init"
+                     dangerouslySetInnerHTML={{
+                        __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '${gaTrackingId}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+                     }}
+                  />
+               </>
+            )}
             <div
                vaul-drawer-wrapper=""
                className="max-laptop:min-h-screen bg-white dark:bg-bg3Dark"

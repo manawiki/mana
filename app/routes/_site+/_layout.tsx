@@ -11,7 +11,6 @@ import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { ColumnOne } from "./_components/Column-1";
 import { ColumnTwo } from "./_components/Column-2";
 import { ColumnFour } from "./_components/Column-4";
-import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
 import { RampInit } from "./_components/RampInit";
 import { AdUnit } from "./_components/RampUnit";
@@ -60,13 +59,6 @@ export default function SiteLayout() {
             <ColumnFour />
          </main>
          <RampInit adWebId={adWebId} />
-         <ClientOnly fallback={<></>}>
-            {() => (
-               <>
-                  <GAScripts gaTrackingId={gaTag} />
-               </>
-            )}
-         </ClientOnly>
          <AdUnit
             className="fixed bottom-0 left-0 w-full h-[50px] z-50 bg-3 flex items-center justify-center"
             enableAds={site?.enableAds}
