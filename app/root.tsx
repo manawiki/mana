@@ -1,7 +1,6 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 
-import { Partytown } from "@builder.io/partytown/react";
 import type {
    MetaFunction,
    LinksFunction,
@@ -27,7 +26,6 @@ import { getToast } from "remix-toast";
 import { Toaster, toast as notify } from "sonner";
 
 import customStylesheetUrl from "~/_custom/styles.css";
-import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
 import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
 import { i18nextServer } from "~/utils/i18n/i18next.server";
@@ -38,6 +36,7 @@ import { ScrollRestoration } from "./components/ScrollRestoration";
 import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
+import { useSiteLoaderData } from "./utils/useSiteLoaderData";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
