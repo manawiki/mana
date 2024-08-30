@@ -140,8 +140,6 @@ function App() {
    const theme = useTheme();
 
    useChangeLanguage(locale);
-
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
    const { site } = useSiteLoaderData();
 
    // Hook to show the toasts

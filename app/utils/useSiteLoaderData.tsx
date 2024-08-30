@@ -18,5 +18,9 @@ export function useSiteLoaderData() {
    // return useRouteLoaderData<typeof loader>("routes/_site+/_layout")!
 
    // more brittle since we're using the layout hierarchy
-   return useMatches()?.[1]?.data as SerializeFrom<typeof layoutLoaderType>;
+   return (
+      (useMatches()?.[1]?.data as SerializeFrom<typeof layoutLoaderType>) ?? {
+         site: undefined,
+      }
+   );
 }
