@@ -1,6 +1,7 @@
-import { defer } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLocation, useParams } from "@remix-run/react";
+import type { AccessorKeyColumnDefBase } from "@tanstack/react-table";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import { Avatar } from "~/components/Avatar";
@@ -27,14 +28,14 @@ export async function loader({
 }: LoaderFunctionArgs) {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const list = fetchListCore({
+   const list = await fetchListCore({
       request,
       payload,
       siteSlug,
       user,
    });
 
-   return defer({ list });
+   return json({ list });
 }
 
 export default function CollectionList() {
@@ -72,7 +73,7 @@ export default function CollectionList() {
       ),
    });
 
-   const columns = [
+   const columns: AccessorKeyColumnDefBase<ListRowDefault, string>[] = [
       columnHelper.accessor("name", {
          header: "Name",
          cell: (info) => (
@@ -99,5 +100,6 @@ export default function CollectionList() {
          ),
       }),
    ];
+   //@ts-ignore
    return <List key={collectionId} columns={columns} gridView={gridView} />;
 }

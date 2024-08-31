@@ -1,6 +1,6 @@
-import { Suspense, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
-import { Await, useLoaderData, useLocation, useParams } from "@remix-run/react";
+import { useLoaderData, useLocation, useParams } from "@remix-run/react";
 import type {
    VisibilityState,
    AccessorKeyColumnDef,
@@ -8,7 +8,6 @@ import type {
    SortingState,
 } from "@tanstack/react-table";
 
-import { Loading } from "~/components/Loading";
 import type { Collection } from "~/db/payload-types";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
@@ -100,23 +99,17 @@ export function List({
             {children ? (
                children
             ) : (
-               <Suspense fallback={<Loading />}>
-                  <Await resolve={list} errorElement={<Loading />}>
-                     {(list) => (
-                        <ListTable
-                           defaultSort={defaultSort}
-                           defaultViewType={defaultViewType}
-                           key={collectionId}
-                           data={list}
-                           columns={columns}
-                           collection={collection}
-                           filters={filters}
-                           columnViewability={columnViewability}
-                           gridView={gridView}
-                        />
-                     )}
-                  </Await>
-               </Suspense>
+               <ListTable
+                  defaultSort={defaultSort}
+                  defaultViewType={defaultViewType}
+                  key={collectionId}
+                  data={list}
+                  columns={columns}
+                  collection={collection}
+                  filters={filters}
+                  columnViewability={columnViewability}
+                  gridView={gridView}
+               />
             )}
          </div>
       </>
