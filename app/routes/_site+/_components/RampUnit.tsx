@@ -28,7 +28,7 @@ function AdUnitSelector({
    // Function to add ad units
    const addUnits = () => {
       //@ts-ignore
-      window.ramp.que.push(() => {
+      window.ramp?.que?.push(() => {
          //@ts-ignore
          window.ramp
             .addUnits([{ type: adType, selectorId: selectorId }])
@@ -50,7 +50,7 @@ function AdUnitSelector({
       )?.[0];
       if (slotToRemove) {
          //@ts-ignore
-         window.ramp.destroyUnits([slotToRemove]);
+         window.ramp?.destroyUnits([slotToRemove]);
       }
    };
 

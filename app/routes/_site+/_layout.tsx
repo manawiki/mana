@@ -16,6 +16,7 @@ import { RampInit } from "./_components/RampInit";
 import { AdUnit } from "./_components/RampUnit";
 import { SiteHeader } from "./_components/SiteHeader";
 import { fetchSite } from "./_utils/fetchSite.server";
+import { useIsBot } from "~/utils/isBotProvider";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -34,6 +35,7 @@ export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
    const adWebId = site?.adWebId;
    const location = useLocation();
+   const isBot = useIsBot();
 
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
 
@@ -47,7 +49,7 @@ export default function SiteLayout() {
 
    return (
       <>
-         {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
+         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot && (
             <>
                <script
                   defer
@@ -89,7 +91,9 @@ export default function SiteLayout() {
             </section>
             <ColumnFour />
          </main>
-         <RampInit adWebId={adWebId} />
+         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot && (
+            <RampInit adWebId={adWebId} />
+         )}
          <AdUnit
             className="fixed bottom-0 left-0 w-full h-[50px] z-50 bg-3 flex items-center justify-center"
             enableAds={site?.enableAds}
