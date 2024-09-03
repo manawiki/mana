@@ -39,6 +39,7 @@ export default function SiteLayout() {
 
    const adWebId = site?.adWebId;
    const gaTrackingId = site?.gaTagId;
+   const enableAds = site?.enableAds;
 
    return (
       <>
@@ -64,12 +65,12 @@ export default function SiteLayout() {
             </section>
             <ColumnFour />
          </main>
-         {process.env.NODE_ENV === "production" && !isBot && adWebId && (
+         {process.env.NODE_ENV === "production" && !isBot && enableAds && (
             <RampInit adWebId={adWebId} />
          )}
          <AdUnit
             className="fixed bottom-0 left-0 w-full h-[50px] z-50 bg-3 flex items-center justify-center"
-            enableAds={site?.enableAds}
+            enableAds={enableAds}
             adType={{
                tablet: "leaderboard_btf",
                mobile: "leaderboard_btf",
