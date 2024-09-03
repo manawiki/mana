@@ -53,7 +53,7 @@ export function Table({
                   dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
                   scrollbar-thumb-zinc-300 scrollbar-track-zinc-100`,
                   framed &&
-                     "border-y mobile:border mobile:rounded-lg border-color-sub dark:bg-dark350 shadow-sm shadow-1",
+                     "border-y mobile:border mobile:rounded-lg border-color-sub dark:bg-dark350 shadow-sm shadow-zinc-100 dark:shadow-zinc-800/50",
                )}
             >
                <div
@@ -188,7 +188,7 @@ export function TableCell({
             className,
             center && "text-center",
             bold && "font-bold",
-            "relative px-3",
+            "relative px-3 bg-white dark:bg-dark350",
             !striped && !framed && "border-b border-color",
             grid && "border-l border-color-sub first:border-l-0",
             dense ? "py-2.5" : "py-4",
