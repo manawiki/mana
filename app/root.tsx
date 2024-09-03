@@ -100,6 +100,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 
 export const links: LinksFunction = () => [
    { rel: "preconnect", href: "https://static.mana.wiki" },
+   { rel: "preconnect", href: "https://www.googletagmanager.com" },
+   { rel: "preconnect", href: "https://www.google-analytics.com" },
+
+   // also dns-prefetch for older browsers
+   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
+   { rel: "dns-prefetch", href: "https://www.google-analytics.com" },
 
    //preload css makes it nonblocking to html renders
    { rel: "preload", href: fonts, as: "style" },
