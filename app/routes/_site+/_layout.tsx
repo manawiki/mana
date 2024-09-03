@@ -50,11 +50,11 @@ export default function SiteLayout() {
          {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
             <>
                <script
-                  async
+                  defer
                   src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
                />
                <script
-                  async
+                  defer
                   id="gtag-init"
                   dangerouslySetInnerHTML={{
                      __html: `
