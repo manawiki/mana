@@ -63,6 +63,7 @@ const gridView = columnHelper.accessor("name", {
             url={info.row.original.icon?.url}
             className="mx-auto"
             options="aspect_ratio=1:1&height=80&width=80"
+            loading="lazy"
          />
          <div
             className="truncate text-xs font-semibold text-center pt-1

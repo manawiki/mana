@@ -64,7 +64,8 @@ const gridView = columnHelper.accessor("name", {
                         width={14}
                         url={type?.icon?.url}
                         options="height=40&width=40"
-                        alt={type?.name}
+                        alt={type?.name ?? undefined}
+                        loading="lazy"
                      />
                   </TooltipTrigger>
                   <TooltipContent>{type?.name}</TooltipContent>
