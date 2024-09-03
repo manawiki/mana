@@ -41,8 +41,8 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                            <Image
                               alt={element.name}
                               className="w-full object-cover"
-                              height={300}
-                              options="height=300"
+                              width={300}
+                              options="aspect_ratio=1.9:1"
                               url={element?.iconUrl}
                               loading="lazy"
                            />

@@ -11,6 +11,7 @@ export function PostBannerView({ post }: { post: Post }) {
             <Image
                alt="Post Banner"
                className="h-full w-full object-cover"
+               width="800"
                options="aspect_ratio=1.9:1"
                url={post?.banner?.url}
             />
