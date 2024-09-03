@@ -1,7 +1,13 @@
+/.git
 /node_modules
 \*.log
 .DS_Store
+.dockerignore
 .env
+Dockerfile
+fly.toml
+/fly
+
 /.cache
 /public/build
 /build
