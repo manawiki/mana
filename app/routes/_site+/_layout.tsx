@@ -33,44 +33,17 @@ export async function loader({
 
 export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
-   const adWebId = site?.adWebId;
-   const location = useLocation();
    const isBot = useIsBot();
 
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
 
+   const adWebId = site?.adWebId;
    const gaTrackingId = site?.gaTagId;
-
-   useEffect(() => {
-      if (gaTrackingId) {
-         gtag.pageview(location.pathname, gaTrackingId);
-      }
-   }, [location, gaTrackingId]);
 
    return (
       <>
-         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot && (
-            <>
-               <script
-                  defer
-                  src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-               />
-               <script
-                  defer
-                  id="gtag-init"
-                  dangerouslySetInnerHTML={{
-                     __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-
-                gtag('config', '${gaTrackingId}', {
-                  page_path: window.location.pathname,
-                });
-              `,
-                  }}
-               />
-            </>
+         {process.env.NODE_ENV === "production" && !isBot && gaTrackingId && (
+            <GAScript gaTrackingId={gaTrackingId} />
          )}
          <MobileHeader />
          <main
@@ -91,7 +64,7 @@ export default function SiteLayout() {
             </section>
             <ColumnFour />
          </main>
-         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot && (
+         {process.env.NODE_ENV === "production" && !isBot && adWebId && (
             <RampInit adWebId={adWebId} />
          )}
          <AdUnit
@@ -102,6 +75,37 @@ export default function SiteLayout() {
                mobile: "leaderboard_btf",
             }}
             selectorId="mobileBottomSticky"
+         />
+      </>
+   );
+}
+
+export function GAScript({ gaTrackingId }: { gaTrackingId: string }) {
+   const location = useLocation();
+   useEffect(() => {
+      gtag.pageview(location.pathname, gaTrackingId);
+   }, [location, gaTrackingId]);
+
+   return (
+      <>
+         <script
+            defer
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+         />
+         <script
+            defer
+            id="gtag-init"
+            dangerouslySetInnerHTML={{
+               __html: `
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', '${gaTrackingId}', {
+      page_path: window.location.pathname,
+    });
+  `,
+            }}
          />
       </>
    );
