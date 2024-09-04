@@ -488,7 +488,10 @@ function ResultsTable() {
    return (
       <>
          <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
-            <Pagination count={count} />
+            <div className="flex items-center gap-3 text-xs">
+               <Search />
+               <Pagination count={count} />
+            </div>
             Displaying {start + 1} to {end} of {count} results
          </div>
          <table className="w-full">
@@ -667,7 +670,7 @@ function Pagination({ count = 100 }) {
    if (numPages <= 1) return null;
 
    return (
-      <div className="flex items-center gap-3 text-xs">
+      <>
          <button
             //todo convert this to links
             className="flex items-center gap-1 font-semibold uppercase hover:underline"
@@ -729,27 +732,34 @@ function Pagination({ count = 100 }) {
                className="text-zinc-500"
             />
          </button>
+      </>
+   );
+}
 
-         <div className="w-full">
-            <label htmlFor="search">Search</label>
+function Search() {
+   const [searchParams, setSearchParams] = useSearchParams();
 
-            <input
-               id="search"
-               //  onKeyUp={search_trigger}
-               className="w-full"
-               name="search"
-               onChange={(e) => {
-                  setSearchParams(
-                     (searchParams) => {
-                        searchParams.set("search", e.target.value);
-                        searchParams.delete("page");
-                        return searchParams;
-                     },
-                     { preventScrollReset: true },
-                  );
-               }}
-            />
-         </div>
+   return (
+      <div className="w-full">
+         <label htmlFor="search">Search</label>
+
+         <input
+            id="search"
+            //  onKeyUp={search_trigger}
+            className="w-full"
+            name="search"
+            defaultValue={searchParams.get("search") ?? ""}
+            onChange={(e) => {
+               setSearchParams(
+                  (searchParams) => {
+                     searchParams.set("search", e.target.value);
+                     searchParams.delete("page");
+                     return searchParams;
+                  },
+                  { preventScrollReset: true },
+               );
+            }}
+         />
       </div>
    );
 }
