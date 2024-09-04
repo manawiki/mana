@@ -6,12 +6,14 @@ import type { Flatten } from "./Section";
 
 export function SectionTitle({
    section,
+   customTitle,
 }: {
-   section: Flatten<Collection["sections"]>;
+   section?: Flatten<Collection["sections"]>;
+   customTitle?: string;
 }) {
    const hasTitle = section?.showTitle && section.name;
 
-   if (hasTitle)
+   if (hasTitle || customTitle)
       return (
          <div className="max-w-[728px] mx-auto">
             <Link to={`#${section?.slug}`}>
@@ -27,7 +29,7 @@ export function SectionTitle({
                   />
                   <div className="flex items-center gap-2">
                      <div className="relative h-full px-3.5 flex-grow py-2.5">
-                        {section?.name}
+                        {customTitle ?? section?.name}
                      </div>
                   </div>
                </h2>

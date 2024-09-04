@@ -233,9 +233,11 @@ export function SiteHeader({
                            </button>
                         </div>
                      </NotFollowingSite>
-                     <InstantSearch searchClient={searchClient}>
-                        <Autocomplete site={site} />
-                     </InstantSearch>
+                     <div className="flex items-center justify-center gap-2 hover:border-zinc-400 shadow-sm bg-zinc-100 dark:bg-dark500 border border-zinc-300 dark:border-zinc-500 dark:hover:border-zinc-400 rounded-full size-10">
+                        <InstantSearch searchClient={searchClient}>
+                           <Autocomplete site={site} />
+                        </InstantSearch>
+                     </div>
                      <button
                         className="dark:bg-zinc-600 shadow-1 flex size-10 items-center 
                            justify-center border-zinc-300 dark:border-zinc-500
