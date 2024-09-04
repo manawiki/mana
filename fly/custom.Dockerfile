@@ -10,7 +10,8 @@ LABEL fly_launch_runtime="Payload"
 WORKDIR /app
 
 ENV NODE_ENV="production"
-ARG YARN_VERSION=1.22.21
+ENV PORT="3000"
+ARG YARN_VERSION=1.22.22
 RUN npm install -g yarn@$YARN_VERSION --force
 
 
@@ -22,8 +23,7 @@ RUN apk update && \
     apk add build-base gyp pkgconfig python3
 
 # Install node modules
-COPY package.json yarn.lock ./
-COPY ./patches ./patches
+COPY package.json yarn.lock ./patche ./
 RUN yarn install --frozen-lockfile --production=false
 
 # Copy application code
@@ -33,7 +33,7 @@ COPY . .
 RUN yarn run build:custom
 
 # Remove development dependencies
-RUN yarn install --frozen-lockfile --production=true
+RUN yarn install --production=true
 
 # Final stage for app image
 FROM base
