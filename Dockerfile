@@ -14,7 +14,8 @@ ARG IS_HOME
 ENV IS_HOME $IS_HOME
 
 ENV NODE_ENV="production"
-ARG YARN_VERSION=1.22.21
+ENV PORT="3000"
+ARG YARN_VERSION=1.22.22
 RUN npm install -g yarn@$YARN_VERSION --force
 
 # Install supervisor in the base image
@@ -28,18 +29,18 @@ RUN apk update && \
     apk add build-base gyp pkgconfig python3 
 
 # Install node modules
-COPY --link package.json yarn.lock ./
-COPY --link ./patches ./patches
+COPY package.json yarn.lock ./
+COPY ./patches ./patches
 RUN yarn install --frozen-lockfile --production=false
 
 # Copy application code
-COPY --link . .
+COPY . .
 
 # Build application
 RUN yarn run build
 
 # Remove development dependencies
-RUN yarn install --frozen-lockfile --production=true
+RUN yarn install --production=true
 
 # Final stage for app image
 FROM base

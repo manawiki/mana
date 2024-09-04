@@ -44,7 +44,6 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                               width={300}
                               options="aspect_ratio=1.9:1"
                               url={element?.iconUrl}
-                              loading="lazy"
                            />
                         </div>
                      )}
