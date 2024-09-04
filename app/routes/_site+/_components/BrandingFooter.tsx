@@ -46,7 +46,7 @@ export function BrandingFooter({ site }: { site: Site }) {
                   </Link>
                )}
             <div className="flex items-center gap-4 text-xs text-1">
-               <DarkModeToggle className="!size-3.5" />
+               <DarkModeToggle className="!size-4" />
                <LoggedOut>
                   <Link
                      to="/join"

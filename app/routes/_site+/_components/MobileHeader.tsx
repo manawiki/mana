@@ -31,8 +31,8 @@ export function MobileHeader() {
    return (
       <>
          <header
-            className="dark:bg-dark350 bg-white dark:border-zinc-700 laptop:dark:border-zinc-700/20 dark:shadow-zinc-800 fixed top-0 z-30 flex 
-                        h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm laptop:hidden"
+            className="dark:bg-dark350 bg-white dark:border-zinc-700 laptop:dark:border-zinc-700/20 dark:shadow-zinc-800 z-30 flex 
+                        h-14 w-full relative items-center justify-between border-b px-3 laptop:shadow-sm laptop:hidden"
          >
             <LoggedIn>
                <div className="flex w-full flex-none items-center justify-between gap-3 laptop:hidden">

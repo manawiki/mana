@@ -336,7 +336,7 @@ export function ColumnFour() {
                   </div>
                )}
             </LoggedOut>
-            <div className="max-laptop:py-4 border-t border-color laptop:h-[54px] bg-zinc-50 laptop:bg-white dark:bg-dark350 flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
+            <div className="max-laptop:py-4 border-t border-color laptop:h-[54px] bg-zinc-50 laptop:bg-white dark:bg-bg2Dark flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
                <div className="justify-between w-full flex items-center max-laptop:max-w-[728px] mx-auto gap-3">
                   {!site.isWhiteLabel && (
                      <Link
