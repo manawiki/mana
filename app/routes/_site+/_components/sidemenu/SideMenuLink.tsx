@@ -1,16 +1,7 @@
-import { Link, NavLink, useLocation } from "@remix-run/react";
-import { CSS } from "@dnd-kit/utilities";
-import { Icon } from "~/components/Icon";
-import { Avatar } from "~/components/Avatar";
-import clsx from "clsx";
 import { useState } from "react";
-import {
-   DndContext,
-   DragEndEvent,
-   DragOverlay,
-   DragStartEvent,
-   closestCenter,
-} from "@dnd-kit/core";
+
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { DndContext, DragOverlay, closestCenter } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
    SortableContext,
@@ -18,9 +9,16 @@ import {
    arrayMove,
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { SideMenuSectionNestedLink } from "./SideMenuSectionNestedLink";
+import { CSS } from "@dnd-kit/utilities";
+import { Link, useLocation } from "@remix-run/react";
+import clsx from "clsx";
 import { nanoid } from "nanoid";
+
+import { Avatar } from "~/components/Avatar";
+import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
+
+import { SideMenuSectionNestedLink } from "./SideMenuSectionNestedLink";
 
 export function SideMenuLink({
    link,
@@ -199,7 +197,7 @@ export function SideMenuLink({
                            value={linkName}
                            onChange={(e) => setLinkName(e.target.value)}
                            className="bg-transparent w-full max-w-full focus:ring-1 bg-white ring-zinc-300
-                        dark:ring-zinc-500 dark:bg-dark450 rounded text-[13px] border border-zinc-300 
+                        dark:ring-zinc-500 dark:bg-dark450 rounded text-sm border border-zinc-300 
                         font-semibold text-zinc-500 dark:text-zinc-300 focus:outline-none px-1 dark:border-zinc-600"
                         />
                      </div>
@@ -209,7 +207,7 @@ export function SideMenuLink({
                         value={linkPath}
                         onChange={(e) => setLinkPath(e.target.value)}
                         className="bg-transparent w-full max-w-full focus:ring-1 bg-white ring-zinc-300
-                        dark:ring-zinc-500 dark:bg-dark450 rounded text-[13px] border border-zinc-300 
+                        dark:ring-zinc-500 dark:bg-dark450 rounded text-sm border border-zinc-300 
                         font-semibold text-zinc-500 dark:text-zinc-300 focus:outline-none px-1 dark:border-zinc-600"
                      />
                   </div>
@@ -225,7 +223,7 @@ export function SideMenuLink({
                            src={link.icon}
                            options="aspect_ratio=1:1&height=120&width=120"
                         />
-                        <span className="text-[13px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
+                        <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 truncate">
                            {link.name}
                         </span>
                         <Icon
@@ -263,7 +261,7 @@ export function SideMenuLink({
                         value={linkName}
                         onChange={(e) => setLinkName(e.target.value)}
                         className="bg-transparent w-full max-w-full focus:ring-1 bg-white ring-zinc-300
-                        dark:ring-zinc-500 dark:bg-dark450 rounded text-[13px] border border-zinc-300 
+                        dark:ring-zinc-500 dark:bg-dark450 rounded text-sm border border-zinc-300 
                         font-semibold text-zinc-500 dark:text-zinc-300 focus:outline-none px-1 dark:border-zinc-600"
                      />
                   </div>
@@ -273,7 +271,7 @@ export function SideMenuLink({
                      value={linkPath}
                      onChange={(e) => setLinkPath(e.target.value)}
                      className="bg-transparent w-full max-w-full focus:ring-1 bg-white ring-zinc-300
-                        dark:ring-zinc-500 dark:bg-dark450 rounded text-[13px] border border-zinc-300 
+                        dark:ring-zinc-500 dark:bg-dark450 rounded text-sm border border-zinc-300 
                         font-semibold text-zinc-500 dark:text-zinc-300 focus:outline-none px-1 dark:border-zinc-600"
                   />
                </div>
@@ -285,7 +283,7 @@ export function SideMenuLink({
                      src={link.icon}
                      options="aspect_ratio=1:1&height=120&width=120"
                   />
-                  <span className="text-[13px] font-semibold text-zinc-500 dark:text-zinc-400">
+                  <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
                      {link.name}
                   </span>
                </Link>

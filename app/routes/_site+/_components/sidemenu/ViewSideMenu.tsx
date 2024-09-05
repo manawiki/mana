@@ -53,7 +53,7 @@ function ViewSideMenuLink({ link }: { link: any }) {
                      src={link.icon}
                      options="aspect_ratio=1:1&height=120&width=120"
                   />
-                  <span className="text-[13px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
+                  <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 truncate">
                      {link.name}
                   </span>
                   <Icon
@@ -79,7 +79,7 @@ function ViewSideMenuLink({ link }: { link: any }) {
                   src={link.icon}
                   options="aspect_ratio=1:1&height=120&width=120"
                />
-               <span className="text-[13px] font-semibold text-zinc-500 dark:text-zinc-400">
+               <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
                   {link.name}
                </span>
             </Link>
@@ -96,7 +96,7 @@ function ViewSideMenuLink({ link }: { link: any }) {
                         "pl-2 pr-1 py-1 justify-between w-full flex items-center gap-2 truncate rounded-lg hover:bg-zinc-100 dark:hover:bg-dark350",
                      )}
                   >
-                     <span className="text-[13px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
+                     <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 truncate">
                         {linkRow.name}
                      </span>
                      <Avatar
