@@ -33,7 +33,11 @@ export function BlockImageView({ element, children }: Props) {
                className="!p-0 !overflow-hidden"
                open={isOpen}
             >
-               <Image className="w-auto mx-auto" url={element.url} />
+               <Image
+                  className="w-auto mx-auto"
+                  url={element.url}
+                  loading="lazy"
+               />
                {element.caption && (
                   <div className="p-2 text-center text-sm border-t dark:border-zinc-700 dark:bg-dark350/80 bg-white w-full">
                      {children}
@@ -55,6 +59,7 @@ export function BlockImageView({ element, children }: Props) {
                   className="max-h-80 w-auto mx-auto"
                   alt="Inline"
                   url={element.url}
+                  loading="lazy"
                />
                {element.caption && (
                   <div className="p-2 text-center text-sm border-t dark:border-zinc-700 dark:bg-dark350/80 bg-white w-full">
