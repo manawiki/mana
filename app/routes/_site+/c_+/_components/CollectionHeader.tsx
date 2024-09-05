@@ -56,7 +56,7 @@ export function CollectionHeader({
 
    return (
       <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
-         <div className="pt-[61px] laptop:pt-0 z-20 relative">
+         <div className="laptop:pt-0 z-20 relative">
             <div className="flex items-center w-full py-2.5 border-b border-color dark:border-zinc-700/70 bg-white dark:bg-bg3Dark">
                <div className="max-tablet:px-3 tablet:mx-auto w-full tablet:max-w-[728px] tablet:w-[728px] flex items-center justify-between">
                   <Link

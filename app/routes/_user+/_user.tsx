@@ -23,7 +23,7 @@ export default function UserLayout() {
       <>
          <MobileHeader />
          <main
-            className="max-laptop:pt-14 laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr] 
+            className="laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr] 
                laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr]"
          >
             <section className="bg-1 border-color relative top-0 z-50 max-laptop:fixed max-laptop:w-full laptop:border-r">

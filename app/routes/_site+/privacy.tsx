@@ -33,7 +33,7 @@ export function PolicyTemplate({
    domain: string;
 }) {
    return (
-      <div className="relative z-20 mx-auto pt-24 laptop:pt-8 max-w-[728px] max-laptop:px-4">
+      <div className="relative z-20 mx-auto pt-5 laptop:pt-8 max-w-[728px] max-laptop:px-4">
          <h1 className="pb-4 font-header text-xl font-bold">Privacy policy</h1>
          <div className="pb-10">
             <Text className="pb-4">
