@@ -65,7 +65,7 @@ export async function loader({
 
 export default function PostList() {
    return (
-      <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+      <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-3 laptop:pt-6">
          <PostListHeader />
          <MyPosts />
          <PublishedPosts />

@@ -11,7 +11,7 @@ export function ListView({ table }: { table: TableType<any> }) {
       >
          <div className="table min-w-full relative">
             {/* Table Header */}
-            <div className="table-header-group tablet:sticky top-[117px] laptop:top-[61px] bg-3">
+            <div className="table-header-group tablet:sticky top-[110px] bg-3">
                {table.getHeaderGroups().map((headerGroup) => (
                   <div className="table-row" key={headerGroup.id}>
                      {headerGroup.headers.map((header) => (

@@ -29,7 +29,7 @@
       @apply border-zinc-100 dark:border-darkBorder;
    }
    .border-color-sub {
-      @apply border-[#ededed] dark:border-zinc-700;
+      @apply border-[#ededed] dark:border-zinc-600/50;
    }
    h3 {
       @apply font-header dark:text-zinc-100 text-xl mt-4 pb-1 scroll-mt-32 laptop:scroll-mt-20;
@@ -83,7 +83,7 @@ html.dark {
       @apply divide-[#ededed] dark:divide-[#36393e];
    }
    .divide-color-sub {
-      @apply divide-[#ededed] dark:divide-zinc-700;
+      @apply divide-[#ededed] dark:divide-zinc-600/50;
    }
    .outline-color {
       @apply outline-[#ededed] dark:outline-[#36393e];

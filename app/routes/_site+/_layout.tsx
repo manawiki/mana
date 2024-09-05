@@ -56,7 +56,7 @@ export default function SiteLayout() {
                isPrimaryMenu={isPrimaryMenu}
                setPrimaryMenuOpen={setPrimaryMenuOpen}
             />
-            <section className="bg-3 max-laptop:pt-14 max-laptop:min-h-[140px]">
+            <section className="bg-3 max-laptop:min-h-[140px]">
                <SiteHeader
                   isPrimaryMenu={isPrimaryMenu}
                   setPrimaryMenuOpen={setPrimaryMenuOpen}

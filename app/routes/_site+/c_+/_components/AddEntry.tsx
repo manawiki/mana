@@ -38,7 +38,7 @@ export function AddEntry() {
       <section className="relative">
          {!collection?.customDatabase && (
             <AdminOrStaffOrOwner>
-               <div className="mb-3 flex items-center gap-4 w-full">
+               <div className="flex items-center gap-4 w-full">
                   <fetcher.Form
                      ref={zoEntry.ref}
                      method="post"

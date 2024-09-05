@@ -69,7 +69,7 @@ export default function SiteIndexMain() {
          <main
             className={clsx(
                hasAccess ? "laptop:pb-32" : "laptop:pb-14",
-               "max-tablet:px-3 pt-20 laptop:pt-6 relative ",
+               "max-tablet:px-3 pt-4 laptop:pt-6 relative ",
             )}
          >
             {hasAccess ? (

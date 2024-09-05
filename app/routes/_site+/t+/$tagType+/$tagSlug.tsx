@@ -112,7 +112,7 @@ export default function Tags() {
    const { tag, posts } = useLoaderData<typeof loader>();
 
    return (
-      <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+      <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-3 laptop:pt-6">
          <div className="flex items-center justify-between pb-3">
             <h1 className="font-header text-2xl">
                <span className="text-1">#</span> {tag.name}

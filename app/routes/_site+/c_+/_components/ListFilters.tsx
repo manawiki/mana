@@ -47,13 +47,7 @@ export function ListFilters({
    }, [debouncedSearchQuery]);
 
    return (
-      <div
-         className={clsx(
-            viewType == "list" && "top-32 laptop:top-[104px]",
-            viewType == "grid" && "top-32 laptop:top-20",
-            "flex items-center justify-between w-full pb-2 gap-3 sticky  z-20",
-         )}
-      >
+      <div className="flex items-center justify-between w-full pt-3 gap-3 sticky  z-20 top-[61px] bg-3">
          <div
             className="overflow-hidden bg-3 dark:border-zinc-600 shadow-sm dark:shadow-zinc-800/80 rounded-md dark:divide-zinc-600
             border border-zinc-300/80 h-9 grid grid-cols-2 flex-none divide-x divide-zinc-300/80"
