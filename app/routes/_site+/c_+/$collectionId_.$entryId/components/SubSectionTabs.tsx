@@ -75,11 +75,7 @@ export function SubSectionTabs({
 
    return (
       <>
-         <div
-            data-section
-            id={section?.slug ?? ""}
-            className="scroll-mt-32 laptop:scroll-mt-20"
-         >
+         <div data-section id={section?.slug ?? ""} className="scroll-mt-20">
             <SectionTitle section={section} />
             <>
                {viewType == "tabs" && (
@@ -138,7 +134,7 @@ export function SubSectionTabs({
                         return (
                            <div
                               id={section?.slug ?? ""}
-                              className="scroll-mt-32 laptop:scroll-mt-20"
+                              className="scroll-mt-20"
                               key={section.id}
                            >
                               {section.showTitle && (

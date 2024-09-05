@@ -32,7 +32,7 @@ export function SectionParent({
                <div
                   data-section
                   id={section?.slug ?? ""}
-                  className="scroll-mt-32 laptop:scroll-mt-20 max-w-[728px] mx-auto"
+                  className="scroll-mt-20 max-w-[728px] mx-auto"
                >
                   <SectionTitle section={section} />
                   <SubSection

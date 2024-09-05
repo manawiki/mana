@@ -30,7 +30,7 @@ export function EditorView({
       return isTopLevel ? (
          <div
             style={{
-               width: isVariableWidth
+               maxWidth: isVariableWidth
                   ? //@ts-ignore
                     `${props.element.containerWidth}px`
                   : autoWidth

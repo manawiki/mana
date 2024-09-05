@@ -75,7 +75,7 @@ export function EditorBlocks({
             <h2
                id={id}
                className="dark:text-zinc-100 mt-8 mb-3 pl-3.5 leading-7 dark:bg-dark400 bg-zinc-100 block shadow-sm dark:shadow-zinc-800/70 border-zinc-300
-      font-header relative text-lg scroll-mt-32 laptop:scroll-mt-60 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-600"
+      font-header relative text-lg scroll-mt-20 rounded-l rounded-r-md py-2 overflow-hidden border shadow-zinc-50 dark:border-zinc-600"
                {...attributes}
             >
                <span className="z-10 relative">{children}</span>
@@ -99,7 +99,7 @@ export function EditorBlocks({
          return (
             <h3
                id={id}
-               className="flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-xl scroll-mt-32 laptop:scroll-mt-16"
+               className="flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-xl scroll-mt-20"
                {...attributes}
             >
                <div className="min-w-[10px] flex-none">{children}</div>
