@@ -37,11 +37,16 @@ export async function fetchEntry({
       ? user
          ? authGQLFetcher({
               siteSlug: entry.siteSlug,
-              variables: { entryId: entry.id, ...gql?.variables },
+              variables: {
+                 entryId: entry.id,
+                 jsonEntryId: entry.id,
+                 ...gql?.variables,
+              },
               document: gql?.query,
            })
          : gqlRequestWithCache(gqlPath, gql?.query, {
               entryId: entry.id,
+              jsonEntryId: entry.id,
               ...gql?.variables,
            })
       : rest?.depth
