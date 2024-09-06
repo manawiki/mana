@@ -67,6 +67,9 @@ export default buildConfig({
          },
       }),
    ],
+   graphQL: {
+      maxComplexity: 2000,
+   },
    globals: [],
    collections,
    typescript: {
