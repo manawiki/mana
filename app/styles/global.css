@@ -32,7 +32,7 @@
       @apply border-[#ededed] dark:border-zinc-600/50;
    }
    h3 {
-      @apply font-header dark:text-zinc-100 text-xl mt-4 pb-1 scroll-mt-32 laptop:scroll-mt-20;
+      @apply font-header dark:text-zinc-100 text-xl mt-4 pb-1 scroll-mt-20;
    }
    /* table {
       @apply border-collapse;

@@ -80,6 +80,9 @@ export default buildConfig({
       outputFile: path.resolve(__dirname, "./payload-custom-types.ts"),
    },
    collections: [Users, CustomImages, ...CustomCollections],
+   graphQL: {
+      maxComplexity: 2000,
+   },
    globals: [],
    // disable Payload ratelimit, rely on flyio request limit instead
    rateLimit: {

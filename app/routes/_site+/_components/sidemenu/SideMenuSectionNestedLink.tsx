@@ -143,7 +143,7 @@ export function SideMenuSectionNestedLink({
                         value={linkName}
                         onChange={(e) => setLinkName(e.target.value)}
                         className="bg-transparent w-full max-w-full focus:ring-1 bg-white ring-zinc-300
-                   dark:ring-zinc-500 dark:bg-dark450 rounded text-[13px] border border-zinc-300 
+                   dark:ring-zinc-500 dark:bg-dark450 rounded text-sm border border-zinc-300 
                      font-semibold text-zinc-500 dark:text-zinc-300 focus:outline-none px-1 dark:border-zinc-600"
                      />
                   </div>
@@ -153,7 +153,7 @@ export function SideMenuSectionNestedLink({
                      value={linkPath}
                      onChange={(e) => setLinkPath(e.target.value)}
                      className="bg-transparent w-full max-w-full focus:ring-1 bg-white ring-zinc-300
-                dark:ring-zinc-500 dark:bg-dark450 rounded text-[13px] border border-zinc-300 
+                dark:ring-zinc-500 dark:bg-dark450 rounded text-sm border border-zinc-300 
                   font-semibold text-zinc-500 dark:text-zinc-300 focus:outline-none px-1 dark:border-zinc-600"
                   />
                </div>
@@ -163,7 +163,7 @@ export function SideMenuSectionNestedLink({
                      to={nestedSection.path}
                      className="flex items-center w-full justify-between gap-2 truncate h-6"
                   >
-                     <span className="text-[13px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
+                     <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400 truncate">
                         {nestedSection.name}
                      </span>
                      <Avatar

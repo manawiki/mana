@@ -48,6 +48,6 @@ function CustomTemplateSection({
       //@ts-ignore
       const CustomComponentView = customComponents[subSection?.slug];
 
-      return <CustomComponentView data={data} />;
+      return <CustomComponentView subSection={subSection} data={data} />;
    }
 }

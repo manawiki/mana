@@ -320,7 +320,7 @@ function HoverElement({
    return (
       <section
          style={{
-            width: isNested
+            maxWidth: isNested
                ? undefined
                : isVariableWidth
                  ? `${element.containerWidth}px`
