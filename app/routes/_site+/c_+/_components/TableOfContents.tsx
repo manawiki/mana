@@ -64,11 +64,11 @@ export function TableOfContents({
                               <div className="w-3 h-[1px] dark:bg-zinc-700 bg-zinc-200" />
                               <Link
                                  to={`#${section?.slug}`}
-                                 className="font-bold pl-2 py-1.5 flex items-center w-full gap-3  dark:hover:bg-dark450 border border-r-0 shadow-sm shadow-zinc-50
-                                 border-zinc-100/90 dark:border-zinc-700  bg-white dark:bg-dark400 dark:shadow-zinc-800/50 hover:bg-zinc-100 rounded-l-lg"
+                                 className="font-bold pl-2 py-1.5 flex items-center w-full gap-3  dark:hover:bg-dark450 border border-r-0 shadow-sm shadow-zinc-100
+                                 border-zinc-100 border-l-2 border-l-zinc-200/80 dark:border-l-zinc-600/80 dark:border-zinc-700 bg-white dark:bg-dark400 dark:shadow-zinc-800/50 hover:bg-zinc-100 rounded-l-lg"
                               >
                                  <span>{section.name}</span>
-                                 {/* <div className="border-t border-dashed border-zinc-300/80 dark:border-zinc-600 flex-grow" /> */}
+                                 <div className="border-t border-dotted border-zinc-300/80 dark:border-zinc-600 flex-grow" />
                               </Link>
                            </div>
                            {section.subSections &&
@@ -89,11 +89,10 @@ export function TableOfContents({
                                                 ? `#${subSection?.slug}`
                                                 : `?section=${subSection?.slug}#${section?.slug}`
                                           }
-                                          className="font-bold dark:bg-transparent bg-white/20 dark:hover:bg-dark400 hover:bg-zinc-100 
-                                          flex items-center gap-2 text-sm rounded-l-lg pl-2 ml-4 text-1 w-full py-1.5"
+                                          className="font-bold bg-white dark:bg-dark400 dark:hover:bg-dark450 hover:bg-zinc-100 
+                                          flex items-center gap-3 text-sm rounded-l-xl pl-2 ml-4 text-1 w-full py-1.5"
                                        >
                                           {subSection.name}
-                                          <div className="border-t border-dotted border-zinc-300/80 dark:border-zinc-600 flex-grow" />
                                        </Link>
                                     </div>
                                  ))}
