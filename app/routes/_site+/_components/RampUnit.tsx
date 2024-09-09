@@ -103,6 +103,8 @@ export function AdUnit({
       };
    }, [pathname]);
 
+   className = className + " h-[250px] tablet:h-[90px]";
+
    return enableAds ? (
       <ClientOnly fallback={<div className={className} />}>
          {() => (
