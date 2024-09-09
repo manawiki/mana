@@ -103,9 +103,11 @@ export function AdUnit({
       };
    }, [pathname]);
 
-   className = className + " h-[250px] tablet:h-[90px]";
+   if (!enableAds) return <div className={className} />;
 
-   return enableAds ? (
+   className = className + " h-[250px] tablet:h-[90px]"; // set Default height to fix ad cls
+
+   return (
       <ClientOnly fallback={<div className={className} />}>
          {() => (
             <>
@@ -133,8 +135,6 @@ export function AdUnit({
             </>
          )}
       </ClientOnly>
-   ) : (
-      <div className={className} />
    );
 }
 
