@@ -106,18 +106,21 @@ export function AdUnit({
    const [startDetect, setStartDetect] = useState(true);
    const [detected, setDetected] = useState(false);
 
+   // Run Adblock detection
    useEffect(() => {
-      if (startDetect) {
+      if (startDetect && enableAds && process.env.NODE_ENV === "production") {
          detectAdblock((enable) => {
             setStartDetect(false);
             setDetected(enable);
          });
       }
-   }, [startDetect]);
+   }, [startDetect, enableAds]);
 
    if (!enableAds) return <></>;
 
-   className = className + " h-[250px] tablet:h-[90px]"; // set Default height to fix ad cls
+   // set Default height to fix ad cls, only in production when adblock is not detected
+   if (!detected && process.env.NODE_ENV === "production")
+      className = className + " h-[250px] tablet:h-[90px]";
 
    return (
       <ClientOnly fallback={<div className={className} />}>
