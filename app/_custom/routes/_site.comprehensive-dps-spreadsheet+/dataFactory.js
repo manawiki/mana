@@ -1411,10 +1411,10 @@ function fetchPokemon(oncomplete = function () {}) {
          )
             ? "POKEMON_RARITY_LEGENDARY"
             : MythicalPokemon.includes(
-                 pkm.title_1.toLowerCase().replace("&#039;", "'"),
-              )
-            ? "POKEMON_RARITY_MYTHIC"
-            : undefined,
+                   pkm.title_1.toLowerCase().replace("&#039;", "'"),
+                )
+              ? "POKEMON_RARITY_MYTHIC"
+              : undefined,
       }))
       .sort((a, b) => (a.name < b.name ? -1 : 1));
 
@@ -1820,7 +1820,7 @@ export const PokemonRegions = {
  * @param {Object|Pokemon} pokemonInstance An instance of the subject Pokemon. Used for querying Pokemon attributes.
  * @return {function} A function that accepts one parameter (the entity to evaluate) and returns true or false.
  */
-function PokeQuery(queryStr, pokemonInstance) {
+export function PokeQuery(queryStr, pokemonInstance) {
    let defaultPredicate = (arg) => false;
    let vstack = [],
       opstack = [];

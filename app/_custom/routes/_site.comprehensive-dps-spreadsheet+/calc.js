@@ -827,8 +827,8 @@ export function generateSpreadsheet(pokemonCollection, Context) {
                cmoveInstance.labelLinked || cmoveInstance.label,
                "move-input-with-icon",
             );
-            pkmInstance.ui_dps = Math.round(pkmInstance.dps, 3);
-            pkmInstance.ui_tdo = Math.round(pkmInstance.tdo, 1);
+            pkmInstance.ui_dps = pkmInstance.dps.toFixed(1);
+            pkmInstance.ui_tdo = Math.round(pkmInstance.tdo);
             if (Context.battleMode == "pvp") {
                pkmInstance.ui_overall =
                   Math.ceil(
@@ -855,6 +855,8 @@ export function generateSpreadsheet(pokemonCollection, Context) {
    t2 = Date.now();
    console.log("Primary Calculation took", t2 - t1, "ms");
    t1 = t2;
+
+   console.log(Table);
 
    return Table;
 }

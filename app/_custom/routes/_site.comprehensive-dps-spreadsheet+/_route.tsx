@@ -19,6 +19,7 @@ import {
    requiredJSONStatus,
    weathers,
    pokeTypes,
+   PokeQuery,
 } from "./dataFactory.js";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
@@ -599,11 +600,7 @@ function filterResults(results, searchParams) {
    const search = searchParams.get("search");
 
    if (search) {
-      filtered = filtered.filter((pokemon) =>
-         search === ""
-            ? true
-            : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
-      );
+      filtered = filtered.filter(PokeQuery(search));
    }
 
    return filtered;
