@@ -99,7 +99,7 @@ export function EditorBlocks({
          return (
             <h3
                id={id}
-               className="flex max-laptop:flex-col laptop:items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-xl scroll-mt-20"
+               className="flex max-laptop:flex-col laptop:items-center dark:text-zinc-100 gap-1 tablet:gap-3 pb-1.5 mt-6 font-header text-xl scroll-mt-20"
                {...attributes}
             >
                <div className="min-w-[10px] flex-none whitespace-pre-wrap">

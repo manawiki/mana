@@ -1,4 +1,6 @@
 export type IconName =
+  | "hash"
+  | "corner-down-right"
   | "chevrons-left"
   | "square-plus"
   | "message-square-plus"
