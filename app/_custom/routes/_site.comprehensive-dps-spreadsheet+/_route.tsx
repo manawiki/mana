@@ -498,9 +498,9 @@ function ResultsTable() {
          <table className="w-full">
             <thead>
                <tr>
-                  <th>Pokemon</th>
-                  <th>Fast Move</th>
-                  <th>Charged Move</th>
+                  <th className="py-4 text-left">Pokemon</th>
+                  <th className="py-4 text-left">Fast Move</th>
+                  <th className="py-4 text-left">Charged Move</th>
                   <TH>DPS</TH>
                   <TH>TDO</TH>
                   <TH>ER</TH>
@@ -610,7 +610,7 @@ function filterResults(results, searchParams) {
 function TH({ children }: { children: string }) {
    const [searchParams, setSearchParams] = useSearchParams();
 
-   const sort = searchParams.get("sort") ?? "dps";
+   const sort = searchParams.get("sort") ?? "DPS";
    const asc = searchParams.get("asc");
 
    const onClick = () => {
@@ -632,16 +632,15 @@ function TH({ children }: { children: string }) {
    };
 
    return (
-      <th className="px-4 py-2">
+      <th className="py-4 ">
          <button
-            className="flex items-center gap-1 capitalize"
+            className="flex gap-1 capitalize justify-end w-full"
             type="button"
             onClick={onClick}
          >
-            {children}
             <Icon
                name={
-                  sort !== children.toString().toLowerCase()
+                  sort !== children.toString()
                      ? "chevrons-up-down"
                      : asc
                        ? "chevron-up"
@@ -650,6 +649,7 @@ function TH({ children }: { children: string }) {
                size={18}
                className="text-zinc-500"
             />
+            {children}
          </button>
       </th>
    );
