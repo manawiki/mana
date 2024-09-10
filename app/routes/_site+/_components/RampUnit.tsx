@@ -103,7 +103,7 @@ export function AdUnit({
       };
    }, [pathname]);
 
-   if (!enableAds) return <div className={className} />;
+   if (!enableAds) return <></>;
 
    className = className + " h-[250px] tablet:h-[90px]"; // set Default height to fix ad cls
 

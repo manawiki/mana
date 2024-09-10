@@ -6,7 +6,7 @@ export function BlockInlineAd({ element }: { element: InlineAdElement }) {
    return (
       <AdPlaceholder>
          <AdUnit
-            className="my-8 mx-auto flex items-center justify-center"
+            className="mx-auto flex items-center justify-center"
             enableAds
             adType={{
                desktop: "leaderboard_btf",
