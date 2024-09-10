@@ -82,7 +82,7 @@ export function Section({
                         tablet: "leaderboard_btf",
                         mobile: "med_rect_btf",
                      }}
-                     className="mx-auto flex items-center justify-center"
+                     className="my-4 mx-auto flex items-center justify-center"
                      selectorId={`sectionBTF-${section.id}`}
                   />
                ) : null}

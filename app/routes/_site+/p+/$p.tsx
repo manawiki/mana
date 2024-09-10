@@ -128,7 +128,7 @@ export default function Post() {
                   tablet: "leaderboard_atf",
                   mobile: "med_rect_atf",
                }}
-               className="mx-auto flex items-center justify-center"
+               className="my-4 mx-auto flex items-center justify-center"
                selectorId="postDesktopLeaderATF"
             />
             {hasAccess ? (
