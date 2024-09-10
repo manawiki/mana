@@ -14,7 +14,7 @@ import { useDebouncedValue } from "~/utils/use-debounce";
 import type { loader } from "../_index";
 
 export function Discover() {
-   const { q, sites, dev } = useLoaderData<typeof loader>() || {};
+   const { q, sites } = useLoaderData<typeof loader>() || {};
 
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
@@ -167,8 +167,6 @@ export function Discover() {
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link
-                              //don't reload document on dev
-                              reloadDocument={!dev}
                               to={
                                  site.domain
                                     ? `https://${site.domain}`

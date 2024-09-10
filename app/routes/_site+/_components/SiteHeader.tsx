@@ -8,7 +8,6 @@ import {
    Transition,
 } from "@headlessui/react";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
-import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { InstantSearch } from "react-instantsearch";
 
@@ -24,9 +23,9 @@ import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";
+import { DarkModeToggle } from "../action+/theme-toggle";
 import { searchClient } from "../search/_search";
 import { Autocomplete } from "../search/components/Autocomplete";
-import { DarkModeToggle } from "../action+/theme-toggle";
 
 export function SiteHeader({
    setPrimaryMenuOpen,
@@ -198,7 +197,6 @@ export function SiteHeader({
                         <div className="flex items-center">
                            <Link
                               // prefetch="intent"
-                              reloadDocument={true}
                               to={`/login?redirectTo=/`}
                               className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5
                         text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"

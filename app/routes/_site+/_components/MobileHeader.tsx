@@ -211,7 +211,6 @@ export function MobileHeader() {
                         </div>
                      )}
                      <Link
-                        reloadDocument={true}
                         className="my-4 rounded-xl bg-zinc-800 px-5 py-3
                         text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
                         to="https://mana.wiki"

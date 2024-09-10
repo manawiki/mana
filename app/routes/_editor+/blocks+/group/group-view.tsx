@@ -27,7 +27,6 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
             <>
                {element.isPost && element.iconUrl ? (
                   <Link
-                     reloadDocument={element?.isCustomSite ?? false}
                      key={element?.id}
                      to={element?.path ?? ""}
                      // prefetch="intent"
@@ -62,7 +61,6 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                   </Link>
                ) : (
                   <Link
-                     reloadDocument={element?.isCustomSite ?? false}
                      key={element?.id}
                      to={element?.path ?? ""}
                      // prefetch="intent"
@@ -138,7 +136,6 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                   </button>
                )}
                <NavLink
-                  reloadDocument={element?.isCustomSite ?? false}
                   key={element?.id}
                   to={element?.path ?? ""}
                   // prefetch="intent"
