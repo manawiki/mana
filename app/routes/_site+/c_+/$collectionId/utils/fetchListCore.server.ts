@@ -65,7 +65,7 @@ export async function fetchListCore({
 
       const LIST_QUERY = gql`
          query {
-            listData: ${label}(limit:5000) {
+            listData: ${label}(limit:12000) {
                totalDocs
                docs {
                   id
