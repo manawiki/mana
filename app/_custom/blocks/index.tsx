@@ -34,21 +34,21 @@ export const CustomBlocks = ({ element, children, attributes }: any) => {
 
 export const CustomBlocksAddConfig = (onSelect: any) => {
    return {
-      label: "Custom",
-      items: [
-         {
-            label: "Sample Component",
-            icon: <Icon name="component" size={20} />,
-            description: "Sample component description",
-            onSelect: () => {
-               onSelect({
-                  id: nanoid(),
-                  stringField: "test",
-                  type: BlockType.CustomComponent,
-                  children: [{ text: "" }],
-               });
-            },
-         },
-      ],
+      // label: "Custom",
+      // items: [
+      //    {
+      //       label: "Sample Component",
+      //       icon: <Icon name="component" size={20} />,
+      //       description: "Sample component description",
+      //       onSelect: () => {
+      //          onSelect({
+      //             id: nanoid(),
+      //             stringField: "test",
+      //             type: BlockType.CustomComponent,
+      //             children: [{ text: "" }],
+      //          });
+      //       },
+      //    },
+      // ],
    };
 };

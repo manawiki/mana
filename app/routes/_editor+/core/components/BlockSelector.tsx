@@ -6,7 +6,7 @@ import type { Editor } from "slate";
 import { Transforms } from "slate";
 import { ReactEditor } from "slate-react";
 
-// import { CustomBlocksAddConfig } from "~/_custom/blocks";
+import { CustomBlocksAddConfig } from "~/_custom/blocks";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { MobileTray } from "~/routes/_site+/_components/MobileTray";
@@ -394,11 +394,11 @@ export function BlockSelector({ element, editor, isSelectorOpen }: Props) {
       },
    ];
 
-   //If custom site has blocks, add to select options
-   // const customBlocks = CustomBlocksAddConfig(onInsertBelow);
-   // if (customBlocks) {
-   //    groups.push(customBlocks);
-   // }
+   // If custom site has blocks, add to select options
+   const customBlocks = CustomBlocksAddConfig(onInsertBelow);
+   if (customBlocks) {
+      groups.push(customBlocks);
+   }
 
    const [isEditorTrayOpen, setEditorTray] = useState(false);
 

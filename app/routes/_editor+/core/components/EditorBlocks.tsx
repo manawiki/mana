@@ -7,7 +7,7 @@ import urlSlug from "url-slug";
 
 import { CustomBlocks } from "~/_custom/blocks";
 import { Loading } from "~/components/Loading";
-import { TableBody, TableHead, TableRow } from "~/components/Table";
+import { TableHead } from "~/components/Table";
 
 import { BlockEmbed } from "../../blocks+/embed";
 import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
@@ -99,16 +99,15 @@ export function EditorBlocks({
          return (
             <h3
                id={id}
-               className="flex max-laptop:flex-col laptop:items-center dark:text-zinc-100 gap-1 tablet:gap-3 pb-1.5 mt-6 font-header text-xl scroll-mt-20"
+               className="dark:bg-dark350 border dark:border-zinc-700 bg-zinc-50 rounded-md py-1.5 px-3.5 mb-2 dark:text-zinc-100 mt-6 
+               font-header text-base scroll-mt-20 shadow-sm shadow-zinc-50 dark:shadow-zinc-800/30 border-zinc-200/90 relative overflow-hidden"
                {...attributes}
             >
-               <div className="min-w-[10px] flex-none whitespace-pre-wrap">
-                  {children}
-               </div>
-               <div
+               <span
                   contentEditable={false}
-                  className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400"
+                  className="h-full w-1.5 select-none bg-zinc-200/40 dark:bg-dark450/80 absolute top-0 left-0"
                />
+               {children}
             </h3>
          );
       }
