@@ -6,6 +6,7 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 import urlSlug from "url-slug";
 
 import { CustomBlocks } from "~/_custom/blocks";
+import { H2, H3 } from "~/components/Headers";
 import { Loading } from "~/components/Loading";
 import { TableHead } from "~/components/Table";
 
@@ -72,46 +73,18 @@ export function EditorBlocks({
          //@ts-ignore
          const id = urlSlug(element?.children[0]?.text ?? undefined);
          return (
-            <h2
-               id={id}
-               className="mt-6 flex items-center text-lg scroll-mt-20 relative overflow-hidden pb-0 font-header pl-2.5 mb-3 leading-0"
-               {...attributes}
-            >
-               <span
-                  contentEditable={false}
-                  className="h-full w-1 select-none bg-zinc-400 dark:bg-zinc-500 absolute left-0 rounded-full border-zinc-300 dark:border-zinc-500 z-20"
-               />
-               <span className="bg-zinc-50 dark:bg-dark450 px-2.5 overflow-hidden py-1.5 flex-grow rounded-lg border-2 border-color-sub border-zinc-200 relative shadow-sm dark:shadow-zinc-800/70 shadow-zinc-50">
-                  <span className="z-10 relative">{children}</span>
-                  <div
-                     contentEditable={false}
-                     className="pattern-dots absolute left-0
-                     top-0 z-0 h-full
-                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
-                     pattern-size-2 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
-                  />
-               </span>
-            </h2>
+            <H2 id={id} {...attributes}>
+               {children}
+            </H2>
          );
       }
       case BlockType.H3: {
          //@ts-ignore
          const id = urlSlug(element?.children[0]?.text ?? undefined);
          return (
-            <h3
-               id={id}
-               className="dark:text-zinc-100 mt-8 mb-3 px-2.5 leading-7 dark:bg-dark450/60 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/70 border-zinc-200
-            font-header relative text-lg scroll-mt-20 rounded-lg py-1.5 overflow-hidden border-2 dark:border-zinc-600/60 shadow-zinc-50"
-               {...attributes}
-            >
-               <span className="z-10 relative">{children}</span>
-               <div
-                  contentEditable={false}
-                  className="pattern-dots absolute left-0 top-0 z-0 h-full
-               w-full pattern-bg-white pattern-zinc-400 dark:pattern-zinc-400 pattern-opacity-10 
-               pattern-size-1  dark:pattern-bg-bg3Dark"
-               />
-            </h3>
+            <H3 id={id} {...attributes}>
+               {children}
+            </H3>
          );
       }
       case BlockType.BulletedList: {
