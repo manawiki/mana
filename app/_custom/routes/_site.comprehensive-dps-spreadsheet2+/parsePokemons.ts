@@ -37,11 +37,19 @@ export function parsePokemon(pokemon: Pokemon) {
       //todo add pokemon-family
       evolutions = [] as string[],
       unavailable = "", //missing
-      rarity = LegendaryPokemon.includes(name)
+      rarity = LegendaryPokemon.some((mythical) =>
+         name.toLowerCase().includes(mythical),
+      )
          ? "POKEMON_RARITY_LEGENDARY"
-         : MythicalPokemon.includes(name)
+         : MythicalPokemon.some((mythical) =>
+                name.toLowerCase().includes(mythical),
+             )
            ? "POKEMON_RARITY_MYTHIC"
            : undefined;
+
+   // if name is in MythicalPokemon, set rarity to Mythical
+   // if name is in LegendaryPokemon, set rarity to Legendary
+   // if name is in both, set rarity to Mythical
 
    return {
       dex,
@@ -72,59 +80,55 @@ export function parsePokemon(pokemon: Pokemon) {
 }
 
 export const LegendaryPokemon = [
-   "regice",
-   "entei",
-   "registeel",
-   "suicune",
-   "heatran",
-   "latias",
-   "rayquaza",
-   "azelf",
-   "moltres",
-   "mewtwo",
-   "latios",
-   "groudon",
-   "regirock",
-   "dialga",
-   "giratina (altered forme)",
-   "giratina (origin forme)",
-   "mesprit",
-   "zapdos",
-   "lugia",
    "articuno",
+   "azelf",
+   "cresselia",
+   "dialga",
+   "entei",
+   "giratina",
+   "groudon",
+   "heatran",
    "ho-oh",
    "kyogre",
-   "regigigas",
-   "uxie",
-   "palkia",
-   "cresselia",
-   "raikou",
-   "tornadus (incarnate forme)",
-   "tornadius (therian forme)",
-   "landorus (incarnate forme)",
-   "landorus (therian forme)",
-   "thundurus (incarnate forme)",
-   "thundurus (therian forme)",
-   "black kyurem",
-   "white kyurem",
    "kyurem",
+   "landorus",
+   "latias",
+   "latios",
+   "lugia",
+   "mesprit",
+   "mewtwo",
+   "moltres",
+   "palkia",
+   "raikou",
+   "rayquaza",
+   "regice",
+   "regigigas",
+   "regirock",
+   "registeel",
    "reshiram",
+   "suicune",
+   "thundurus",
+   "tornadus",
+   "uxie",
+   "zapdos",
    "zekrom",
-   "shadow raikou",
 ];
+
 export const MythicalPokemon = [
    "arceus",
-   "darkrai",
-   "phione",
-   "shaymin",
-   "deoxys (attack forme)",
-   "deoxys (defense forme)",
-   "deoxys (normal forme)",
-   "deoxys (speed forme)",
-   "manaphy",
    "celebi",
-   "mew",
-   "meltan",
+   "darkrai",
+   "deoxys",
    "jirachi",
+   "manaphy",
    "melmetal",
+   "meltan",
+   "mew",
+   "phione",
+   "shaymin (land forme)",
+   "shaymin (sky forme)",
+   "victini",
+   "volcanion",
+   "zarude",
+   "zeraora",
 ];

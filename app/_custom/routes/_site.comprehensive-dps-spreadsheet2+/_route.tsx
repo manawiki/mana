@@ -104,6 +104,8 @@ export async function clientLoader({
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
+   // console.log(pokemon);
+
    return {
       pokemon,
       results: filtered,
