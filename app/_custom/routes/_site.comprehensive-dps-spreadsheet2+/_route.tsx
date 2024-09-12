@@ -536,14 +536,12 @@ function ResultsTable() {
 
    return (
       <>
+         <Search />
          <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
-            <div className="flex items-center gap-3 text-xs">
-               <Search />
-               <Pagination count={count} />
-            </div>
             Displaying {start + 1} to {end} of {count} results
+            <Pagination count={count} />
          </div>
-         <table className="w-full">
+         <table className="w-full ">
             <thead>
                <tr>
                   <th className="py-4 text-left">Pokemon</th>
@@ -625,7 +623,11 @@ function ResultsTable() {
                ))}
             </tbody>
          </table>
-         {count} results
+         <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+            Displaying {start + 1} to {end} of {count} results
+            <Pagination count={count} />
+         </div>
+         {/* {count} results
          <div className="container">
             <div className="row">
                <div className="col-sm-6">
@@ -639,7 +641,7 @@ function ResultsTable() {
                   </button>
                </div>
             </div>
-         </div>
+         </div> */}
       </>
    );
 }
