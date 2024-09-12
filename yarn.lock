@@ -11182,11 +11182,6 @@ remeda@^1.0.0:
   resolved "https://registry.yarnpkg.com/remeda/-/remeda-1.61.0.tgz#dccd31ab75d0f02865f3ef89e4f0ce0076096464"
   integrity sha512-caKfSz9rDeSKBQQnlJnVW3mbVdFgxgGWQKq1XlFokqjf+hQD5gxutLGTTY2A/x24UxVyJe9gH5fAkFI63ULw4A==
 
-remix-client-cache@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/remix-client-cache/-/remix-client-cache-1.0.1.tgz#55ac10d68cfb685e6717dab5b6ceb5eb09495d20"
-  integrity sha512-hmCBgf5fWBEmlt2WfTB1GTzkZWTaYYXLBe3BMnr7niMibnww40Nc1Rad3rL+NjR/W/l0176daJG1X5hcaBCbEw==
-
 remix-development-tools@^3.7.4:
   version "3.7.4"
   resolved "https://registry.yarnpkg.com/remix-development-tools/-/remix-development-tools-3.7.4.tgz#a03bf1c59157d271fd59f81644d30e6db36a391c"
