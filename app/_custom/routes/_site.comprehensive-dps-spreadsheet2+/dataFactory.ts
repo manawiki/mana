@@ -1,9 +1,10 @@
+import type { SerializeFrom } from "@remix-run/node";
+
 import cpmData from "./cpm.json";
 // import moveData from "./move-data-full-PoGO.json";
 // import PokemonForms from "./pogo_data_projection_10.json";
 // import pokemonData from "./pokemon-data-full-en-PoGO.json";
 // import raidBossList from "./raid-boss-list-PoGO.json";
-
 import type { DPSMove } from "./parseMoves";
 import type { DPSPokemon } from "./parsePokemons";
 
@@ -956,13 +957,13 @@ export const Data = {
 
    RaidBosses: [],
 
-   Pokemon: [] as DPSPokemon[],
+   Pokemon: [] as SerializeFrom<DPSPokemon>[],
 
    PokemonForms: [],
 
-   FastMoves: [] as DPSMove[],
+   FastMoves: [] as SerializeFrom<DPSMove>[],
 
-   ChargedMoves: [] as DPSMove[],
+   ChargedMoves: [] as SerializeFrom<DPSMove>[],
 
    LevelSettings: [],
 

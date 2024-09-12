@@ -75,12 +75,13 @@ export async function clientLoader({
 
    // console.log(Data);
 
-   Data.LevelSettings = LevelSettings;
+   // Load Data
+   fetchLevelSettings();
    Data.Pokemon = pokemon;
    Data.FastMoves = FastMoves;
    Data.ChargedMoves = ChargedMoves;
 
-   // console.log(Data);
+   console.log(Data);
 
    //create a simple in-memory cache
    function cacheResult() {
@@ -309,7 +310,7 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                   >
                      {fastMoves.map((move) => (
                         <option key={move} value={move}>
-                           {capitalize(move)}
+                           {capitalize(move.replace(/-/g, " "))}
                         </option>
                      ))}
                   </select>
@@ -411,7 +412,7 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                   >
                      {chargedMoves.map((move) => (
                         <option key={move} value={move}>
-                           {capitalize(move)}
+                           {capitalize(move.replace(/-/g, " "))}
                         </option>
                      ))}
                   </select>
@@ -890,7 +891,7 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
                        key={item?.name}
                        value={item}
                     >
-                       {capitalize(item?.name) ?? ""}
+                       {item?.name}
                     </Combobox.Option>
                  ))}
          </Combobox.Options>
@@ -1176,9 +1177,15 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
 //    );
 // }
 
-const capitalize = (word: string) => {
-   return word
-      ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+const capitalize = (phrase: string) => {
+   return phrase
+      ? phrase
+           .split(" ")
+           .map(
+              (word) =>
+                 word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+           )
+           .join(" ")
       : "";
 };
 

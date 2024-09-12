@@ -1,33 +1,29 @@
 import type { Pokemon } from "payload/generated-custom-types";
 
 export type DPSPokemon = {
-   dex: number;
+   dex: number | undefined | null;
    name: string;
    id: string;
-   slug: string;
-   pokeType1: string;
-   pokeType2: string;
-   baseAtk: number;
-   baseDef: number;
-   baseStm: number;
-   fastMoves: string[];
-   chargedMoves: string[];
-   // fastMoves_legacy: string[];
-   // chargedMoves_legacy: string[];
-   // fastMoves_exclusive: string[];
-   // chargedMoves_exclusive: string[];
+   slug: string | undefined | null;
+   pokeType1: string | undefined | null;
+   pokeType2: string | undefined | null;
+   baseAtk: number | undefined | null;
+   baseDef: number | undefined | null;
+   baseStm: number | undefined | null;
+   fastMoves: (string | undefined)[] | undefined;
+   chargedMoves: (string | undefined)[] | undefined;
    rating: number;
    raidMarker: string;
-   nid: string;
-   icon: string;
+   // nid: string | undefined | null;
+   icon: string | undefined | null;
    label: string;
    link: string;
    evolutions: string[];
    unavailable: string;
-   rarity: string;
+   rarity: "POKEMON_RARITY_LEGENDARY" | "POKEMON_RARITY_MYTHIC" | undefined;
 };
 
-export function parsePokemons(pokemons: { docs: Pokemon[] }) {
+export function parsePokemons(pokemons: { docs: Pokemon[] }): DPSPokemon[] {
    return pokemons?.docs
       ?.map((pokemon: Pokemon) => parsePokemon(pokemon))
       .sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
@@ -57,22 +53,23 @@ export function parsePokemon(pokemon: Pokemon) {
          ? parseInt(pokemon.ratings?.attackerRating)
          : 0,
       raidMarker = "",
-      nid, //missing
+      // nid, //missing
       icon = pokemon?.icon?.url,
       label = name,
       link = `/c/pokemon/${pokemon.slug}`,
       //todo add pokemon-family
-      evolutions = [] as string[],
+      evolutions: string[] = [],
       unavailable = "", //missing
-      rarity = LegendaryPokemon.some((mythical) =>
-         name.toLowerCase().includes(mythical),
-      )
-         ? "POKEMON_RARITY_LEGENDARY"
-         : MythicalPokemon.some((mythical) =>
-                name.toLowerCase().includes(mythical),
-             )
-           ? "POKEMON_RARITY_MYTHIC"
-           : undefined;
+      rarity: "POKEMON_RARITY_LEGENDARY" | "POKEMON_RARITY_MYTHIC" | undefined =
+         LegendaryPokemon.some((mythical) =>
+            name.toLowerCase().includes(mythical),
+         )
+            ? "POKEMON_RARITY_LEGENDARY"
+            : MythicalPokemon.some((mythical) =>
+                   name.toLowerCase().includes(mythical),
+                )
+              ? "POKEMON_RARITY_MYTHIC"
+              : undefined;
 
    return {
       dex,
@@ -92,7 +89,7 @@ export function parsePokemon(pokemon: Pokemon) {
       // chargedMoves_exclusive,
       rating,
       raidMarker,
-      nid,
+      // nid,
       icon,
       label,
       link,

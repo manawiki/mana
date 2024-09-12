@@ -39,6 +39,8 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch({});
 
+   console.log(Data, contexts);
+
    //to-do add user pokemon
    const pokemon = Data.Pokemon;
 
@@ -358,7 +360,6 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                   <select
                      id="enemy-pokemon-cmove"
                      name="enemy-pokemon-cmove"
-                     placeholder="Charge Move"
                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   >
                      {chargedMoves.map((move) => (
