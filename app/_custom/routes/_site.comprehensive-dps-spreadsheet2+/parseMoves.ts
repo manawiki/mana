@@ -1,12 +1,12 @@
 import type { Move } from "payload/generated-custom-types";
 
-export function parseMoves(moves: { docs: Move[] }): PokeMove[] {
+export function parseMoves(moves: { docs: Move[] }) {
    return moves?.docs
       ?.map((move: Move) => parseMove(move))
       .sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
 }
 
-export type PokeMove = {
+export type DPSMove = {
    name: string;
    pokeType: keyof typeof moveTypeIcons;
    label: string;
@@ -40,7 +40,7 @@ export type PokeMove = {
    moveType: "fast" | "charged";
 };
 
-export function parseMove(move: Move): PokeMove {
+export function parseMove(move: Move) {
    let pokeType = move.type as any as keyof typeof moveTypeIcons; //ugly but it works
 
    let name = move.id,

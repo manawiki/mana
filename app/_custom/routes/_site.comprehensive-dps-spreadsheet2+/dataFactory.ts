@@ -4,12 +4,30 @@ import cpmData from "./cpm.json";
 // import pokemonData from "./pokemon-data-full-en-PoGO.json";
 // import raidBossList from "./raid-boss-list-PoGO.json";
 
+import type { DPSMove } from "./parseMoves";
+import type { DPSPokemon } from "./parsePokemons";
+
 /**
  * Data Factory. This module manages the game data such as Pokemon stats, Move stats, and type effectiveness matrix. It is basically an extended Game Master.
  * @exports GM
  */
 
-export var GM = {};
+interface GMInterface {
+   invalidate: () => void;
+   erase: (nameDb: string) => void;
+   get: (nameDb: string, nameObj: string) => any;
+   set: (nameDb: string, nameObj: string, obj: any) => any;
+   select: (nameDb: string, query: string, pokemonInstance: any) => any[];
+   each: (
+      nameDb: string,
+      callbackfn: (object: any, index: number | string) => any,
+   ) => void;
+   save: () => void;
+   convert: (src?: any) => any;
+   mode: (mode: string) => void;
+}
+
+export var GM: GMInterface = {} as GMInterface;
 
 export const weathers = [
    { name: "EXTREME", label: "Extreme" },
@@ -43,77 +61,78 @@ export const pokeTypes = [
    "water",
 ];
 
+// Not using this to load data anymore
 /**
  * Fetch all required JSONs for the application.
  * @param kwargs {Object} Keyword arguments. Can specify 'name', 'complete', 'userid'
  */
-GM.fetch = function (kwargs) {
-   kwargs = kwargs || {};
-   if (kwargs.name != undefined) {
-      let dbname = kwargs.name.toLowerCase();
-      if (dbname == "pokemon") {
-         return fetchPokemon(kwargs.complete);
-      } else if (dbname == "move" || dbname == "moves") {
-         return fetchMoves(kwargs.complete);
-         // } else if (dbname == "user") {
-         //    return fetchUser(kwargs.complete, kwargs.userid);
-      }
-   }
+// GM.fetch = function (kwargs) {
+//    kwargs = kwargs || {};
+//    if (kwargs.name != undefined) {
+//       let dbname = kwargs.name.toLowerCase();
+//       if (dbname == "pokemon") {
+//          return fetchPokemon(kwargs.complete);
+//       } else if (dbname == "move" || dbname == "moves") {
+//          return fetchMoves(kwargs.complete);
+//          // } else if (dbname == "user") {
+//          //    return fetchUser(kwargs.complete, kwargs.userid);
+//       }
+//    }
 
-   // fetchLocalData();
+//    // fetchLocalData();
 
-   // function oncompleteWrapper() {
-   //    for (var json_name in requiredJSONStatus) {
-   //       if (requiredJSONStatus[json_name] != 2) return;
-   //    }
-   //    attachRaidbossInfo();
-   //    for (let pkm of Data.PokemonForms) {
-   //       var pkm2 = getEntry(pkm.name, Data.Pokemon);
-   //       if (pkm2) {
-   //          pkm2.icon = pkm.icon;
-   //       } else {
-   //          pkm = JSON.parse(JSON.stringify(pkm));
-   //          pkm.fastMoves = [];
-   //          pkm.chargedMoves = [];
-   //          insertEntry(pkm, Data.Pokemon);
-   //       }
-   //    }
-   //    for (let user of Data.Users) {
-   //       user.box = parseUserPokebox(user.box);
-   //    }
+//    // function oncompleteWrapper() {
+//    //    for (var json_name in requiredJSONStatus) {
+//    //       if (requiredJSONStatus[json_name] != 2) return;
+//    //    }
+//    //    attachRaidbossInfo();
+//    //    for (let pkm of Data.PokemonForms) {
+//    //       var pkm2 = getEntry(pkm.name, Data.Pokemon);
+//    //       if (pkm2) {
+//    //          pkm2.icon = pkm.icon;
+//    //       } else {
+//    //          pkm = JSON.parse(JSON.stringify(pkm));
+//    //          pkm.fastMoves = [];
+//    //          pkm.chargedMoves = [];
+//    //          insertEntry(pkm, Data.Pokemon);
+//    //       }
+//    //    }
+//    //    for (let user of Data.Users) {
+//    //       user.box = parseUserPokebox(user.box);
+//    //    }
 
-   //    for (let pokemon of LocalData.Pokemon) {
-   //       insertEntry(pokemon, Data.Pokemon);
-   //    }
-   //    for (let move of LocalData.FastMoves) {
-   //       insertEntry(move, Data.FastMoves);
-   //    }
-   //    for (let move of LocalData.ChargedMoves) {
-   //       insertEntry(move, Data.ChargedMoves);
-   //    }
-   //    for (var param in LocalData.BattleSettings) {
-   //       Data.BattleSettings[param] = LocalData.BattleSettings[param];
-   //    }
+//    //    for (let pokemon of LocalData.Pokemon) {
+//    //       insertEntry(pokemon, Data.Pokemon);
+//    //    }
+//    //    for (let move of LocalData.FastMoves) {
+//    //       insertEntry(move, Data.FastMoves);
+//    //    }
+//    //    for (let move of LocalData.ChargedMoves) {
+//    //       insertEntry(move, Data.ChargedMoves);
+//    //    }
+//    //    for (var param in LocalData.BattleSettings) {
+//    //       Data.BattleSettings[param] = LocalData.BattleSettings[param];
+//    //    }
 
-   //    manuallyModifyData(Data);
+//    //    manuallyModifyData(Data);
 
-   //    if (kwargs.complete) {
-   //       kwargs.complete();
-   //    }
-   // }
+//    //    if (kwargs.complete) {
+//    //       kwargs.complete();
+//    //    }
+//    // }
 
-   fetchLevelSettings();
-   fetchPokemonForms();
-   fetchMoves();
-   fetchRaidBosses();
-   fetchPokemon();
-   attachRaidbossInfo();
-   attachPokemonForm();
+//    fetchLevelSettings();
+//    fetchPokemonForms();
+//    fetchMoves();
+//    fetchRaidBosses();
+//    fetchPokemon();
+//    attachRaidbossInfo();
+//    attachPokemonForm();
 
-   // if (window.userID2 && window.userID2 != "0") {
-   //    fetchUser(null, window.userID2);
-   // }
-};
+//    // if (window.userID2 && window.userID2 != "0") {
+//    //    fetchUser(null, window.userID2);
+//    // }
+// };
 
 /**
  * Invalidate databases and makes them overwritable. This method does not erase existing database (call GM.erase() for erasing).
@@ -937,13 +956,13 @@ export const Data = {
 
    RaidBosses: [],
 
-   Pokemon: [],
+   Pokemon: [] as DPSPokemon[],
 
    PokemonForms: [],
 
-   FastMoves: [],
+   FastMoves: [] as DPSMove[],
 
-   ChargedMoves: [],
+   ChargedMoves: [] as DPSMove[],
 
    LevelSettings: [],
 
@@ -2149,7 +2168,3 @@ function BasicPokeQuery(queryStr, pokemonInstance) {
       };
    }
 }
-
-export const Component = () => <div>Test</div>;
-
-export default Component;

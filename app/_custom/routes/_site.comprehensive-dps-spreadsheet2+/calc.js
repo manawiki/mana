@@ -1,4 +1,4 @@
-import { Data, GM } from "./dataFactory.js";
+import { Data, GM } from "./dataFactory";
 
 /**
  * @file Comprehensive DPS Calculator

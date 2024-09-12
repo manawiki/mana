@@ -1,5 +1,7 @@
 import type { Pokemon } from "payload/generated-custom-types";
 
+export type DPSPokemon = ReturnType<typeof parsePokemon>;
+
 export function parsePokemons(pokemons: { docs: Pokemon[] }) {
    return pokemons?.docs
       ?.map((pokemon: Pokemon) => parsePokemon(pokemon))
@@ -21,10 +23,10 @@ export function parsePokemon(pokemon: Pokemon) {
    let chargedMoves = pokemon.chargeMoves?.map((move) => move?.move?.id);
 
    // we won't be using these for now, may need to rework this as toggles
-   // fastMoves_legacy = [], //missing
-   // chargedMoves_legacy = [], //missing
-   // fastMoves_exclusive = [], //missing
-   // chargedMoves_exclusive = []; //missing
+   // fastMoves_legacy = [],
+   // chargedMoves_legacy = [],
+   // fastMoves_exclusive = [],
+   // chargedMoves_exclusive = [];
 
    let rating = pokemon.ratings?.attackerRating
          ? parseInt(pokemon.ratings?.attackerRating)
@@ -46,10 +48,6 @@ export function parsePokemon(pokemon: Pokemon) {
              )
            ? "POKEMON_RARITY_MYTHIC"
            : undefined;
-
-   // if name is in MythicalPokemon, set rarity to Mythical
-   // if name is in LegendaryPokemon, set rarity to Legendary
-   // if name is in both, set rarity to Mythical
 
    return {
       dex,

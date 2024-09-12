@@ -117,11 +117,11 @@ clientLoader.hyrate = true;
 
 export function HydrateFallback() {
    return (
-      <>
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
          <Introduction />
          <NewToggles />
          <Icon name="loader-2" size={24} className="mx-auto animate-spin" />
-      </>
+      </div>
    );
 }
 
