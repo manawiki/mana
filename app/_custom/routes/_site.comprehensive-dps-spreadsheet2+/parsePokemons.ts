@@ -21,7 +21,7 @@ export type DPSPokemon = {
    nid: string;
    icon: string;
    label: string;
-   labelLinked: string;
+   link: string;
    evolutions: string[];
    unavailable: string;
    rarity: string;
@@ -60,7 +60,7 @@ export function parsePokemon(pokemon: Pokemon) {
       nid, //missing
       icon = pokemon?.icon?.url,
       label = name,
-      labelLinked = `<a href="/c/pokemon/${pokemon.slug}" hreflang="en">${label}</a>`,
+      link = `/c/pokemon/${pokemon.slug}`,
       //todo add pokemon-family
       evolutions = [] as string[],
       unavailable = "", //missing
@@ -95,7 +95,7 @@ export function parsePokemon(pokemon: Pokemon) {
       nid,
       icon,
       label,
-      labelLinked,
+      link,
       evolutions,
       unavailable,
       rarity,

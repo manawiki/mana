@@ -14,6 +14,7 @@ import {
 
 import type { Move, Pokemon } from "payload/generated-custom-types";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { generateSpreadsheet, getCustom, getEnemy } from "./calc";
@@ -103,6 +104,8 @@ export async function clientLoader({
 
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
+
+   console.log(filtered);
 
    // console.log(pokemon);
 
@@ -555,14 +558,50 @@ function ResultsTable() {
             <tbody>
                {filtered.map((pokemon, index) => (
                   <tr key={index} className="group">
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
-                        {pokemon?.label}
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                        <Link
+                           to={pokemon.link}
+                           className="flex items-center gap-3 group py-0.5"
+                        >
+                           <Image
+                              url={pokemon.icon}
+                              width="36"
+                              height="36"
+                              aria-label={pokemon.label}
+                              loading="lazy"
+                           />
+                           {pokemon?.label}
+                        </Link>
                      </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
-                        {pokemon?.fmove?.label}
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                        <Link
+                           to={pokemon.fmove.link}
+                           className="flex items-center gap-3 group py-0.5"
+                        >
+                           <Image
+                              url={pokemon?.fmove?.icon}
+                              width="14"
+                              height="14"
+                              aria-label={pokemon?.fmove?.label}
+                              loading="lazy"
+                           />
+                           {pokemon?.fmove?.label}
+                        </Link>
                      </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
-                        {pokemon?.cmove?.label}
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                        <Link
+                           to={pokemon.cmove.link}
+                           className="flex items-center gap-3 group py-0.5"
+                        >
+                           <Image
+                              url={pokemon?.cmove?.icon}
+                              width="14"
+                              height="14"
+                              aria-label={pokemon?.cmove?.label}
+                              loading="lazy"
+                           />
+                           {pokemon?.cmove?.label}
+                        </Link>
                      </td>
                      <td
                         className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right"
@@ -591,12 +630,12 @@ function ResultsTable() {
             <div className="row">
                <div className="col-sm-6">
                   <button id="CopyClipboardButton" className="btn btn-info">
-                     Copy to Clipboard
+                     Copy to Clipboard (todo)
                   </button>
                </div>
                <div className="col-sm-6">
                   <button id="CopyCSVButton" className="btn btn-info">
-                     Export To CSV
+                     Export To CSV (todo)
                   </button>
                </div>
             </div>

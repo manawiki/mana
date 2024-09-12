@@ -10,7 +10,7 @@ export type DPSMove = {
    name: string;
    pokeType: keyof typeof moveTypeIcons;
    label: string;
-   labelLinked: string;
+   link: string;
    icon: string;
    power: number;
    dws: number;
@@ -45,7 +45,7 @@ export function parseMove(move: Move) {
 
    let name = move.id,
       label = move.name ?? move.slug ?? move.id,
-      labelLinked = `<a href="/c/moves/${move.slug}" hreflang="en">${label}</a>`,
+      link = `/c/moves/${move.slug}`,
       icon = moveTypeIcons[pokeType],
       moveType: "fast" | "charged" =
          move.category === "fast" ? "fast" : "charged";
@@ -100,7 +100,7 @@ export function parseMove(move: Move) {
       name,
       pokeType,
       label,
-      labelLinked,
+      link,
       icon,
       power,
       dws,

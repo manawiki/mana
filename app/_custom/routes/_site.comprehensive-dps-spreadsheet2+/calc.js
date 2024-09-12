@@ -812,21 +812,22 @@ export function generateSpreadsheet(pokemonCollection, Context) {
 
             calculateDPS(pkmInstance, Context);
 
-            pkmInstance.ui_name = createIconLabelSpan(
-               pkm.icon,
-               pkm.labelLinked || pkm.label,
-               "species-input-with-icon",
-            );
-            pkmInstance.ui_fmove = createIconLabelSpan(
-               fmoveInstance.icon,
-               fmoveInstance.labelLinked || fmoveInstance.label,
-               "move-input-with-icon",
-            );
-            pkmInstance.ui_cmove = createIconLabelSpan(
-               cmoveInstance.icon,
-               cmoveInstance.labelLinked || cmoveInstance.label,
-               "move-input-with-icon",
-            );
+            // pkmInstance.ui_name = createIconLabelSpan(
+            //    pkm.icon,
+            //    pkm.labelLinked || pkm.label,
+            //    "species-input-with-icon",
+            // );
+            // pkmInstance.ui_fmove = createIconLabelSpan(
+            //    fmoveInstance.icon,
+            //    fmoveInstance.labelLinked || fmoveInstance.label,
+            //    "move-input-with-icon",
+            // );
+            // pkmInstance.ui_cmove = createIconLabelSpan(
+            //    cmoveInstance.icon,
+            //    cmoveInstance.labelLinked || cmoveInstance.label,
+            //    "move-input-with-icon",
+            // );
+
             pkmInstance.ui_dps = pkmInstance.dps.toFixed(3);
             pkmInstance.ui_tdo = pkmInstance.tdo.toFixed(1);
             if (Context.battleMode == "pvp") {
