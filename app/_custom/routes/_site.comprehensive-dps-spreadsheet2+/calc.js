@@ -1,4 +1,4 @@
-import { Data, GM } from "./dataFactory.js";
+import { Data, GM } from "./dataFactory";
 
 /**
  * @file Comprehensive DPS Calculator
@@ -62,74 +62,74 @@ export const Context = {
 export function getCustom(params) {
    const context = { ...Context };
 
-   if (params["ui-swapDiscount-checkbox"]) {
+   if (params.get("ui-swapDiscount-checkbox")) {
       context.swapDiscount = true;
    }
 
    // todo figure out user box
-   if (params["ui-use-box-checkbox"]) {
+   if (params.get("ui-use-box-checkbox")) {
       context.useBox = true;
    }
 
    // moved this as table concern
-   // if (params["ui-uniqueSpecies-checkbox"]) {
+   // if (params.get("ui-uniqueSpecies-checkbox")) {
    //    context.uniqueSpecies = true;
    // }
 
-   if (params["ui-pvpMode-checkbox"]) {
+   if (params.get("ui-pvpMode-checkbox")) {
       context.battleMode = "pvp";
    }
 
    // moved this as table concern
-   // if (params["ui-hideUnavail-checkbox"]) {
+   // if (params.get("ui-hideUnavail-checkbox")) {
    //    context.hideUnavail = true;
    // }
 
-   if (params["ui-allyMega-checkbox"]) {
+   if (params.get("ui-allyMega-checkbox")) {
       context.allyMega = true;
    }
 
-   if (params["ui-allyMegaStab-checkbox"]) {
+   if (params.get("ui-allyMegaStab-checkbox")) {
       context.allyMegaStab = true;
    }
 
    //todo broke atm
-   if (params["ui-cpcap"]) {
-      context.cpCap = parseInt(params["ui-cpcap"]);
+   if (params.get("ui-cpcap")) {
+      context.cpCap = parseInt(params.get("ui-cpcap"));
    }
 
-   if (params["attacker-level"]) {
-      context.attackerLevel = params["attacker-level"];
-      context.attackerCPM = GM.get("level", params["attacker-level"]).cpm;
+   if (params.get("attacker-level")) {
+      context.attackerLevel = params.get("attacker-level");
+      context.attackerCPM = GM.get("level", params.get("attacker-level")).cpm;
    }
 
-   if (params["weather"]) {
-      context.weather = params["weather"];
+   if (params.get("weather")) {
+      context.weather = params.get("weather");
    }
 
-   if (params["enemy-pokemon-name"]) {
-      context.enemyPokemon = params["enemy-pokemon-name"];
+   if (params.get("enemy-pokemon-name")) {
+      context.enemyPokemon = params.get("enemy-pokemon-name");
    }
 
-   if (params["enemy-pokemon-fmove"]) {
-      context.enemyPokemonFmove = params["enemy-pokemon-fmove"];
+   if (params.get("enemy-pokemon-fmove")) {
+      context.enemyPokemonFmove = params.get("enemy-pokemon-fmove");
    }
 
-   if (params["enemy-pokemon-cmove"]) {
-      context.enemyPokemonCmove = params["enemy-pokemon-cmove"];
+   if (params.get("enemy-pokemon-cmove")) {
+      context.enemyPokemonCmove = params.get("enemy-pokemon-cmove");
    }
 
-   if (params["pokemon-pokeType1"]) {
-      context.enemyPokeType1 = params["pokemon-pokeType1"];
+   if (params.get("pokemon-pokeType1")) {
+      context.enemyPokeType1 = params.get("pokemon-pokeType1");
    }
 
-   if (params["pokemon-pokeType2"]) {
-      context.enemyPokeType2 = params["pokemon-pokeType2"];
+   if (params.get("pokemon-pokeType2")) {
+      context.enemyPokeType2 = params.get("pokemon-pokeType2");
    }
 
    // moved this as a table concern
-   // if (params["searchInput"]) {
-   //    context.searchInput = params["searchInput"];
+   // if (params.get("searchInput")) {
+   //    context.searchInput = params.get("searchInput");
    // }
 
    return context;
@@ -812,21 +812,22 @@ export function generateSpreadsheet(pokemonCollection, Context) {
 
             calculateDPS(pkmInstance, Context);
 
-            pkmInstance.ui_name = createIconLabelSpan(
-               pkm.icon,
-               pkm.labelLinked || pkm.label,
-               "species-input-with-icon",
-            );
-            pkmInstance.ui_fmove = createIconLabelSpan(
-               fmoveInstance.icon,
-               fmoveInstance.labelLinked || fmoveInstance.label,
-               "move-input-with-icon",
-            );
-            pkmInstance.ui_cmove = createIconLabelSpan(
-               cmoveInstance.icon,
-               cmoveInstance.labelLinked || cmoveInstance.label,
-               "move-input-with-icon",
-            );
+            // pkmInstance.ui_name = createIconLabelSpan(
+            //    pkm.icon,
+            //    pkm.labelLinked || pkm.label,
+            //    "species-input-with-icon",
+            // );
+            // pkmInstance.ui_fmove = createIconLabelSpan(
+            //    fmoveInstance.icon,
+            //    fmoveInstance.labelLinked || fmoveInstance.label,
+            //    "move-input-with-icon",
+            // );
+            // pkmInstance.ui_cmove = createIconLabelSpan(
+            //    cmoveInstance.icon,
+            //    cmoveInstance.labelLinked || cmoveInstance.label,
+            //    "move-input-with-icon",
+            // );
+
             pkmInstance.ui_dps = pkmInstance.dps.toFixed(3);
             pkmInstance.ui_tdo = pkmInstance.tdo.toFixed(1);
             if (Context.battleMode == "pvp") {

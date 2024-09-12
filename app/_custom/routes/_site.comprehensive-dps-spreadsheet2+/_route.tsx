@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Combobox } from "@headlessui/react";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
    Form,
@@ -11,45 +11,42 @@ import {
    useSearchParams,
    useSubmit,
 } from "@remix-run/react";
+import { cacheClientLoader, useCachedLoaderData } from "remix-client-cache";
 
 import type { Move, Pokemon } from "payload/generated-custom-types";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { generateSpreadsheet, getCustom, getEnemy } from "./calc";
-import {
-   GM,
-   Data,
-   weathers,
-   pokeTypes,
-   PokeQuery,
-   fetchLevelSettings,
-} from "./dataFactory";
+import { GM, Data, weathers, pokeTypes, PokeQuery } from "./dataFactory";
 import { parseMoves } from "./parseMoves";
 import { parsePokemons } from "./parsePokemons";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
-const cache = { key: "", value: undefined as unknown };
+const simpleCache = {} as Record<string, any>;
 
 export async function loader({ request }: LoaderFunctionArgs) {
    const moves = await fetchWithCache<{ docs: Move[] }>(
       "http://localhost:4000/api/moves?limit=0&depth=0",
+      undefined,
+      24 * 60 * 60 * 1000,
    );
    const pokemons = await fetchWithCache<{ docs: Pokemon[] }>(
       "http://localhost:4000/api/pokemon?limit=0&depth=1",
+      undefined,
+      24 * 60 * 60 * 1000,
    );
 
-   const LevelSettings = fetchLevelSettings();
-
+   // we should cache these at some point
    const pokeMoves = parseMoves(moves);
-
    const pokemon = parsePokemons(pokemons);
 
    const FastMoves = pokeMoves.filter((move) => move.moveType === "fast");
    const ChargedMoves = pokeMoves.filter((move) => move.moveType === "charged");
 
-   return json({ LevelSettings, pokemon, FastMoves, ChargedMoves });
+   return json({ pokemon, FastMoves, ChargedMoves });
 }
 
 clientLoader.hydrate = true;
@@ -58,15 +55,29 @@ export async function clientLoader({
    request,
    serverLoader,
 }: ClientLoaderFunctionArgs) {
-   const { LevelSettings, pokemon, FastMoves, ChargedMoves } =
-      await serverLoader<typeof loader>();
+   async function cacheServerLoader<T>() {
+      if (simpleCache.serverData) {
+         console.log("cache found!", simpleCache.serverData);
+         return simpleCache.serverData as SerializeFrom<T>;
+      }
+
+      console.log("cache not found, fetching data");
+
+      const data = await serverLoader<T>();
+
+      simpleCache.serverData = data;
+      return data;
+   }
+
+   const { pokemon, FastMoves, ChargedMoves } =
+      await cacheServerLoader<typeof loader>();
 
    // get query params from url
    const url = new URL(request.url);
 
-   const params = Object.fromEntries(url.searchParams);
+   console.log(url);
 
-   const context = getCustom(params);
+   const context = getCustom(url.searchParams);
 
    const enemyContext = getEnemy(context);
 
@@ -74,37 +85,39 @@ export async function clientLoader({
 
    // console.log(Data);
 
-   Data.LevelSettings = LevelSettings;
+   // Load Data
    Data.Pokemon = pokemon;
    Data.FastMoves = FastMoves;
    Data.ChargedMoves = ChargedMoves;
 
-   // console.log(Data);
-
    //create a simple in-memory cache
-   function cacheResult() {
+   function cacheResult(key: string) {
       //toggle move data for pvp mode
       context.battleMode === "pvp" ? GM.mode("pvp") : GM.mode("raid");
 
-      cache.value = generateSpreadsheet(pokemon, {
+      const result = generateSpreadsheet(pokemon, {
          ...context,
          ...enemyContext,
       });
 
-      cache.key = JSON.stringify(context);
-      return cache.value;
+      simpleCache[key] = result;
+
+      console.log("cached", simpleCache);
+
+      return result;
    }
 
-   // todo apply context from query params
-   const results =
-      cache.key === JSON.stringify(context) && cache.value
-         ? cache.value
-         : cacheResult();
+   const key = url.search || "default";
+   const results = simpleCache[key] ? simpleCache[key] : cacheResult(key);
 
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
+   // console.log(filtered);
+
    // console.log(pokemon);
+
+   console.log(simpleCache);
 
    return {
       pokemon,
@@ -117,11 +130,11 @@ clientLoader.hyrate = true;
 
 export function HydrateFallback() {
    return (
-      <>
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
          <Introduction />
          <NewToggles />
          <Icon name="loader-2" size={24} className="mx-auto animate-spin" />
-      </>
+      </div>
    );
 }
 
@@ -306,7 +319,7 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                   >
                      {fastMoves.map((move) => (
                         <option key={move} value={move}>
-                           {capitalize(move)}
+                           {capitalize(move.replace(/-/g, " "))}
                         </option>
                      ))}
                   </select>
@@ -408,7 +421,7 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                   >
                      {chargedMoves.map((move) => (
                         <option key={move} value={move}>
-                           {capitalize(move)}
+                           {capitalize(move.replace(/-/g, " "))}
                         </option>
                      ))}
                   </select>
@@ -533,14 +546,12 @@ function ResultsTable() {
 
    return (
       <>
+         <Search />
          <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
-            <div className="flex items-center gap-3 text-xs">
-               <Search />
-               <Pagination count={count} />
-            </div>
             Displaying {start + 1} to {end} of {count} results
+            <Pagination count={count} />
          </div>
-         <table className="w-full">
+         <table className="w-full ">
             <thead>
                <tr>
                   <th className="py-4 text-left">Pokemon</th>
@@ -555,14 +566,50 @@ function ResultsTable() {
             <tbody>
                {filtered.map((pokemon, index) => (
                   <tr key={index} className="group">
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
-                        {pokemon?.label}
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                        <Link
+                           to={pokemon.link}
+                           className="flex items-center gap-3 group py-0.5"
+                        >
+                           <Image
+                              url={pokemon.icon}
+                              width="36"
+                              height="36"
+                              aria-label={pokemon.label}
+                              loading="lazy"
+                           />
+                           {pokemon?.label}
+                        </Link>
                      </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
-                        {pokemon?.fmove?.label}
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                        <Link
+                           to={pokemon.fmove.link}
+                           className="flex items-center gap-3 group py-0.5"
+                        >
+                           <Image
+                              url={pokemon?.fmove?.icon}
+                              width="14"
+                              height="14"
+                              aria-label={pokemon?.fmove?.label}
+                              loading="lazy"
+                           />
+                           {pokemon?.fmove?.label}
+                        </Link>
                      </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
-                        {pokemon?.cmove?.label}
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                        <Link
+                           to={pokemon.cmove.link}
+                           className="flex items-center gap-3 group py-0.5"
+                        >
+                           <Image
+                              url={pokemon?.cmove?.icon}
+                              width="14"
+                              height="14"
+                              aria-label={pokemon?.cmove?.label}
+                              loading="lazy"
+                           />
+                           {pokemon?.cmove?.label}
+                        </Link>
                      </td>
                      <td
                         className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right"
@@ -586,21 +633,25 @@ function ResultsTable() {
                ))}
             </tbody>
          </table>
-         {count} results
+         <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+            Displaying {start + 1} to {end} of {count} results
+            <Pagination count={count} />
+         </div>
+         {/* {count} results
          <div className="container">
             <div className="row">
                <div className="col-sm-6">
                   <button id="CopyClipboardButton" className="btn btn-info">
-                     Copy to Clipboard
+                     Copy to Clipboard (todo)
                   </button>
                </div>
                <div className="col-sm-6">
                   <button id="CopyCSVButton" className="btn btn-info">
-                     Export To CSV
+                     Export To CSV (todo)
                   </button>
                </div>
             </div>
-         </div>
+         </div> */}
       </>
    );
 }
@@ -849,7 +900,7 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
                        key={item?.name}
                        value={item}
                     >
-                       {capitalize(item?.name) ?? ""}
+                       {item?.name}
                     </Combobox.Option>
                  ))}
          </Combobox.Options>
@@ -1135,9 +1186,15 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
 //    );
 // }
 
-const capitalize = (word: string) => {
-   return word
-      ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+const capitalize = (phrase: string) => {
+   return phrase
+      ? phrase
+           .split(" ")
+           .map(
+              (word) =>
+                 word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+           )
+           .join(" ")
       : "";
 };
 

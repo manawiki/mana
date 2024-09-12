@@ -1,6 +1,29 @@
 import type { Pokemon } from "payload/generated-custom-types";
 
-export function parsePokemons(pokemons: { docs: Pokemon[] }) {
+export type DPSPokemon = {
+   dex: number | undefined | null;
+   name: string;
+   id: string;
+   slug: string | undefined | null;
+   pokeType1: string | undefined | null;
+   pokeType2: string | undefined | null;
+   baseAtk: number | undefined | null;
+   baseDef: number | undefined | null;
+   baseStm: number | undefined | null;
+   fastMoves: (string | undefined)[] | undefined;
+   chargedMoves: (string | undefined)[] | undefined;
+   rating: number;
+   raidMarker: string;
+   // nid: string | undefined | null;
+   icon: string | undefined | null;
+   label: string;
+   link: string;
+   evolutions: string[];
+   unavailable: string;
+   rarity: "POKEMON_RARITY_LEGENDARY" | "POKEMON_RARITY_MYTHIC" | undefined;
+};
+
+export function parsePokemons(pokemons: { docs: Pokemon[] }): DPSPokemon[] {
    return pokemons?.docs
       ?.map((pokemon: Pokemon) => parsePokemon(pokemon))
       .sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
@@ -21,35 +44,32 @@ export function parsePokemon(pokemon: Pokemon) {
    let chargedMoves = pokemon.chargeMoves?.map((move) => move?.move?.id);
 
    // we won't be using these for now, may need to rework this as toggles
-   // fastMoves_legacy = [], //missing
-   // chargedMoves_legacy = [], //missing
-   // fastMoves_exclusive = [], //missing
-   // chargedMoves_exclusive = []; //missing
+   // fastMoves_legacy = [],
+   // chargedMoves_legacy = [],
+   // fastMoves_exclusive = [],
+   // chargedMoves_exclusive = [];
 
    let rating = pokemon.ratings?.attackerRating
          ? parseInt(pokemon.ratings?.attackerRating)
          : 0,
       raidMarker = "",
-      nid, //missing
+      // nid, //missing
       icon = pokemon?.icon?.url,
       label = name,
-      labelLinked = `<a href="/c/pokemon/${pokemon.slug}" hreflang="en">${label}</a>`,
+      link = `/c/pokemon/${pokemon.slug}`,
       //todo add pokemon-family
-      evolutions = [] as string[],
+      evolutions: string[] = [],
       unavailable = "", //missing
-      rarity = LegendaryPokemon.some((mythical) =>
-         name.toLowerCase().includes(mythical),
-      )
-         ? "POKEMON_RARITY_LEGENDARY"
-         : MythicalPokemon.some((mythical) =>
-                name.toLowerCase().includes(mythical),
-             )
-           ? "POKEMON_RARITY_MYTHIC"
-           : undefined;
-
-   // if name is in MythicalPokemon, set rarity to Mythical
-   // if name is in LegendaryPokemon, set rarity to Legendary
-   // if name is in both, set rarity to Mythical
+      rarity: "POKEMON_RARITY_LEGENDARY" | "POKEMON_RARITY_MYTHIC" | undefined =
+         LegendaryPokemon.some((mythical) =>
+            name.toLowerCase().includes(mythical),
+         )
+            ? "POKEMON_RARITY_LEGENDARY"
+            : MythicalPokemon.some((mythical) =>
+                   name.toLowerCase().includes(mythical),
+                )
+              ? "POKEMON_RARITY_MYTHIC"
+              : undefined;
 
    return {
       dex,
@@ -69,10 +89,10 @@ export function parsePokemon(pokemon: Pokemon) {
       // chargedMoves_exclusive,
       rating,
       raidMarker,
-      nid,
+      // nid,
       icon,
       label,
-      labelLinked,
+      link,
       evolutions,
       unavailable,
       rarity,
