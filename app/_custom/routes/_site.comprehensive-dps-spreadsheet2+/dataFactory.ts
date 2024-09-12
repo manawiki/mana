@@ -965,7 +965,7 @@ export const Data = {
 
    ChargedMoves: [] as SerializeFrom<DPSMove>[],
 
-   LevelSettings: [],
+   LevelSettings: fetchLevelSettings(),
 
    IndividualValues: [
       { name: "0", value: 0 },
@@ -1352,17 +1352,13 @@ function parseUserPokebox(data) {
  * @param oncomplete The callback after the fetching is complete.
  */
 export function fetchLevelSettings(oncomplete = function () {}) {
-   Data.LevelSettings = cpmData.map((cpm) => ({
+   return cpmData.map((cpm) => ({
       name: cpm.name,
       value: parseFloat(cpm.name),
       cpm: parseFloat(cpm.field_cp_multiplier),
       stardust: parseInt(cpm.field_stardust_cost),
       candy: parseInt(cpm.field_candy_cost),
    }));
-
-   requiredJSONStatus.LevelSettings = 2;
-
-   return oncomplete();
 }
 
 /**

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Combobox } from "@headlessui/react";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
    Form,
@@ -11,6 +11,7 @@ import {
    useSearchParams,
    useSubmit,
 } from "@remix-run/react";
+import { cacheClientLoader, useCachedLoaderData } from "remix-client-cache";
 
 import type { Move, Pokemon } from "payload/generated-custom-types";
 import { Icon } from "~/components/Icon";
@@ -18,20 +19,13 @@ import { Image } from "~/components/Image";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { generateSpreadsheet, getCustom, getEnemy } from "./calc";
-import {
-   GM,
-   Data,
-   weathers,
-   pokeTypes,
-   PokeQuery,
-   fetchLevelSettings,
-} from "./dataFactory";
+import { GM, Data, weathers, pokeTypes, PokeQuery } from "./dataFactory";
 import { parseMoves } from "./parseMoves";
 import { parsePokemons } from "./parsePokemons";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
-const cache = { key: "", value: undefined as unknown };
+const simpleCache = {} as Record<string, any>;
 
 export async function loader({ request }: LoaderFunctionArgs) {
    const moves = await fetchWithCache<{ docs: Move[] }>(
@@ -41,8 +35,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
       "http://localhost:4000/api/pokemon?limit=0&depth=1",
    );
 
-   const LevelSettings = fetchLevelSettings();
-
    const pokeMoves = parseMoves(moves);
 
    const pokemon = parsePokemons(pokemons);
@@ -50,7 +42,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
    const FastMoves = pokeMoves.filter((move) => move.moveType === "fast");
    const ChargedMoves = pokeMoves.filter((move) => move.moveType === "charged");
 
-   return json({ LevelSettings, pokemon, FastMoves, ChargedMoves });
+   return json({ pokemon, FastMoves, ChargedMoves });
 }
 
 clientLoader.hydrate = true;
@@ -59,15 +51,29 @@ export async function clientLoader({
    request,
    serverLoader,
 }: ClientLoaderFunctionArgs) {
-   const { LevelSettings, pokemon, FastMoves, ChargedMoves } =
-      await serverLoader<typeof loader>();
+   async function cacheServerLoader<T>() {
+      if (simpleCache.serverData) {
+         console.log("cache found!", simpleCache.serverData);
+         return simpleCache.serverData as SerializeFrom<T>;
+      }
+
+      console.log("cache not found, fetching data");
+
+      const data = await serverLoader<T>();
+
+      simpleCache.serverData = data;
+      return data;
+   }
+
+   const { pokemon, FastMoves, ChargedMoves } =
+      await cacheServerLoader<typeof loader>();
 
    // get query params from url
    const url = new URL(request.url);
 
-   const params = Object.fromEntries(url.searchParams);
+   console.log(url);
 
-   const context = getCustom(params);
+   const context = getCustom(url.searchParams);
 
    const enemyContext = getEnemy(context);
 
@@ -76,39 +82,38 @@ export async function clientLoader({
    // console.log(Data);
 
    // Load Data
-   fetchLevelSettings();
    Data.Pokemon = pokemon;
    Data.FastMoves = FastMoves;
    Data.ChargedMoves = ChargedMoves;
 
-   console.log(Data);
-
    //create a simple in-memory cache
-   function cacheResult() {
+   function cacheResult(key: string) {
       //toggle move data for pvp mode
       context.battleMode === "pvp" ? GM.mode("pvp") : GM.mode("raid");
 
-      cache.value = generateSpreadsheet(pokemon, {
+      const result = generateSpreadsheet(pokemon, {
          ...context,
          ...enemyContext,
       });
 
-      cache.key = JSON.stringify(context);
-      return cache.value;
+      simpleCache[key] = result;
+
+      console.log("cached", simpleCache);
+
+      return result;
    }
 
-   // todo apply context from query params
-   const results =
-      cache.key === JSON.stringify(context) && cache.value
-         ? cache.value
-         : cacheResult();
+   const key = url.search || "default";
+   const results = simpleCache[key] ? simpleCache[key] : cacheResult(key);
 
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
-   console.log(filtered);
+   // console.log(filtered);
 
    // console.log(pokemon);
+
+   console.log(simpleCache);
 
    return {
       pokemon,
