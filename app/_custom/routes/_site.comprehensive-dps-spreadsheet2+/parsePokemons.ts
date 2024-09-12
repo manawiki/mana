@@ -1,6 +1,31 @@
 import type { Pokemon } from "payload/generated-custom-types";
 
-export type DPSPokemon = ReturnType<typeof parsePokemon>;
+export type DPSPokemon = {
+   dex: number;
+   name: string;
+   id: string;
+   slug: string;
+   pokeType1: string;
+   pokeType2: string;
+   baseAtk: number;
+   baseDef: number;
+   baseStm: number;
+   fastMoves: string[];
+   chargedMoves: string[];
+   // fastMoves_legacy: string[];
+   // chargedMoves_legacy: string[];
+   // fastMoves_exclusive: string[];
+   // chargedMoves_exclusive: string[];
+   rating: number;
+   raidMarker: string;
+   nid: string;
+   icon: string;
+   label: string;
+   labelLinked: string;
+   evolutions: string[];
+   unavailable: string;
+   rarity: string;
+};
 
 export function parsePokemons(pokemons: { docs: Pokemon[] }) {
    return pokemons?.docs
