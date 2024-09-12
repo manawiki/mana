@@ -57,7 +57,7 @@ export async function clientLoader({
 }: ClientLoaderFunctionArgs) {
    async function cacheServerLoader<T>() {
       if (simpleCache.serverData) {
-         console.log("cache found!", simpleCache.serverData);
+         // console.log("cache found!", simpleCache.serverData);
          return simpleCache.serverData as SerializeFrom<T>;
       }
 
@@ -75,7 +75,7 @@ export async function clientLoader({
    // get query params from url
    const url = new URL(request.url);
 
-   console.log(url);
+   // console.log(url);
 
    const context = getCustom(url.searchParams);
 
@@ -102,7 +102,7 @@ export async function clientLoader({
 
       simpleCache[key] = result;
 
-      console.log("cached", simpleCache);
+      // console.log("cached", simpleCache);
 
       return result;
    }
@@ -871,6 +871,7 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
       <Combobox
          // name="enemy-pokemon-name"
          value={enemyPokemon}
+         // todo make this auto submit
          onChange={setEnemyPokemon}
       >
          <Combobox.Input
