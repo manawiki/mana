@@ -56,7 +56,7 @@ export const columns = [
       header: "Name",
       cell: (info) => (
          <Link
-            to={`/c/moves/${info.row.original.slug ?? info.row.original.id}`}
+            to={`/c/pokemon/${info.row.original.slug ?? info.row.original.id}`}
             className="flex items-center gap-2 group py-0.5"
          >
             <Avatar
