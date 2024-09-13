@@ -35,7 +35,7 @@ export async function loader({
 export const meta: MetaFunction = () => {
    return [
       {
-         title: "Verify Email - Mana",
+         title: "Verify Email",
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];

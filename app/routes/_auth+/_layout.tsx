@@ -1,7 +1,6 @@
 import { Outlet } from "@remix-run/react";
 
 import { Button } from "~/components/Button";
-import { Logo } from "~/components/Logo";
 
 export default function AuthLayout() {
    return (
@@ -17,8 +16,19 @@ export default function AuthLayout() {
          <div className="relative mt-16 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
             <Outlet />
             <div className="flex items-center justify-center pt-10">
-               <Button color="light" className="h-11 w-11" href="/">
-                  <Logo className="w-5 h-5" />
+               <Button color="light/zinc" className="size-11" href="/">
+                  <svg
+                     xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 20 20"
+                     fill="currentColor"
+                     className="size-5"
+                  >
+                     <path
+                        fillRule="evenodd"
+                        d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z"
+                        clipRule="evenodd"
+                     />
+                  </svg>
                </Button>
             </div>
          </div>
