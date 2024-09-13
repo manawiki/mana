@@ -1,7 +1,19 @@
 import { useState } from "react";
 
-import { Combobox } from "@headlessui/react";
-import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
+import {
+   Combobox,
+   ComboboxInput,
+   ComboboxOption,
+   ComboboxOptions,
+   Disclosure,
+   DisclosureButton,
+   DisclosurePanel,
+} from "@headlessui/react";
+import type {
+   LoaderFunctionArgs,
+   MetaFunction,
+   SerializeFrom,
+} from "@remix-run/node";
 import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
    Form,
@@ -11,11 +23,25 @@ import {
    useSearchParams,
    useSubmit,
 } from "@remix-run/react";
-import { cacheClientLoader, useCachedLoaderData } from "remix-client-cache";
+import clsx from "clsx";
 
 import type { Move, Pokemon } from "payload/generated-custom-types";
+import { Button } from "~/components/Button";
+import { Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { Input } from "~/components/Input";
+import { Select } from "~/components/Select";
+import {
+   Table,
+   TableBody,
+   TableCell,
+   TableHead,
+   TableHeader,
+   TableRow,
+} from "~/components/Table";
+import { Text, TextLink } from "~/components/Text";
+import { AdUnit } from "~/routes/_site+/_components/RampUnit";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { generateSpreadsheet, getCustom, getEnemy } from "./calc";
@@ -125,6 +151,13 @@ export async function clientLoader({
       count: filtered?.length,
    };
 }
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
+   {
+      title: "Comprehensive DPS/TDO Spreadsheet | Pokemon GO Wiki - GamePress",
+      Description:
+         "Complete list of all Pokemon and all movesets and their associated DPS and TDO",
+   },
+];
 
 clientLoader.hyrate = true;
 
@@ -145,7 +178,6 @@ export function ComprehensiveDpsSpreadsheet() {
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
          <Introduction />
          <NewToggles pokemon={pokemon} />
-
          <ResultsTable />
       </div>
    );
@@ -153,90 +185,140 @@ export function ComprehensiveDpsSpreadsheet() {
 
 export function Introduction() {
    return (
-      <div className=" p-6 shadow rounded-lg">
-         <p className="">
-            This is GamePress's complete list of all Pokemon and all movesets
-            and their associated
-            <Link
-               to="/pokemongo/how-calculate-comprehensive-dps"
-               className="text-blue-600 underline"
-            >
-               DPS (Damage Per Second) and TDO (Total Damage Output)
-            </Link>
-         </p>
-         <p className=" mt-4">
-            The list is sortable by clicking on the double-ended arrows near the
-            name of the categories. Selecting the "Swap Dscnt" checkbox will
-            account for the time it takes to swap Pokemon during a raid battle.
-            Selecting "My Pokemon" will populate the list with all Pokemon
-            uploaded to your GamePress account. Selecting "Best" will show only
-            the best moveset for each Pokemon.
-         </p>
-         <p className=" mt-4">
-            To specify DPS and TDO for a specific matchup, select the enemy
-            Pokemon and weather above the search bar. For a detailed sort, try
-            using the search bar, which works much like the in-game search bar.
-            <a
-               className="text-blue-600 underline"
-               href="https://github.com/biowpn/GoBattleSim/blob/master/doc/PokeQuery.md"
-            >
-               Here
-            </a>
-            is the list of search features supported. Some examples:
-         </p>
-         <div className="mt-6">
-            <div className="border-t border-b border-gray-200">
-               <div className="flex justify-between px-6 py-3 border-b-2">
-                  <span className="font-semibold ">Search</span>
-                  <span className="font-semibold ">Example</span>
-               </div>
-               <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="">Dex Number</span>
-                  <span className=" float-right">1-151</span>
-               </div>
-               <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="">Pokemon Type</span>
-                  <span className=" float-right">
-                     normal, normal & flying, normal & none
-                  </span>
-               </div>
-               <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="">Move Type</span>
-                  <span className=" float-right">
-                     @ghost, @1ghost, @2ghost, *@ghost
-                  </span>
-               </div>
-               <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="">Base Stats</span>
-                  <span className=" float-right">baseatk180-200, cp3000-</span>
-               </div>
-               <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="">Filter by move</span>
-                  <span className=" float-right">
-                     @legacy / @exclusive / @stab
-                  </span>
-               </div>
-               <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="">Filter out legacy moves</span>
-                  <span className=" float-right">@*current</span>
-               </div>
-               <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="">Filter out Shadow Pokemon</span>
-                  <span className=" float-right">!shadow</span>
-               </div>
-               <div className="px-6 py-3">
-                  <span className="">
-                     View only Pokemon with fast and charged moves that are the
-                     same type
-                  </span>
-                  <span className=" float-right">@same</span>
-               </div>
-            </div>
-            <p className=" mt-4">
-               These searches can be combined with the '&' symbol to create a
-               pinpointed reference for DPS and TDO.
-            </p>
-         </div>
+      <div className="pt-5">
+         <section className="pb-5 space-y-4">
+            <Text>
+               This is GamePress's complete list of all Pokemon and all movesets
+               and their associated {""}
+               <TextLink
+                  target="_blank"
+                  href="https://pogo.gamepress.gg/how-calculate-comprehensive-dps"
+               >
+                  DPS (Damage Per Second) and TDO (Total Damage Output)
+               </TextLink>
+            </Text>
+            <Text>
+               The list is sortable by clicking on the double-ended arrows near
+               the name of the categories. Selecting the "Swap Dscnt" checkbox
+               will account for the time it takes to swap Pokemon during a raid
+               battle. Selecting "Best" will show only the best moveset for each
+               Pokemon.
+            </Text>
+            <Text>
+               To specify DPS and TDO for a specific matchup, select the enemy
+               Pokemon and weather above the search bar. For a detailed sort,
+               try using the search bar, which works much like the in-game
+               search bar.{" "}
+               <TextLink
+                  target="_blank"
+                  href="https://github.com/biowpn/GoBattleSim/blob/master/doc/PokeQuery.md"
+               >
+                  Here
+               </TextLink>{" "}
+               is the list of search features supported.
+            </Text>
+         </section>
+         <Disclosure defaultOpen>
+            {({ open }) => (
+               <>
+                  <DisclosureButton
+                     className={clsx(
+                        open ? "rounded-b-none " : "mb-2.5 shadow-sm",
+                        "shadow-1 border-color-sub bg-2-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border px-2 py-3",
+                     )}
+                  >
+                     <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full border bg-white shadow-sm shadow-zinc-200  dark:border-zinc-600/30 dark:bg-dark450 dark:shadow-zinc-800">
+                        <Icon
+                           name="chevron-right"
+                           className={clsx(
+                              open ? "rotate-90" : "",
+                              "transform pl-0.5 transition duration-300 ease-in-out",
+                           )}
+                           size={16}
+                        />
+                     </div>
+                     <div className="flex-grow text-left text-[15px] font-bold">
+                        PokeQuery Examples...
+                     </div>
+                  </DisclosureButton>
+                  <DisclosurePanel
+                     unmount={false}
+                     className={clsx(
+                        open ? "mb-3 border-t" : "",
+                        "border-color-sub shadow-1 bg-3 rounded-b-lg border border-t-0 text-sm shadow-sm",
+                     )}
+                  >
+                     <div className="divide-y divide-color-sub">
+                        <div className="flex justify-between px-6 py-3">
+                           <span className="font-bold ">Search</span>
+                           <span className="font-semibold ">Example</span>
+                        </div>
+                        <div className="px-6 py-3">
+                           <span className="font-bold">Dex Number</span>
+                           <span className="text-1 float-right">1-151</span>
+                        </div>
+                        <div className="px-6 py-3">
+                           <span className="font-bold">Pokemon Type</span>
+                           <span className="text-1 float-right">
+                              normal, normal & flying, normal & none
+                           </span>
+                        </div>
+                        <div className="px-6 py-3">
+                           <span className="font-bold">Move Type</span>
+                           <span className="text-1 float-right">
+                              @ghost, @1ghost, @2ghost, *@ghost
+                           </span>
+                        </div>
+                        <div className="px-6 py-3">
+                           <span className="font-bold">Base Stats</span>
+                           <span className="text-1 float-right">
+                              baseatk180-200, cp3000-
+                           </span>
+                        </div>
+                        <div className="px-6 py-3">
+                           <span className="font-bold">Filter by move</span>
+                           <span className="text-1 float-right">
+                              @legacy / @exclusive / @stab
+                           </span>
+                        </div>
+                        <div className="px-6 py-3">
+                           <span className="font-bold">
+                              Filter out legacy moves
+                           </span>
+                           <span className="text-1 float-right">@*current</span>
+                        </div>
+                        <div className="px-6 py-3">
+                           <span className="font-bold">
+                              Filter out Shadow Pokemon
+                           </span>
+                           <span className="text-1 float-right">!shadow</span>
+                        </div>
+                        <div className="px-6 py-3">
+                           <span className="">
+                              View only Pokemon with fast and charged moves that
+                              are the same type
+                           </span>
+                           <span className="text-1 float-right">@same</span>
+                        </div>
+                     </div>
+                     <p className="py-3 px-6 border-t border-color-sub text-1">
+                        These searches can be combined with the '&' symbol to
+                        create a pinpointed reference for DPS and TDO.
+                     </p>
+                  </DisclosurePanel>
+               </>
+            )}
+         </Disclosure>
+         <AdUnit
+            enableAds={true}
+            adType={{
+               desktop: "leaderboard_atf",
+               tablet: "leaderboard_atf",
+               mobile: "med_rect_atf",
+            }}
+            className="my-8 mx-auto flex items-center justify-center"
+            selectorId="dpsCalcDesktopLeaderATF"
+         />
       </div>
    );
 }
@@ -264,266 +346,311 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
          .filter((move) => move) ?? [];
 
    return (
-      <Form
-         method="GET"
-         replace={true}
-         id="dps-form"
-         name="dps-form"
-         preventScrollReset={true}
-         onChange={(e) => {
-            submit(e.currentTarget, {
-               method: "GET",
-               preventScrollReset: true,
-            });
-         }}
-         className=" p-6 rounded-lg shadow-lg"
-      >
-         <div className="grid grid-cols-3 gap-6">
-            <div>
-               <div className="text-lg font-semibold mb-4">
-                  Enemy Information
-               </div>
-               <div className="mb-4">
-                  <label
-                     className="block text-sm font-medium mb-1"
-                     htmlFor="enemy-pokemon-name"
-                  >
-                     Species
-                  </label>
-                  <PokemonComboBox
-                     enemyPokemon={enemyPokemon}
-                     setEnemyPokemon={setEnemyPokemon}
-                     pokemon={pokemon}
-                  />
-                  {enemyPokemon?.name && (
-                     <input
-                        hidden
-                        name="enemy-pokemon-name"
-                        id="enemy-pokemon-name"
-                        value={enemyPokemon?.name}
-                     />
+      <Disclosure defaultOpen>
+         {({ open }) => (
+            <>
+               <DisclosureButton
+                  className={clsx(
+                     open ? "rounded-b-none " : "mb-5 shadow-sm",
+                     "shadow-1 border-color-sub bg-2-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border px-2 py-3 mt-3",
                   )}
-               </div>
-               <div className="mb-4">
-                  <label
-                     className="block text-sm font-medium mb-1"
-                     htmlFor="enemy-pokemon-fmove"
-                  >
-                     Fast Move
-                  </label>
-                  <select
-                     id="enemy-pokemon-fmove"
-                     name="enemy-pokemon-fmove"
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                     placeholder="Fast Move"
-                  >
-                     {fastMoves.map((move) => (
-                        <option key={move} value={move}>
-                           {capitalize(move.replace(/-/g, " "))}
-                        </option>
-                     ))}
-                  </select>
-               </div>
-               <div className="mb-4">
-                  <label
-                     className="block text-sm font-medium mb-1"
-                     htmlFor="weather"
-                  >
-                     Weather
-                  </label>
-                  <select
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-                     id="weather"
-                     name="weather"
-                     placeholder="choose weather"
-                  >
-                     {weathers.map(({ name, label }) => (
-                        <option key={name} value={name}>
-                           {label}
-                        </option>
-                     ))}
-                  </select>
-               </div>
-               <div className="flex items-center gap-2 mb-4">
-                  <input
-                     className="w-4 h-4"
-                     id="ui-swapDiscount-checkbox"
-                     name="ui-swapDiscount-checkbox"
-                     type="checkbox"
-                  />
-                  <label htmlFor="ui-swapDiscount-checkbox">Swap Dscnt</label>
-               </div>
-               <div className="flex items-center gap-2 mb-4">
-                  <input
-                     id="ui-cpcap"
-                     type="number"
-                     placeholder="CP Cap"
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                     name="ui-cpcap"
-                  />
-               </div>
-               <div className="flex items-center gap-2">
-                  <input
-                     className="w-4 h-4"
-                     id="ui-allyMega-checkbox"
-                     name="ui-allyMega-checkbox"
-                     type="checkbox"
-                  />
-                  <label htmlFor="ui-allyMega-checkbox">Mega Boost?</label>
-               </div>
-               <div className="flex items-center gap-2">
-                  <input
-                     className="w-4 h-4"
-                     id="ui-allyMegaStab-checkbox"
-                     name="ui-allyMegaStab-checkbox"
-                     type="checkbox"
-                  />
-                  <label htmlFor="ui-allyMegaStab-checkbox">Mega Stab?</label>
-               </div>
-            </div>
-            <div>
-               <label
-                  htmlFor="pokemon-pokeType1"
-                  className="block text-sm font-medium mb-1"
                >
-                  PokeType 1
-               </label>
-               <div className="mb-4">
-                  <select
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-                     id="pokemon-pokeType1"
-                     name="pokemon-pokeType1"
-                  >
-                     <option value="none">None</option>
-                     {pokeTypes.map((type) => (
-                        <option
-                           key={type}
-                           value={type}
-                           selected={enemyPokemon?.pokeType1 === type}
-                        >
-                           {capitalize(type)}
-                        </option>
-                     ))}
-                  </select>
-               </div>
-               <label
-                  className="block text-sm font-medium mb-1"
-                  htmlFor="enemy-pokemon-cmove"
+                  <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full border bg-white shadow-sm shadow-zinc-200  dark:border-zinc-600/30 dark:bg-dark450 dark:shadow-zinc-800">
+                     <Icon
+                        name="chevron-right"
+                        className={clsx(
+                           open ? "rotate-90" : "",
+                           "transform pl-0.5 transition duration-300 ease-in-out",
+                        )}
+                        size={16}
+                     />
+                  </div>
+                  <div className="flex-grow text-left text-[15px] font-bold">
+                     Enemy Information
+                  </div>
+               </DisclosureButton>
+               <DisclosurePanel
+                  unmount={false}
+                  className={clsx(
+                     open ? "mb-5 border-t" : "",
+                     "border-color-sub shadow-1 bg-3 rounded-b-lg border border-t-0 text-sm shadow-sm pb-1",
+                  )}
                >
-                  Charged Move
-               </label>
-               <div className="mb-4">
-                  <select
-                     id="enemy-pokemon-cmove"
-                     name="enemy-pokemon-cmove"
-                     placeholder="Charge Move"
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  <Form
+                     method="GET"
+                     replace={true}
+                     id="dps-form"
+                     name="dps-form"
+                     preventScrollReset={true}
+                     onChange={(e) => {
+                        console.log(e.currentTarge);
+                        submit(e.currentTarget, {
+                           method: "GET",
+                           preventScrollReset: true,
+                        });
+                     }}
                   >
-                     {chargedMoves.map((move) => (
-                        <option key={move} value={move}>
-                           {capitalize(move.replace(/-/g, " "))}
-                        </option>
-                     ))}
-                  </select>
-               </div>
-               <button
-                  disabled
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full bg-blue-500 text-white"
-               >
-                  Customize
-               </button>
-            </div>
-            <div>
-               <label
-                  htmlFor="pokemon-pokeType2"
-                  className="block text-sm font-medium mb-1"
-               >
-                  PokeType 2
-               </label>
-               <div className="mb-4">
-                  <select
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-                     id="pokemon-pokeType2"
-                     name="pokemon-pokeType2"
-                  >
-                     <option value="none">None</option>
-                     {pokeTypes.map((type) => (
-                        <option
-                           key={type}
-                           value={type}
-                           selected={enemyPokemon?.pokeType2 === type}
-                        >
-                           {capitalize(type)}
-                        </option>
-                     ))}
-                  </select>
-               </div>
-               <div className="text-lg font-semibold mb-4">Controls</div>
-               <div className="flex items-center gap-2 mb-4">
-                  <input
-                     className="w-4 h-4"
-                     id="ui-use-box-checkbox"
-                     name="ui-use-box-checkbox"
-                     type="checkbox"
-                  />
-                  <label htmlFor="ui-use-box-checkbox">My Pokemon</label>
-               </div>
-               <div className="flex items-center gap-2 mb-4">
-                  <input
-                     className="w-4 h-4"
-                     id="ui-pvpMode-checkbox"
-                     name="ui-pvpMode-checkbox"
-                     type="checkbox"
-                  />
-                  <label htmlFor="ui-pvpMode-checkbox">PvP Mode</label>
-               </div>
-               <div className="flex items-center gap-2 mb-4">
-                  <input
-                     className="w-4 h-4"
-                     id="ui-uniqueSpecies-checkbox"
-                     name="ui-uniqueSpecies-checkbox"
-                     type="checkbox"
-                  />
-                  <label htmlFor="ui-uniqueSpecies-checkbox">Best</label>
-               </div>
-               <div className="flex items-center gap-2 mb-4">
-                  <input
-                     className="w-4 h-4"
-                     id="ui-hideUnavail-checkbox"
-                     name="ui-hideUnavail-checkbox"
-                     type="checkbox"
-                  />
-                  <label htmlFor="ui-hideUnavail-checkbox">Hide Unavail</label>
-               </div>
-               <div className="mb4">
-                  <label
-                     className="block text-sm font-medium mb-1"
-                     htmlFor="attacker-level"
-                  >
-                     Attacker Level
-                  </label>
-                  <input
-                     id="attacker-level"
-                     className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-                     name="attacker-level"
-                     placeholder="40"
-                     type="number"
-                     min={1}
-                     max={51}
-                     step={0.5}
-                  />
-               </div>
-               <button
-                  id="refresher"
-                  type="submit"
-                  name="refresher"
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full bg-green-500 text-white"
-               >
-                  Refresh
-               </button>
-            </div>
-         </div>
-      </Form>
+                     <div className="laptop:grid laptop:grid-cols-3 max-laptop:space-y-4 gap-4 p-3">
+                        <div className="space-y-3">
+                           <div className="mb-4">
+                              <label
+                                 className="pb-1 block text-sm"
+                                 htmlFor="enemy-pokemon-name"
+                              >
+                                 Species
+                              </label>
+                              <PokemonComboBox
+                                 enemyPokemon={enemyPokemon}
+                                 setEnemyPokemon={setEnemyPokemon}
+                                 pokemon={pokemon}
+                              />
+                              {enemyPokemon?.name && (
+                                 <input
+                                    hidden
+                                    name="enemy-pokemon-name"
+                                    id="enemy-pokemon-name"
+                                    value={enemyPokemon?.name}
+                                 />
+                              )}
+                           </div>
+                           <div className="mb-4">
+                              <label
+                                 className="block text-sm font-medium mb-1"
+                                 htmlFor="enemy-pokemon-fmove"
+                              >
+                                 Fast Move
+                              </label>
+                              <Select
+                                 id="enemy-pokemon-fmove"
+                                 name="enemy-pokemon-fmove"
+                              >
+                                 {fastMoves.map((move) => (
+                                    <option key={move} value={move}>
+                                       {capitalize(move.replace(/-/g, " "))}
+                                    </option>
+                                 ))}
+                              </Select>
+                           </div>
+                           <div className="mb-4">
+                              <label
+                                 className="block text-sm font-medium mb-1"
+                                 htmlFor="weather"
+                              >
+                                 Weather
+                              </label>
+                              <Select id="weather" name="weather">
+                                 {weathers.map(({ name, label }) => (
+                                    <option key={name} value={name}>
+                                       {label}
+                                    </option>
+                                 ))}
+                              </Select>
+                           </div>
+                           <Input
+                              id="ui-cpcap"
+                              type="number"
+                              placeholder="CP Cap"
+                              name="ui-cpcap"
+                           />
+                           <div className="flex items-center gap-3 px-3 py-2 bg-3-sub border border-zinc-200 dark:border-zinc-600/70 rounded-lg shadow-sm shadow-1">
+                              <label
+                                 className="flex-grow text-sm"
+                                 htmlFor="ui-swapDiscount-checkbox"
+                              >
+                                 Swap Dscnt
+                              </label>
+                              <input
+                                 type="checkbox"
+                                 id="ui-swapDiscount-checkbox"
+                                 name="ui-swapDiscount-checkbox"
+                              />
+                           </div>
+                           <div className="flex items-center gap-3 px-3 py-2 bg-3-sub border border-zinc-200 dark:border-zinc-600/70 rounded-lg shadow-sm shadow-1">
+                              <label
+                                 className="flex-grow text-sm"
+                                 htmlFor="ui-allyMega-checkbox"
+                              >
+                                 Mega Boost?
+                              </label>
+                              <input
+                                 type="checkbox"
+                                 name="ui-allyMega-checkbox"
+                                 id="ui-allyMega-checkbox"
+                              />
+                           </div>
+                           <div className="flex items-center gap-3 px-3 py-2 bg-3-sub border border-zinc-200 dark:border-zinc-600/70 rounded-lg shadow-sm shadow-1">
+                              <label
+                                 className="flex-grow text-sm"
+                                 htmlFor="ui-allyMegaStab-checkbox"
+                              >
+                                 Mega Stab?
+                              </label>
+                              <input
+                                 type="checkbox"
+                                 id="ui-allyMegaStab-checkbox"
+                                 name="ui-allyMegaStab-checkbox"
+                              />
+                           </div>
+                        </div>
+                        <div>
+                           <label
+                              htmlFor="pokemon-pokeType1"
+                              className="block text-sm font-medium mb-1"
+                           >
+                              PokeType 1
+                           </label>
+                           <Select
+                              className="mb-4"
+                              id="pokemon-pokeType1"
+                              name="pokemon-pokeType1"
+                           >
+                              <option value="none">None</option>
+                              {pokeTypes.map((type) => (
+                                 <option
+                                    key={type}
+                                    value={type}
+                                    selected={enemyPokemon?.pokeType1 === type}
+                                 >
+                                    {capitalize(type)}
+                                 </option>
+                              ))}
+                           </Select>
+                           <label
+                              htmlFor="pokemon-pokeType2"
+                              className="block text-sm font-medium mb-1"
+                           >
+                              PokeType 2
+                           </label>
+                           <div className="mb-4">
+                              <Select
+                                 id="pokemon-pokeType2"
+                                 name="pokemon-pokeType2"
+                              >
+                                 <option value="none">None</option>
+                                 {pokeTypes.map((type) => (
+                                    <option
+                                       key={type}
+                                       value={type}
+                                       selected={
+                                          enemyPokemon?.pokeType2 === type
+                                       }
+                                    >
+                                       {capitalize(type)}
+                                    </option>
+                                 ))}
+                              </Select>
+                           </div>
+                           <label
+                              className="block text-sm font-medium mb-1"
+                              htmlFor="enemy-pokemon-cmove"
+                           >
+                              Charged Move
+                           </label>
+                           <Select
+                              className="mb-4"
+                              id="enemy-pokemon-cmove"
+                              name="enemy-pokemon-cmove"
+                           >
+                              {chargedMoves.map((move) => (
+                                 <option key={move} value={move}>
+                                    {capitalize(move.replace(/-/g, " "))}
+                                 </option>
+                              ))}
+                           </Select>
+                           {/* <Button color="blue" disabled>
+                              Customize
+                           </Button> */}
+                        </div>
+                        <div>
+                           <div className="font-semibold text-sm mb-2">
+                              Controls
+                           </div>
+                           <div className="space-y-2 pb-4">
+                              <div className="flex items-center gap-3 px-3 py-2 bg-3-sub border border-zinc-200 dark:border-zinc-600/70 rounded-lg shadow-sm shadow-1">
+                                 <label
+                                    className="flex-grow text-sm"
+                                    htmlFor="ui-use-box-checkbox"
+                                 >
+                                    My Pokemon
+                                 </label>
+                                 <input
+                                    type="checkbox"
+                                    id="ui-use-box-checkbox"
+                                    name="ui-use-box-checkbox"
+                                 />
+                              </div>
+                              <div className="flex items-center gap-3 px-3 py-2 bg-3-sub border border-zinc-200 dark:border-zinc-600/70 rounded-lg shadow-sm shadow-1">
+                                 <label
+                                    className="flex-grow text-sm"
+                                    htmlFor="ui-pvpMode-checkbox"
+                                 >
+                                    PvP Mode
+                                 </label>
+                                 <input
+                                    type="checkbox"
+                                    id="ui-pvpMode-checkbox"
+                                    name="ui-pvpMode-checkbox"
+                                 />
+                              </div>
+                              <div className="flex items-center gap-3 px-3 py-2 bg-3-sub border border-zinc-200 dark:border-zinc-600/70 rounded-lg shadow-sm shadow-1">
+                                 <label
+                                    className="flex-grow text-sm"
+                                    htmlFor="ui-uniqueSpecies-checkbox"
+                                 >
+                                    Best{" "}
+                                 </label>
+                                 <input
+                                    type="checkbox"
+                                    id="ui-uniqueSpecies-checkbox"
+                                    name="ui-uniqueSpecies-checkbox"
+                                 />
+                              </div>
+                              <div className="flex items-center gap-3 px-3 py-2 bg-3-sub border border-zinc-200 dark:border-zinc-600/70 rounded-lg shadow-sm shadow-1">
+                                 <label
+                                    className="flex-grow text-sm"
+                                    htmlFor="ui-hideUnavail-checkbox"
+                                 >
+                                    Hide Unavail
+                                 </label>
+                                 <input
+                                    type="checkbox"
+                                    id="ui-hideUnavail-checkbox"
+                                    name="ui-hideUnavail-checkbox"
+                                 />
+                              </div>
+                           </div>
+                           <Field className="pb-5">
+                              <Label>Attacker Level</Label>
+                              <Input
+                                 id="attacker-level"
+                                 name="attacker-level"
+                                 placeholder="40"
+                                 type="number"
+                                 min={1}
+                                 max={51}
+                                 step={0.5}
+                              />
+                           </Field>
+                           <Button
+                              color="green"
+                              id="refresher"
+                              type="submit"
+                              name="refresher"
+                           >
+                              <Icon
+                                 name="refresh-ccw"
+                                 className="text-green-50"
+                                 size={14}
+                              />
+                              Refresh
+                           </Button>
+                        </div>
+                     </div>
+                  </Form>
+               </DisclosurePanel>
+            </>
+         )}
+      </Disclosure>
    );
 }
 
@@ -546,93 +673,89 @@ function ResultsTable() {
 
    return (
       <>
-         <Search />
-         <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
-            Displaying {start + 1} to {end} of {count} results
+         <div className="flex items-center justify-between gap-3 pb-3">
+            {/* <div>
+               Displaying <span className="font-bold">{start + 1}</span> to{" "}
+               {end} of {count} results
+            </div> */}
+            <Search />
             <Pagination count={count} />
          </div>
-         <table className="w-full ">
-            <thead>
-               <tr>
-                  <th className="py-4 text-left">Pokemon</th>
-                  <th className="py-4 text-left">Fast Move</th>
-                  <th className="py-4 text-left">Charged Move</th>
+         <Table dense grid framed>
+            <TableHead>
+               <TableRow>
+                  <TableHeader center>Pokemon</TableHeader>
+                  <TableHeader center>Fast Move</TableHeader>
+                  <TableHeader center>Charged Move</TableHeader>
                   <TH>DPS</TH>
                   <TH>TDO</TH>
                   <TH>ER</TH>
                   <TH>CP</TH>
-               </tr>
-            </thead>
-            <tbody>
+               </TableRow>
+            </TableHead>
+            <TableBody>
                {filtered.map((pokemon, index) => (
-                  <tr key={index} className="group">
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                  <TableRow key={index} className="group">
+                     <TableCell>
                         <Link
                            to={pokemon.link}
-                           className="flex items-center gap-3 group py-0.5"
+                           className="text-xs flex flex-col items-center gap-1"
                         >
                            <Image
                               url={pokemon.icon}
-                              width="36"
-                              height="36"
+                              width="72"
+                              height="72"
+                              className="size-8 flex-none"
                               aria-label={pokemon.label}
                               loading="lazy"
                            />
-                           {pokemon?.label}
+                           <div className="font-semibold">{pokemon?.label}</div>
                         </Link>
-                     </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                     </TableCell>
+                     <TableCell>
                         <Link
                            to={pokemon.fmove.link}
-                           className="flex items-center gap-3 group py-0.5"
+                           className="text-xs flex flex-col items-center gap-1"
                         >
                            <Image
                               url={pokemon?.fmove?.icon}
-                              width="14"
-                              height="14"
+                              width="28"
+                              height="28"
+                              className="size-5 flex-none"
                               aria-label={pokemon?.fmove?.label}
                               loading="lazy"
                            />
-                           {pokemon?.fmove?.label}
+                           <div>{pokemon?.fmove?.label}</div>
                         </Link>
-                     </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700 ">
+                     </TableCell>
+                     <TableCell>
                         <Link
                            to={pokemon.cmove.link}
-                           className="flex items-center gap-3 group py-0.5"
+                           className="text-xs flex flex-col items-center gap-1"
                         >
                            <Image
                               url={pokemon?.cmove?.icon}
-                              width="14"
-                              height="14"
+                              width="28"
+                              height="28"
+                              className="size-5 flex-none"
                               aria-label={pokemon?.cmove?.label}
                               loading="lazy"
                            />
-                           {pokemon?.cmove?.label}
+                           <div>{pokemon?.cmove?.label}</div>
                         </Link>
-                     </td>
-                     <td
-                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right"
-                        aria-label={pokemon?.dps}
-                     >
+                     </TableCell>
+                     <TableCell center aria-label={pokemon?.dps}>
                         {pokemon?.ui_dps}
-                     </td>
-                     <td
-                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right"
-                        aria-label={pokemon?.tdo}
-                     >
+                     </TableCell>
+                     <TableCell center aria-label={pokemon?.tdo}>
                         {pokemon?.ui_tdo}
-                     </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right">
-                        {pokemon?.ui_overall}
-                     </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right">
-                        {pokemon?.ui_cp}
-                     </td>
-                  </tr>
+                     </TableCell>
+                     <TableCell center>{pokemon?.ui_overall}</TableCell>
+                     <TableCell center>{pokemon?.ui_cp}</TableCell>
+                  </TableRow>
                ))}
-            </tbody>
-         </table>
+            </TableBody>
+         </Table>
          <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
             Displaying {start + 1} to {end} of {count} results
             <Pagination count={count} />
@@ -728,12 +851,13 @@ function TH({ children }: { children: string }) {
    };
 
    return (
-      <th className="py-4 ">
+      <TableHeader center>
          <button
-            className="flex gap-1 capitalize justify-end w-full"
+            className="inline-flex mx-auto gap-1 capitalize justify-center items-center"
             type="button"
             onClick={onClick}
          >
+            {children}
             <Icon
                name={
                   sort !== children.toString()
@@ -742,12 +866,11 @@ function TH({ children }: { children: string }) {
                        ? "chevron-up"
                        : "chevron-down"
                }
-               size={18}
+               size={16}
                className="text-zinc-500"
             />
-            {children}
          </button>
-      </th>
+      </TableHeader>
    );
 }
 
@@ -763,32 +886,31 @@ function Pagination({ count = 100 }) {
    if (numPages <= 1) return null;
 
    return (
-      <>
-         <button
-            //todo convert this to links
-            className="flex items-center gap-1 font-semibold uppercase hover:underline"
-            onClick={() =>
-               setSearchParams(
-                  (searchParams) => {
-                     searchParams.set("page", (page - 1).toString());
-                     return searchParams;
-                  },
-                  { preventScrollReset: true },
-               )
-            }
-            disabled={page === 1}
-         >
-            <Icon name="chevron-left" size={18} className="text-zinc-500">
-               Prev
-            </Icon>
-         </button>
-
-         <input
+      <div className="flex items-center gap-2">
+         {page > 1 && (
+            <Button
+               className="!py-3 tablet:!py-2"
+               color="light/zinc"
+               onClick={() =>
+                  setSearchParams(
+                     (searchParams) => {
+                        searchParams.set("page", (page - 1).toString());
+                        return searchParams;
+                     },
+                     { preventScrollReset: true },
+                  )
+               }
+               disabled={page === 1}
+            >
+               <Icon name="chevron-left" size={18} />
+            </Button>
+         )}
+         <Input
             // form="dps-form"
             type="number"
             key={"page " + page}
             defaultValue={page}
-            className="w-16"
+            className="!w-16"
             name="page"
             min={1}
             max={numPages}
@@ -802,10 +924,9 @@ function Pagination({ count = 100 }) {
                );
             }}
          />
-         {/* <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" /> */}
-
-         <button
-            className="flex items-center gap-1 font-semibold uppercase hover:underline"
+         <Button
+            className="!py-3 tablet:!py-2"
+            color="light/zinc"
             onClick={() =>
                setSearchParams(
                   (searchParams) => {
@@ -817,15 +938,9 @@ function Pagination({ count = 100 }) {
             }
             disabled={page >= numPages}
          >
-            Next
-            <Icon
-               name="chevron-right"
-               title="Next"
-               size={18}
-               className="text-zinc-500"
-            />
-         </button>
-      </>
+            <Icon name="chevron-right" title="Next" size={18} />
+         </Button>
+      </div>
    );
 }
 
@@ -833,27 +948,24 @@ function Search() {
    const [searchParams, setSearchParams] = useSearchParams();
 
    return (
-      <div className="w-full">
-         <label htmlFor="search">Search</label>
-
-         <input
-            id="search"
-            //  onKeyUp={search_trigger}
-            className="w-full"
-            name="search"
-            defaultValue={searchParams.get("search") ?? ""}
-            onChange={(e) => {
-               setSearchParams(
-                  (searchParams) => {
-                     searchParams.set("search", e.target.value);
-                     searchParams.delete("page");
-                     return searchParams;
-                  },
-                  { preventScrollReset: true },
-               );
-            }}
-         />
-      </div>
+      <Input
+         id="search"
+         //  onKeyUp={search_trigger}
+         className="w-full"
+         name="search"
+         placeholder="Enter a filter query..."
+         defaultValue={searchParams.get("search") ?? ""}
+         onChange={(e) => {
+            setSearchParams(
+               (searchParams) => {
+                  searchParams.set("search", e.target.value);
+                  searchParams.delete("page");
+                  return searchParams;
+               },
+               { preventScrollReset: true },
+            );
+         }}
+      />
    );
 }
 
@@ -873,26 +985,32 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
          value={enemyPokemon}
          // todo make this auto submit
          onChange={setEnemyPokemon}
+         // virtual={{ options: filteredPokemon }}
       >
-         <Combobox.Input
-            // className="h-full w-full border-0 laptop:rounded-full p-0 bg-transparent laptop:pl-8 outline-none !ring-transparent"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
+         <ComboboxInput
+            className="dark:bg-dark450 border dark:border-zinc-600 w-full rounded-lg p-2"
             displayValue={(item) => capitalize(item?.name) ?? ""}
             placeholder="Species"
             onChange={(e) => setQuery(e.target.value)}
          />
 
-         <Combobox.Options
-         // todo fix css
-         // className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub absolute left-0 z-20 max-h-80 w-full divide-y
-         // overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 no-scrollbar laptop:rounded-2xl laptop:outline"
+         <ComboboxOptions
+            anchor="bottom"
+            transition
+            className={clsx(
+               "w-[var(--input-width)] rounded-xl border border-white/5 bg-2-sub p-1 [--anchor-gap:var(--spacing-1)] empty:invisible",
+               "transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0",
+            )}
+            // todo fix css
+            // className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub absolute left-0 z-20 max-h-80 w-full divide-y
+            // overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 no-scrollbar laptop:rounded-2xl laptop:outline"
          >
             {filteredPokemon.length === 0
                ? query && (
                     <div className="text-1 p-3 text-sm">No results...</div>
                  )
                : filteredPokemon?.map((item) => (
-                    <Combobox.Option
+                    <ComboboxOption
                        className={({ active }) =>
                           `relative cursor-default select-none ${
                              active ? "bg-zinc-100 dark:bg-dark400" : "text-1"
@@ -902,9 +1020,9 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
                        value={item}
                     >
                        {item?.name}
-                    </Combobox.Option>
+                    </ComboboxOption>
                  ))}
-         </Combobox.Options>
+         </ComboboxOptions>
       </Combobox>
    );
 }
