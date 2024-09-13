@@ -1,0 +1,910 @@
+[{
+	"field_candy_cost": "",
+	"field_cp_multiplier": "0.84529999",
+	"field_cumulative_candy": "",
+	"field_cumulative_stardust": "",
+	"field_stardust_cost": "",
+	"name": "51",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "",
+	"field_cp_multiplier": "0.84279999",
+	"field_cumulative_candy": "",
+	"field_cumulative_stardust": "",
+	"field_stardust_cost": "",
+	"name": "50.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.094",
+	"field_cumulative_candy": "1",
+	"field_cumulative_stardust": "200",
+	"field_stardust_cost": "200",
+	"name": "1",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.1351374318",
+	"field_cumulative_candy": "2",
+	"field_cumulative_stardust": "400",
+	"field_stardust_cost": "200",
+	"name": "1.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.16639787",
+	"field_cumulative_candy": "3",
+	"field_cumulative_stardust": "600",
+	"field_stardust_cost": "200",
+	"name": "2",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.192650919",
+	"field_cumulative_candy": "4",
+	"field_cumulative_stardust": "800",
+	"field_stardust_cost": "200",
+	"name": "2.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.21573247",
+	"field_cumulative_candy": "5",
+	"field_cumulative_stardust": "1200",
+	"field_stardust_cost": "400",
+	"name": "3",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.2365726613",
+	"field_cumulative_candy": "6",
+	"field_cumulative_stardust": "1600",
+	"field_stardust_cost": "400",
+	"name": "3.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.25572005",
+	"field_cumulative_candy": "7",
+	"field_cumulative_stardust": "2000",
+	"field_stardust_cost": "400",
+	"name": "4",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.2735303812",
+	"field_cumulative_candy": "8",
+	"field_cumulative_stardust": "2400",
+	"field_stardust_cost": "400",
+	"name": "4.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.29024988",
+	"field_cumulative_candy": "9",
+	"field_cumulative_stardust": "3000",
+	"field_stardust_cost": "600",
+	"name": "5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.3060573775",
+	"field_cumulative_candy": "10",
+	"field_cumulative_stardust": "3600",
+	"field_stardust_cost": "600",
+	"name": "5.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.3210876",
+	"field_cumulative_candy": "11",
+	"field_cumulative_stardust": "4200",
+	"field_stardust_cost": "600",
+	"name": "6",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.3354450362",
+	"field_cumulative_candy": "12",
+	"field_cumulative_stardust": "4800",
+	"field_stardust_cost": "600",
+	"name": "6.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.34921268",
+	"field_cumulative_candy": "13",
+	"field_cumulative_stardust": "5600",
+	"field_stardust_cost": "800",
+	"name": "7",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.3624577511",
+	"field_cumulative_candy": "14",
+	"field_cumulative_stardust": "6400",
+	"field_stardust_cost": "800",
+	"name": "7.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.3752356",
+	"field_cumulative_candy": "15",
+	"field_cumulative_stardust": "7200",
+	"field_stardust_cost": "800",
+	"name": "8",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.387592416",
+	"field_cumulative_candy": "16",
+	"field_cumulative_stardust": "8000",
+	"field_stardust_cost": "800",
+	"name": "8.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.39956728",
+	"field_cumulative_candy": "17",
+	"field_cumulative_stardust": "9000",
+	"field_stardust_cost": "1000",
+	"name": "9",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.4111935514",
+	"field_cumulative_candy": "18",
+	"field_cumulative_stardust": "10000",
+	"field_stardust_cost": "1000",
+	"name": "9.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.4225",
+	"field_cumulative_candy": "19",
+	"field_cumulative_stardust": "11000",
+	"field_stardust_cost": "1000",
+	"name": "10",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "1",
+	"field_cp_multiplier": "0.4329264091",
+	"field_cumulative_candy": "20",
+	"field_cumulative_stardust": "12000",
+	"field_stardust_cost": "1000",
+	"name": "10.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.44310755",
+	"field_cumulative_candy": "22",
+	"field_cumulative_stardust": "13300",
+	"field_stardust_cost": "1300",
+	"name": "11",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.4530599591",
+	"field_cumulative_candy": "24",
+	"field_cumulative_stardust": "14600",
+	"field_stardust_cost": "1300",
+	"name": "11.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.4627984",
+	"field_cumulative_candy": "26",
+	"field_cumulative_stardust": "15900",
+	"field_stardust_cost": "1300",
+	"name": "12",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.472336093",
+	"field_cumulative_candy": "28",
+	"field_cumulative_stardust": "17200",
+	"field_stardust_cost": "1300",
+	"name": "12.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.48168495",
+	"field_cumulative_candy": "30",
+	"field_cumulative_stardust": "18800",
+	"field_stardust_cost": "1600",
+	"name": "13",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.4908558003",
+	"field_cumulative_candy": "32",
+	"field_cumulative_stardust": "20400",
+	"field_stardust_cost": "1600",
+	"name": "13.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.49985844",
+	"field_cumulative_candy": "34",
+	"field_cumulative_stardust": "22000",
+	"field_stardust_cost": "1600",
+	"name": "14",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.508701765",
+	"field_cumulative_candy": "36",
+	"field_cumulative_stardust": "23600",
+	"field_stardust_cost": "1600",
+	"name": "14.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.51739395",
+	"field_cumulative_candy": "38",
+	"field_cumulative_stardust": "25500",
+	"field_stardust_cost": "1900",
+	"name": "15",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5259425113",
+	"field_cumulative_candy": "40",
+	"field_cumulative_stardust": "27400",
+	"field_stardust_cost": "1900",
+	"name": "15.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5343543",
+	"field_cumulative_candy": "42",
+	"field_cumulative_stardust": "29300",
+	"field_stardust_cost": "1900",
+	"name": "16",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5426357375",
+	"field_cumulative_candy": "44",
+	"field_cumulative_stardust": "31200",
+	"field_stardust_cost": "1900",
+	"name": "16.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5507927",
+	"field_cumulative_candy": "46",
+	"field_cumulative_stardust": "33400",
+	"field_stardust_cost": "2200",
+	"name": "17",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5588305862",
+	"field_cumulative_candy": "48",
+	"field_cumulative_stardust": "35600",
+	"field_stardust_cost": "2200",
+	"name": "17.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5667545",
+	"field_cumulative_candy": "50",
+	"field_cumulative_stardust": "37800",
+	"field_stardust_cost": "2200",
+	"name": "18",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5745691333",
+	"field_cumulative_candy": "52",
+	"field_cumulative_stardust": "40000",
+	"field_stardust_cost": "2200",
+	"name": "18.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5822789",
+	"field_cumulative_candy": "54",
+	"field_cumulative_stardust": "42500",
+	"field_stardust_cost": "2500",
+	"name": "19",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5898879072",
+	"field_cumulative_candy": "56",
+	"field_cumulative_stardust": "45000",
+	"field_stardust_cost": "2500",
+	"name": "19.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.5974",
+	"field_cumulative_candy": "58",
+	"field_cumulative_stardust": "47500",
+	"field_stardust_cost": "2500",
+	"name": "20",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "2",
+	"field_cp_multiplier": "0.6048236651",
+	"field_cumulative_candy": "60",
+	"field_cumulative_stardust": "50000",
+	"field_stardust_cost": "2500",
+	"name": "20.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.6121573",
+	"field_cumulative_candy": "63",
+	"field_cumulative_stardust": "53000",
+	"field_stardust_cost": "3000",
+	"name": "21",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.6194041216",
+	"field_cumulative_candy": "66",
+	"field_cumulative_stardust": "56000",
+	"field_stardust_cost": "3000",
+	"name": "21.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.6265671",
+	"field_cumulative_candy": "69",
+	"field_cumulative_stardust": "59000",
+	"field_stardust_cost": "3000",
+	"name": "22",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.6336491432",
+	"field_cumulative_candy": "72",
+	"field_cumulative_stardust": "62000",
+	"field_stardust_cost": "3000",
+	"name": "22.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.64065295",
+	"field_cumulative_candy": "75",
+	"field_cumulative_stardust": "65500",
+	"field_stardust_cost": "3500",
+	"name": "23",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.6475809666",
+	"field_cumulative_candy": "78",
+	"field_cumulative_stardust": "69000",
+	"field_stardust_cost": "3500",
+	"name": "23.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.65443563",
+	"field_cumulative_candy": "81",
+	"field_cumulative_stardust": "72500",
+	"field_stardust_cost": "3500",
+	"name": "24",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.6612192524",
+	"field_cumulative_candy": "84",
+	"field_cumulative_stardust": "76000",
+	"field_stardust_cost": "3500",
+	"name": "24.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.667934",
+	"field_cumulative_candy": "87",
+	"field_cumulative_stardust": "80000",
+	"field_stardust_cost": "4000",
+	"name": "25",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "3",
+	"field_cp_multiplier": "0.6745818959",
+	"field_cumulative_candy": "90",
+	"field_cumulative_stardust": "84000",
+	"field_stardust_cost": "4000",
+	"name": "25.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.6811649",
+	"field_cumulative_candy": "94",
+	"field_cumulative_stardust": "88000",
+	"field_stardust_cost": "4000",
+	"name": "26",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.6876849038",
+	"field_cumulative_candy": "98",
+	"field_cumulative_stardust": "92000",
+	"field_stardust_cost": "4000",
+	"name": "26.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.69414365",
+	"field_cumulative_candy": "102",
+	"field_cumulative_stardust": "96500",
+	"field_stardust_cost": "4500",
+	"name": "27",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.70054287",
+	"field_cumulative_candy": "106",
+	"field_cumulative_stardust": "101000",
+	"field_stardust_cost": "4500",
+	"name": "27.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.7068842",
+	"field_cumulative_candy": "110",
+	"field_cumulative_stardust": "105500",
+	"field_stardust_cost": "4500",
+	"name": "28",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.7131691091",
+	"field_cumulative_candy": "114",
+	"field_cumulative_stardust": "110000",
+	"field_stardust_cost": "4500",
+	"name": "28.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.7193991",
+	"field_cumulative_candy": "118",
+	"field_cumulative_stardust": "115000",
+	"field_stardust_cost": "5000",
+	"name": "29",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.7255756136",
+	"field_cumulative_candy": "122",
+	"field_cumulative_stardust": "120000",
+	"field_stardust_cost": "5000",
+	"name": "29.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.7317",
+	"field_cumulative_candy": "126",
+	"field_cumulative_stardust": "125000",
+	"field_stardust_cost": "5000",
+	"name": "30",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "4",
+	"field_cp_multiplier": "0.7347410093",
+	"field_cumulative_candy": "130",
+	"field_cumulative_stardust": "130000",
+	"field_stardust_cost": "5000",
+	"name": "30.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "6",
+	"field_cp_multiplier": "0.7377695",
+	"field_cumulative_candy": "136",
+	"field_cumulative_stardust": "136000",
+	"field_stardust_cost": "6000",
+	"name": "31",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "6",
+	"field_cp_multiplier": "0.7407855938",
+	"field_cumulative_candy": "142",
+	"field_cumulative_stardust": "142000",
+	"field_stardust_cost": "6000",
+	"name": "31.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "6",
+	"field_cp_multiplier": "0.74378943",
+	"field_cumulative_candy": "148",
+	"field_cumulative_stardust": "148000",
+	"field_stardust_cost": "6000",
+	"name": "32",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "6",
+	"field_cp_multiplier": "0.7467812109",
+	"field_cumulative_candy": "154",
+	"field_cumulative_stardust": "154000",
+	"field_stardust_cost": "6000",
+	"name": "32.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "8",
+	"field_cp_multiplier": "0.74976104",
+	"field_cumulative_candy": "162",
+	"field_cumulative_stardust": "161000",
+	"field_stardust_cost": "7000",
+	"name": "33",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "8",
+	"field_cp_multiplier": "0.7527290867",
+	"field_cumulative_candy": "170",
+	"field_cumulative_stardust": "168000",
+	"field_stardust_cost": "7000",
+	"name": "33.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "8",
+	"field_cp_multiplier": "0.7556855",
+	"field_cumulative_candy": "178",
+	"field_cumulative_stardust": "175000",
+	"field_stardust_cost": "7000",
+	"name": "34",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "8",
+	"field_cp_multiplier": "0.7586303683",
+	"field_cumulative_candy": "186",
+	"field_cumulative_stardust": "182000",
+	"field_stardust_cost": "7000",
+	"name": "34.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "10",
+	"field_cp_multiplier": "0.76156384",
+	"field_cumulative_candy": "196",
+	"field_cumulative_stardust": "190000",
+	"field_stardust_cost": "8000",
+	"name": "35",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "10",
+	"field_cp_multiplier": "0.7644860647",
+	"field_cumulative_candy": "206",
+	"field_cumulative_stardust": "198000",
+	"field_stardust_cost": "8000",
+	"name": "35.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "10",
+	"field_cp_multiplier": "0.76739717",
+	"field_cumulative_candy": "216",
+	"field_cumulative_stardust": "206000",
+	"field_stardust_cost": "8000",
+	"name": "36",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "10",
+	"field_cp_multiplier": "0.7702972656",
+	"field_cumulative_candy": "226",
+	"field_cumulative_stardust": "214000",
+	"field_stardust_cost": "8000",
+	"name": "36.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "12",
+	"field_cp_multiplier": "0.7731865",
+	"field_cumulative_candy": "238",
+	"field_cumulative_stardust": "223000",
+	"field_stardust_cost": "9000",
+	"name": "37",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "12",
+	"field_cp_multiplier": "0.7760649616",
+	"field_cumulative_candy": "250",
+	"field_cumulative_stardust": "232000",
+	"field_stardust_cost": "9000",
+	"name": "37.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "12",
+	"field_cp_multiplier": "0.77893275",
+	"field_cumulative_candy": "262",
+	"field_cumulative_stardust": "241000",
+	"field_stardust_cost": "9000",
+	"name": "38",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "12",
+	"field_cp_multiplier": "0.7817900548",
+	"field_cumulative_candy": "274",
+	"field_cumulative_stardust": "250000",
+	"field_stardust_cost": "9000",
+	"name": "38.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "15",
+	"field_cp_multiplier": "0.784637",
+	"field_cumulative_candy": "289",
+	"field_cumulative_stardust": "260000",
+	"field_stardust_cost": "10000",
+	"name": "39",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.8078",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "358000",
+	"field_stardust_cost": "12000",
+	"name": "43.5",
+	"field_cumulative_xl_candy": "88",
+	"field_xl_candy_cost": "12"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.84029999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "520000",
+	"field_stardust_cost": "0",
+	"name": "50",
+	"field_cumulative_xl_candy": "296",
+	"field_xl_candy_cost": "0"
+}, {
+	"field_candy_cost": "15",
+	"field_cp_multiplier": "0.7874736075",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "270000",
+	"field_stardust_cost": "10000",
+	"name": "39.5",
+	"field_cumulative_xl_candy": "",
+	"field_xl_candy_cost": ""
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.812799985",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "382000",
+	"field_stardust_cost": "12000",
+	"name": "44.5",
+	"field_cumulative_xl_candy": "118",
+	"field_xl_candy_cost": "15"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.7903",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "280000",
+	"field_stardust_cost": "10000",
+	"name": "40",
+	"field_cumulative_xl_candy": "10",
+	"field_xl_candy_cost": "10"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.81779999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "408000",
+	"field_stardust_cost": "13000",
+	"name": "45.5",
+	"field_cumulative_xl_candy": "148",
+	"field_xl_candy_cost": "15"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.79530001",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "301000",
+	"field_stardust_cost": "11000",
+	"name": "41",
+	"field_cumulative_xl_candy": "30",
+	"field_xl_candy_cost": "10"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.82029999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "421000",
+	"field_stardust_cost": "13000",
+	"name": "46",
+	"field_cumulative_xl_candy": "165",
+	"field_xl_candy_cost": "17"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.8003",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "323000",
+	"field_stardust_cost": "11000",
+	"name": "42",
+	"field_cumulative_xl_candy": "52",
+	"field_xl_candy_cost": "12"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.82279999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "434000",
+	"field_stardust_cost": "13000",
+	"name": "46.5",
+	"field_cumulative_xl_candy": "182",
+	"field_xl_candy_cost": "17"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.8053",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "346000",
+	"field_stardust_cost": "12000",
+	"name": "43",
+	"field_cumulative_xl_candy": "76",
+	"field_xl_candy_cost": "12"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.82529999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "448000",
+	"field_stardust_cost": "14000",
+	"name": "47",
+	"field_cumulative_xl_candy": "199",
+	"field_xl_candy_cost": "17"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.81029999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "370000",
+	"field_stardust_cost": "12000",
+	"name": "44",
+	"field_cumulative_xl_candy": "103",
+	"field_xl_candy_cost": "15"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.82779999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "462000",
+	"field_stardust_cost": "14000",
+	"name": "47.5",
+	"field_cumulative_xl_candy": "216",
+	"field_xl_candy_cost": "17"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.81529999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "395000",
+	"field_stardust_cost": "13000",
+	"name": "45",
+	"field_cumulative_xl_candy": "133",
+	"field_xl_candy_cost": "15"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.83029999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "476000",
+	"field_stardust_cost": "14000",
+	"name": "48",
+	"field_cumulative_xl_candy": "236",
+	"field_xl_candy_cost": "20"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.792803968",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "290000",
+	"field_stardust_cost": "10000",
+	"name": "40.5",
+	"field_cumulative_xl_candy": "20",
+	"field_xl_candy_cost": "10"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.83279999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "490000",
+	"field_stardust_cost": "14000",
+	"name": "48.5",
+	"field_cumulative_xl_candy": "256",
+	"field_xl_candy_cost": "20"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.797800015",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "312000",
+	"field_stardust_cost": "11000",
+	"name": "41.5",
+	"field_cumulative_xl_candy": "40",
+	"field_xl_candy_cost": "10"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.83529999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "505000",
+	"field_stardust_cost": "15000",
+	"name": "49",
+	"field_cumulative_xl_candy": "276",
+	"field_xl_candy_cost": "20"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.802799995",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "334000",
+	"field_stardust_cost": "11000",
+	"name": "42.5",
+	"field_cumulative_xl_candy": "64",
+	"field_xl_candy_cost": "12"
+}, {
+	"field_candy_cost": "0",
+	"field_cp_multiplier": "0.83779999",
+	"field_cumulative_candy": "304",
+	"field_cumulative_stardust": "520000",
+	"field_stardust_cost": "15000",
+	"name": "49.5",
+	"field_cumulative_xl_candy": "296",
+	"field_xl_candy_cost": "20"
+}]
