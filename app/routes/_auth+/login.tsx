@@ -36,6 +36,8 @@ import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost, safeRedirect } from "~/utils/http.server";
 import { i18nextServer } from "~/utils/i18n/i18next.server";
 
+import { getSiteSlug } from "../_site+/_utils/getSiteSlug.server";
+
 const LoginFormSchema = z.object({
    email: z
       .string()
@@ -53,7 +55,7 @@ const PasswordResetSchema = z.object({
 });
 
 export async function loader({
-   context: { user },
+   context: { user, payload },
    request,
 }: LoaderFunctionArgs) {
    if (user) {
@@ -62,16 +64,30 @@ export async function loader({
    const t = await i18nextServer.getFixedT(request, "auth");
    const title = t("login.title");
 
+   const { siteSlug } = await getSiteSlug(request, payload, user);
+
+   const sites = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteSlug,
+         },
+      },
+      user,
+   });
+
+   const site = sites?.docs[0];
+
    const { email } = zx.parseQuery(request, {
       email: z.string().email().optional(),
    });
 
-   return json({ title, email });
+   return json({ title, email, site });
 }
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         title: `${data?.title} - Mana`,
+         title: `${data?.title} - ${data?.site?.name ?? "Mana"}`,
       },
    ];
 };

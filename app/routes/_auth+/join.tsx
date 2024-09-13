@@ -30,16 +30,32 @@ import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
 import { i18nextServer } from "~/utils/i18n/i18next.server";
 
+import { getSiteSlug } from "../_site+/_utils/getSiteSlug.server";
+
 export async function loader({
-   context: { user },
+   context: { user, payload },
    request,
 }: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
+   const { siteSlug } = await getSiteSlug(request, payload, user);
+
+   const sites = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteSlug,
+         },
+      },
+      user,
+   });
+
+   const site = sites?.docs[0];
+
    const t = await i18nextServer.getFixedT(request, "auth");
    const title = t("register.title");
-   return json({ title });
+   return json({ title, site });
 }
 
 const JoinFormSchema = z.object({
@@ -59,10 +75,10 @@ const JoinFormSchema = z.object({
       .toLowerCase(),
 });
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         title: `Join - Mana`,
+         title: `Join - ${data?.site?.name ?? "Mana"}`,
       },
    ];
 };
