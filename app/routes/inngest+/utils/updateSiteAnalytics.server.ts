@@ -82,7 +82,6 @@ export const updateSiteAnalytics = inngest.createFunction(
                //Custom pages
                if (
                   pathSection?.length == 2 &&
-                  pathSection[0] == siteSlug &&
                   pathSection[1] != "collections" &&
                   pathSection[1] != "posts"
                ) {
