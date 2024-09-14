@@ -156,7 +156,7 @@ function damage(dmg_giver, dmg_taker, move, Context) {
    multipliers *= Effectiveness[move.pokeType][dmg_taker.pokeType1] || 1;
    multipliers *= Effectiveness[move.pokeType][dmg_taker.pokeType2] || 1;
    var atk = dmg_giver.Atk;
-   if (dmg_giver.name.startsWith("shadow ")) {
+   if (dmg_giver.name.startsWith("Shadow ")) {
       atk *= Data.BattleSettings.shadowPokemonAttackBonusMultiplier;
    }
    if (Context.allyMega) {
@@ -805,7 +805,7 @@ export function generateSpreadsheet(pokemonCollection, Context) {
             }
             pkmInstance.cp = calculateCP(pkmInstance);
 
-            if (pkmInstance.name.startsWith("shadow ")) {
+            if (pkmInstance.name.startsWith("Shadow ")) {
                pkmInstance.Def *=
                   Data.BattleSettings.shadowPokemonDefenseBonusMultiplier;
             }
@@ -831,16 +831,16 @@ export function generateSpreadsheet(pokemonCollection, Context) {
             pkmInstance.ui_dps = pkmInstance.dps.toFixed(3);
             pkmInstance.ui_tdo = pkmInstance.tdo.toFixed(1);
             if (Context.battleMode == "pvp") {
-               pkmInstance.ui_overall =
-                  Math.ceil(
-                     -pkmInstance.cmove.energyDelta /
-                        (pkmInstance.fmove.energyDelta || 1),
-                  ) * pkmInstance.fmove.duration;
+               pkmInstance.ui_overall = (
+                  (-pkmInstance.cmove.energyDelta /
+                     (pkmInstance.fmove.energyDelta || 1)) *
+                  pkmInstance.fmove.duration
+               ).toFixed(2);
             } else {
-               pkmInstance.ui_overall = Math.round(
-                  (pkmInstance.dps ** 3 * pkmInstance.tdo) ** 0.25,
-                  2,
-               );
+               pkmInstance.ui_overall = (
+                  (pkmInstance.dps ** 3 * pkmInstance.tdo) **
+                  0.25
+               ).toFixed(2);
             }
             pkmInstance.ui_cp = pkmInstance.cp;
 

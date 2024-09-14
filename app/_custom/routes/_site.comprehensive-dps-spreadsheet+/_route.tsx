@@ -143,7 +143,7 @@ export async function clientLoader({
 
    // console.log(pokemon);
 
-   console.log(simpleCache);
+   // console.log(simpleCache);
 
    return {
       pokemon,

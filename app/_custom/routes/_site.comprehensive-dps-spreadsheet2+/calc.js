@@ -830,16 +830,16 @@ export function generateSpreadsheet(pokemonCollection, Context) {
             pkmInstance.ui_dps = pkmInstance.dps.toFixed(3);
             pkmInstance.ui_tdo = pkmInstance.tdo.toFixed(1);
             if (Context.battleMode == "pvp") {
-               pkmInstance.ui_overall =
-                  Math.ceil(
-                     -pkmInstance.cmove.energyDelta /
-                        (pkmInstance.fmove.energyDelta || 1),
-                  ) * pkmInstance.fmove.duration;
+               pkmInstance.ui_overall = (
+                  (-pkmInstance.cmove.energyDelta /
+                     (pkmInstance.fmove.energyDelta || 1)) *
+                  pkmInstance.fmove.duration
+               ).toFixed(2);
             } else {
-               pkmInstance.ui_overall = Math.round(
-                  (pkmInstance.dps ** 3 * pkmInstance.tdo) ** 0.25,
-                  2,
-               );
+               pkmInstance.ui_overall = (
+                  (pkmInstance.dps ** 3 * pkmInstance.tdo) **
+                  0.25
+               ).toFixed(2);
             }
             pkmInstance.ui_cp = pkmInstance.cp;
 
