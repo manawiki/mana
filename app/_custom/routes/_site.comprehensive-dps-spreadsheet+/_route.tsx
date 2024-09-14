@@ -178,6 +178,16 @@ export function ComprehensiveDpsSpreadsheet() {
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
          <Introduction />
          <NewToggles pokemon={pokemon} />
+         <AdUnit
+            enableAds={true}
+            adType={{
+               desktop: "leaderboard_atf",
+               tablet: "leaderboard_atf",
+               mobile: "med_rect_atf",
+            }}
+            className="my-8 mx-auto flex items-center justify-center"
+            selectorId="dpsCalcDesktopLeaderATF"
+         />
          <ResultsTable />
       </div>
    );
@@ -309,16 +319,6 @@ export function Introduction() {
                </>
             )}
          </Disclosure>
-         <AdUnit
-            enableAds={true}
-            adType={{
-               desktop: "leaderboard_atf",
-               tablet: "leaderboard_atf",
-               mobile: "med_rect_atf",
-            }}
-            className="my-8 mx-auto flex items-center justify-center"
-            selectorId="dpsCalcDesktopLeaderATF"
-         />
       </div>
    );
 }
