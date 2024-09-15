@@ -2160,7 +2160,8 @@ function BasicPokeQuery(queryStr, pokemonInstance) {
    } else {
       // Match name/nickname/species
       return function (obj) {
-         if (obj.name && obj.name.includes(str.toLowerCase())) return true;
+         if (obj.name && obj.name.toLowerCase().includes(str.toLowerCase()))
+            return true;
          return obj.label && obj.label.includes(str);
       };
    }
