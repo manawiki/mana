@@ -828,19 +828,20 @@ export function generateSpreadsheet(pokemonCollection, Context) {
             //    "move-input-with-icon",
             // );
 
-            pkmInstance.ui_dps = pkmInstance.dps.toFixed(3);
-            pkmInstance.ui_tdo = pkmInstance.tdo.toFixed(1);
+            pkmInstance.ui_dps = Number(pkmInstance.dps.toFixed(3));
+            pkmInstance.ui_tdo = Number(pkmInstance.tdo.toFixed(1));
             if (Context.battleMode == "pvp") {
-               pkmInstance.ui_overall = (
-                  (-pkmInstance.cmove.energyDelta /
-                     (pkmInstance.fmove.energyDelta || 1)) *
-                  pkmInstance.fmove.duration
-               ).toFixed(2);
+               pkmInstance.ui_overall = Number(
+                  (
+                     (-pkmInstance.cmove.energyDelta /
+                        (pkmInstance.fmove.energyDelta || 1)) *
+                     pkmInstance.fmove.duration
+                  ).toFixed(2),
+               );
             } else {
-               pkmInstance.ui_overall = (
-                  (pkmInstance.dps ** 3 * pkmInstance.tdo) **
-                  0.25
-               ).toFixed(2);
+               pkmInstance.ui_overall = Number(
+                  ((pkmInstance.dps ** 3 * pkmInstance.tdo) ** 0.25).toFixed(2),
+               );
             }
             pkmInstance.ui_cp = pkmInstance.cp;
 
