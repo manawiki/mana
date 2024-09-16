@@ -28,8 +28,8 @@ export const H3 = ({ children, id }: { children: ReactNode; id?: string }) => {
    return (
       <h3
          id={id}
-         className="dark:text-zinc-100 mt-5 mb-2 px-2.5 leading-7 dark:bg-dark450/60 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/40 border-zinc-200
-         font-header relative text-lg scroll-mt-20 rounded-lg py-1.5 overflow-hidden border dark:border-zinc-600/60 shadow-zinc-50"
+         className="dark:text-zinc-100 mt-5 mb-2 px-2.5 leading-7 dark:bg-dark450/60 bg-zinc-50 block shadow-sm dark:shadow-zinc-800/40 border-zinc-200/70
+         font-header relative text-lg scroll-mt-20 rounded-lg py-1.5 overflow-hidden border-2 dark:border-zinc-600/50 shadow-zinc-50"
       >
          <span className="z-10 relative">{children}</span>
          <div
