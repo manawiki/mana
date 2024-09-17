@@ -800,6 +800,13 @@ function filterResults(results, searchParams) {
       filtered = filtered.filter((pokemon) => pokemon?.unavailable !== "On");
    }
 
+   // implement search
+   const search = searchParams.get("search");
+
+   if (search) {
+      filtered = filtered.filter(PokeQuery(search));
+   }
+
    // filter for unique species if toggled
    if (searchParams.get("ui-uniqueSpecies-checkbox")) {
       //reduce the filtered array so only one of each pokemon.name remains
@@ -813,13 +820,6 @@ function filterResults(results, searchParams) {
       }
 
       filtered = unique;
-   }
-
-   // implement search
-   const search = searchParams.get("search");
-
-   if (search) {
-      filtered = filtered.filter(PokeQuery(search));
    }
 
    return filtered;
