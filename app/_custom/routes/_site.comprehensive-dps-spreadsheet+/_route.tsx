@@ -906,7 +906,7 @@ function Pagination({ count = 100 }) {
             </Button>
          )}
          <Input
-            // form="dps-form"
+            form="dps-form"
             type="number"
             key={"page " + page}
             defaultValue={page}
@@ -953,6 +953,7 @@ function Search() {
          //  onKeyUp={search_trigger}
          className="w-full"
          name="search"
+         form="dps-form"
          placeholder="Enter a filter query..."
          defaultValue={searchParams.get("search") ?? ""}
          onChange={(e) => {
