@@ -9,15 +9,15 @@ export function CustomPageHeader({
 }) {
    return (
       <div
-         className="bg-gradient-to-t from-white to-zinc-200 dark:from-dark350 dark:to-bg3Dark relative border-b 
-    border-zinc-100 dark:border-zinc-700/50 dark:shadow-zinc-800/50 shadow-zinc-50 shadow-sm max-laptop:px-3"
+         className="bg-gradient-to-t from-zinc-100 to-transparent dark:from-dark350 dark:to-bg3Dark relative border-b
+         border-color dark:border-zinc-700/50 dark:shadow-zinc-800/50 shadow-zinc-50 shadow-sm max-laptop:px-3"
       >
-         <div className="relative z-20 mx-auto max-w-[728px] justify-baseline pt-6 pb-3">
-            <div>
-               <h1 className="font-header font-semibold text-2xl">{name}</h1>
+         <div className="relative z-20 mx-auto max-w-[728px] justify-baseline pb-3 pt-3.5">
+            <div className="flex items-end justify-between gap-3">
+               <h1 className="font-header font-semibold text-xl">{name}</h1>
                <Avatar
                   src={iconUrl}
-                  className="size-11 bg-3 absolute right-0 bottom-3"
+                  className="size-10 bg-3 flex-none"
                   options="aspect_ratio=1:1&height=128&width=128"
                />
             </div>
