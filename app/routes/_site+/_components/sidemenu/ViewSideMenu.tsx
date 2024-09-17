@@ -1,9 +1,11 @@
-import { Site } from "~/db/payload-types";
+import { useState } from "react";
+
 import { Link, useLocation } from "@remix-run/react";
 import clsx from "clsx";
-import { useState } from "react";
+
 import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
+import type { Site } from "~/db/payload-types";
 
 export function ViewSideMenu({ site }: { site: Site }) {
    return (

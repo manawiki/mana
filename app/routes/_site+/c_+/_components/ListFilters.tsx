@@ -24,7 +24,7 @@ export function ListFilters({
    searchPlaceholder,
    setViewMode,
 }: {
-   collection: Collection;
+   collection?: Collection;
    setGlobalFilter: any;
    columnFilters: ColumnFiltersState;
    setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;

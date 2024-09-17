@@ -36,7 +36,7 @@ export function ListTable({
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[];
-   collection: Collection;
+   collection?: Collection;
    columnViewability?: VisibilityState;
    defaultViewType?: "list" | "grid";
    filters?: TableFilters;

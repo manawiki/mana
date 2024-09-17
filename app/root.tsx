@@ -220,7 +220,7 @@ function App() {
          </head>
          <body className="text-light dark:text-dark">
             <div
-               vaul-drawer-wrapper=""
+               data-vaul-drawer-wrapper=""
                className="max-laptop:min-h-screen bg-white dark:bg-bg3Dark"
             >
                <Outlet
