@@ -72,7 +72,7 @@ clientLoader.hyrate = true;
 
 export function HydrateFallback() {
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
+      <div className="mx-auto max-w-[728px] max-tablet:px-3 laptop:pb-20 ">
          <Introduction />
          <NewToggles />
          <Icon name="loader-2" size={24} className="mx-auto animate-spin" />
@@ -84,7 +84,7 @@ export function ComprehensiveDpsSpreadsheet() {
    const { pokemon, count } = useLoaderData<typeof clientLoader>();
 
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
+      <div className="mx-auto max-w-[728px] max-tablet:px-3 laptop:pb-20 ">
          <Introduction />
          <NewToggles pokemon={pokemon} />
 

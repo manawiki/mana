@@ -48,6 +48,7 @@ import { generateSpreadsheet, getCustom, getEnemy } from "./calc";
 import { GM, Data, weathers, pokeTypes, PokeQuery } from "./dataFactory";
 import { parseMoves } from "./parseMoves";
 import { parsePokemons } from "./parsePokemons";
+import { CustomPageHeader } from "~/components/CustomPageHeader";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -163,11 +164,17 @@ clientLoader.hyrate = true;
 
 export function HydrateFallback() {
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
-         <Introduction />
-         <NewToggles />
-         <Icon name="loader-2" size={24} className="mx-auto animate-spin" />
-      </div>
+      <>
+         <CustomPageHeader
+            name="Comprehensive DPS/TDO Spreadsheet"
+            iconUrl="https://static.mana.wiki/dps-calcuator.png"
+         />
+         <div className="mx-auto max-w-[728px] max-tablet:px-3 laptop:pb-20 ">
+            <Introduction />
+            <NewToggles />
+            <Icon name="loader-2" size={24} className="mx-auto animate-spin" />
+         </div>
+      </>
    );
 }
 
@@ -175,21 +182,27 @@ export function ComprehensiveDpsSpreadsheet() {
    const { pokemon } = useLoaderData<typeof clientLoader>();
 
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 ">
-         <Introduction />
-         <NewToggles pokemon={pokemon} />
-         <AdUnit
-            enableAds={true}
-            adType={{
-               desktop: "leaderboard_atf",
-               tablet: "leaderboard_atf",
-               mobile: "med_rect_atf",
-            }}
-            className="my-8 mx-auto flex items-center justify-center"
-            selectorId="dpsCalcDesktopLeaderATF"
+      <>
+         <CustomPageHeader
+            name="Comprehensive DPS/TDO Spreadsheet"
+            iconUrl="https://static.mana.wiki/dps-calcuator.png"
          />
-         <ResultsTable />
-      </div>
+         <div className="mx-auto max-w-[728px] max-tablet:px-3 laptop:pb-20 ">
+            <Introduction />
+            <NewToggles pokemon={pokemon} />
+            <AdUnit
+               enableAds={true}
+               adType={{
+                  desktop: "leaderboard_atf",
+                  tablet: "leaderboard_atf",
+                  mobile: "med_rect_atf",
+               }}
+               className="my-8 mx-auto flex items-center justify-center"
+               selectorId="dpsCalcDesktopLeaderATF"
+            />
+            <ResultsTable />
+         </div>
+      </>
    );
 }
 
@@ -259,51 +272,51 @@ export function Introduction() {
                      )}
                   >
                      <div className="divide-y divide-color-sub">
-                        <div className="flex justify-between px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="font-bold ">Search</span>
                            <span className="font-semibold ">Example</span>
                         </div>
-                        <div className="px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="font-bold">Dex Number</span>
                            <span className="text-1 float-right">1-151</span>
                         </div>
-                        <div className="px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="font-bold">Pokemon Type</span>
                            <span className="text-1 float-right">
                               normal, normal & flying, normal & none
                            </span>
                         </div>
-                        <div className="px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="font-bold">Move Type</span>
                            <span className="text-1 float-right">
                               @ghost, @1ghost, @2ghost, *@ghost
                            </span>
                         </div>
-                        <div className="px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="font-bold">Base Stats</span>
                            <span className="text-1 float-right">
                               baseatk180-200, cp3000-
                            </span>
                         </div>
-                        <div className="px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="font-bold">Filter by move</span>
                            <span className="text-1 float-right">
                               @legacy / @exclusive / @stab
                            </span>
                         </div>
-                        <div className="px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="font-bold">
                               Filter out legacy moves
                            </span>
                            <span className="text-1 float-right">@*current</span>
                         </div>
-                        <div className="px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="font-bold">
                               Filter out Shadow Pokemon
                            </span>
                            <span className="text-1 float-right">!shadow</span>
                         </div>
-                        <div className="px-6 py-3">
+                        <div className="flex justify-between p-3">
                            <span className="">
                               View only Pokemon with fast and charged moves that
                               are the same type
@@ -311,7 +324,7 @@ export function Introduction() {
                            <span className="text-1 float-right">@same</span>
                         </div>
                      </div>
-                     <p className="py-3 px-6 border-t border-color-sub text-1">
+                     <p className="p-3 border-t border-color-sub text-1">
                         These searches can be combined with the '&' symbol to
                         create a pinpointed reference for DPS and TDO.
                      </p>
