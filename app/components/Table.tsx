@@ -157,7 +157,7 @@ export function TableHeader({ className, center, ...props }: TableHeaderProps) {
             className,
             center && "text-center",
             framed && "bg-zinc-50 dark:bg-dark400",
-            "border-b border-color-sub font-semibold px-3 py-2.5",
+            "border-b border-color-sub font-semibold px-3 py-2.5 whitespace-normal",
             grid && "border-l border-color-sub first:border-l-0",
          )}
       />
@@ -188,7 +188,7 @@ export function TableCell({
             className,
             center && "text-center",
             bold && "font-bold",
-            "relative px-3 bg-white dark:bg-dark350",
+            "relative px-3 bg-white dark:bg-dark350 whitespace-normal",
             !striped && !framed && "border-b border-color",
             grid && "border-l border-color-sub first:border-l-0",
             dense ? "py-2.5" : "py-4",
