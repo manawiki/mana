@@ -3,13 +3,14 @@ import { Drawer } from "vaul";
 
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
-import { Site } from "~/db/payload-types";
+import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
 import { useWindowDimensions } from "~/utils/useWindowDimensions";
+
+import { PrimaryMenu } from "./PrimaryMenu";
 import { SideMenu } from "./sidemenu/SideMenu";
 import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
-import { PrimaryMenu } from "./PrimaryMenu";
 
 export const MobileTray = ({
    children,

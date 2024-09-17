@@ -1,26 +1,22 @@
-import { Site } from "~/db/payload-types";
-import { Image } from "~/components/Image";
-
-import { Icon } from "~/components/Icon";
 import { useEffect, useState } from "react";
-import {
-   DndContext,
-   DragEndEvent,
-   DragOverlay,
-   DragStartEvent,
-   closestCenter,
-} from "@dnd-kit/core";
+
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { DndContext, DragOverlay, closestCenter } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
    SortableContext,
    arrayMove,
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { SideMenuSection } from "./SideMenuSection";
-import { Button } from "~/components/Button";
-import { nanoid } from "nanoid";
 import { useFetcher } from "@remix-run/react";
+import { nanoid } from "nanoid";
+
+import { Button } from "~/components/Button";
+import { Icon } from "~/components/Icon";
+import type { Site } from "~/db/payload-types";
 import { isAdding } from "~/utils/form";
+
+import { SideMenuSection } from "./SideMenuSection";
 
 export function SideMenu({
    site,
