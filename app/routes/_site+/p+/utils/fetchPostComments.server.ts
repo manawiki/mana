@@ -1,10 +1,8 @@
-import { request as gqlRequest } from "graphql-request";
 import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
 
 import type { Comment } from "payload/generated-types";
 import type { RemixRequestContext } from "remix.env";
-import { gqlRequestWithCache } from "~/utils/cache.server";
-import { gqlEndpoint } from "~/utils/fetchers.server";
+import { gqlFetch } from "~/utils/fetchers.server";
 
 export async function fetchPostComments({
    user,
@@ -91,13 +89,11 @@ export async function fetchPostComments({
    const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
 
    //Cache comments if non
-   const fetchComments = !user
-      ? await gqlRequestWithCache(gqlEndpoint({}), graphql_query, {
-           postParentId: postId,
-        })
-      : await gqlRequest(gqlEndpoint({}), graphql_query, {
-           postParentId: postId,
-        });
+   const fetchComments = await gqlFetch({
+      isCached: user ? false : true,
+      query: graphql_query,
+      variables: { postParentId: postId },
+   });
 
    const comments = depthAndDeletionDecorator(
       //@ts-ignore

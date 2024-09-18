@@ -6,12 +6,8 @@ import type { PaginatedDocs } from "payload/dist/database/types";
 import type { Entry } from "payload/generated-types";
 import type { RemixRequestContext } from "remix.env";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { gqlRequestWithCache, gql, cacheThis } from "~/utils/cache.server";
-import {
-   gqlFormat,
-   gqlEndpoint,
-   authGQLFetcher,
-} from "~/utils/fetchers.server";
+import { gql, cacheThis } from "~/utils/cache.server";
+import { gqlFetch, gqlFormat } from "~/utils/fetchers.server";
 
 export async function getEntryFields({
    payload,
@@ -90,21 +86,17 @@ export async function getEntryFields({
       }
       `;
 
-      const endpoint = gqlEndpoint({
-         siteSlug: collection.site.slug,
-      });
-
-      const { entryData }: { entryData: PaginatedDocs<Entry> } = user
-         ? await gqlRequestWithCache(endpoint, entryQuery, {
-              entryId,
-           })
-         : await authGQLFetcher({
-              siteSlug: siteSlug,
-              document: entryQuery,
-              variables: {
-                 entryId,
-              },
-           });
+      //@ts-ignore
+      const { entryData }: { entryData: PaginatedDocs<Entry> } = await gqlFetch(
+         {
+            isCustomDB: true,
+            isCached: user ? false : true,
+            query: entryQuery,
+            request,
+            customPath: undefined,
+            variables: { entryId },
+         },
+      );
 
       const entry = entryData?.docs[0];
 

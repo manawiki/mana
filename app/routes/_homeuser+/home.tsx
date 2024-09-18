@@ -10,7 +10,6 @@ import { gqlEndpoint } from "~/utils/fetchers.server";
 import { Discover } from "../_home+/components/Discover";
 import { ColumnOneMenu } from "../_site+/_components/Column-1-Menu";
 import { MobileHeader } from "../_site+/_components/MobileHeader";
-import { Link } from "@remix-run/react";
 
 export async function loader({
    context: { payload, user },

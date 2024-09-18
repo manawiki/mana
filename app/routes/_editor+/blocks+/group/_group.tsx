@@ -241,13 +241,15 @@ export async function loader({
          }
       `;
 
-      const endpoint = gqlEndpoint({
-         siteSlug: site?.slug,
-      });
-
-      const result: any = await gqlRequest(endpoint, document, {
-         groupSelectQuery,
-      });
+      const result: any = await gqlRequest(
+         gqlEndpoint({
+            isCustomDB: true,
+         }),
+         document,
+         {
+            groupSelectQuery,
+         },
+      );
       const data = result.rows.docs as groupRowData[];
       const filtered = data.map((doc) => {
          return {

@@ -16,10 +16,10 @@ import { gql, gqlRequestWithCache } from "~/utils/cache.server";
 import { gqlEndpoint } from "~/utils/fetchers.server";
 
 import { Discover } from "./components/Discover";
+import { GetStartedOptions } from "./components/GetStartedOptions";
+import { ToolKit } from "./components/Toolkit";
 import { TopHome } from "./components/TopHome";
 import indexStyles from "./styles.css";
-import { ToolKit } from "./components/Toolkit";
-import { GetStartedOptions } from "./components/GetStartedOptions";
 
 export const meta: MetaFunction = () => [
    { title: "Mana - The all-in-one wiki builder" },
