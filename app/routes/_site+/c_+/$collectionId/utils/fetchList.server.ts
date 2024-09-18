@@ -3,8 +3,7 @@ import type { Payload } from "payload";
 
 import type { RemixRequestContext } from "remix.env";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { gqlRequestWithCache } from "~/utils/cache.server";
-import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
+import { gqlFetch } from "~/utils/fetchers.server";
 
 import { fetchListCore } from "./fetchListCore.server";
 
@@ -26,9 +25,6 @@ export async function fetchList({
    user,
 }: ListFetchType) {
    const { siteSlug } = await getSiteSlug(request, payload, user);
-   const gqlPath = gqlEndpoint({
-      siteSlug,
-   });
 
    if (!gql) {
       return await fetchListCore({
@@ -39,16 +35,14 @@ export async function fetchList({
       });
    }
 
-   return gql?.query && !user
-      ? await gqlRequestWithCache(gqlPath, gql?.query, {
-           ...gql?.variables,
-        })
-      : gql?.query &&
-           (await authGQLFetcher({
-              siteSlug: siteSlug,
-              variables: {
-                 ...gql?.variables,
-              },
-              document: gql?.query,
-           }));
+   return (
+      gql?.query &&
+      (await gqlFetch({
+         isCustomDB: true,
+         isCached: user ? false : true,
+         query: gql?.query,
+         request,
+         variables: { ...gql?.variables },
+      }))
+   );
 }

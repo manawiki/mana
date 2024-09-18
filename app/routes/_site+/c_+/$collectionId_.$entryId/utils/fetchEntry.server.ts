@@ -1,9 +1,5 @@
-import { fetchWithCache, gqlRequestWithCache } from "~/utils/cache.server";
-import {
-   authGQLFetcher,
-   authRestFetcher,
-   gqlEndpoint,
-} from "~/utils/fetchers.server";
+import { fetchWithCache } from "~/utils/cache.server";
+import { authRestFetcher, gqlFetch } from "~/utils/fetchers.server";
 
 import type { RestOrGraphql } from "./_entryTypes";
 import { getEmbeddedContent } from "./getEmbeddedContent.server";
@@ -25,30 +21,23 @@ export async function fetchEntry({
       user,
    });
 
-   const gqlPath = gqlEndpoint({
-      siteSlug: entry.siteSlug,
-   });
-
    const restPath = `http://localhost:4000/api/${entry.collectionSlug}/${
       entry.id
    }?depth=${rest?.depth ?? 2}`;
 
    const GQLorREST = gql?.query
-      ? user
-         ? authGQLFetcher({
-              siteSlug: entry.siteSlug,
-              variables: {
-                 entryId: entry.id,
-                 jsonEntryId: entry.id,
-                 ...gql?.variables,
-              },
-              document: gql?.query,
-           })
-         : gqlRequestWithCache(gqlPath, gql?.query, {
+      ? await gqlFetch({
+           isCustomDB: true,
+           isCached: user ? false : true,
+           query: gql?.query,
+           request,
+           customPath: undefined,
+           variables: {
               entryId: entry.id,
               jsonEntryId: entry.id,
               ...gql?.variables,
-           })
+           },
+        })
       : rest?.depth
         ? user
            ? authRestFetcher({ path: restPath, method: "GET" })

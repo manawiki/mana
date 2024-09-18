@@ -8,8 +8,8 @@ import { zx } from "zodix";
 import type { Post, PostTag } from "payload/generated-types";
 import { Badge } from "~/components/Badge";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
-import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
+import { cacheThis, gql } from "~/utils/cache.server";
+import { gqlFetch } from "~/utils/fetchers.server";
 
 import { PublishedPostRow } from "../../posts+/components/PublishedPostRow";
 
@@ -93,15 +93,12 @@ export async function loader({
 
    const tag = getTag?.docs[0] as unknown as PostTag;
 
-   const postData = user
-      ? await authGQLFetcher({
-           variables: { tagId: tag.id },
-           document: POST_QUERY,
-           request,
-        })
-      : await gqlRequestWithCache(gqlEndpoint({}), POST_QUERY, {
-           tagId: tag.id,
-        });
+   const postData = await gqlFetch({
+      isCached: user ? false : true,
+      query: POST_QUERY,
+      request,
+      variables: { tagId: tag.id },
+   });
 
    const posts = (postData as any).posts as PaginatedDocs<Post>;
 

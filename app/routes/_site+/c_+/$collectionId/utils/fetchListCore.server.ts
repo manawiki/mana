@@ -1,12 +1,8 @@
 import type { Payload } from "payload";
 
 import type { RemixRequestContext } from "remix.env";
-import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
-import {
-   authGQLFetcher,
-   gqlEndpoint,
-   gqlFormat,
-} from "~/utils/fetchers.server";
+import { cacheThis, gql } from "~/utils/cache.server";
+import { gqlFormat, gqlFetch } from "~/utils/fetchers.server";
 
 export async function fetchListCore({
    request,
@@ -81,13 +77,12 @@ export async function fetchListCore({
       `;
 
       //@ts-ignore
-      const { listData } = user
-         ? await authGQLFetcher({
-              siteSlug,
-              document: LIST_QUERY,
-              request,
-           })
-         : await gqlRequestWithCache(gqlEndpoint({ siteSlug }), LIST_QUERY);
+      const { listData } = await gqlFetch({
+         isCustomDB: true,
+         isCached: user ? false : true,
+         query: LIST_QUERY,
+         request,
+      });
 
       if (listData) {
          return { listData: { docs: listData?.docs } };
