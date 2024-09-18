@@ -52,7 +52,7 @@ export const MobileTray = ({
                      : "",
                   getDirection == "right" && "right-0",
                   getDirection == "left" && "left-0",
-                  "z-50",
+                  "z-[999999]",
                )}
             >
                <div
@@ -144,7 +144,7 @@ export function NestedTray({
                      : "",
                   getDirection == "right" && "right-0",
                   getDirection == "left" && "left-0",
-                  "z-50",
+                  "z-[999999]",
                )}
             >
                <div

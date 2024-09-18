@@ -93,7 +93,7 @@ export function Autocomplete({
             panelLayout: "mt-2",
             //Modal
             detachedOverlay:
-               "fixed inset-0 flex items-start justify-center overflow-hidden bg-black/50 h-full z-50 tablet:pt-12 tablet:pb-20",
+               "fixed inset-0 flex items-start justify-center overflow-hidden bg-black/50 h-full z-[999999] tablet:pt-12 tablet:pb-20",
             detachedContainer:
                "overflow-hidden tablet:max-w-2xl w-full flex flex-col tablet:rounded-lg max-h-full tablet:max-h-[540px] min-h-[320px]",
             detachedFormContainer:
@@ -203,7 +203,7 @@ export function Autocomplete({
                      item({ item, html, components }) {
                         return html`<a
                            href="${item.relativeURL}"
-                           className="aa-ItemLink flex items-center justify-between gap-2"
+                           className="aa-ItemLink flex items-start justify-between gap-2"
                         >
                            <div
                               className="[&>mark]:bg-zinc-300 dark:[&>mark]:bg-zinc-500 dark:[&>mark]:text-white [&>mark]:rounded-sm"
@@ -233,7 +233,7 @@ export function Autocomplete({
                                     item.category == "Post"
                                        ? "w-16 h-9 rounded"
                                        : "rounded-lg size-9",
-                                    "overflow-hidden",
+                                    "overflow-hidden flex-none",
                                  )}
                                  url={`${item.icon}`}
                               />
