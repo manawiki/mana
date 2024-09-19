@@ -257,8 +257,9 @@ export function ListFilters({
                                              <div className="flex items-center gap-2">
                                                 {option?.icon && (
                                                    <Avatar
+                                                      square
                                                       className="size-5"
-                                                      options="height=20&width=20"
+                                                      options="height=40&width=40"
                                                       src={option?.icon}
                                                    />
                                                 )}

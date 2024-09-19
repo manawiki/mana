@@ -33,16 +33,20 @@ export function ListTable({
    gridView,
    defaultSort,
    searchPlaceholder,
+   gridCellClassNames,
+   gridContainerClassNames,
 }: {
    data: any;
-   columns: AccessorKeyColumnDefBase<any>[];
+   columns: AccessorKeyColumnDefBase<any>[] | any;
    collection?: Collection;
    columnViewability?: VisibilityState;
    defaultViewType?: "list" | "grid";
-   filters?: TableFilters;
+   filters?: TableFilters | any;
    gridView?: AccessorKeyColumnDef<any>;
    defaultSort?: SortingState;
    searchPlaceholder?: string;
+   gridCellClassNames?: string;
+   gridContainerClassNames?: string;
 }) {
    // Table state definitions
    const [tableData] = useState(() => [...data?.listData?.docs]);
@@ -104,7 +108,11 @@ export function ListTable({
          {viewMode === "list" ? (
             <ListView table={table} />
          ) : (
-            <GridView table={table} />
+            <GridView
+               table={table}
+               gridCellClassNames={gridCellClassNames}
+               gridContainerClassNames={gridContainerClassNames}
+            />
          )}
          <ListPager table={table} />
       </>
