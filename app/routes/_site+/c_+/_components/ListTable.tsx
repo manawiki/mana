@@ -19,6 +19,7 @@ import type { Collection } from "~/db/payload-types";
 import { fuzzyFilter } from "./fuzzyFilter";
 import { GridView } from "./GridView";
 import type { TableFilters } from "./List";
+import type { FilterFn } from "@tanstack/react-table";
 import { ListFilters } from "./ListFilters";
 import { ListPager } from "./ListPager";
 import { ListView } from "./ListView";
@@ -35,6 +36,8 @@ export function ListTable({
    searchPlaceholder,
    gridCellClassNames,
    gridContainerClassNames,
+   pageSize = 60,
+   globalFilterFn,
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[] | any;
@@ -47,6 +50,8 @@ export function ListTable({
    searchPlaceholder?: string;
    gridCellClassNames?: string;
    gridContainerClassNames?: string;
+   pageSize?: number;
+   globalFilterFn?: FilterFn<any>;
 }) {
    // Table state definitions
    const [tableData] = useState(() => [...data?.listData?.docs]);
@@ -62,7 +67,7 @@ export function ListTable({
    );
    const [pagination, setPagination] = useState<PaginationState>({
       pageIndex: 0,
-      pageSize: 60,
+      pageSize: pageSize,
    });
    // Add grid view column to the beginning of the columns array if exists
    const updatedColumns =
@@ -90,7 +95,7 @@ export function ListTable({
       onPaginationChange: setPagination,
       onGlobalFilterChange: setGlobalFilter,
       onColumnVisibilityChange: setColumnVisibility,
-      globalFilterFn: fuzzyFilter,
+      globalFilterFn: globalFilterFn ?? fuzzyFilter,
    });
 
    return (
