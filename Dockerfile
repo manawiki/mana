@@ -48,9 +48,8 @@ COPY --from=production /app/node_modules /app/node_modules
 COPY /public /public
 
 # Start the server using supervisor
-COPY supervisord.conf /app/supervisord.conf
-COPY package.json package.json
+COPY supervisord.conf package.json ./
 EXPOSE 3000
-CMD ["supervisord", "-c", "/app/supervisord.conf"]
+CMD ["supervisord", "-c", "supervisord.conf"]
 
 
