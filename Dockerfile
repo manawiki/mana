@@ -13,6 +13,8 @@ ENV IS_HOME $IS_HOME
 ENV NODE_ENV="production"
 ENV PORT="3000"
 
+RUN corepack enable
+WORKDIR /app
 COPY package.json yarn.lock ./
 COPY ./patches ./patches
 
@@ -26,7 +28,6 @@ RUN yarn run build
 # Get production dependencies
 FROM base as production
 
-WORKDIR /app
 RUN yarn install --frozen-lockfile --production=true
 
 # Install supervisor
@@ -36,7 +37,7 @@ RUN apk add supervisor
 FROM base
 
 WORKDIR /app
-COPY --from=production /app/node_modules /app/node_modules
+COPY --from=production /node_modules /node_modules
 COPY --from=build /app /app
 COPY /public /public
 
