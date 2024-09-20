@@ -6,9 +6,6 @@ FROM node:${NODE_VERSION}-alpine as base
 
 LABEL fly_launch_runtime="Mana"
 
-# Remix app lives here
-WORKDIR /app
-
 # Set production environment
 ARG IS_HOME
 ENV IS_HOME $IS_HOME
@@ -16,38 +13,34 @@ ENV IS_HOME $IS_HOME
 ENV NODE_ENV="production"
 ENV PORT="3000"
 
-# Install supervisor in the base image
-RUN corepack enable
-RUN apk add --no-cache bash supervisor curl
+COPY package.json yarn.lock ./
+COPY ./patches ./patches
 
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
-# Install packages needed to build node modules
-RUN apk update && \
-    apk add build-base gyp pkgconfig python3 
-
-# Install node modules
-COPY package.json yarn.lock ./
-COPY ./patches ./patches
+WORKDIR /app
 RUN yarn install --frozen-lockfile --production=false
-
-# Copy application code
-COPY . .
-
-# Build application
 RUN yarn run build
 
-# Remove development dependencies
-RUN yarn install --production=true
+# Get production dependencies
+FROM base as production
+
+WORKDIR /app
+RUN yarn install --frozen-lockfile --production=true
+
+# Install supervisor
+RUN apk add supervisor
 
 # Final stage for app image
 FROM base
 
-# Copy built application
+WORKDIR /app
+COPY --from=production /app/node_modules /app/node_modules
 COPY --from=build /app /app
+COPY /public /public
 
-# Start the server by default, this can be overwritten at runtime
+# Start the server using supervisor
 COPY supervisord.conf /app/supervisord.conf
 EXPOSE 3000
 CMD ["supervisord", "-c", "/app/supervisord.conf"]
