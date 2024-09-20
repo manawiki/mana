@@ -41,12 +41,12 @@ FROM base as production
 RUN yarn install --frozen-lockfile --production=true
 
 # Final stage for app image
-FROM base
+FROM base as runtime
 
 # Install supervisor in the base image
 RUN apk add --no-cache supervisor
 
-WORKDIR /app
+# Copy over built assets for production
 COPY supervisord.conf package.json ./
 COPY --from=core /app/build /app/build
 COPY --from=core /app/public /app/public
