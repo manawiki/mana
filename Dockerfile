@@ -15,10 +15,9 @@ ENV IS_HOME $IS_HOME
 
 ENV NODE_ENV="production"
 ENV PORT="3000"
-ARG YARN_VERSION=1.22.22
-RUN npm install -g yarn@$YARN_VERSION --force
 
 # Install supervisor in the base image
+RUN corepack enable
 RUN apk add --no-cache bash supervisor curl
 
 # Throw-away build stage to reduce size of final image
