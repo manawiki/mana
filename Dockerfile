@@ -13,36 +13,39 @@ ENV IS_HOME $IS_HOME
 ENV NODE_ENV="production"
 ENV PORT="3000"
 
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
 RUN corepack enable
 WORKDIR /app
 COPY package.json yarn.lock ./
 COPY ./patches ./patches
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
-WORKDIR /app
 RUN yarn install --frozen-lockfile --production=false
 RUN yarn run build
 
 # Get production dependencies
 FROM base as production
 
-RUN yarn install --frozen-lockfile --production=true
+RUN corepack enable
+WORKDIR /app
+COPY package.json yarn.lock ./
+COPY ./patches ./patches
 
-# Install supervisor
 RUN apk add supervisor
+RUN yarn install --frozen-lockfile --production=true
 
 # Final stage for app image
 FROM base
 
 WORKDIR /app
-COPY --from=production /node_modules /node_modules
-COPY --from=build /app /app
+COPY --from=build /app/build /app/build
+COPY --from=production /app/node_modules /app/node_modules
 COPY /public /public
 
 # Start the server using supervisor
 COPY supervisord.conf /app/supervisord.conf
+COPY package.json package.json
 EXPOSE 3000
 CMD ["supervisord", "-c", "/app/supervisord.conf"]
 
