@@ -48,10 +48,10 @@ RUN apk add --no-cache supervisor
 
 # Copy over built assets for production
 COPY supervisord.conf package.json ./
+COPY --from=production /app/node_modules /app/node_modules
+COPY --from=custom /app/build /app/build
 COPY --from=core /app/build /app/build
 COPY --from=core /app/public /app/public
-COPY --from=custom /app/build /app/build
-COPY --from=production /app/node_modules /app/node_modules
 
 # Start the server using supervisor
 EXPOSE 3000
