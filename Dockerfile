@@ -22,6 +22,8 @@ COPY package.json yarn.lock ./
 COPY ./patches ./patches
 
 RUN yarn install --frozen-lockfile --production=false
+
+COPY . .
 RUN yarn run build
 
 # Get production dependencies
