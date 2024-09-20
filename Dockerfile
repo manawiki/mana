@@ -13,13 +13,13 @@ ENV IS_HOME $IS_HOME
 ENV NODE_ENV="production"
 ENV PORT="3000"
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
 RUN corepack enable
 WORKDIR /app
 COPY package.json yarn.lock ./
 COPY ./patches ./patches
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
 
 RUN yarn install --frozen-lockfile --production=false
 
@@ -28,11 +28,6 @@ RUN yarn run build
 
 # Get production dependencies
 FROM base as production
-
-RUN corepack enable
-WORKDIR /app
-COPY package.json yarn.lock ./
-COPY ./patches ./patches
 
 RUN yarn install --frozen-lockfile --production=true
 
