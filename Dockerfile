@@ -13,6 +13,9 @@ ENV IS_HOME $IS_HOME
 ENV NODE_ENV="production"
 ENV PORT="3000"
 
+# Install supervisor in the base image
+RUN apk add --no-cache bash supervisor curl
+
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
@@ -34,7 +37,6 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 COPY ./patches ./patches
 
-RUN apk add supervisor
 RUN yarn install --frozen-lockfile --production=true
 
 # Final stage for app image
