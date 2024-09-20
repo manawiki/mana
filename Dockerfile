@@ -24,7 +24,16 @@ FROM base as build
 RUN yarn install --frozen-lockfile --production=false
 
 COPY . .
-RUN yarn run build
+
+# Build stage for core
+From build as core
+
+RUN yarn run build:core
+
+# Build stage for custom
+From build as custom
+
+RUN yarn run build:custom
 
 # Get production dependencies
 FROM base as production
@@ -39,8 +48,9 @@ RUN apk add --no-cache supervisor
 
 WORKDIR /app
 COPY supervisord.conf package.json ./
-COPY --from=build /app/build /app/build
-COPY --from=build /app/public /app/public
+COPY --from=core /app/build /app/build
+COPY --from=core /app/public /app/public
+COPY --from=custom /app/build /app/build
 COPY --from=production /app/node_modules /app/node_modules
 
 # Start the server using supervisor
