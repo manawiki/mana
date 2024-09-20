@@ -44,8 +44,8 @@ RUN apk add --no-cache supervisor
 
 WORKDIR /app
 COPY supervisord.conf package.json ./
-COPY /public /app/public
 COPY --from=build /app/build /app/build
+COPY --from=build /app/public /app/public
 COPY --from=production /app/node_modules /app/node_modules
 
 # Start the server using supervisor
