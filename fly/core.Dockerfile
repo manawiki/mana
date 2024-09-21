@@ -13,13 +13,13 @@ ENV IS_HOME $IS_HOME
 ENV NODE_ENV="production"
 ENV PORT="3000"
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
 RUN corepack enable
 WORKDIR /app
 COPY package.json yarn.lock ./
 COPY ./patches ./patches
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
 
 RUN yarn install --frozen-lockfile --production=false
 
@@ -36,8 +36,7 @@ RUN yarn install --frozen-lockfile --production=true
 FROM base as runtime
 
 # Copy over built assets for production
-WORKDIR /app
-COPY package.json ./
+COPY supervisord.conf package.json ./
 COPY --from=production /app/node_modules /app/node_modules
 COPY --from=build /app/build /app/build
 COPY --from=build /app/public /app/public
@@ -45,3 +44,4 @@ COPY --from=build /app/public /app/public
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 CMD ["yarn", "run", "start:core"]
+
