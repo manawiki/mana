@@ -15,8 +15,11 @@ import {
    Outlet,
    Scripts,
    useLoaderData,
+   useLocation,
+   useNavigation,
 } from "@remix-run/react";
 import splideCSS from "@splidejs/splide/dist/css/splide-core.min.css";
+import { useNProgress } from "@tanem/react-nprogress";
 import { useTranslation } from "react-i18next";
 import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
 import rdtStylesheet from "remix-development-tools/index.css";
@@ -145,6 +148,7 @@ function App() {
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    const theme = useTheme();
+   const navigation = useNavigation();
 
    useChangeLanguage(locale);
    const { site } = useSiteLoaderData();
@@ -160,6 +164,17 @@ function App() {
    }, [toast]);
 
    const [searchToggle, setSearchToggle] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
+
+   useEffect(() => {
+      // when the state is idle then we can to complete the progress bar
+      if (navigation.state === "idle") setIsLoading(false);
+      // and when it's something else it means it's either submitting a form or
+      // waiting for the loaders of the next location so we start it
+      else setIsLoading(true);
+   }, [navigation.state]);
+
+   const location = useLocation();
 
    return (
       <html
@@ -219,6 +234,7 @@ function App() {
             <Links />
          </head>
          <body className="text-light dark:text-dark">
+            <Progress isAnimating={isLoading} key={location.key} />
             <div
                data-vaul-drawer-wrapper=""
                className="max-laptop:min-h-screen bg-white dark:bg-bg3Dark"
@@ -265,3 +281,43 @@ export function shouldRevalidate({
       ? false
       : defaultShouldRevalidate;
 }
+
+const Bar: React.FC<{
+   animationDuration: number;
+   progress: number;
+}> = ({ animationDuration, progress }) => (
+   <div
+      className="bg-blue-500 h-0.5 left-0 top-0 w-full fixed"
+      style={{
+         marginLeft: `${(-1 + progress) * 100}%`,
+         transition: `margin-left ${animationDuration}ms linear`,
+         zIndex: 99999,
+      }}
+   >
+      <div
+         className="h-full opacity-100 absolute block right-0"
+         style={{
+            boxShadow: "0 0 10px #3b82f6, 0 0 5px #3b82f6",
+            transform: "rotate(3deg) translate(0px, -4px)",
+            width: 100,
+         }}
+      />
+   </div>
+);
+
+const Progress: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
+   const { animationDuration, isFinished, progress } = useNProgress({
+      isAnimating,
+   });
+   return (
+      <div
+         style={{
+            opacity: isFinished ? 0 : 1,
+            pointerEvents: "none",
+            transition: `opacity ${animationDuration}ms linear`,
+         }}
+      >
+         <Bar animationDuration={animationDuration} progress={progress} />
+      </div>
+   );
+};
