@@ -287,7 +287,7 @@ const Bar: React.FC<{
    progress: number;
 }> = ({ animationDuration, progress }) => (
    <div
-      className="bg-blue-500 h-0.5 left-0 top-0 w-full fixed"
+      className="bg-blue-500 h-1 tablet:h-0.5 left-0 top-0 w-full fixed"
       style={{
          marginLeft: `${(-1 + progress) * 100}%`,
          transition: `margin-left ${animationDuration}ms linear`,
@@ -311,6 +311,7 @@ const Progress: React.FC<{ isAnimating: boolean }> = ({ isAnimating }) => {
    });
    return (
       <div
+         className="tablet:hidden"
          style={{
             opacity: isFinished ? 0 : 1,
             pointerEvents: "none",
