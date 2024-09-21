@@ -9,7 +9,6 @@
       "moduleResolution": "NodeNext",
       "outDir": "build/core",
       "baseUrl": ".",
-      "sourceMap": true,
       "noEmit": false
    }
 }
