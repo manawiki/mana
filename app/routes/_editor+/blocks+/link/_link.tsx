@@ -193,6 +193,40 @@ export async function loader({
 
          //Otherwise, return site
          default:
+            // Determine if the path is a custom page
+            try {
+               const customPageData = await payload.find({
+                  collection: "customPages",
+                  where: {
+                     site: {
+                        equals: site?.id,
+                     },
+                     slug: {
+                        equals: pathSection[1],
+                     },
+                  },
+                  depth: 1,
+                  overrideAccess: false,
+                  user,
+               });
+
+               const customPage = customPageData?.docs[0];
+
+               if (customPage == undefined)
+                  return {
+                     message: "ok",
+                  };
+
+               return {
+                  name: customPage?.name,
+                  icon: {
+                     //@ts-ignore
+                     url: customPage?.icon?.url,
+                  },
+               };
+            } catch (err: unknown) {
+               payload.logger.error(`${err}`);
+            }
             return {
                message: "ok",
             };
