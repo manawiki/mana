@@ -183,10 +183,9 @@ function calculateDPS(pokemon, kwargs) {
    if (kwargs.battleMode != "pvp") {
       let FDur = pokemon.fmove.duration / 1000;
       let CDur = pokemon.cmove.duration / 1000;
-      let CDWS = pokemon.cmove.dws / 1000;
 
       if (CE >= 100) {
-         CE = CE + 0.5 * FE + 0.5 * y * CDWS;
+         CE = CE + 0.5 * FE;
       }
 
       let FDPS = FDmg / FDur;
