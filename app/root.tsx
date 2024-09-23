@@ -259,9 +259,8 @@ function App() {
             <Meta />
             <Links />
          </head>
-         <ProgressBar />
          <body className="text-light dark:text-dark">
-            {/* <Progress isAnimating={isLoading} key={location.key} /> */}
+            <ProgressBar />
             <div
                data-vaul-drawer-wrapper=""
                className="max-laptop:min-h-screen bg-white dark:bg-bg3Dark"
