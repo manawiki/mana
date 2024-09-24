@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction } from "@remix-run/node";
 import { Form, Link, useNavigation } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
 import urlSlug from "url-slug";
 import { z } from "zod";
@@ -34,7 +33,6 @@ export function NewSiteModal() {
    const [isOpen, setIsOpen] = useState(false);
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);
-   const { t } = useTranslation(handle?.i18n);
 
    const adding = isAdding(transition, "addSite");
    const zo = useZorm("newSite", SiteSchema);
@@ -79,7 +77,7 @@ export function NewSiteModal() {
                            rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
                      ></span>
                      <span className="relative text-sm font-bold text-white">
-                        {t("login.signUp", { ns: "auth" })}
+                        Sign up
                      </span>
                   </Link>
                   <Link
@@ -88,7 +86,7 @@ export function NewSiteModal() {
                            font-bold shadow-sm"
                      to="/login"
                   >
-                     {t("login.action", { ns: "auth" })}
+                     Log in
                   </Link>
                </div>
             </LoggedOut>
@@ -118,7 +116,7 @@ export function NewSiteModal() {
                      disabled={disabled}
                      className="mt-6 h-10 w-full cursor-pointer"
                   >
-                     {adding ? <DotLoader /> : t("new.action")}
+                     {adding ? <DotLoader /> : "Add"}
                   </Button>
                </Form>
             </LoggedIn>

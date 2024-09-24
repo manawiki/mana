@@ -8,7 +8,6 @@ import {
    Transition,
 } from "@headlessui/react";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
 import { InstantSearch } from "react-instantsearch";
 
 import { DotLoader } from "~/components/DotLoader";
@@ -39,7 +38,6 @@ export function SiteHeader({
    const fetcher = useFetcher({ key: "site" });
 
    const adding = isAdding(fetcher, "followSite");
-   const { t } = useTranslation(["site", "auth"]);
 
    return (
       <section
@@ -177,7 +175,7 @@ export function SiteHeader({
                                                p-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                              >
                                                 <div className="flex-grow">
-                                                   {t("follow.actionUnfollow")}
+                                                   Unfollow
                                                 </div>
                                                 <Icon
                                                    size={14}
@@ -220,11 +218,7 @@ export function SiteHeader({
                               className="flex h-9 items-center justify-center rounded-full bg-black shadow dark:shadow-zinc-950
                                  w-[72px] text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden shadow-zinc-400"
                            >
-                              {adding ? (
-                                 <DotLoader />
-                              ) : (
-                                 t("follow.actionFollow")
-                              )}
+                              {adding ? <DotLoader /> : "Follow"}
                            </button>
                         </div>
                      </NotFollowingSite>

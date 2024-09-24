@@ -11,7 +11,6 @@ import {
    useNavigation,
    useSearchParams,
 } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
 import { parseFormSafe } from "zodix";
@@ -28,7 +27,6 @@ import {
 import { Input } from "~/components/Input";
 import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
-import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 import { getSiteSlug } from "../_site+/_utils/getSiteSlug.server";
 
@@ -53,9 +51,7 @@ export async function loader({
 
    const site = sites?.docs[0];
 
-   const t = await i18nextServer.getFixedT(request, "auth");
-   const title = t("register.title");
-   return json({ title, site });
+   return json({ site });
 }
 
 const JoinFormSchema = z.object({
@@ -87,7 +83,6 @@ export default function Signup() {
    const [searchParams] = useSearchParams();
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);
-   const { t } = useTranslation("auth");
    const adding = isAdding(transition, "join");
 
    const formResponse = useActionData<FormResponse>();
@@ -103,13 +98,13 @@ export default function Signup() {
                   border-y p-6 shadow-sm tablet:rounded-xl tablet:border"
          >
             <div className="border-color-sub mb-6 border-b-2 pb-4 text-center text-xl font-bold">
-               {t("register.title")}
+               Create an account
             </div>
             <Form ref={zo.ref} method="post" replace>
                <Fieldset className="pb-8">
                   <FieldGroup>
                      <Field>
-                        <Label>{t("register.username")}</Label>
+                        <Label>Username</Label>
                         <Input
                            type="text"
                            disabled={disabled}
@@ -121,7 +116,7 @@ export default function Signup() {
                         ))}
                      </Field>
                      <Field>
-                        <Label>{t("register.email")}</Label>
+                        <Label>Email address</Label>
                         <Input
                            type="email"
                            disabled={disabled}
@@ -132,7 +127,7 @@ export default function Signup() {
                         ))}
                      </Field>
                      <Field>
-                        <Label>{t("register.password")}</Label>
+                        <Label>Password</Label>
                         <Input
                            type="password"
                            disabled={disabled}
@@ -152,7 +147,7 @@ export default function Signup() {
                   className="w-full h-10 mb-6 cursor-pointer"
                   disabled={disabled}
                >
-                  {adding ? <DotLoader /> : t("register.action")}
+                  {adding ? <DotLoader /> : "Create Account"}
                </Button>
                <div className="flex items-center justify-center">
                   <div className="text-1 text-center text-sm">
@@ -163,7 +158,7 @@ export default function Signup() {
                            search: searchParams.toString(),
                         }}
                      >
-                        {t("register.alreadyHaveAnAccount")}
+                        Already have an account?
                      </Link>
                   </div>
                </div>

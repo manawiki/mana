@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import { Link, useFetcher, useLocation } from "@remix-run/react";
 import clsx from "clsx";
-import { useTranslation } from "react-i18next";
 
 import { Avatar, AvatarButton } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
@@ -17,7 +16,6 @@ import { MobileTray } from "./MobileTray";
 export function MobileHeader() {
    const { user, following } = useRootLoaderData();
 
-   const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });
    const adding = isAdding(fetcher, "followSite");
    const location = useLocation();
@@ -85,7 +83,7 @@ export function MobileHeader() {
                                        className="mx-auto h-5 w-5 animate-spin"
                                     />
                                  ) : (
-                                    t("follow.actionFollow")
+                                    "Follow"
                                  )}
                               </button>
                            </div>
@@ -138,7 +136,7 @@ export function MobileHeader() {
                                     rotate-45 transform rounded-lg bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
                      ></span>
                      <span className="relative text-xs font-bold uppercase text-white">
-                        {t("login.signUp", { ns: "auth" })}
+                        Sign up
                      </span>
                   </Link>
                   <Link
@@ -147,7 +145,7 @@ export function MobileHeader() {
                                  text-xs font-bold uppercase"
                      to={`/login?redirectTo=${location.pathname}`}
                   >
-                     {t("login.action", { ns: "auth" })}
+                     Log in
                   </Link>
                </div>
             </LoggedOut>

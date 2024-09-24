@@ -1,6 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
 
@@ -29,7 +28,6 @@ export const handle = {
 };
 
 export default function CheckEmail() {
-   const { t } = useTranslation(handle?.i18n);
    return (
       <div
          className="border-color bg-2 shadow-1 text-1 relative 
@@ -41,7 +39,7 @@ export default function CheckEmail() {
          >
             <Icon name="mail" className="mx-auto" size={24} />
          </div>
-         {t("register.checkEmail")}
+         Check your email to verify your account
       </div>
    );
 }
