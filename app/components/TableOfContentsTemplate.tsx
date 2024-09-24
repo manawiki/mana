@@ -11,7 +11,6 @@ export function TableOfContentsTemplate({
       | Collection["sections"]
       | { id: string; slug: string; name: string }[];
 }) {
-   console.log(sections);
    return (
       <>
          {sections && sections?.length > 1 && (

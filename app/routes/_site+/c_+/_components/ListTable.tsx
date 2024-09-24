@@ -1,17 +1,20 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import {
-   type AccessorKeyColumnDefBase,
-   type VisibilityState,
-   type AccessorKeyColumnDef,
-   type ColumnFiltersState,
-   type SortingState,
-   type PaginationState,
    useReactTable,
    getCoreRowModel,
    getSortedRowModel,
    getFilteredRowModel,
    getPaginationRowModel,
+} from "@tanstack/react-table";
+import type {
+   FilterFn,
+   AccessorKeyColumnDefBase,
+   VisibilityState,
+   AccessorKeyColumnDef,
+   ColumnFiltersState,
+   SortingState,
+   PaginationState,
 } from "@tanstack/react-table";
 
 import type { Collection } from "~/db/payload-types";
@@ -19,10 +22,10 @@ import type { Collection } from "~/db/payload-types";
 import { fuzzyFilter } from "./fuzzyFilter";
 import { GridView } from "./GridView";
 import type { TableFilters } from "./List";
-import type { FilterFn } from "@tanstack/react-table";
-import { ListFilters } from "./ListFilters";
+import { ListTop } from "./ListTop";
 import { ListPager } from "./ListPager";
 import { ListView } from "./ListView";
+import { TableFilterContext } from "./ListTableContainer";
 
 export function ListTable({
    data,
@@ -36,6 +39,7 @@ export function ListTable({
    searchPlaceholder,
    gridCellClassNames,
    gridContainerClassNames,
+   pager = true,
    pageSize = 60,
    globalFilterFn,
 }: {
@@ -51,12 +55,15 @@ export function ListTable({
    gridCellClassNames?: string;
    gridContainerClassNames?: string;
    pageSize?: number;
+   pager?: boolean;
    globalFilterFn?: FilterFn<any>;
 }) {
-   // Table state definitions
+   const FilterContext = useContext(TableFilterContext);
+
    const [tableData] = useState(() => [...data?.listData?.docs]);
 
    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
    const [globalFilter, setGlobalFilter] = useState("");
    const [viewMode, setViewMode] = useState(
       defaultViewType ?? collection?.defaultViewType ?? "list",
@@ -80,36 +87,41 @@ export function ListTable({
       columns: updatedColumns,
       filterFns: {},
       state: {
-         columnFilters,
+         columnFilters: FilterContext?.globalColumnFilters ?? columnFilters,
          sorting,
          pagination,
-         globalFilter,
+         globalFilter: FilterContext?.globalSearchFilter ?? globalFilter,
          columnVisibility,
       },
-      onColumnFiltersChange: setColumnFilters,
+      onColumnFiltersChange:
+         FilterContext?.setGlobalColumnFilters ?? setColumnFilters,
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
       onSortingChange: setSorting,
       getFilteredRowModel: getFilteredRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
       onPaginationChange: setPagination,
-      onGlobalFilterChange: setGlobalFilter,
+      onGlobalFilterChange:
+         FilterContext?.setGlobalSearchFilter ?? setGlobalFilter,
       onColumnVisibilityChange: setColumnVisibility,
       globalFilterFn: globalFilterFn ?? fuzzyFilter,
    });
 
    return (
       <>
-         <ListFilters
-            searchPlaceholder={searchPlaceholder}
-            collection={collection}
-            filters={filters}
-            columnFilters={columnFilters}
-            setColumnFilters={setColumnFilters}
-            setGlobalFilter={setGlobalFilter}
-            viewType={viewMode}
-            setViewMode={setViewMode}
-         />
+         {FilterContext?.globalColumnFilters &&
+         typeof FilterContext?.setGlobalColumnFilters == "function" ? null : (
+            <ListTop
+               searchPlaceholder={searchPlaceholder}
+               collection={collection}
+               columnFilters={columnFilters}
+               setColumnFilters={setColumnFilters}
+               setGlobalFilter={setGlobalFilter}
+               viewType={viewMode}
+               filters={filters}
+               setViewMode={setViewMode}
+            />
+         )}
          {viewMode === "list" ? (
             <ListView table={table} />
          ) : (
@@ -119,7 +131,7 @@ export function ListTable({
                gridContainerClassNames={gridContainerClassNames}
             />
          )}
-         <ListPager table={table} />
+         {pager && <ListPager table={table} />}
       </>
    );
 }
