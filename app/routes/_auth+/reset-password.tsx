@@ -1,11 +1,6 @@
-import type {
-   ActionFunction,
-   LoaderFunctionArgs,
-   MetaFunction,
-} from "@remix-run/node";
-import { redirect, json } from "@remix-run/node";
+import type { ActionFunction, MetaFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, useNavigation, useSearchParams } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
 import { redirectWithError, redirectWithSuccess } from "remix-toast";
 import { z } from "zod";
@@ -16,29 +11,16 @@ import { ErrorMessage, Field, Fieldset, Label } from "~/components/Fieldset";
 import { Input } from "~/components/Input";
 import { isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
-import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 const PasswordResetSchema = z.object({
    password: z.string().min(8, "Password must be at least 8 characters long"),
    token: z.string(),
 });
 
-export async function loader({
-   context: { user },
-   request,
-}: LoaderFunctionArgs) {
-   if (user) {
-      return redirect("/");
-   }
-   const t = await i18nextServer.getFixedT(request, "auth");
-   const title = t("pwReset.title");
-   return json({ title });
-}
-
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction = () => {
    return [
       {
-         title: `${data?.title}`,
+         title: `Reset Password`,
       },
    ];
 };
@@ -50,7 +32,6 @@ export const handle = {
 export default function ResetPassword() {
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);
-   const { t } = useTranslation("auth");
    const adding = isAdding(transition, "password-reset");
    const [searchParams] = useSearchParams();
    const token = searchParams.get("token") ?? undefined;
@@ -62,12 +43,12 @@ export default function ResetPassword() {
                 p-6 shadow-sm tablet:rounded-xl tablet:border"
       >
          <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
-            {t("pwReset.title")}
+            Reset Password
          </div>
          <Form ref={zoPW.ref} method="post" className="space-y-6" replace>
             <Fieldset>
                <Field>
-                  <Label>{t("register.password")}</Label>
+                  <Label>Password</Label>
                   <Input
                      type="password"
                      disabled={disabled}

@@ -1,11 +1,9 @@
 import { Link, useLocation } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
 
 import { LoggedOut } from "./LoggedOut";
 
 export const LoggedOutMobile = () => {
    const location = useLocation();
-   const { t } = useTranslation(["site", "auth"]);
 
    return (
       <LoggedOut>
@@ -21,7 +19,7 @@ export const LoggedOutMobile = () => {
         rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
                ></span>
                <span className="relative text-sm font-bold text-white">
-                  {t("login.signUp", { ns: "auth" })}
+                  Sign up
                </span>
             </Link>
             <Link
@@ -30,7 +28,7 @@ export const LoggedOutMobile = () => {
        font-bold dark:border-zinc-600"
                to={`/login?redirectTo=${location.pathname}`}
             >
-               {t("login.action", { ns: "auth" })}
+               Log in
             </Link>
          </div>
       </LoggedOut>

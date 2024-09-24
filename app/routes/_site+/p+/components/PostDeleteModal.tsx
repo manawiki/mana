@@ -1,5 +1,4 @@
 import { useFetcher } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
 
 import {
    Alert,
@@ -22,7 +21,6 @@ export const PostDeleteModal = ({
 }) => {
    const fetcher = useFetcher();
    const deleting = isAdding(fetcher, "deletePost");
-   const { t } = useTranslation("post");
    const disabled = isProcessing(fetcher.state);
 
    return (
@@ -58,7 +56,7 @@ export const PostDeleteModal = ({
                      className="mx-auto animate-spin"
                   />
                ) : (
-                  t("actions.delete")
+                  "Delete"
                )}
             </Button>
          </AlertActions>

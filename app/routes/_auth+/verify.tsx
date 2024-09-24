@@ -1,6 +1,5 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useTranslation } from "react-i18next";
 import { redirectWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -47,7 +46,6 @@ export const handle = {
 };
 
 export default function CheckEmail() {
-   const { t } = useTranslation(handle?.i18n);
    return (
       <>
          <div
@@ -60,7 +58,7 @@ export default function CheckEmail() {
             >
                <Icon name="check" className="mx-auto" size={24} />
             </div>
-            {t("register.verified")}
+            Your account has been verified
          </div>
       </>
    );

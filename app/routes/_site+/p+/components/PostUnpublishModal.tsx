@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 
 import { useFetcher } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
 
 import {
    Alert,
@@ -24,7 +23,6 @@ export const PostUnpublishModal = ({
 }) => {
    const fetcher = useFetcher();
    const unpublishing = isAdding(fetcher, "unpublish");
-   const { t } = useTranslation("post");
 
    const disabled = isProcessing(fetcher.state);
 
@@ -66,7 +64,7 @@ export const PostUnpublishModal = ({
                      className="mx-auto animate-spin"
                   />
                ) : (
-                  t("actions.unpublish")
+                  "Unpublish"
                )}
             </Button>
          </AlertActions>
