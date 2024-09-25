@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from "react";
 
 import { offset, FloatingDelayGroup } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
+// import { Float } from "@headlessui-float/react";
 import { nanoid } from "nanoid";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
@@ -138,23 +138,24 @@ export function BlockInfoBoxItem({
                className="absolute group-hover:opacity-100 opacity-0 top-2 -right-2.5"
             >
                {({ open }) => (
-                  <Float
-                     as={Fragment}
-                     enter="transition ease-out duration-100"
-                     enterFrom="transform opacity-0 scale-95"
-                     enterTo="transform opacity-100 scale-100"
-                     leave="transition ease-in duration-75"
-                     leaveFrom="transform opacity-100 scale-100"
-                     leaveTo="transform opacity-0 scale-95"
-                     placement="bottom-end"
-                     middleware={[
-                        offset({
-                           mainAxis: 4,
-                           crossAxis: -6,
-                        }),
-                     ]}
-                     portal
-                  >
+                  // <Float
+                  //    as={Fragment}
+                  //    enter="transition ease-out duration-100"
+                  //    enterFrom="transform opacity-0 scale-95"
+                  //    enterTo="transform opacity-100 scale-100"
+                  //    leave="transition ease-in duration-75"
+                  //    leaveFrom="transform opacity-100 scale-100"
+                  //    leaveTo="transform opacity-0 scale-95"
+                  //    placement="bottom-end"
+                  //    middleware={[
+                  //       offset({
+                  //          mainAxis: 4,
+                  //          crossAxis: -6,
+                  //       }),
+                  //    ]}
+                  //    portal
+                  // >
+                  <>
                      <Menu.Button
                         className="border-color-sub bg-2-sub group/menu -mr-1.5 flex h-8 w-4 items-center 
                  justify-center rounded-lg rounded-l-none border border-l-0 transition duration-300"
@@ -210,7 +211,8 @@ export function BlockInfoBoxItem({
                            </Menu.Item>
                         </FloatingDelayGroup>
                      </Menu.Items>
-                  </Float>
+                  </>
+                  // </Float>
                )}
             </Menu>
          )}

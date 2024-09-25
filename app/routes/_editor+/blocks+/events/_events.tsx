@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from "react";
 
 import { FloatingDelayGroup, offset } from "@floating-ui/react";
 import { Disclosure, Menu, Popover } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
+// import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
 import { nanoid } from "nanoid";
 import { Transforms, Node, Editor } from "slate";
@@ -233,7 +233,7 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                         <Popover>
                            {({ open }) => (
                               <>
-                                 <Float
+                                 {/* <Float
                                     as={Fragment}
                                     enter="transition ease-out duration-200"
                                     enterFrom="opacity-0 translate-y-1"
@@ -244,87 +244,78 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                                     placement="bottom-end"
                                     offset={6}
                                     portal
+                                 > */}
+                                 <Popover.Button
+                                    className="shadow-1 border-color-sub bg-3-sub rounded-full border p-2.5 shadow-sm focus:outline-none"
+                                    aria-label="Insert block below"
                                  >
-                                    <Popover.Button
-                                       className="shadow-1 border-color-sub bg-3-sub rounded-full border p-2.5 shadow-sm focus:outline-none"
-                                       aria-label="Insert block below"
-                                    >
-                                       {open ? (
-                                          <Icon
-                                             name="x"
-                                             className="text-1"
-                                             size={14}
-                                          />
-                                       ) : (
-                                          <Icon name="calendar" size={14} />
-                                       )}
-                                    </Popover.Button>
-                                    <Popover.Panel className="border-color-sub bg-2 shadow-1 min-h-[200px] transform rounded-lg border shadow">
-                                       <section className="border-color flex items-center justify-between border-b">
-                                          <div className="flex w-full items-center justify-between gap-2 p-3">
-                                             <span className="text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
-                                                Start Time
-                                             </span>
-                                             <TimePicker
-                                                onChange={(e) => {
-                                                   setStartTime(e);
-                                                   updateEditorValue(
-                                                      e,
-                                                      "startTime",
-                                                   );
-                                                }}
-                                                value={startTime}
-                                                minutesInterval={1}
-                                             />
-                                          </div>
-                                          <div className="w-10">
-                                             <Icon
-                                                name="move-right"
-                                                size={16}
-                                             />
-                                          </div>
-                                          <div className="flex w-full items-center justify-between gap-2 p-3">
-                                             <span className="text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
-                                                End Time
-                                             </span>
-                                             <TimePicker
-                                                onChange={(e) => {
-                                                   setEndTime(e);
-                                                   updateEditorValue(
-                                                      e,
-                                                      "endTime",
-                                                   );
-                                                }}
-                                                value={endTime}
-                                                minutesInterval={1}
-                                             />
-                                          </div>
-                                       </section>
-                                       <section className="divide-color flex items-stretch divide-x">
-                                          <DatePicker
-                                             minDate={today}
-                                             value={startDate}
+                                    {open ? (
+                                       <Icon
+                                          name="x"
+                                          className="text-1"
+                                          size={14}
+                                       />
+                                    ) : (
+                                       <Icon name="calendar" size={14} />
+                                    )}
+                                 </Popover.Button>
+                                 <Popover.Panel className="border-color-sub bg-2 shadow-1 min-h-[200px] transform rounded-lg border shadow">
+                                    <section className="border-color flex items-center justify-between border-b">
+                                       <div className="flex w-full items-center justify-between gap-2 p-3">
+                                          <span className="text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
+                                             Start Time
+                                          </span>
+                                          <TimePicker
                                              onChange={(e) => {
-                                                setStartDate(e);
+                                                setStartTime(e);
                                                 updateEditorValue(
                                                    e,
-                                                   "startDate",
+                                                   "startTime",
                                                 );
                                              }}
-                                             weekStartsFrom="Monday"
+                                             value={startTime}
+                                             minutesInterval={1}
                                           />
-                                          <DatePicker
-                                             value={endDate}
+                                       </div>
+                                       <div className="w-10">
+                                          <Icon name="move-right" size={16} />
+                                       </div>
+                                       <div className="flex w-full items-center justify-between gap-2 p-3">
+                                          <span className="text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
+                                             End Time
+                                          </span>
+                                          <TimePicker
                                              onChange={(e) => {
-                                                setEndDate(e);
-                                                updateEditorValue(e, "endDate");
+                                                setEndTime(e);
+                                                updateEditorValue(e, "endTime");
                                              }}
-                                             minDate={startDate}
-                                             weekStartsFrom="Monday"
+                                             value={endTime}
+                                             minutesInterval={1}
                                           />
-                                       </section>
-                                    </Popover.Panel>
-                                 </Float>
+                                       </div>
+                                    </section>
+                                    <section className="divide-color flex items-stretch divide-x">
+                                       <DatePicker
+                                          minDate={today}
+                                          value={startDate}
+                                          onChange={(e) => {
+                                             setStartDate(e);
+                                             updateEditorValue(e, "startDate");
+                                          }}
+                                          weekStartsFrom="Monday"
+                                       />
+                                       <DatePicker
+                                          value={endDate}
+                                          onChange={(e) => {
+                                             setEndDate(e);
+                                             updateEditorValue(e, "endDate");
+                                          }}
+                                          minDate={startDate}
+                                          weekStartsFrom="Monday"
+                                       />
+                                    </section>
+                                 </Popover.Panel>
+                                 {/* </Float> */}
                               </>
                            )}
                         </Popover>

@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 
 import { Popover, Transition } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
+// import { Float } from "@headlessui-float/react";
 import { Link, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import clsx from "clsx";
 import { Editable, Slate } from "slate-react";
@@ -270,7 +270,7 @@ function CommentRow({
                      <Popover>
                         {({ open }) => (
                            <>
-                              <Float
+                              {/* <Float
                                  as={Fragment}
                                  enter="transition ease-out duration-200"
                                  enterFrom="opacity-0 translate-y-1"
@@ -280,63 +280,63 @@ function CommentRow({
                                  leaveTo="opacity-0 translate-y-1"
                                  placement="bottom-end"
                                  offset={7}
-                              >
-                                 <Popover.Button className="flex focus:outline-none items-center text-zinc-400 dark:text-zinc-500 justify-center rounded-full w-5 h-5">
-                                    {open ? (
-                                       <Icon
-                                          title="Close"
-                                          name="chevron-up"
-                                          size={14}
-                                       />
-                                    ) : (
-                                       <Icon name="more-vertical" size={14} />
-                                    )}
-                                 </Popover.Button>
-                                 <Popover.Panel
-                                    className="border-color-sub justify-items-center text-1 bg-3-sub shadow-1 
+                              > */}
+                              <Popover.Button className="flex focus:outline-none items-center text-zinc-400 dark:text-zinc-500 justify-center rounded-full w-5 h-5">
+                                 {open ? (
+                                    <Icon
+                                       title="Close"
+                                       name="chevron-up"
+                                       size={14}
+                                    />
+                                 ) : (
+                                    <Icon name="more-vertical" size={14} />
+                                 )}
+                              </Popover.Button>
+                              <Popover.Panel
+                                 className="border-color-sub justify-items-center text-1 bg-3-sub shadow-1 
                                        gap-1 z-30 rounded-lg border p-1 shadow-sm"
-                                 >
-                                    {comment.isDeleted ? (
-                                       <button
-                                          className="hover:dark:bg-zinc-700 hover:bg-zinc-100 rounded p-1.5"
-                                          onClick={() =>
-                                             fetcher.submit(
-                                                {
-                                                   commentId: comment.id,
-                                                   intent: "restoreComment",
-                                                },
-                                                { method: "post" },
-                                             )
-                                          }
-                                       >
-                                          <Icon
-                                             title="Restore"
-                                             name="archive-restore"
-                                             size={12}
-                                          />
-                                       </button>
-                                    ) : (
-                                       <button
-                                          className="hover:dark:bg-zinc-700 hover:bg-zinc-100 rounded p-1.5"
-                                          onClick={() =>
-                                             fetcher.submit(
-                                                {
-                                                   commentId: comment.id,
-                                                   intent: "deleteComment",
-                                                },
-                                                { method: "post" },
-                                             )
-                                          }
-                                       >
-                                          <Icon
-                                             title="Delete"
-                                             name="archive"
-                                             size={12}
-                                          />
-                                       </button>
-                                    )}
-                                 </Popover.Panel>
-                              </Float>
+                              >
+                                 {comment.isDeleted ? (
+                                    <button
+                                       className="hover:dark:bg-zinc-700 hover:bg-zinc-100 rounded p-1.5"
+                                       onClick={() =>
+                                          fetcher.submit(
+                                             {
+                                                commentId: comment.id,
+                                                intent: "restoreComment",
+                                             },
+                                             { method: "post" },
+                                          )
+                                       }
+                                    >
+                                       <Icon
+                                          title="Restore"
+                                          name="archive-restore"
+                                          size={12}
+                                       />
+                                    </button>
+                                 ) : (
+                                    <button
+                                       className="hover:dark:bg-zinc-700 hover:bg-zinc-100 rounded p-1.5"
+                                       onClick={() =>
+                                          fetcher.submit(
+                                             {
+                                                commentId: comment.id,
+                                                intent: "deleteComment",
+                                             },
+                                             { method: "post" },
+                                          )
+                                       }
+                                    >
+                                       <Icon
+                                          title="Delete"
+                                          name="archive"
+                                          size={12}
+                                       />
+                                    </button>
+                                 )}
+                              </Popover.Panel>
+                              {/* </Float> */}
                            </>
                         )}
                      </Popover>

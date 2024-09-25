@@ -19,7 +19,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { FloatingDelayGroup } from "@floating-ui/react";
 import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
+// import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
 import type { Descendant, Editor } from "slate";
 import { Transforms, createEditor } from "slate";
