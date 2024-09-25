@@ -167,5 +167,9 @@
       "@types/react": "npm:types-react@rc",
       "@types/react-dom": "npm:types-react-dom@rc"
    },
+   "resolutions": {
+      "react": "19.0.0-rc-f9ebd85a-20240925",
+      "react-dom": "19.0.0-rc-f9ebd85a-20240925"
+   },
    "packageManager": "yarn@1.22.22"
 }

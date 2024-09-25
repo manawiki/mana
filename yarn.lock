@@ -11163,20 +11163,12 @@ react-diff-viewer-continued@^3.3.1:
     memoize-one "^6.0.0"
     prop-types "^15.8.1"
 
-react-dom@19.0.0-rc-f9ebd85a-20240925:
+react-dom@19.0.0-rc-f9ebd85a-20240925, react-dom@^18.0.0:
   version "19.0.0-rc-f9ebd85a-20240925"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.0.0-rc-f9ebd85a-20240925.tgz#24d44fec7b5a3627e2b099819001d1b14e101ee0"
   integrity sha512-UZOxsIANgXkpAdQOfM/qDeMm/+PYYM3YdM8hmpkGigR9qSm7rLaReKSMR+IUsivd4t5SC5NLIBhl6dhc9ATSaQ==
   dependencies:
     scheduler "0.25.0-rc-f9ebd85a-20240925"
-
-react-dom@^18.0.0:
-  version "18.3.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.1.tgz#c2265d79511b57d479b3dd3fdfa51536494c5cb4"
-  integrity sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==
-  dependencies:
-    loose-envify "^1.1.0"
-    scheduler "^0.23.2"
 
 react-fast-compare@^3.0.1, react-fast-compare@^3.1.1:
   version "3.2.2"
@@ -11415,17 +11407,10 @@ react-zorm@^0.9.0:
   resolved "https://registry.yarnpkg.com/react-zorm/-/react-zorm-0.9.0.tgz#bb696ed0917bcbec3d1857309dbad5c4577a018c"
   integrity sha512-esuEiNUuj+JfI4Lz5o36KgT2JNN/NTNeO/70FghbRSBjCxRKeEtjO4KXP7SOMzbOa6rhOFNiP+goPXOUTLG/pw==
 
-react@19.0.0-rc-f9ebd85a-20240925:
+react@19.0.0-rc-f9ebd85a-20240925, react@^18.0.0:
   version "19.0.0-rc-f9ebd85a-20240925"
   resolved "https://registry.yarnpkg.com/react/-/react-19.0.0-rc-f9ebd85a-20240925.tgz#dbe35134043af5c4a0ed3d913e8879d3b1e832d6"
   integrity sha512-YRbWSW32HAvIovsE20PwB4/9/peFDxBlFvQ655nbY5oF9HdAgTj3uH/3mDtfI4UpwsD6Jc904JzlILY1tu8Cbw==
-
-react@^18.0.0:
-  version "18.3.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"
-  integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
-  dependencies:
-    loose-envify "^1.1.0"
 
 read-cache@^1.0.0:
   version "1.0.0"
@@ -11904,13 +11889,6 @@ scheduler@0.25.0-rc-f9ebd85a-20240925:
   version "0.25.0-rc-f9ebd85a-20240925"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0-rc-f9ebd85a-20240925.tgz#b94dedb2b9a0773c63a1201ebd0d139ad1392963"
   integrity sha512-d1WcHlilB64a37qcafwYE3vCEywShAQkE2g96dtWJI6AAViuZUh527UgAoI15hoEN08GRZ1oYVpfVRrKm3s9lg==
-
-scheduler@^0.23.2:
-  version "0.23.2"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.2.tgz#414ba64a3b282892e944cf2108ecc078d115cdc3"
-  integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==
-  dependencies:
-    loose-envify "^1.1.0"
 
 schema-utils@^3.1.1:
   version "3.3.0"
