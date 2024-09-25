@@ -93,10 +93,10 @@
       "prism-react-renderer": "^2.1.0",
       "qs": "^6.13.0",
       "re-resizable": "^6.9.11",
-      "react": "^18.3.1",
+      "react": "19.0.0-rc-f9ebd85a-20240925",
       "react-chartjs-2": "^5.2.0",
       "react-code-block": "^1.0.0",
-      "react-dom": "^18.3.1",
+      "react-dom": "19.0.0-rc-f9ebd85a-20240925",
       "react-i18next": "^14.1.0",
       "react-image-crop": "^11.0.5",
       "react-instantsearch": "^7.12.1",
@@ -140,8 +140,8 @@
       "@types/node": "^20.2.3",
       "@types/nodemailer": "^6.4.9",
       "@types/pluralize": "^0.0.30",
-      "@types/react": "^18.0.25",
-      "@types/react-dom": "^18.0.8",
+      "@types/react": "npm:types-react@rc",
+      "@types/react-dom": "npm:types-react-dom@rc",
       "@types/source-map-support": "^0.5.6",
       "autoprefixer": "^10.4.19",
       "chokidar": "^3.5.3",
@@ -161,6 +161,12 @@
    },
    "engines": {
       "node": ">=22"
+   },
+   "overrides": {
+      "react": "$react",
+      "react-dom": "$react-dom",
+      "@types/react": "npm:types-react@rc",
+      "@types/react-dom": "npm:types-react-dom@rc"
    },
    "packageManager": "yarn@1.22.22"
 }
