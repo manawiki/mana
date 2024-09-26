@@ -7,6 +7,7 @@ import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import * as gtag from "~/utils/gtags.client";
+import { useIsBot } from "~/utils/isBotProvider";
 
 import { ColumnOne } from "./_components/Column-1";
 import { ColumnTwo } from "./_components/Column-2";
@@ -16,7 +17,6 @@ import { RampInit } from "./_components/RampInit";
 import { AdUnit } from "./_components/RampUnit";
 import { SiteHeader } from "./_components/SiteHeader";
 import { fetchSite } from "./_utils/fetchSite.server";
-import { useIsBot } from "~/utils/isBotProvider";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 

@@ -199,6 +199,59 @@ export function BlockUpdates({ element }: Props) {
                   </section>
                ))}
             </div>
+            {/* <div className="flex items-center gap-2 justify-between pt-2">
+               <div className="flex items-center gap-1 text-sm">
+                  <span className="text-1">Page</span>
+                  <div className="flex items-center gap-1">
+                     <span className="font-semibold">
+                        {table.getState().pagination.pageIndex + 1}
+                     </span>
+                     <span className="text-1">of</span>
+                     <span className="font-semibold">
+                        {table.getPageCount().toLocaleString()}
+                     </span>
+                  </div>
+                  <span className="mx-1 size-1 bg-zinc-300 dark:bg-zinc-600 rounded-full" />
+                  <div className="flex items-center gap-1">
+                     <span>{table.getRowCount().toLocaleString()}</span>
+                     <span className="text-1">results</span>
+                  </div>
+               </div>
+               <div className="flex items-center gap-1">
+                  <Button
+                     outline
+                     className="!size-7 !p-0"
+                     onClick={() => table.firstPage()}
+                     disabled={!table.getCanPreviousPage()}
+                  >
+                     <Icon name="chevrons-left" size={16} />
+                  </Button>
+                  <Button
+                     className="!size-7 !p-0"
+                     outline
+                     onClick={() => table.previousPage()}
+                     disabled={!table.getCanPreviousPage()}
+                  >
+                     <Icon name="chevron-left" size={16} />
+                  </Button>
+                  <Button
+                     className="!size-7 !p-0"
+                     outline
+                     onClick={() => table.nextPage()}
+                     disabled={!table.getCanNextPage()}
+                  >
+                     <Icon name="chevron-right" size={16} />
+                  </Button>
+                  <Button
+                     className="!size-7 !p-0"
+                     outline
+                     onClick={() => table.lastPage()}
+                     disabled={!table.getCanNextPage()}
+                  >
+                     <Icon name="chevrons-right" size={16} />
+                  </Button>
+               </div>
+            </div> */}
          </>
       </section>
    );
@@ -298,7 +351,10 @@ export const action = async ({
          const entryData = existingData.entry;
 
          //Prepare new array that doesn't include deleted entry
-         const updatedData = entryData?.filter((item) => item.id !== entryId);
+         //@ts-ignore
+         const updatedData = entryData?.filter(
+            (item: any) => item.id !== entryId,
+         );
 
          //If last entry, we delete the entire update instead
          if (updatedData?.length == 0) {
@@ -314,7 +370,6 @@ export const action = async ({
             collection: "updates",
             id: updateId,
             data: {
-               //@ts-expect-error
                entry: updatedData ?? {},
             },
             overrideAccess: false,
@@ -337,6 +392,7 @@ export const action = async ({
          const entryData = updateData.entry;
 
          //Update nested entry content for particular date
+         //@ts-ignore
          const updatedData = entryData?.map((x) =>
             x.id === entryId ? { ...x, content: JSON.parse(content) } : x,
          );
@@ -345,7 +401,6 @@ export const action = async ({
             collection: "updates",
             id: rowId,
             data: {
-               //@ts-expect-error
                entry: updatedData ?? {},
             },
             overrideAccess: false,
