@@ -60,7 +60,7 @@ export function TableOfContentsTemplate({
                               </Link>
                            </div>
                            {section?.subSections &&
-                           section?.subSections?.length > 0 ? (
+                           section?.subSections?.length > 1 ? (
                               <div
                                  className={clsx(
                                     section?.subSections &&
