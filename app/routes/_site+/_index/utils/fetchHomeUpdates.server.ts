@@ -1,66 +1,71 @@
 import type { Payload } from "payload";
-import type { Select } from "payload-query";
-import { select } from "payload-query";
-import qs from "qs";
 
 import type { Update } from "payload/generated-types";
 import type { RemixRequestContext } from "remix.env";
-import { fetchWithCache } from "~/utils/cache.server";
+import { isSiteAdmin } from "~/db/access/isSiteAdmin";
+import { isSiteOwner } from "~/db/access/isSiteOwner";
+import { gql } from "~/utils/cache.server";
+import { gqlFetch } from "~/utils/fetchers.server";
 
 export async function fetchHomeUpdates({
    payload,
    siteSlug,
    user,
    request,
+   updatesPage = 1,
 }: {
    payload: Payload;
    siteSlug: string | undefined;
    user?: RemixRequestContext["user"];
    request: Request;
+   updatesPage?: number;
 }): Promise<Update[]> {
-   if (user) {
-      const { docs } = await payload.find({
-         collection: "updates",
-         where: {
-            "site.slug": {
-               equals: siteSlug,
-            },
+   const sites = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteSlug,
          },
-         sort: "-createdAt",
-         depth: 0,
-         user,
-      });
-
-      const select2: Select<Update> = { entry: true, createdAt: true };
-
-      const selectUpdateResults = select(select2);
-
-      //@ts-expect-error
-      return docs.map((doc) => selectUpdateResults(doc));
-   }
-
-   const updatesQuery = qs.stringify(
-      {
-         where: {
-            "site.slug": {
-               equals: siteSlug,
-            },
-         },
-         select: {
-            entry: true,
-            createdAt: true,
-         },
-         sort: "-createdAt",
       },
-      { addQueryPrefix: true },
-   );
+      user,
+      overrideAccess: false,
+      depth: 0,
+   });
 
-   const updatesUrl = `${request.url}api/updates${updatesQuery}`;
+   const site = sites?.docs[0];
 
-   const { docs: updateResults } = await fetchWithCache(updatesUrl, {
-      headers: {
-         cookie: request.headers.get("cookie") ?? "",
+   const isOwner = isSiteOwner(user?.id, site?.owner as any);
+   const isAdmin = isSiteAdmin(user?.id, site?.admins as any[]);
+
+   //@ts-ignore
+   const { updates } = await gqlFetch({
+      isCustomDB: false,
+      isCached: isOwner || isAdmin ? false : true,
+      query: UPDATES_QUERY,
+      request,
+      variables: {
+         updatesPage,
+         siteId: site?.id,
       },
    });
-   return updateResults;
+
+   return updates.docs;
 }
+
+const UPDATES_QUERY = gql`
+   query ($updatesPage: Int, $siteId: JSON!) {
+      updates: Updates(
+         where: { site: { equals: $siteId } }
+         limit: 12000
+         sort: "-createdAt"
+         page: $updatesPage
+      ) {
+         docs {
+            createdAt
+            entry {
+               content
+            }
+         }
+      }
+   }
+`;
