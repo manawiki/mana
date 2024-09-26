@@ -5,6 +5,8 @@ export const movesBeforeChangeHook: CollectionBeforeChangeHook = async ({
    data,
 }) => {
    try {
+      if (data.category == "dynamax") return data;
+
       const pvePower = data?.pve?.power;
       const duration = data?.pve?.duration;
 

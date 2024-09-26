@@ -203,6 +203,10 @@ const filters = [
             label: "Charge",
             value: "charge",
          },
+         {
+            label: "Dynamax",
+            value: "dynamax",
+         },
       ],
    },
    {

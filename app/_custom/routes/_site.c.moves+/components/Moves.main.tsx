@@ -33,10 +33,12 @@ export function MovesMain({ data: move }: { data: Move }) {
                </div>
             </div>
          ) : undefined}
-         <div className={InfoBlock_Row}>
-            <div className={InfoBlock_Label}>Type</div>
-            <div className={InfoBlock_Content}>{move.type?.name}</div>
-         </div>
+         {move.type ? (
+            <div className={InfoBlock_Row}>
+               <div className={InfoBlock_Label}>Type</div>
+               <div className={InfoBlock_Content}>{move.type?.name}</div>
+            </div>
+         ) : undefined}
          {moveEffect ? (
             <div className={InfoBlock_Row}>
                <div className={InfoBlock_Label}>Effect</div>
