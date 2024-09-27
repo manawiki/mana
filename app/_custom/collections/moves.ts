@@ -69,6 +69,10 @@ export const Moves: CollectionConfig = {
                label: "Charge",
                value: "charge",
             },
+            {
+               label: "Dynamax",
+               value: "dynamax",
+            },
          ],
       },
       {

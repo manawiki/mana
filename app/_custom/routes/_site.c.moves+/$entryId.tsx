@@ -45,6 +45,7 @@ export async function loader({
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
 
+   //@ts-ignore
    const move = entry.data.move as Move;
 
    return <Entry customComponents={SECTIONS} customData={move} />;

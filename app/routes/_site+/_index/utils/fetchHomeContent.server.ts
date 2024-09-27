@@ -5,8 +5,11 @@ import invariant from "tiny-invariant";
 
 import type { HomeContent } from "payload/generated-types";
 import type { RemixRequestContext } from "remix.env";
+import { isSiteAdmin } from "~/db/access/isSiteAdmin";
+import { isSiteOwner } from "~/db/access/isSiteOwner";
 import { isSiteOwnerOrAdmin } from "~/db/access/isSiteOwnerOrAdmin";
-import { fetchWithCache } from "~/utils/cache.server";
+import { fetchWithCache, gql } from "~/utils/cache.server";
+import { gqlFetch } from "~/utils/fetchers.server";
 
 export async function fetchHomeContent({
    payload,
@@ -21,8 +24,24 @@ export async function fetchHomeContent({
    request: Request;
    page: number | undefined;
 }) {
+   const sites = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteSlug,
+         },
+      },
+      user,
+      overrideAccess: false,
+      depth: 0,
+   });
+
+   const site = sites?.docs[0];
+
+   const isOwner = isSiteOwner(user?.id, site?.owner as any);
+   const isAdmin = isSiteAdmin(user?.id, site?.admins as any[]);
    //Use local API and bypass cache for logged in users
-   if (user) {
+   if (isOwner || isAdmin) {
       const { docs } = await payload.find({
          collection: "homeContents",
          where: {
@@ -100,31 +119,34 @@ export async function fetchHomeContent({
       return { home, homeContentId: homeData.id, isChanged: false };
    }
 
-   //For anon users, use cached endpoint call.
-   const homeContentQuery = qs.stringify(
-      {
-         where: {
-            "site.slug": {
-               equals: siteSlug,
-            },
-         },
-         select: {
-            content: true,
-         },
-         depth: 1,
-      },
-      { addQueryPrefix: true },
-   );
-
-   const homeContentUrl = `${request.url}api/homeContents${homeContentQuery}`;
-
-   const { docs } = await fetchWithCache(homeContentUrl, {
-      headers: {
-         cookie: request.headers.get("cookie") ?? "",
+   //@ts-ignore
+   const { homeContents } = await gqlFetch({
+      isCustomDB: false,
+      isCached: isOwner || isAdmin ? false : true,
+      query: HOME_CONTENT_QUERY,
+      request,
+      variables: {
+         siteId: site?.id,
+         updatesPage: page,
       },
    });
 
-   const home = docs[0]?.content as HomeContent["content"];
+   const home = homeContents.docs[0]?.content as HomeContent["content"];
 
    return { home, isChanged: false };
 }
+
+const HOME_CONTENT_QUERY = gql`
+   query ($updatesPage: Int, $siteId: JSON!) {
+      homeContents: HomeContents(
+         where: { site: { equals: $siteId } }
+         limit: 1
+         sort: "-createdAt"
+         page: $updatesPage
+      ) {
+         docs {
+            content
+         }
+      }
+   }
+`;
