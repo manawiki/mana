@@ -1,1 +1,3 @@
-export const CustomCollections = [];
+import { Cards } from "./cards";
+
+export const CustomCollections = [Cards];
