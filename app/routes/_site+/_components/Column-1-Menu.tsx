@@ -50,7 +50,7 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                                           )}
                                           alt="Site Logo"
                                           options="aspect_ratio=1:1&height=120&width=120"
-                                          className="size-9 transition duration-300 active:translate-y-0.5"
+                                          className="size-11 transition duration-300 active:translate-y-0.5"
                                        />
                                     </TooltipTrigger>
                                     <TooltipContent>
@@ -74,7 +74,7 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                <Link
                   className="border-2 border-zinc-400/60 dark:border-zinc-600 transition duration-300 shadow-zinc-300 dark:shadow-zinc-900
                      active:translate-y-0.5 dark:hover:border-zinc-500 rounded-2xl flex items-center mb-3 from-white to-zinc-100
-                     justify-center laptop:size-[42px] dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow hover:border-zinc-400 mx-auto"
+                     justify-center size-11 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow hover:border-zinc-400 mx-auto"
                   to={
                      process.env.NODE_ENV === "development"
                         ? "/"
