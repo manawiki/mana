@@ -1,19 +1,15 @@
+import { Abilities } from "./abilities";
+import { Attacks } from "./attacks";
+import { Cards } from "./cards";
 import { Illustrators } from "./illustrators";
-import { PokemonAbilities } from "./pokemon-abilities";
-import { PokemonAttacks } from "./pokemon-attacks";
-import { PokemonCards } from "./pokemon-cards";
-import { PokemonTypes } from "./pokemon-types";
 import { Rarities } from "./rarities";
-import { TrainerCardTypes } from "./trainer-card-types";
-import { TrainerCards } from "./trainer-cards";
+import { Types } from "./types";
 
 export const CustomCollections = [
-   Illustrators,
-   PokemonAbilities,
-   PokemonAttacks,
-   PokemonCards,
-   PokemonTypes,
-   Rarities,
-   TrainerCards,
-   TrainerCardTypes
+    Abilities,
+    Attacks,
+    Cards,
+    Illustrators,
+    Rarities,
+    Types
 ]

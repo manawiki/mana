@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
 
-export const TrainerCards: CollectionConfig = {
-   slug: "trainer-cards",
-   labels: { singular: "trainer-card", plural: "trainer-cards" },
+export const Attacks: CollectionConfig = {
+   slug: "attacks",
+   labels: { singular: "attack", plural: "attacks" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -21,10 +21,6 @@ export const TrainerCards: CollectionConfig = {
          type: "text",
       },
       {
-         name: "slug",
-         type: "text",
-      },
-      {
          name: "name",
          type: "text",
       },
@@ -33,20 +29,27 @@ export const TrainerCards: CollectionConfig = {
          type: "text",
       },
       {
-         name: "rarity",
-         type: "relationship",
-         relationTo: "rarities",
+         name: "is_damaging",
+         type: "checkbox",
       },
       {
-         name: "type",
-         type: "relationship",
-         relationTo: "trainer-card-types",
+         name: "damage",
+         type: "number",
       },
       {
-         name: "illustrators",
-         type: "relationship",
-         relationTo: "illustrators",
-         hasMany: true,
+         name: "cost",
+         type: "array",
+         fields: [
+            {
+               name: "type",
+               type: "relationship",
+               relationTo: "types",
+            },
+            {
+               name: "amount",
+               type: "number",
+            },
+         ],
       },
       {
          name: "checksum",

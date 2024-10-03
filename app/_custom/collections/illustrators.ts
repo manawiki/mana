@@ -27,7 +27,7 @@ export const Illustrators: CollectionConfig = {
       {
          name: "cards",
          type: "relationship",
-         relationTo: ["pokemon-cards", "trainer-cards"],
+         relationTo: "cards",
          hasMany: true,
       },
       {

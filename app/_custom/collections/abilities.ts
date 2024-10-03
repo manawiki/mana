@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
 
-export const PokemonAbilities: CollectionConfig = {
-   slug: "pokemon-abilities",
-   labels: { singular: "pokemon-ability", plural: "pokemon-abilities" },
+export const Abilities: CollectionConfig = {
+   slug: "abilities",
+   labels: { singular: "ability", plural: "abilities" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
