@@ -61,16 +61,15 @@ export function SiteHeader({
                      >
                         <div
                            className="dark:bg-dark450 border dark:border-zinc-600 shadow-1 bg-zinc-50 overflow-hidden flex-none
-                              text-1 flex h-10 w-10 items-center justify-center dark:group-hover:border-zinc-600 border-zinc-300/60
-                              rounded-full shadow-sm transition duration-300 active:translate-y-0.5 group-hover:border-zinc-300"
+                              text-1 flex size-11 items-center justify-center dark:group-hover:border-zinc-600 border-zinc-300/60
+                              rounded-xl shadow-sm transition duration-300 active:translate-y-0.5 group-hover:border-zinc-300"
                         >
                            {site?.icon?.url ? (
                               <Image
-                                 width={40}
-                                 height={40}
-                                 //@ts-ignore
+                                 width={88}
+                                 height={88}
                                  url={site.icon?.url}
-                                 options="aspect_ratio=1:1&height=120&width=120"
+                                 options="aspect_ratio=1:1"
                                  alt="Site Logo"
                               />
                            ) : (
