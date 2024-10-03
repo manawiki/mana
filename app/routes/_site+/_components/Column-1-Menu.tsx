@@ -37,21 +37,11 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                                  : `https://${partnerSite.slug}.mana.wiki`;
                               return (
                                  <Tooltip
-                                    key={partnerSite.id}
+                                    key={partnerSite.slug}
                                     placement="right"
                                  >
                                     <TooltipTrigger asChild>
-                                       <AvatarButton
-                                          href={path}
-                                          square
-                                          src={partnerSite?.icon?.url}
-                                          initials={partnerSite?.name?.charAt(
-                                             0,
-                                          )}
-                                          alt="Site Logo"
-                                          options="aspect_ratio=1:1&height=120&width=120"
-                                          className="size-11 transition duration-300 active:translate-y-0.5"
-                                       />
+                                       <SidebarItem site={partnerSite} />
                                     </TooltipTrigger>
                                     <TooltipContent>
                                        {partnerSite.name}
@@ -60,10 +50,6 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                               );
                            })}
                         </div>
-                        <div className="px-4 w-full h-full">
-                           <div className="border-t h-1 w-full border-zinc-300 dark:border-dark400 border-dashed block" />
-                        </div>
-                        <NewSiteModal />
                      </>
                   )}
                </div>
