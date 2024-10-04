@@ -29,7 +29,7 @@ export const Attacks: CollectionConfig = {
          type: "text",
       },
       {
-         name: "is_damaging",
+         name: "isDamaging",
          type: "checkbox",
       },
       {

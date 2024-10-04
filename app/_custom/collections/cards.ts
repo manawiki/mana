@@ -30,7 +30,7 @@ export const Cards: CollectionConfig = {
       },
       {
          name: "desc",
-         type: "text"
+         type: "text",
       },
       {
          name: "rarity",
@@ -38,64 +38,80 @@ export const Cards: CollectionConfig = {
          relationTo: "rarities",
       },
       {
-        name: "type",
-        type: "select",
-        options: [
-          { label: "Pokémon", value: "pokemon" },
-          { label: "Trainer", value: "trainer" },
-        ],
+         name: "type",
+         type: "select",
+         options: [
+            { label: "Pokémon", value: "pokemon" },
+            { label: "Trainer", value: "trainer" },
+         ],
       },
       // Trainer Cards
       {
-        name: "trainer_type",
-        type: "select",
-        options: [
-          { label: "Supporter", value: "TRAINER_TYPE_SUPPORT" },
-          { label: "Item", value: "TRAINER_TYPE_GOODS" },
-          { label: "Fossil", value: "TRAINER_TYPE_FOSSIL" },
-        ],
-        admin: { condition: (_, siblingData) => siblingData.type === "trainer" },
+         name: "trainerType",
+         type: "select",
+         options: [
+            { label: "Supporter", value: "TRAINER_TYPE_SUPPORT" },
+            { label: "Item", value: "TRAINER_TYPE_GOODS" },
+            { label: "Fossil", value: "TRAINER_TYPE_FOSSIL" },
+         ],
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "trainer",
+         },
       },
       // Pokemon Cards
       {
          name: "hp",
          type: "number",
-         admin: { condition: (_, siblingData) => siblingData.type === "pokemon" },
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "pokemon",
+         },
       },
       {
-         name: "pokemon_type",
+         name: "pokemonType",
          relationTo: "types",
          type: "relationship",
-         admin: { condition: (_, siblingData) => siblingData.type === "pokemon" },
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "pokemon",
+         },
       },
       {
-         name: "weakness_type",
+         name: "weaknessType",
          relationTo: "types",
          type: "relationship",
-         admin: { condition: (_, siblingData) => siblingData.type === "pokemon" },
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "pokemon",
+         },
       },
       {
-         name: "retreat_cost",
+         name: "retreatCost",
          type: "number",
-         admin: { condition: (_, siblingData) => siblingData.type === "pokemon" },
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "pokemon",
+         },
       },
       {
-         name: "is_ex",
+         name: "isEX",
          type: "checkbox",
-         admin: { condition: (_, siblingData) => siblingData.type === "pokemon" },
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "pokemon",
+         },
       },
       {
          name: "attacks",
          type: "relationship",
          relationTo: "attacks",
          hasMany: true,
-         admin: { condition: (_, siblingData) => siblingData.type === "pokemon" },
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "pokemon",
+         },
       },
       {
          name: "abilities",
          type: "relationship",
          relationTo: "abilities",
-         admin: { condition: (_, siblingData) => siblingData.type === "pokemon" },
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "pokemon",
+         },
       },
       {
          name: "illustrators",
