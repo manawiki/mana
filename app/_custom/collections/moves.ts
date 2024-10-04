@@ -36,7 +36,6 @@ export const Moves: CollectionConfig = {
          name: "isDamaging",
          type: "checkbox",
       },
-
       {
          name: "checksum",
          type: "text",

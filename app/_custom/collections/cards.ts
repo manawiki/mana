@@ -108,6 +108,9 @@ export const Cards: CollectionConfig = {
       {
          name: "movesInfo",
          type: "array",
+         admin: {
+            condition: (_, siblingData) => siblingData.type === "pokemon",
+         },
          fields: [
             {
                name: "move",
