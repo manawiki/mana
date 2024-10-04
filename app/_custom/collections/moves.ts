@@ -21,11 +21,11 @@ export const Moves: CollectionConfig = {
          type: "text",
       },
       {
-         name: "name",
+         name: "slug",
          type: "text",
       },
       {
-         name: "slug",
+         name: "name",
          type: "text",
       },
       {
@@ -35,6 +35,12 @@ export const Moves: CollectionConfig = {
       {
          name: "isDamaging",
          type: "checkbox",
+      },
+      {
+         name: "cards",
+         type: "relationship",
+         relationTo: "cards",
+         hasMany: true,
       },
       {
          name: "checksum",
