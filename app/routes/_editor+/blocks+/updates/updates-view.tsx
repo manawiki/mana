@@ -26,9 +26,9 @@ export function BlockUpdatesView({ element }: Props) {
                   className="divide-color-sub border-color-sub bg-3 shadow-1 divide-y 
                overflow-hidden rounded-lg border shadow-sm"
                >
-                  {updateResults?.map((row) => (
+                  {updateResults?.map((row, i) => (
                      <section
-                        key={row.id}
+                        key={i}
                         className="flex odd:bg-zinc-50 dark:odd:bg-dark350 mobile:max-[450px]:min-h-12 items-center "
                      >
                         <time
@@ -48,8 +48,8 @@ export function BlockUpdatesView({ element }: Props) {
                         <span className="divide-color flex-grow divide-y text-sm min-w-0">
                            {row.entry?.length === 0 ? null : (
                               <>
-                                 {row.entry?.map((item) => (
-                                    <div key={item.id} className="p-3 pl-0">
+                                 {row.entry?.map((item, j) => (
+                                    <div key={j} className="p-3 pl-0">
                                        <EditorView
                                           autoWidth
                                           data={item.content as Descendant[]}
