@@ -97,13 +97,43 @@ export const Cards: CollectionConfig = {
          },
       },
       {
-         name: "attacks",
+         name: "moves",
          type: "relationship",
-         relationTo: "attacks",
+         relationTo: "moves",
          hasMany: true,
          admin: {
             condition: (_, siblingData) => siblingData.type === "pokemon",
          },
+      },
+      {
+         name: "movesInfo",
+         type: "array",
+         fields: [
+            {
+               name: "move",
+               type: "relationship",
+               relationTo: "moves",
+            },
+            {
+               name: "damage",
+               type: "number",
+            },
+            {
+               name: "cost",
+               type: "array",
+               fields: [
+                  {
+                     name: "type",
+                     type: "relationship",
+                     relationTo: "types",
+                  },
+                  {
+                     name: "amount",
+                     type: "number",
+                  },
+               ],
+            },
+         ],
       },
       {
          name: "abilities",
