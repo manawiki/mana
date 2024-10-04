@@ -29,6 +29,11 @@ export const Cards: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "desc",
          type: "text",
       },
@@ -55,7 +60,7 @@ export const Cards: CollectionConfig = {
             { label: "Fossil", value: "fossil" },
          ],
          admin: {
-            condition: (_, siblingData) => siblingData.type === "trainer",
+            condition: (_, siblingData) => siblingData.cardType === "trainer",
          },
       },
       // Pokemon Cards
@@ -63,7 +68,7 @@ export const Cards: CollectionConfig = {
          name: "hp",
          type: "number",
          admin: {
-            condition: (_, siblingData) => siblingData.type === "pokemon",
+            condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
       },
       {
@@ -71,7 +76,7 @@ export const Cards: CollectionConfig = {
          relationTo: "types",
          type: "relationship",
          admin: {
-            condition: (_, siblingData) => siblingData.type === "pokemon",
+            condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
       },
       {
@@ -79,21 +84,21 @@ export const Cards: CollectionConfig = {
          relationTo: "types",
          type: "relationship",
          admin: {
-            condition: (_, siblingData) => siblingData.type === "pokemon",
+            condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
       },
       {
          name: "retreatCost",
          type: "number",
          admin: {
-            condition: (_, siblingData) => siblingData.type === "pokemon",
+            condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
       },
       {
          name: "isEX",
          type: "checkbox",
          admin: {
-            condition: (_, siblingData) => siblingData.type === "pokemon",
+            condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
       },
       {
@@ -102,14 +107,14 @@ export const Cards: CollectionConfig = {
          relationTo: "moves",
          hasMany: true,
          admin: {
-            condition: (_, siblingData) => siblingData.type === "pokemon",
+            condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
       },
       {
          name: "movesInfo",
          type: "array",
          admin: {
-            condition: (_, siblingData) => siblingData.type === "pokemon",
+            condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
          fields: [
             {
@@ -143,7 +148,7 @@ export const Cards: CollectionConfig = {
          type: "relationship",
          relationTo: "abilities",
          admin: {
-            condition: (_, siblingData) => siblingData.type === "pokemon",
+            condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
       },
       {

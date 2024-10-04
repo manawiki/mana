@@ -29,6 +29,11 @@ export const Moves: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "desc",
          type: "text",
       },
