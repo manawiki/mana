@@ -38,7 +38,7 @@ export const Cards: CollectionConfig = {
          relationTo: "rarities",
       },
       {
-         name: "type",
+         name: "cardType",
          type: "select",
          options: [
             { label: "Pokémon", value: "pokemon" },
@@ -50,9 +50,9 @@ export const Cards: CollectionConfig = {
          name: "trainerType",
          type: "select",
          options: [
-            { label: "Supporter", value: "TRAINER_TYPE_SUPPORT" },
-            { label: "Item", value: "TRAINER_TYPE_GOODS" },
-            { label: "Fossil", value: "TRAINER_TYPE_FOSSIL" },
+            { label: "Supporter", value: "supporter" },
+            { label: "Item", value: "item" },
+            { label: "Fossil", value: "fossil" },
          ],
          admin: {
             condition: (_, siblingData) => siblingData.type === "trainer",
