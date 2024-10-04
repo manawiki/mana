@@ -35,12 +35,12 @@ export const Cards: CollectionConfig = {
       },
       {
          name: "image",
-         type: "relationship",
+         type: "upload",
          relationTo: "images",
       },
       {
          name: "thumbnail",
-         type: "relationship",
+         type: "upload",
          relationTo: "images",
       },
       {
