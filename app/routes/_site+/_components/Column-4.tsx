@@ -366,6 +366,7 @@ export function ColumnFour() {
                                     ? site?.logoLightImage?.url
                                     : site?.logoDarkImage?.url
                               }
+                              loading="lazy"
                            />
                         </Link>
                      )}
