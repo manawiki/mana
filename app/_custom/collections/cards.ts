@@ -85,6 +85,7 @@ export const Cards: CollectionConfig = {
          name: "pokemonType",
          relationTo: "types",
          type: "relationship",
+         hasMany: false,
          admin: {
             condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
@@ -93,6 +94,7 @@ export const Cards: CollectionConfig = {
          name: "weaknessType",
          relationTo: "types",
          type: "relationship",
+         hasMany: false,
          admin: {
             condition: (_, siblingData) => siblingData.cardType === "pokemon",
          },
