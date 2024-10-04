@@ -32,9 +32,6 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                         </div>
                         <div className="relative flex flex-col items-center gap-3.5 py-0.5">
                            {site?.partnerSites?.map((partnerSite) => {
-                              const path = partnerSite.domain
-                                 ? `https://${partnerSite.domain}`
-                                 : `https://${partnerSite.slug}.mana.wiki`;
                               return (
                                  <Tooltip
                                     key={partnerSite.slug}
