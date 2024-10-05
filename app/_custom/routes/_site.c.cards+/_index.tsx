@@ -32,12 +32,12 @@ export async function loader({
 }
 
 export default function ListPage() {
-   //@ts-ignore
    return (
       <List
-         columnViewability={{ pokemonType: false }}
+         columnViewability={{ pokemonType: false, isEX: false }}
          gridView={gridView}
          columns={columns}
+         //@ts-ignore
          filters={filters}
       />
    );
@@ -81,7 +81,7 @@ const columns = [
                      url={info.row.original.image?.url}
                   />
                ) : (
-                  <div className="w-9 h-12 dark:bg-dark500 rounded-md" />
+                  <div className="w-9 h-12 dark:bg-dark500 bg-zinc-300 rounded" />
                )}
                <span
                   className="space-y-1.5 font-semibold group-hover:underline 
@@ -142,11 +142,23 @@ const columns = [
          );
       },
    }),
+
    columnHelper.accessor("retreatCost", {
-      header: "Retreat Cost",
+      header: "Retreat",
       filterFn: (row, columnId, filterValue) => {
          return filterValue.includes(row?.original?.retreatCost);
       },
+      cell: (info) => {
+         return info.getValue() ? info.getValue() : "-";
+      },
+   }),
+   columnHelper.accessor("isEX", {
+      filterFn: (row, columnId, filterValue) => {
+         return filterValue.includes(row?.original?.isEX?.toString());
+      },
+   }),
+   columnHelper.accessor("hp", {
+      header: "HP",
       cell: (info) => {
          return info.getValue() ? info.getValue() : "-";
       },
@@ -161,7 +173,9 @@ const CARDS = gql`
             id
             name
             slug
+            isEX
             retreatCost
+            hp
             pokemonType {
                name
                icon {
@@ -188,54 +202,60 @@ const CARDS = gql`
    }
 `;
 
-const filters = [
+const filters: {
+   id: string;
+   label: string;
+   cols?: 1 | 2 | 3 | 4 | 5;
+   options: { label?: string; value: string; icon?: string }[];
+}[] = [
+   {
+      id: "isEX",
+      label: "Is EX Pokémon?",
+      options: [
+         {
+            label: "EX Pokémon",
+            value: "true",
+         },
+      ],
+   },
    {
       id: "rarity",
       label: "Rarity",
-      cols: 1,
+      cols: 3,
       options: [
          {
-            label: "Crown Rare",
             value: "UR",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/UR-rarity.png",
          },
          {
-            label: "Immersive Rare",
             value: "IM",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/IM-rarity.png",
          },
          {
-            label: "Special Alternate Rare",
             value: "SAR",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/SRSAR-Rarity.png",
          },
          {
-            label: "Special Rare",
             value: "SR",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/SRSAR-Rarity.png",
          },
          {
-            label: "Alternate Rare",
             value: "AR",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/AR-rarity.png",
          },
          {
-            label: "Double Rare",
             value: "RR",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/RR-rarity.png",
          },
          {
-            label: "Rare",
             value: "R",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/R-rarity.png",
          },
          {
-            label: "Uncommon",
             value: "U",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/U-rarity.png",
          },
          {
-            label: "Common",
             value: "C",
             icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/c-rarity.png",
          },
@@ -243,7 +263,7 @@ const filters = [
    },
    {
       id: "pokemonType",
-      label: "Type",
+      label: "Pokémon Type",
       cols: 3,
       options: [
          {
@@ -301,7 +321,7 @@ const filters = [
    },
    {
       id: "weaknessType",
-      label: "Weakness",
+      label: "Pokémon Weakness",
       cols: 3,
       options: [
          {
