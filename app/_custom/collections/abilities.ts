@@ -29,6 +29,12 @@ export const Abilities: CollectionConfig = {
          type: "text",
       },
       {
+         name: "cards",
+         type: "relationship",
+         relationTo: "cards",
+         hasMany: true,
+      },
+      {
          name: "checksum",
          type: "text",
          required: true,
