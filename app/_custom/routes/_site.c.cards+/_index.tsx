@@ -32,8 +32,15 @@ export async function loader({
 }
 
 export default function ListPage() {
-   //@ts-ignore
-   return <List gridView={gridView} columns={columns} filters={filters} />;
+   return (
+      <List
+         columnViewability={{ pokemonType: false, isEX: false }}
+         gridView={gridView}
+         columns={columns}
+         //@ts-ignore
+         filters={filters}
+      />
+   );
 }
 
 const columnHelper = createColumnHelper<Card>();
@@ -67,20 +74,93 @@ const columns = [
                to={`/c/cards/${info.row.original.slug}`}
                className="flex items-center gap-3 group py-0.5"
             >
-               {/* <Image
-                  width={36}
-                  height={36}
-                  url={info.row.original.icon?.url}
-                  options="aspect_ratio=1:1&height=80&width=80"
-               /> */}
+               {info.row.original.image?.url ? (
+                  <Image
+                     className="w-9 object-contain"
+                     width={100}
+                     url={info.row.original.image?.url}
+                  />
+               ) : (
+                  <div className="w-9 h-12 dark:bg-dark500 bg-zinc-300 rounded" />
+               )}
                <span
-                  className="space-y-0.5 font-semibold group-hover:underline 
+                  className="space-y-1.5 font-semibold group-hover:underline 
                 decoration-zinc-400 underline-offset-2 truncate"
                >
                   <div className="truncate">{info.getValue()}</div>
+                  {info.row.original.pokemonType?.icon?.url ? (
+                     <Image
+                        className="size-4 object-contain"
+                        width={40}
+                        height={40}
+                        url={info.row.original.pokemonType?.icon?.url}
+                     />
+                  ) : undefined}
                </span>
             </Link>
          );
+      },
+   }),
+   columnHelper.accessor("pokemonType", {
+      header: "Type",
+      filterFn: (row, columnId, filterValue) => {
+         return filterValue.includes(row?.original?.pokemonType?.name);
+      },
+   }),
+   columnHelper.accessor("rarity", {
+      header: "Rarity",
+      filterFn: (row, columnId, filterValue) => {
+         return filterValue.includes(row?.original?.rarity?.name);
+      },
+      cell: (info) => {
+         return info.getValue()?.icon?.url ? (
+            <Image
+               className="h-6"
+               height={40}
+               url={info.getValue()?.icon?.url}
+            />
+         ) : (
+            "-"
+         );
+      },
+   }),
+   columnHelper.accessor("weaknessType", {
+      header: "Weakness",
+      filterFn: (row, columnId, filterValue) => {
+         return filterValue.includes(row?.original?.weaknessType?.name);
+      },
+      cell: (info) => {
+         return info.getValue()?.icon?.url ? (
+            <Image
+               className="size-4"
+               width={40}
+               height={40}
+               url={info.getValue()?.icon?.url}
+            />
+         ) : (
+            "-"
+         );
+      },
+   }),
+
+   columnHelper.accessor("retreatCost", {
+      header: "Retreat",
+      filterFn: (row, columnId, filterValue) => {
+         return filterValue.includes(row?.original?.retreatCost);
+      },
+      cell: (info) => {
+         return info.getValue() ? info.getValue() : "-";
+      },
+   }),
+   columnHelper.accessor("isEX", {
+      filterFn: (row, columnId, filterValue) => {
+         return filterValue.includes(row?.original?.isEX?.toString());
+      },
+   }),
+   columnHelper.accessor("hp", {
+      header: "HP",
+      cell: (info) => {
+         return info.getValue() ? info.getValue() : "-";
       },
    }),
 ];
@@ -93,106 +173,206 @@ const CARDS = gql`
             id
             name
             slug
+            isEX
+            retreatCost
+            hp
+            pokemonType {
+               name
+               icon {
+                  url
+               }
+            }
+            weaknessType {
+               name
+               icon {
+                  url
+               }
+            }
+            rarity {
+               name
+               icon {
+                  url
+               }
+            }
+            image {
+               url
+            }
          }
       }
    }
 `;
 
-const filters = [
+const filters: {
+   id: string;
+   label: string;
+   cols?: 1 | 2 | 3 | 4 | 5;
+   options: { label?: string; value: string; icon?: string }[];
+}[] = [
    {
-      id: "type",
-      label: "Type",
+      id: "isEX",
+      label: "Is EX Pokémon?",
+      options: [
+         {
+            label: "EX Pokémon",
+            value: "true",
+         },
+      ],
+   },
+   {
+      id: "rarity",
+      label: "Rarity",
       cols: 3,
       options: [
          {
-            label: "Bug",
-            value: "bug",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Bug.svg",
+            value: "UR",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/UR-rarity.png",
          },
          {
-            label: "Dark",
-            value: "dark",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Dark.svg",
+            value: "IM",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/IM-rarity.png",
+         },
+         {
+            value: "SAR",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/SRSAR-Rarity.png",
+         },
+         {
+            value: "SR",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/SRSAR-Rarity.png",
+         },
+         {
+            value: "AR",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/AR-rarity.png",
+         },
+         {
+            value: "RR",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/RR-rarity.png",
+         },
+         {
+            value: "R",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/R-rarity.png",
+         },
+         {
+            value: "U",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/U-rarity.png",
+         },
+         {
+            value: "C",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/c-rarity.png",
+         },
+      ],
+   },
+   {
+      id: "pokemonType",
+      label: "Pokémon Type",
+      cols: 3,
+      options: [
+         {
+            label: "Colorless",
+            value: "Colorless",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Colorless.png",
+         },
+         {
+            label: "Metal",
+            value: "Metal",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Metal.png",
+         },
+         {
+            label: "Darkness",
+            value: "Darkness",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Darkness.png",
          },
          {
             label: "Dragon",
-            value: "dragon",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Dragon.svg",
-         },
-         {
-            label: "Electric",
-            value: "electric",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Electric.svg",
-         },
-         {
-            label: "Fairy",
-            value: "fairy",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Fairy.svg",
+            value: "Dragon",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Dragon.png",
          },
          {
             label: "Fighting",
-            value: "fighting",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Fighting.svg",
+            value: "Fighting",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Fighting.png",
          },
          {
             label: "Fire",
-            value: "fire",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Fire.svg",
-         },
-         {
-            label: "Flying",
-            value: "flying",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Flying.svg",
-         },
-         {
-            label: "Ghost",
-            value: "ghost",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Ghost.svg",
+            value: "Fire",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Fire.png",
          },
          {
             label: "Grass",
-            value: "grass",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Grass.svg",
+            value: "Grass",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Grass.png",
          },
          {
-            label: "Ground",
-            value: "ground",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Ground.svg",
-         },
-         {
-            label: "Ice",
-            value: "ice",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Ice.svg",
-         },
-         {
-            label: "Normal",
-            value: "normal",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Normal.svg",
-         },
-         {
-            label: "Poison",
-            value: "poison",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Poison.svg",
+            label: "Lightning",
+            value: "Lightning",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Lightning.png",
          },
          {
             label: "Psychic",
-            value: "psychic",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Psychic.svg",
+            value: "Psychic",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Psychic.png",
+         },
+
+         {
+            label: "Water",
+            value: "Water",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Water.png",
+         },
+      ],
+   },
+   {
+      id: "weaknessType",
+      label: "Pokémon Weakness",
+      cols: 3,
+      options: [
+         {
+            label: "Colorless",
+            value: "Colorless",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Colorless.png",
          },
          {
-            label: "Rock",
-            value: "rock",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Rock.svg",
+            label: "Metal",
+            value: "Metal",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Metal.png",
          },
          {
-            label: "Steel",
-            value: "steel",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Steel.svg",
+            label: "Darkness",
+            value: "Darkness",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Darkness.png",
+         },
+         {
+            label: "Dragon",
+            value: "Dragon",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Dragon.png",
+         },
+         {
+            label: "Fighting",
+            value: "Fighting",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Fighting.png",
+         },
+         {
+            label: "Fire",
+            value: "Fire",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Fire.png",
+         },
+         {
+            label: "Grass",
+            value: "Grass",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Grass.png",
+         },
+         {
+            label: "Lightning",
+            value: "Lightning",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Lightning.png",
+         },
+         {
+            label: "Psychic",
+            value: "Psychic",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Psychic.png",
          },
          {
             label: "Water",
-            value: "water",
-            icon: "https://static.mana.wiki/pokemongo/Pokemon_Type_Icon_Water.svg",
+            value: "Water",
+            icon: "https://static.mana.wiki/tcgwiki-pokemonpocket/TypeIcon_Water.png",
          },
       ],
    },

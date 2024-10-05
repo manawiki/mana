@@ -17,6 +17,9 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
 
    const isFollowing = following && following?.length > 0;
 
+   const showNewSiteModal =
+      site?.partnerSites && site?.partnerSites?.length === 0;
+
    const location = useLocation();
 
    return (
@@ -32,9 +35,6 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                         </div>
                         <div className="relative flex flex-col items-center gap-3.5 py-0.5">
                            {site?.partnerSites?.map((partnerSite) => {
-                              const path = partnerSite.domain
-                                 ? `https://${partnerSite.domain}`
-                                 : `https://${partnerSite.slug}.mana.wiki`;
                               return (
                                  <Tooltip
                                     key={partnerSite.slug}
@@ -106,7 +106,7 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                {isFollowing && (
                   <div className="border-t border-zinc-300 dark:border-dark350 border-dashed mx-5 mb-3" />
                )}
-               <NewSiteModal />
+               {showNewSiteModal && <NewSiteModal />}
             </LoggedIn>
             <div className="fixed bottom-0 left-0 w-[70px] bg-1 border-r border-color py-3">
                <LoggedIn>

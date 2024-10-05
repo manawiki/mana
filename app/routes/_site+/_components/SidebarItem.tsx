@@ -30,7 +30,7 @@ export function SidebarItem({
                      src={site?.icon?.url}
                      initials={site?.name?.charAt(0)}
                      alt="Site Logo"
-                     square={isActive}
+                     square={isActive || isLoggedOut}
                      options="aspect_ratio=1:1&height=120&width=120"
                      className="size-11 transition duration-300 block active:translate-y-0.5 shadow-sm shadow-1"
                   />

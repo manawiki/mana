@@ -52,6 +52,9 @@ const QUERY = gql`
          name
          hp
          retreatCost
+         image {
+            url
+         }
       }
    }
 `;

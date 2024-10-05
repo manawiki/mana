@@ -213,16 +213,27 @@ export const action: ActionFunction = async ({
          );
       }
       try {
+         //We follow the site the user is on
+         const { siteSlug } = await getSiteSlug(request, payload, user);
+
+         const site = await payload.find({
+            collection: "sites",
+            where: {
+               slug: {
+                  equals: siteSlug,
+               },
+            },
+         });
+
+         const siteId = site?.docs[0]?.id;
+
          await payload.create({
             collection: "users",
             data: {
-               //@ts-ignore
                username,
                email,
-               //@ts-ignore
                password,
-               //@ts-ignore
-               sites: ["TLPWIBnfCr"],
+               ...(siteId && { sites: [siteId] as any }),
             },
             user,
          });
