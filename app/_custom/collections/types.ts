@@ -25,6 +25,11 @@ export const Types: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "checksum",
          type: "text",
          required: true,

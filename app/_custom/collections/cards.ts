@@ -29,6 +29,10 @@ export const Cards: CollectionConfig = {
          type: "text",
       },
       {
+         name: "desc",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
@@ -37,10 +41,6 @@ export const Cards: CollectionConfig = {
          name: "image",
          type: "upload",
          relationTo: "images",
-      },
-      {
-         name: "desc",
-         type: "text",
       },
       {
          name: "rarity",
