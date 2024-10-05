@@ -3,6 +3,7 @@ import { Cards } from "./cards";
 import { Illustrators } from "./illustrators";
 import { Moves } from "./moves";
 import { Rarities } from "./rarities";
+import { Sets } from "./sets";
 import { Types } from "./types";
 
 export const CustomCollections = [
@@ -11,5 +12,6 @@ export const CustomCollections = [
    Illustrators,
    Moves,
    Rarities,
+   Sets,
    Types,
 ];
