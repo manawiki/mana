@@ -39,11 +39,6 @@ export const Cards: CollectionConfig = {
          relationTo: "images",
       },
       {
-         name: "thumbnail",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
          name: "desc",
          type: "text",
       },
