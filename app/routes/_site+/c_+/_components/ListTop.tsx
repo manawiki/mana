@@ -14,6 +14,7 @@ import { useDebouncedValue } from "~/utils/use-debounce";
 import type { TableFilters } from "./List";
 import { MobileTray } from "../../_components/MobileTray";
 import { TableFilterContext } from "./ListTableContainer";
+import { Image } from "~/components/Image";
 
 export function ListTop({
    collection,
@@ -238,7 +239,7 @@ export function FilterSection({
                                                          option.value,
                                                       ),
                                                 )
-                                                ? "dark:bg-dark500 bg-zinc-200/80 border-zinc-400/60 dark:border-zinc-400/50"
+                                                ? "dark:bg-dark500 bg-zinc-200/80 border-zinc-400/60 dark:border-zinc-400/80"
                                                 : "dark:bg-dark400 dark:hover:bg-dark450 bg-zinc-50 dark:hover:border-zinc-600 hover:bg-zinc-100 hover:border-zinc-300",
                                           )}
                                           key={option.label}
@@ -317,15 +318,24 @@ export function FilterSection({
                                           }}
                                        >
                                           <div className="flex items-center gap-2">
-                                             {option?.icon && (
-                                                <Avatar
-                                                   square
-                                                   className="size-5"
-                                                   options="height=40&width=40"
-                                                   src={option?.icon}
+                                             {option?.icon && !option?.label ? (
+                                                <Image
+                                                   className="h-5"
+                                                   url={option?.icon}
                                                 />
+                                             ) : option?.icon ? (
+                                                <>
+                                                   <Avatar
+                                                      square
+                                                      className="size-5"
+                                                      options="height=40&width=40"
+                                                      src={option?.icon}
+                                                   />
+                                                   {option?.label}
+                                                </>
+                                             ) : (
+                                                option?.label
                                              )}
-                                             <span>{option.label}</span>
                                           </div>
                                        </button>
                                     );
