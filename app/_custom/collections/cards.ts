@@ -65,6 +65,37 @@ export const Cards: CollectionConfig = {
             { label: "Trainer", value: "trainer" },
          ],
       },
+      // Optimized pack data.
+      {
+         name: "packs",
+         type: "array",
+         fields: [
+            {
+               name: "pack",
+               type: "relationship",
+               relationTo: "packs",
+            },
+            {
+               name: "rates",
+               type: "array",
+               fields: [
+                  {
+                     name: "slot",
+                     type: "select",
+                     options: [
+                        { label: "1-3", value: "1-3" },
+                        { label: "4", value: "4" },
+                        { label: "5", value: "5" },
+                     ],
+                  },
+                  {
+                     name: "percent",
+                     type: "number",
+                  },
+               ],
+            },
+         ],
+      },
       // Trainer Cards
       {
          name: "trainerType",

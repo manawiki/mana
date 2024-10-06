@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/users.access";
 
-export const Sets: CollectionConfig = {
-   slug: "sets",
-   labels: { singular: "set", plural: "sets" },
+export const Packs: CollectionConfig = {
+   slug: "packs",
+   labels: { singular: "pack", plural: "packs" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -30,15 +30,9 @@ export const Sets: CollectionConfig = {
          relationTo: "images",
       },
       {
-         name: "logo",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "packs",
+         name: "set",
          type: "relationship",
-         relationTo: "packs",
-         hasMany: true,
+         relationTo: "sets",
       },
       {
          name: "cards",
@@ -50,11 +44,26 @@ export const Sets: CollectionConfig = {
                relationTo: "cards",
             },
             {
-               name: "number",
-               type: "number",
-            },
-         ]
-      },
+               name: "rates",
+               type: "array",
+               fields: [
+                  {
+                     name: "slot",
+                     type: "select",
+                     options: [
+                        { label: "1-3", value: "1-3" },
+                        { label: "4", value: "4" },
+                        { label: "5", value: "5" },
+                     ],
+                  },
+                  {
+                     name: "percent",
+                     type: "number",
+                  }
+               ],
+            }
+         ],
+      }
       {
          name: "checksum",
          type: "text",
