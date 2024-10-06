@@ -63,7 +63,7 @@ export const Packs: CollectionConfig = {
                ],
             }
          ],
-      }
+      },
       {
          name: "checksum",
          type: "text",
