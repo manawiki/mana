@@ -4,7 +4,7 @@ import { isStaff } from "../../db/collections/users/users.access";
 
 export const Packs: CollectionConfig = {
    slug: "packs",
-   labels: { singular: "pack", plural: "packs" },
+   labels: { singular: "Pack", plural: "Packs" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -59,11 +59,11 @@ export const Packs: CollectionConfig = {
                   {
                      name: "percent",
                      type: "number",
-                  }
+                  },
                ],
-            }
+            },
          ],
-      }
+      },
       {
          name: "checksum",
          type: "text",

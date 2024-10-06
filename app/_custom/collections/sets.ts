@@ -4,7 +4,7 @@ import { isStaff } from "../../db/collections/users/users.access";
 
 export const Sets: CollectionConfig = {
    slug: "sets",
-   labels: { singular: "set", plural: "sets" },
+   labels: { singular: "Set", plural: "Sets" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -53,7 +53,7 @@ export const Sets: CollectionConfig = {
                name: "number",
                type: "number",
             },
-         ]
+         ],
       },
       {
          name: "checksum",

@@ -4,7 +4,7 @@ import { isStaff } from "../../db/collections/users/users.access";
 
 export const Illustrators: CollectionConfig = {
    slug: "illustrators",
-   labels: { singular: "illustrator", plural: "illustrators" },
+   labels: { singular: "Illustrator", plural: "Illustrators" },
    admin: {
       group: "Custom",
       useAsTitle: "name",

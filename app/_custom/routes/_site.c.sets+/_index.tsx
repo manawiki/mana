@@ -50,21 +50,13 @@ const gridView = columnHelper.accessor("name", {
    cell: (info) => (
       <Link
          className="block relative"
+         prefetch="intent"
          to={`/c/cards/${info.row.original.slug}`}
       >
          <div
             className="truncate text-xs font-semibold text-center pt-1
                group-hover:underline decoration-zinc-400 underline-offset-2"
          >
-            {info.row.original.image?.url ? (
-               <Image
-                  className="object-contain"
-                  width={400}
-                  url={info.row.original.image?.url}
-               />
-            ) : (
-               <div className="w-9 h-12 dark:bg-dark500 bg-zinc-300 rounded" />
-            )}
             {info.getValue()}
          </div>
       </Link>
@@ -78,6 +70,7 @@ const columns = [
       cell: (info) => {
          return (
             <Link
+               prefetch="intent"
                to={`/c/cards/${info.row.original.slug}`}
                className="flex items-center gap-3 group py-0.5"
             >
@@ -174,7 +167,7 @@ const columns = [
 
 const CARDS = gql`
    query {
-      listData: Cards(limit: 5000) {
+      listData: Sets(limit: 5000) {
          totalDocs
          docs {
             id

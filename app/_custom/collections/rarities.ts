@@ -4,7 +4,7 @@ import { isStaff } from "../../db/collections/users/users.access";
 
 export const Rarities: CollectionConfig = {
    slug: "rarities",
-   labels: { singular: "rarity", plural: "rarities" },
+   labels: { singular: "Rarity", plural: "Rarities" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
