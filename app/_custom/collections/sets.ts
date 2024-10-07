@@ -46,18 +46,9 @@ export const Sets: CollectionConfig = {
       },
       {
          name: "cards",
-         type: "array",
-         fields: [
-            {
-               name: "card",
-               type: "relationship",
-               relationTo: "cards",
-            },
-            {
-               name: "number",
-               type: "number",
-            },
-         ],
+         type: "relationship",
+         relationTo: "cards",
+         hasMany: true,
       },
       {
          name: "checksum",
