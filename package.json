@@ -47,6 +47,7 @@
       "@google-analytics/data": "^4.3.0",
       "@headlessui-float/react": "^0.14.0",
       "@headlessui/react": "^2.1.8",
+      "@mountainpass/react-pokemon-cards": "^1.0.30",
       "@payloadcms/bundler-vite": "0.1.7",
       "@payloadcms/db-mongodb": "1.5.1",
       "@payloadcms/plugin-cloud-storage": "1.0.19",
