@@ -25,6 +25,10 @@ export const Sets: CollectionConfig = {
          type: "text",
       },
       {
+         name: "slug",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",

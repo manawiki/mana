@@ -34,8 +34,13 @@ export async function loader({
 export default function ListPage() {
    return (
       <List
-         columnViewability={{ pokemonType: false, isEX: false }}
+         columnViewability={{
+            pokemonType: false,
+            isEX: false,
+            cardType: false,
+         }}
          gridView={gridView}
+         defaultViewType="grid"
          columns={columns}
          //@ts-ignore
          filters={filters}
@@ -52,20 +57,24 @@ const gridView = columnHelper.accessor("name", {
          className="block relative"
          to={`/c/cards/${info.row.original.slug}`}
       >
-         <div
-            className="truncate text-xs font-semibold text-center pt-1
-               group-hover:underline decoration-zinc-400 underline-offset-2"
-         >
-            {info.row.original.image?.url ? (
+         <Image
+            className="object-contain"
+            width={400}
+            url={
+               info.row.original.image?.url ??
+               "https://static.mana.wiki/tcgwiki-pokemonpocket/Card_Back.png"
+            }
+         />
+         <div className="flex items-center gap-2 justify-between pt-2">
+            <div className="text-sm font-semibold">{info.getValue()}</div>
+            {info.row.original.pokemonType?.icon?.url ? (
                <Image
-                  className="object-contain"
-                  width={400}
-                  url={info.row.original.image?.url}
+                  className="size-4 object-contain"
+                  width={40}
+                  height={40}
+                  url={info.row.original.pokemonType?.icon?.url}
                />
-            ) : (
-               <div className="w-9 h-12 dark:bg-dark500 bg-zinc-300 rounded" />
-            )}
-            {info.getValue()}
+            ) : undefined}
          </div>
       </Link>
    ),
@@ -164,6 +173,11 @@ const columns = [
          return filterValue.includes(row?.original?.isEX?.toString());
       },
    }),
+   columnHelper.accessor("cardType", {
+      filterFn: (row, columnId, filterValue) => {
+         return filterValue.includes(row?.original?.cardType?.toString());
+      },
+   }),
    columnHelper.accessor("hp", {
       header: "HP",
       cell: (info) => {
@@ -174,7 +188,7 @@ const columns = [
 
 const CARDS = gql`
    query {
-      listData: Cards(limit: 5000) {
+      listData: Cards(limit: 5000, sort: "-rarity") {
          totalDocs
          docs {
             id
@@ -183,6 +197,7 @@ const CARDS = gql`
             isEX
             retreatCost
             hp
+            cardType
             pokemonType {
                name
                icon {
@@ -215,6 +230,21 @@ const filters: {
    cols?: 1 | 2 | 3 | 4 | 5;
    options: { label?: string; value: string; icon?: string }[];
 }[] = [
+   {
+      id: "cardType",
+      label: "Card Type",
+      cols: 2,
+      options: [
+         {
+            label: "Pokémon",
+            value: "pokemon",
+         },
+         {
+            label: "Trainer",
+            value: "trainer",
+         },
+      ],
+   },
    {
       id: "isEX",
       label: "Is EX Pokémon?",
