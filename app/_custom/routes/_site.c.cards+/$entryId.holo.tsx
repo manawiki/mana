@@ -24,7 +24,7 @@ export default function Holocard() {
          to=".."
       >
          <ShinyCardRotate
-            rarity={rarity}
+            rarity="rare ultra"
             style={{ width: "367px", height: "512px" }}
          >
             <Image

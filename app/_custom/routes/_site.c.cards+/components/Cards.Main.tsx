@@ -15,7 +15,7 @@ export function CardsMain({ data }: { data: Card }) {
       <div className="tablet:flex pb-4 tablet:gap-4">
          <Link to="holo">
             <ShinyCard
-               rarity={rarity}
+               rarity="rare ultra"
                style={{ width: "367px", height: "512px" }}
             >
                <Image
