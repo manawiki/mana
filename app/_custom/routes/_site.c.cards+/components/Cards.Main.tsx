@@ -3,18 +3,27 @@ import { Link } from "@remix-run/react";
 import { Image } from "~/components/Image";
 
 import type { Card } from "~/db/payload-custom-types";
+import { ShinyCard } from "./ShinyCard";
 
 export function CardsMain({ data }: { data: Card }) {
    const card = data;
 
+   // get card rarity type data from data
+   const rarity = "rare secret";
+
    return (
       <div className="tablet:flex pb-4 tablet:gap-4">
          <Link to="holo">
-            <Image
-               className="rounded-lg overflow-hidden mx-auto max-tablet:mb-4"
-               url={card.image?.url}
-               alt={card.name ?? "Card Image"}
-            />
+            <ShinyCard
+               rarity={rarity}
+               style={{ width: "367px", height: "512px" }}
+            >
+               <Image
+                  className="rounded-lg overflow-hidden mx-auto max-tablet:mb-4"
+                  url={card.image?.url}
+                  alt={card.name ?? "Card Image"}
+               />
+            </ShinyCard>
          </Link>
          <section className="mb-8 flex-grow">
             <div

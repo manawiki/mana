@@ -1,3 +1,4 @@
+import css from "@mountainpass/react-pokemon-cards/dist/css/cards.css";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -16,6 +17,8 @@ import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fe
 import { CardsMain } from "./components/Cards.Main";
 
 export { entryMeta as meta };
+
+export const links = () => [{ rel: "stylesheet", href: css }];
 
 export async function loader({
    context: { payload, user },

@@ -1,9 +1,9 @@
-import ShinyCard from "@mountainpass/react-pokemon-cards";
 import css from "@mountainpass/react-pokemon-cards/dist/css/cards.css";
 import { Link } from "@remix-run/react";
 
 import { Image } from "~/components/Image";
 
+import { ShinyCardRotate } from "./components/ShinyCard";
 import { useEntryLoaderData } from "../_site.c.cards+/$entryId";
 
 export const links = () => [{ rel: "stylesheet", href: css }];
@@ -23,13 +23,16 @@ export default function Holocard() {
          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
          to=".."
       >
-         <ShinyCard rarity={rarity} style={{ width: "600px", height: "800px" }}>
+         <ShinyCardRotate
+            rarity={rarity}
+            style={{ width: "367px", height: "512px" }}
+         >
             <Image
                className="rounded-lg overflow-hidden mx-auto max-tablet:mb-4"
                url={card.image?.url}
                alt={card.name ?? "Card Image"}
             />
-         </ShinyCard>
+         </ShinyCardRotate>
       </Link>
    );
 }
