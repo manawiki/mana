@@ -1,3 +1,9 @@
 {
-   "cSpell.words": ["clsx"]
+   "cSpell.words": ["clsx"],
+   "typescript.preferences.autoImportFileExcludePatterns": [
+      "**/node_modules/react-router-dom/**"
+   ],
+   "javascript.preferences.autoImportFileExcludePatterns": [
+      "**/node_modules/react-router-dom/**"
+   ]
 }
