@@ -56,13 +56,15 @@ const UPDATES_QUERY = gql`
    query ($updatesPage: Int, $siteId: JSON!) {
       updates: Updates(
          where: { site: { equals: $siteId } }
-         limit: 12000
+         limit: 20
          sort: "-createdAt"
          page: $updatesPage
       ) {
          docs {
+            id
             createdAt
             entry {
+               id
                content
             }
          }

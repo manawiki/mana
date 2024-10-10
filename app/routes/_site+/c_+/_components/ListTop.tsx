@@ -239,7 +239,7 @@ export function FilterSection({
                                                          option.value,
                                                       ),
                                                 )
-                                                ? "dark:bg-dark500 bg-zinc-200/80 border-zinc-400/60 dark:border-zinc-400/80"
+                                                ? "dark:bg-dark500 bg-zinc-200/80 border-zinc-400/60 dark:border-zinc-400/50"
                                                 : "dark:bg-dark400 dark:hover:bg-dark450 bg-zinc-50 dark:hover:border-zinc-600 hover:bg-zinc-100 hover:border-zinc-300",
                                           )}
                                           key={option.label}

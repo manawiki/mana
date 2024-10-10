@@ -36,57 +36,30 @@ export function MobileHeader() {
                <div className="flex w-full flex-none items-center justify-between gap-3 laptop:hidden">
                   {/* Following menu modal */}
                   <div className="flex items-center gap-3">
-                     <Link
-                        className="border border-zinc-300/80 dark:border-zinc-500/80 transition duration-300 shadow-zinc-200/70 dark:shadow-zinc-800/80
-                     active:translate-y-0.5 dark:hover:border-zinc-500 rounded-xl flex items-center from-white to-zinc-100
-                     justify-center size-9 dark:from-dark500 dark:to-dark400 bg-gradient-to-br shadow-sm hover:border-zinc-300 mx-auto"
-                        to={
-                           process.env.NODE_ENV === "development"
-                              ? "/"
-                              : user
-                                ? "https://mana.wiki/home"
-                                : "https://mana.wiki"
-                        }
-                     >
-                        <svg
-                           xmlns="http://www.w3.org/2000/svg"
-                           viewBox="0 0 20 20"
-                           fill="currentColor"
-                           className="size-4"
-                        >
-                           <path
-                              fillRule="evenodd"
-                              d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z"
-                              clipRule="evenodd"
-                           />
-                        </svg>
-                     </Link>
                      {!isNotSite && (
                         <NotFollowingSite>
-                           <div className="flex items-center">
-                              <button
-                                 onClick={() => {
-                                    fetcher.submit(
-                                       { intent: "followSite" },
-                                       {
-                                          method: "post",
-                                          action: "/action/follow",
-                                       },
-                                    );
-                                 }}
-                                 className="flex h-8  w-[72px] items-center justify-center rounded-full bg-black dark:shadow-zinc-950
-                                 px-3.5 text-xs font-bold text-white dark:bg-white dark:text-black shadow-zinc-400 shadow"
-                              >
-                                 {adding ? (
-                                    <Icon
-                                       name="loader-2"
-                                       className="mx-auto h-5 w-5 animate-spin"
-                                    />
-                                 ) : (
-                                    "Follow"
-                                 )}
-                              </button>
-                           </div>
+                           <button
+                              onClick={() => {
+                                 fetcher.submit(
+                                    { intent: "followSite" },
+                                    {
+                                       method: "post",
+                                       action: "/action/follow",
+                                    },
+                                 );
+                              }}
+                              className="flex h-[34px]  w-[72px] items-center justify-center rounded-full bg-black dark:shadow-zinc-950
+                                 px-3.5 text-xs font-bold text-white dark:bg-white dark:text-black shadow-zinc-300 shadow"
+                           >
+                              {adding ? (
+                                 <Icon
+                                    name="loader-2"
+                                    className="mx-auto h-5 w-5 animate-spin"
+                                 />
+                              ) : (
+                                 "Follow"
+                              )}
+                           </button>
                         </NotFollowingSite>
                      )}
                      <button
