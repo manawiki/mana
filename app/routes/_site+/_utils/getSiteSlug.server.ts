@@ -37,6 +37,7 @@ export async function getSiteSlug(
                depth: 0,
             }),
          `sites-domain-${hostname}`,
+         24 * 60 * 60 * 1000, // this changes rarely, so we can cache it for a day
       );
 
       if (site?.totalDocs == 1) {

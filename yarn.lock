@@ -1293,15 +1293,15 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.3.1.tgz#d0fce5d07b0620caa282b5131c297bb60f9d87e6"
   integrity sha512-EsBwpc7hBUJWAsNPBmJy4hxWx12v6bshQsldrVmjxJoc3isbxhOrF2IcCpaXxfvq03NwkI7sbsOLXbYuqF/8Ww==
 
-"@epic-web/cachified@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@epic-web/cachified/-/cachified-4.0.0.tgz#e137f8ed818cc865bc27804c25ca08043ff91ab6"
-  integrity sha512-5XPdddRV1NrRev5HjfvM72tBh2jnfzBXdbcirtt0G0hveDHT4pOPrYCfyHNt+QcKSX0yifXimWMirOVXtg8ewQ==
-
 "@epic-web/cachified@^5.1.2":
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/@epic-web/cachified/-/cachified-5.1.2.tgz#60a9ec4a81fe7152e51102101bceced8aac8533a"
   integrity sha512-8Q1J/jF0bOKUN+XPTSUo+z34WJHMBLkuDv+HkPPS9ufs+cHvInWrLOLi3qIljhe03Xq777pwEDBKnMafetnPhA==
+
+"@epic-web/cachified@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@epic-web/cachified/-/cachified-5.2.0.tgz#e91e63c6aaa1a00c707fb61f568364607ed7075d"
+  integrity sha512-E/2LdIhS/wcn3ykV+u5xbTFahKtzReO0k4/cVtE7KBYiLCgR6bPRmlDUuyfWhbZX3zOmK+6OL7qdHkvgCWwSiA==
 
 "@epic-web/client-hints@^1.2.2":
   version "1.2.2"

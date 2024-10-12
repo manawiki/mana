@@ -41,7 +41,7 @@
       "@dnd-kit/modifiers": "^6.0.1",
       "@dnd-kit/sortable": "^7.0.2",
       "@dnd-kit/utilities": "^3.2.1",
-      "@epic-web/cachified": "^4.0.0",
+      "@epic-web/cachified": "^5.2.0",
       "@epic-web/client-hints": "^1.2.2",
       "@floating-ui/react": "^0.26.16",
       "@google-analytics/data": "^4.3.0",
