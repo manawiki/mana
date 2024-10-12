@@ -336,8 +336,8 @@ export function ColumnFour() {
                   </div>
                )}
             </LoggedOut>
-            <div className="max-laptop:py-4 border-t border-color laptop:h-[54px] bg-zinc-50 laptop:bg-white dark:bg-bg2Dark flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
-               <div className="justify-between w-full flex items-center max-laptop:max-w-[728px] mx-auto gap-3">
+            <div className="max-laptop:py-4 border-t border-color laptop:h-[54px] justify-center bg-zinc-50 laptop:bg-white dark:bg-bg2Dark flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
+               <div className="justify-between flex items-center max-laptop:max-w-[728px]  w-full gap-3">
                   {!site.isWhiteLabel && (
                      <Link
                         to="https://mana.wiki"
@@ -353,22 +353,23 @@ export function ColumnFour() {
                      site?.logoDarkImage?.url &&
                      site?.logoLightImage?.url &&
                      site?.logoURL && (
-                        <Link
-                           to={site?.logoURL}
-                           className="flex-grow flex items-center justify-start"
-                        >
-                           <Image
-                              className="object-contain flex-grow text-left laptop:h-6 max-w-[170px] laptop:max-w-[140px]"
-                              width={280}
-                              height={48}
-                              url={
-                                 theme === "light"
-                                    ? site?.logoLightImage?.url
-                                    : site?.logoDarkImage?.url
-                              }
-                              loading="lazy"
-                           />
-                        </Link>
+                        <div className="flex items-center justify-start gap-2">
+                           <Link
+                              to={site?.logoURL}
+                              className="inline-flex items-center justify-start"
+                           >
+                              <Image
+                                 className="object-contain inline-block h-6"
+                                 height={48}
+                                 url={
+                                    theme === "light"
+                                       ? site?.logoLightImage?.url
+                                       : site?.logoDarkImage?.url
+                                 }
+                                 loading="lazy"
+                              />
+                           </Link>
+                        </div>
                      )}
                   <div className="flex items-center gap-4 text-xs text-1">
                      <DarkModeToggle className="!size-3.5" />
