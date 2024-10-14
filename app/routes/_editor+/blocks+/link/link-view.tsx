@@ -2,10 +2,11 @@ import type { ReactNode } from "react";
 
 import { Link } from "@remix-run/react";
 
-import { Image } from "~/components/Image";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import type { LinkElement } from "../../core/types";
+
+import { LinkBlockElement } from "./_link";
 
 type Props = {
    element: LinkElement;
@@ -24,34 +25,18 @@ export function BlockLinkView({ element, children }: Props) {
    if (element.icon) {
       return (
          <Link
-            // prefetch="intent"
             to={pathname}
             className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
           text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
          >
-            <span
-               className="border-color shadow-1 flex h-6 w-6 items-center justify-center
-      self-center overflow-hidden rounded-full border shadow-sm"
-            >
-               <Image
-                  width={30}
-                  height={30}
-                  url={element?.icon?.url}
-                  alt={children ? "" : element?.name}
-                  options="aspect_ratio=1:1&height=40&width=40"
-                  loading="lazy"
-               />
-            </span>
-            {children}
+            <LinkBlockElement element={element} children={children} />
          </Link>
       );
    }
 
-   // Use client-side routing if internal link
    if (isSelfLink) {
       return (
          <Link
-            // prefetch="intent"
             className="text-blue-600 visited:text-purple-600 hover:underline"
             to={pathname}
          >

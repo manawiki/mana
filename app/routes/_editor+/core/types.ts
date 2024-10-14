@@ -218,7 +218,11 @@ export interface LinkElement extends BlockElement {
       url: string | undefined;
    };
    name: string | undefined;
-   view: "icon-inline" | undefined;
+   view: "icon-inline" | "icon-block" | undefined;
+   enableTooltip: boolean | undefined;
+   removeCircleBorder: boolean | undefined;
+   hideLinkText: boolean | undefined;
+   iconWidth: number | undefined;
    children: [{ text: "" }];
 }
 

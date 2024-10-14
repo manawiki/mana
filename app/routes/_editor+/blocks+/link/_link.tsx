@@ -1,7 +1,7 @@
 import { useEffect, type ReactNode } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import { gql, request as gqlRequest } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
@@ -15,7 +15,14 @@ import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { gqlFormat } from "~/utils/to-words";
 
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+
 import type { CustomElement, LinkElement } from "../../core/types";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
+
+import { Listbox, ListboxOption, ListboxLabel } from "~/components/Listbox";
+import { Input } from "~/components/Input";
+import clsx from "clsx";
 
 export async function loader({
    context: { payload, user },
@@ -279,6 +286,8 @@ export function BlockLink({ element, children }: Props) {
 
          const newProperties: Partial<CustomElement> = {
             view: "icon-inline",
+            removeCircleBorder: false,
+            hideLinkText: false,
             ...data,
          };
 
@@ -297,38 +306,13 @@ export function BlockLink({ element, children }: Props) {
 
    if (element.icon) {
       return (
-         <span
+         <div
             className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
           text-blue-600 visited:text-purple-600 dark:text-blue-500"
          >
-            <button
-               className="shadow-1 absolute right-0 top-1 z-20 flex h-4 w-4 items-center justify-center rounded-full
-               bg-red-500 opacity-0 shadow hover:bg-zinc-500 group-hover/link:opacity-100"
-               onClick={() => {
-                  const path = ReactEditor.findPath(editor, element);
-                  return Transforms.removeNodes(editor, { at: path });
-               }}
-            >
-               <Icon name="trash" className="h-3 w-3 text-white" />
-            </button>
-            <span
-               className="border-color-sub shadow-1 flex h-6 w-6 items-center justify-center
-               self-center overflow-hidden bg-2-sub rounded-full border shadow-sm"
-            >
-               {element?.icon?.url ? (
-                  <Image
-                     width={30}
-                     height={30}
-                     url={element.icon.url}
-                     alt={children ? "" : element?.name}
-                     options="aspect_ratio=1:1&height=40&width=40"
-                  />
-               ) : (
-                  <Icon name="component" className="text-1 mx-auto" size={12} />
-               )}
-            </span>
-            {children}
-         </span>
+            <LinkPopover element={element} children={children} />
+            <LinkBlockElement element={element} children={children} />
+         </div>
       );
    }
 
@@ -341,4 +325,365 @@ export function BlockLink({ element, children }: Props) {
          {children}
       </a>
    );
+}
+
+function LinkPopover({ element, children }: Props) {
+   const editor = useSlate();
+   const view = element.view;
+
+   const path = ReactEditor.findPath(editor, element);
+
+   const { pathname } = new URL(element?.url as string);
+
+   console.log(pathname);
+
+   return (
+      <Popover className="absolute -left-1 -top-1 z-20 transition-opacity opacity-0 duration-200 ease-out group-hover/link:opacity-100">
+         {({ open }) => (
+            <>
+               <PopoverButton
+                  className="rounded-full !size-4 !p-0 shadow-lg shadow-1 
+               flex items-center justify-center bg-zinc-800 dark:bg-zinc-200 hover:bg-zinc-200 
+             dark:hover:bg-black  focus:outline-none"
+               >
+                  <Icon
+                     title={open ? "Close" : "Options"}
+                     name={open ? "x" : "more-horizontal"}
+                     className="text-zinc-100 dark:text-zinc-800 hover:text-zinc-800 dark:hover:text-zinc-200"
+                     size={14}
+                  />
+               </PopoverButton>
+               <PopoverPanel
+                  anchor="top"
+                  transition
+                  className="flex items-center origin-top transition duration-200 ease-out rounded-xl dark:border-zinc-600 gap-2
+               data-[closed]:scale-95 data-[closed]:opacity-0 p-2 bg-3-sub border border-zinc-200 z-50 shadow-lg"
+               >
+                  <div className="flex items-center gap-2">
+                     <Listbox
+                        onChange={(value) => {
+                           return Transforms.setNodes<CustomElement>(
+                              editor,
+                              { view: value },
+                              { at: path },
+                           );
+                        }}
+                        defaultValue={element.view}
+                     >
+                        <ListboxOption value="icon-inline">
+                           <ListboxLabel>Inline</ListboxLabel>
+                        </ListboxOption>
+                        <ListboxOption value="icon-block">
+                           <ListboxLabel>Block</ListboxLabel>
+                        </ListboxOption>
+                     </Listbox>
+                     {view == "icon-block" ? (
+                        <div>
+                           <Input
+                              placeholder="Width"
+                              type="number"
+                              className="!w-16"
+                              min={10}
+                              max={728}
+                              value={element.iconWidth}
+                              onChange={(e) => {
+                                 Transforms.setNodes(
+                                    editor,
+                                    {
+                                       iconWidth: parseInt(e.target.value),
+                                    },
+                                    { at: path },
+                                 );
+                              }}
+                              defaultValue={element.iconWidth}
+                           />
+                        </div>
+                     ) : null}
+                  </div>
+                  <Tooltip>
+                     <TooltipTrigger
+                        onClick={() => {
+                           return Transforms.setNodes(
+                              editor,
+                              {
+                                 removeCircleBorder:
+                                    !element.removeCircleBorder,
+                              },
+                              {
+                                 at: path,
+                              },
+                           );
+                        }}
+                        className="size-9 rounded-lg flex items-center justify-center dark:border-zinc-500/50
+                     border border-zinc-200 bg-zinc-100 dark:bg-dark500 relative"
+                     >
+                        <span className="size-4 rounded-full block bg-zinc-300 dark:bg-zinc-500" />
+                        {element.removeCircleBorder ? null : (
+                           <div
+                              className="size-3 absolute flex items-center justify-center 
+                  -top-1 -right-1 rounded-lg bg-green-500"
+                           ></div>
+                        )}
+                     </TooltipTrigger>
+                     <TooltipContent>
+                        {element.removeCircleBorder
+                           ? "Disable Circle"
+                           : "Enable Circle"}
+                     </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger
+                        onClick={() => {
+                           return Transforms.setNodes(
+                              editor,
+                              {
+                                 hideLinkText: !element.hideLinkText,
+                              },
+                              {
+                                 at: path,
+                              },
+                           );
+                        }}
+                        className="size-9 rounded-lg flex items-center justify-center dark:border-zinc-500/50
+                     border border-zinc-200 bg-zinc-100 dark:bg-dark500 relative"
+                     >
+                        <Icon name="type" size={14} />
+                        {!element.hideLinkText ? null : (
+                           <div
+                              className="size-3 absolute flex items-center justify-center 
+                  -top-1 -right-1 rounded-lg bg-green-500"
+                           ></div>
+                        )}
+                     </TooltipTrigger>
+                     <TooltipContent>
+                        {element.hideLinkText ? "Hide Text" : "Show Text"}
+                     </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger
+                        onClick={() => {
+                           return Transforms.setNodes(
+                              editor,
+                              {
+                                 enableTooltip: !element.enableTooltip,
+                              },
+                              {
+                                 at: path,
+                              },
+                           );
+                        }}
+                        className="size-9 rounded-lg flex items-center justify-center dark:border-zinc-500/50
+                     border border-zinc-200 bg-zinc-100 dark:bg-dark500 relative"
+                     >
+                        <Icon name="info" size={14} />
+                        {!element.enableTooltip ? null : (
+                           <div
+                              className="size-3 absolute flex items-center justify-center 
+                              -top-1 -right-1 rounded-lg bg-green-500"
+                           ></div>
+                        )}
+                     </TooltipTrigger>
+                     <TooltipContent>
+                        {element.enableTooltip
+                           ? "Disable Tooltip"
+                           : "Enable Tooltip"}
+                     </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger
+                        asChild
+                        className="size-9 rounded-lg flex items-center justify-center dark:border-zinc-500/50
+                     border border-zinc-200 bg-zinc-100 dark:bg-dark500 relative"
+                     >
+                        <Link to={pathname}>
+                           <Icon name="link" size={14} />
+                        </Link>
+                     </TooltipTrigger>
+                     <TooltipContent>Go to page </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger
+                        onClick={() => {
+                           return Transforms.removeNodes(editor, {
+                              at: path,
+                           });
+                        }}
+                        className="size-9 rounded-lg flex items-center justify-center dark:border-zinc-500/50
+                     border border-zinc-200 bg-zinc-100 dark:bg-dark500 relative"
+                     >
+                        <Icon
+                           name="trash"
+                           className="text-red-500 dark:text-red-400"
+                           size={14}
+                        />
+                     </TooltipTrigger>
+                     <TooltipContent>Delete</TooltipContent>
+                  </Tooltip>
+               </PopoverPanel>
+            </>
+         )}
+      </Popover>
+   );
+}
+
+export function LinkBlockElement({ element, children }: Props) {
+   const view = element.view;
+
+   return view === "icon-inline" ? (
+      <>
+         {element.enableTooltip ? (
+            <Tooltip>
+               <TooltipTrigger className="inline-flex items-baseline gap-1">
+                  <>
+                     <span
+                        className={clsx(
+                           `border-color-sub shadow-1 flex items-center justify-center
+                              self-center  bg-2-sub border shadow-sm`,
+                           !element.removeCircleBorder
+                              ? "size-6 rounded-full overflow-hidden"
+                              : "w-6",
+                        )}
+                     >
+                        {element?.icon?.url ? (
+                           <Image
+                              className={clsx(
+                                 "contain",
+                                 !element.removeCircleBorder
+                                    ? "rounded-full overflow-hidden size-6"
+                                    : "w-6",
+                              )}
+                              width={!element.removeCircleBorder ? 60 : 120}
+                              height={
+                                 !element.removeCircleBorder ? 60 : undefined
+                              }
+                              url={element.icon.url}
+                              alt={element?.name}
+                           />
+                        ) : (
+                           <Icon
+                              name="component"
+                              className="text-1 mx-auto"
+                              size={12}
+                           />
+                        )}
+                     </span>
+                     {!element.hideLinkText ? (
+                        <span className="group-hoverx/link:underline">
+                           {children}
+                        </span>
+                     ) : undefined}
+                  </>
+               </TooltipTrigger>
+               <TooltipContent className="!p-0 z-50">
+                  <Image url={element.icon.url} alt={element?.name} />
+               </TooltipContent>
+            </Tooltip>
+         ) : (
+            <>
+               <span
+                  className={clsx(
+                     `border-color-sub shadow-1 flex items-center justify-center
+                         self-center overflow-hidden bg-2-sub border shadow-sm`,
+                     !element.removeCircleBorder
+                        ? "size-6 rounded-full"
+                        : "w-6",
+                  )}
+               >
+                  {element?.icon?.url ? (
+                     <Image
+                        className={clsx(
+                           "contain",
+                           !element.removeCircleBorder
+                              ? "rounded-full overflow-hidden size-6"
+                              : "w-6",
+                        )}
+                        width={!element.removeCircleBorder ? 60 : 120}
+                        height={!element.removeCircleBorder ? 60 : undefined}
+                        url={element.icon.url}
+                        alt={element?.name}
+                     />
+                  ) : (
+                     <Icon name="component" className="text-1" size={12} />
+                  )}
+               </span>
+               {!element.hideLinkText ? (
+                  <span className="group-hover/link:underline">{children}</span>
+               ) : undefined}
+            </>
+         )}
+      </>
+   ) : view === "icon-block" ? (
+      <>
+         {element.enableTooltip ? (
+            <Tooltip>
+               <TooltipTrigger>
+                  <div className="flex items-center justify-center flex-col gap-1">
+                     {!element.removeCircleBorder ? (
+                        <Image
+                           className="border border-color-sub rounded-full object-none overflow-hidden"
+                           style={{
+                              ...(!element.removeCircleBorder
+                                 ? {
+                                      width: element.iconWidth,
+                                      height: element.iconWidth,
+                                   }
+                                 : undefined),
+                           }}
+                           width={element.iconWidth}
+                           height={element.iconWidth}
+                           url={element.icon.url}
+                           alt={children ? "" : element?.name}
+                        />
+                     ) : (
+                        <Image
+                           className="object-contain"
+                           width={element.iconWidth}
+                           url={element.icon.url}
+                           alt={element?.name}
+                        />
+                     )}
+                     {!element.hideLinkText ? null : (
+                        <div className="group-hover/link:underline">
+                           {children}
+                        </div>
+                     )}
+                  </div>
+               </TooltipTrigger>
+               <TooltipContent className="!p-0 z-50">
+                  <Image url={element.icon.url} alt={element?.name} />
+               </TooltipContent>
+            </Tooltip>
+         ) : (
+            <div className="flex items-center justify-center flex-col gap-1">
+               {!element.removeCircleBorder ? (
+                  <Image
+                     className="border border-color-sub rounded-full object-none overflow-hidden"
+                     style={{
+                        ...(!element.removeCircleBorder
+                           ? {
+                                width: element.iconWidth,
+                                height: element.iconWidth,
+                             }
+                           : undefined),
+                     }}
+                     width={element.iconWidth}
+                     height={element.iconWidth}
+                     url={element.icon.url}
+                     alt={children ? "" : element?.name}
+                  />
+               ) : (
+                  <Image
+                     className="object-contain"
+                     width={element.iconWidth}
+                     url={element.icon.url}
+                     alt={element?.name}
+                  />
+               )}
+               {!element.hideLinkText ? undefined : (
+                  <div className="group-hover/link:underline">{children}</div>
+               )}
+            </div>
+         )}
+      </>
+   ) : null;
 }
