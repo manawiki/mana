@@ -335,8 +335,6 @@ function LinkPopover({ element, children }: Props) {
 
    const { pathname } = new URL(element?.url as string);
 
-   console.log(pathname);
-
    return (
       <Popover className="absolute -left-1 -top-1 z-20 transition-opacity opacity-0 duration-200 ease-out group-hover/link:opacity-100">
          {({ open }) => (
