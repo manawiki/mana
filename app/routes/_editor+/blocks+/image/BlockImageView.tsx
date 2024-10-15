@@ -56,7 +56,7 @@ export function BlockImageView({ element, children }: Props) {
                onClick={() => setIsOpen(true)}
             >
                <Image
-                  className="max-h-80 w-auto mx-auto"
+                  className="w-auto mx-auto"
                   alt="Inline"
                   url={element.url}
                   loading="lazy"
