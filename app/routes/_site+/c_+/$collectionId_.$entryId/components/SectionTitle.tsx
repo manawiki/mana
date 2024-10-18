@@ -19,7 +19,7 @@ export function SectionTitle({
       return (
          <div
             id={customSlug && !section ? customSlug : undefined}
-            className="max-w-[728px] mx-auto scroll-mt-[72px] z-50 relative"
+            className="max-w-[728px] mx-auto scroll-mt-[72px] relative"
          >
             {!customSlug && !section ? (
                <div>

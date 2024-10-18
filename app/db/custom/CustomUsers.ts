@@ -7,10 +7,12 @@ import {
 } from "../collections/users/users.access";
 export const Users: CollectionConfig = {
    slug: "users",
-   auth: true,
+   auth: {
+      useAPIKey: true,
+   },
    access: {
-      read: () => true,
-      create: () => true,
+      read: isStaff,
+      create: isStaff,
       delete: isStaff,
       update: isStaffOrSelf,
    },

@@ -54,6 +54,13 @@ export function CollectionHeader({
 
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
 
+   const showIcon =
+      isEntry && entry?.icon?.url
+         ? true
+         : !isEntry && collection?.icon?.url
+           ? true
+           : false;
+
    return (
       <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
          <div className="laptop:pt-0 z-20 relative">
@@ -152,20 +159,15 @@ export function CollectionHeader({
                <h1 className="font-bold font-header text-2xl tablet:text-3xl pb-3 max-tablet:pr-14">
                   {entryName ?? collectionName}
                </h1>
-               <div className="absolute right-3 laptop:right-0 top-7">
-                  <Avatar
-                     src={isEntry ? entry?.icon?.url : collection?.icon?.url}
-                     className="size-16 bg-3"
-                     initials={
-                        entry?.icon?.url || collection?.icon?.url
-                           ? undefined
-                           : isEntry
-                             ? entryName?.charAt(0)
-                             : collectionName?.charAt(0)
-                     }
-                     options="aspect_ratio=1:1&height=128&width=128"
-                  />
-               </div>
+               {showIcon ? (
+                  <div className="absolute right-3 laptop:right-0 top-7">
+                     <Avatar
+                        src={isEntry ? entry?.icon?.url : collection?.icon?.url}
+                        className="size-16 bg-3"
+                        options="aspect_ratio=1:1&height=128&width=128"
+                     />
+                  </div>
+               ) : undefined}
             </div>
          </div>
          <section className="border-b border-zinc-200/50 dark:border-darkBorder shadow-sm max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
