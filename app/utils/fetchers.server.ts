@@ -88,7 +88,7 @@ export function authRestFetcher({
    body,
 }: {
    path: string;
-   method: "PATCH" | "GET" | "DELETE";
+   method: "PATCH" | "GET" | "DELETE" | "POST";
    body?: any;
 }) {
    try {
