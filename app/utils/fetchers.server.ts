@@ -101,7 +101,7 @@ export function authRestFetcher({
             },
          }),
          ...(body &&
-            method == "PATCH" && {
+            (method == "PATCH" || method == "POST") && {
                body: JSON.stringify({
                   ...body,
                }),
