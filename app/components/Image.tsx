@@ -66,7 +66,11 @@ export function Image({
             width={width ?? searchParams.get("width") ?? undefined}
             height={height ?? searchParams.get("height") ?? undefined}
             alt={alt}
-            src={url ? `${url}?${searchParams.toString()}` : "/favicon.ico"}
+            src={
+               url && URL.canParse(url)
+                  ? `${url}?${searchParams.toString()}`
+                  : "/favicon.ico"
+            }
          />
       );
 
@@ -111,7 +115,11 @@ export function Image({
          alt={alt}
          sizes={srcSet ? `(min-width: 1200px) 728px, 100vw` : undefined}
          srcSet={srcSet}
-         src={url ? `${url}?${searchParams.toString()}` : "/favicon.ico"}
+         src={
+            url && URL.canParse(url)
+               ? `${url}?${searchParams.toString()}`
+               : "/favicon.ico"
+         }
       />
    );
 }
