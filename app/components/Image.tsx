@@ -111,7 +111,7 @@ export function Image({
          alt={alt}
          sizes={srcSet ? `(min-width: 1200px) 728px, 100vw` : undefined}
          srcSet={srcSet}
-         src={`${url}?${searchParams.toString()}` ?? "/favicon.ico"}
+         src={url ? `${url}?${searchParams.toString()}` : "/favicon.ico"}
       />
    );
 }
