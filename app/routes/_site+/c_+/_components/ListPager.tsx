@@ -1,11 +1,20 @@
 import type { TableType } from "@tanstack/react-table";
+import clsx from "clsx";
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 
-export function ListPager({ table }: { table: TableType<any> }) {
+export function ListPager({
+   table,
+   stickyFooter,
+}: {
+   table: TableType<any>;
+   stickyFooter: boolean;
+}) {
    return (
-      <>
-         <div className="flex items-center gap-2 justify-between pt-2">
+      <div
+         className={clsx(stickyFooter ? "bottom-0 sticky bg-3 z-10 py-2" : "")}
+      >
+         <div className="flex items-center gap-2 justify-between">
             <div className="flex items-center gap-1 text-sm">
                <span className="text-1">Page</span>
                <div className="flex items-center gap-1">
@@ -58,6 +67,6 @@ export function ListPager({ table }: { table: TableType<any> }) {
                </Button>
             </div>
          </div>
-      </>
+      </div>
    );
 }

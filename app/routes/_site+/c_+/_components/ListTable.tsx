@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 
 import {
    useReactTable,
@@ -42,6 +42,7 @@ export function ListTable({
    pager = true,
    pageSize = 60,
    globalFilterFn,
+   stickyFooter = false,
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[] | any;
@@ -57,10 +58,11 @@ export function ListTable({
    pageSize?: number;
    pager?: boolean;
    globalFilterFn?: FilterFn<any>;
+   stickyFooter?: boolean;
 }) {
    const FilterContext = useContext(TableFilterContext);
 
-   const [tableData] = useState(() => [...data?.listData?.docs]);
+   const tableData = useMemo(() => [...data?.listData?.docs], [data]);
 
    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -131,7 +133,9 @@ export function ListTable({
                gridContainerClassNames={gridContainerClassNames}
             />
          )}
-         {pager && <ListPager table={table} />}
+         {tableData?.length > pageSize && pager ? (
+            <ListPager table={table} stickyFooter={stickyFooter} />
+         ) : null}
       </>
    );
 }

@@ -228,7 +228,7 @@ export function FilterSection({
                                     return (
                                        <button
                                           className={clsx(
-                                             "text-left rounded-lg px-2 py-1.5 text-sm w-full border border-color dark:border-zinc-700 shadow-sm shadow-1",
+                                             "text-left rounded-lg px-2 py-1.5 text-sm w-full border shadow-sm shadow-1",
                                              cFilters &&
                                                 cFilters.some(
                                                    (filter) =>
@@ -239,8 +239,8 @@ export function FilterSection({
                                                          option.value,
                                                       ),
                                                 )
-                                                ? "dark:bg-dark500 bg-zinc-200/80 border-zinc-400/60 dark:border-zinc-400/50"
-                                                : "dark:bg-dark400 dark:hover:bg-dark450 bg-zinc-50 dark:hover:border-zinc-600 hover:bg-zinc-100 hover:border-zinc-300",
+                                                ? "dark:bg-dark500 bg-zinc-200/80 border-zinc-400/60 dark:border-zinc-500"
+                                                : "dark:bg-dark400 dark:hover:bg-dark450 bg-zinc-50 dark:hover:border-zinc-600  border-color dark:border-zinc-700 hover:bg-zinc-100 hover:border-zinc-300",
                                           )}
                                           key={option.label}
                                           onClick={() => {
