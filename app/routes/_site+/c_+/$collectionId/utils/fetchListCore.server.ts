@@ -9,11 +9,13 @@ export async function fetchListCore({
    payload,
    siteSlug,
    user,
+   isAuthOverride,
 }: {
    request: Request;
    payload: Payload;
    siteSlug: string | undefined;
    user?: RemixRequestContext["user"];
+   isAuthOverride?: boolean;
 }) {
    const url = new URL(request.url).pathname;
 
@@ -82,6 +84,7 @@ export async function fetchListCore({
          isCached: user ? false : true,
          query: LIST_QUERY,
          request,
+         isAuthOverride,
       });
 
       if (listData) {

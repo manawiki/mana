@@ -7,13 +7,14 @@ import { getEntryFields } from "./getEntryFields.server";
 
 //Fetches all entry data.
 export async function fetchEntry({
+   isAuthOverride = false,
    payload,
    params,
    request,
    user,
    rest,
    gql,
-}: RestOrGraphql) {
+}: RestOrGraphql & { isAuthOverride?: boolean }) {
    const { entry } = await getEntryFields({
       payload,
       params,
@@ -32,6 +33,7 @@ export async function fetchEntry({
            query: gql?.query,
            request,
            customPath: undefined,
+           isAuthOverride,
            variables: {
               entryId: entry.id,
               jsonEntryId: entry.id,
@@ -40,8 +42,8 @@ export async function fetchEntry({
         })
       : rest?.depth
         ? user
-           ? authRestFetcher({ path: restPath, method: "GET" })
-           : fetchWithCache(restPath)
+           ? authRestFetcher({ path: restPath, method: "GET", isAuthOverride })
+           : fetchWithCache(restPath, undefined, undefined, isAuthOverride)
         : undefined;
 
    const [data, embeddedContent] = await Promise.all([

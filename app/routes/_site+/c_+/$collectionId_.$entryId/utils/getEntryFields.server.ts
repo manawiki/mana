@@ -89,6 +89,7 @@ export async function getEntryFields({
       //@ts-ignore
       const { entryData }: { entryData: PaginatedDocs<Entry> } = await gqlFetch(
          {
+            isAuthOverride: true,
             isCustomDB: true,
             isCached: user ? false : true,
             query: entryQuery,

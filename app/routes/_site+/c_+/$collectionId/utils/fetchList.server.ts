@@ -16,6 +16,7 @@ export interface ListFetchType {
       query: string;
       variables?: {};
    };
+   isAuthOverride?: boolean;
 }
 
 export async function fetchList({
@@ -23,6 +24,7 @@ export async function fetchList({
    gql,
    payload,
    user,
+   isAuthOverride,
 }: ListFetchType) {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
@@ -32,6 +34,7 @@ export async function fetchList({
          payload,
          siteSlug,
          user,
+         isAuthOverride,
       });
    }
 
@@ -42,6 +45,7 @@ export async function fetchList({
          isCached: user ? false : true,
          query: gql?.query,
          request,
+         isAuthOverride,
          variables: { ...gql?.variables },
       }))
    );
