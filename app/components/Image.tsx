@@ -66,7 +66,7 @@ export function Image({
             width={width ?? searchParams.get("width") ?? undefined}
             height={height ?? searchParams.get("height") ?? undefined}
             alt={alt}
-            src={`${url}?${searchParams.toString()}` ?? "/favicon.ico"}
+            src={url ? `${url}?${searchParams.toString()}` : "/favicon.ico"}
          />
       );
 
