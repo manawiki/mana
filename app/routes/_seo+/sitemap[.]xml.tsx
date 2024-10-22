@@ -6,6 +6,7 @@ import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { fetchSite } from "../_site+/_utils/fetchSite.server";
 import { fetchPublishedPosts } from "../_site+/posts+/utils/fetchPublishedPosts";
 
+import { authRestFetcher } from "~/utils/fetchers.server";
 const toXmlSitemap = (urls: string[]) => {
    const urlsAsXml = urls
       .map((url) => `<url><loc>${url}</loc></url>`)
@@ -65,7 +66,12 @@ export async function loader({
 
          const url = `http://localhost:4000/api/${collection.slug}?depth=0&limit=0&select[slug]=true`;
 
-         const { docs } = await (await fetch(url)).json();
+         const { docs } = await authRestFetcher({
+            isAuthOverride: false,
+            method: "GET",
+            path: url,
+         });
+
          return docs.map(
             ({ slug, id }: any) =>
                `${origin}/c/${collection.slug}/${slug ?? id}`,

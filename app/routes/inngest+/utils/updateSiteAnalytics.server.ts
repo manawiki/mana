@@ -166,6 +166,7 @@ export const updateSiteAnalytics = inngest.createFunction(
                customPageData,
             }: { customPageData: PaginatedDocs<CustomPage> } =
                await authGQLFetcher({
+                  isAuthOverride: true,
                   variables: {
                      customPageSlug: doc.customPageSlug,
                      siteId: siteId,
@@ -213,6 +214,7 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { postData }: { postData: PaginatedDocs<Post> } =
                await authGQLFetcher({
+                  isAuthOverride: true,
                   variables: {
                      siteId: siteId,
                      postSlug: doc?.postSlug,
@@ -280,6 +282,7 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { entryData }: { entryData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
+                  isAuthOverride: true,
                   customPath:
                      customCollection && !!siteDomain
                         ? `https://${siteDomain}:4000/api/graphql`
@@ -349,6 +352,7 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { listData }: { listData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
+                  isAuthOverride: true,
                   customPath:
                      customCollection && !!siteDomain
                         ? `https://${siteDomain}:4000/api/graphql`
@@ -401,6 +405,7 @@ export const updateSiteAnalytics = inngest.createFunction(
       );
 
       const getPostsTotal = (await authRestFetcher({
+         isAuthOverride: true,
          method: "GET",
          path: `https://mana.wiki/api/posts${postTotalQuery}`,
       })) as PaginatedDocs<Post>;
@@ -428,6 +433,7 @@ export const updateSiteAnalytics = inngest.createFunction(
                }) => {
                   if (collection.customDatabase == true) {
                      const totalCustomEntries = await authRestFetcher({
+                        isAuthOverride: true,
                         method: "GET",
                         path: `https://${
                            siteDomain ? siteDomain : `${siteSlug}.mana.wiki`
@@ -436,6 +442,7 @@ export const updateSiteAnalytics = inngest.createFunction(
                      return totalCustomEntries.totalDocs;
                   }
                   const totalCoreEntries = await authRestFetcher({
+                     isAuthOverride: true,
                      method: "GET",
                      path: `https://mana.wiki/api/entries${entryTotalQuery}`,
                   });
@@ -447,6 +454,7 @@ export const updateSiteAnalytics = inngest.createFunction(
 
       // Update site with new data
       await authRestFetcher({
+         isAuthOverride: true,
          method: "PATCH",
          path: `https://mana.wiki/api/sites/${siteId}`,
          body: {
