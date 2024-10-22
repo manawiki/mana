@@ -62,7 +62,10 @@ export function ListTable({
 }) {
    const FilterContext = useContext(TableFilterContext);
 
-   const tableData = useMemo(() => [...data?.listData?.docs], [data]);
+   const tableData = useMemo(
+      () => [...(data?.listData?.docs ?? [])],
+      [data?.listData?.docs],
+   );
 
    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
