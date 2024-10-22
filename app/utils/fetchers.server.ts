@@ -41,14 +41,22 @@ export function authGQLFetcher({
          document,
          variables,
          {
-            ...(request &&
-               !isAuthOverride && {
-                  cookie: request?.headers.get("cookie") ?? "",
-               }),
-            ...(process.env.MANA_APP_KEY &&
-               isAuthOverride && {
-                  Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
-               }),
+            //If the app key is set, we use it as the auth header, only MANA_APP_KEY or CUSTOM_DB_APP_KEY can be set, not both
+            ...(request && !isAuthOverride
+               ? { cookie: request?.headers.get("cookie") ?? "" }
+               : {}),
+            ...(isAuthOverride &&
+            process.env.MANA_APP_KEY &&
+            !process.env.CUSTOM_DB_APP_KEY
+               ? { Authorization: `users API-Key ${process.env.MANA_APP_KEY}` }
+               : {}),
+            ...(isAuthOverride &&
+            process.env.CUSTOM_DB_APP_KEY &&
+            !process.env.MANA_APP_KEY
+               ? {
+                    Authorization: `users API-Key ${process.env.CUSTOM_DB_APP_KEY}`,
+                 }
+               : {}),
          },
       );
    } catch (err) {
@@ -106,10 +114,19 @@ export function authRestFetcher({
    try {
       return fetch(path, {
          method,
-         ...(process.env.MANA_APP_KEY &&
-            isAuthOverride && {
+         ...(isAuthOverride &&
+            process.env.MANA_APP_KEY &&
+            !process.env.CUSTOM_DB_APP_KEY && {
                headers: {
                   Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
+                  "Content-Type": "application/json",
+               },
+            }),
+         ...(isAuthOverride &&
+            process.env.CUSTOM_DB_APP_KEY &&
+            !process.env.MANA_APP_KEY && {
+               headers: {
+                  Authorization: `users API-Key ${process.env.CUSTOM_DB_APP_KEY}`,
                   "Content-Type": "application/json",
                },
             }),

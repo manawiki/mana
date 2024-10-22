@@ -6,7 +6,24 @@ import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { fetchSite } from "../_site+/_utils/fetchSite.server";
 import { fetchPublishedPosts } from "../_site+/posts+/utils/fetchPublishedPosts";
 
-import { authRestFetcher } from "~/utils/fetchers.server";
+import {
+   authGQLFetcher,
+   authRestFetcher,
+   gqlFormat,
+} from "~/utils/fetchers.server";
+import { gql } from "graphql-request";
+
+interface CustomEntry {
+   slug?: string;
+   id: string;
+}
+
+interface TotalCustomEntries {
+   entries: {
+      docs: CustomEntry[];
+   };
+}
+
 const toXmlSitemap = (urls: string[]) => {
    const urlsAsXml = urls
       .map((url) => `<url><loc>${url}</loc></url>`)
@@ -58,22 +75,31 @@ export async function loader({
       overrideAccess: false,
    });
 
-   // console.log("entries: ", entries);
-
    const processCustomEntries = await Promise.all(
       collections!.map(async (collection: Collection) => {
          if (!collection.customDatabase) return [];
 
-         const url = `http://localhost:4000/api/${collection.slug}?depth=0&limit=0&select[slug]=true`;
+         const label = gqlFormat(collection?.slug as string, "list");
 
-         const { docs } = await authRestFetcher({
-            isAuthOverride: false,
-            method: "GET",
-            path: url,
-         });
+         const CUSTOM_ENTRIES_QUERY = gql`
+            query {
+               entries: ${label}(limit:12000) {
+                  docs {
+                     id
+                     slug
+                  }
+               }
+            }
+         `;
 
-         return docs.map(
-            ({ slug, id }: any) =>
+         const totalCustomEntries = (await authGQLFetcher({
+            isAuthOverride: true,
+            isCustomDB: true,
+            document: CUSTOM_ENTRIES_QUERY,
+         })) as TotalCustomEntries;
+
+         return totalCustomEntries.entries.docs.map(
+            ({ slug, id }: CustomEntry) =>
                `${origin}/c/${collection.slug}/${slug ?? id}`,
          );
       }),
