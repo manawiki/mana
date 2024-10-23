@@ -15,6 +15,7 @@ import {
    Outlet,
    Scripts,
    useLoaderData,
+   useLocation,
    useNavigation,
 } from "@remix-run/react";
 import splideCSS from "@splidejs/splide/dist/css/splide-core.min.css";
@@ -90,6 +91,7 @@ export const loader = async ({
          user,
          siteSlug,
          following,
+         origin: new URL(request.url).origin,
       },
       { headers },
    );
@@ -182,10 +184,11 @@ function ProgressBar() {
 }
 
 function App() {
-   const { locale, toast } = useLoaderData<typeof loader>();
+   const { locale, toast, origin } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    const theme = useTheme();
+   const location = useLocation();
 
    useChangeLanguage(locale);
    const { site } = useSiteLoaderData();
@@ -256,6 +259,11 @@ function App() {
                   href="/favicon.ico"
                />
             )}
+            <link
+               //drop search query for canonical url so google won't get confused
+               rel="canonical"
+               href={origin + location.pathname}
+            />
             <Meta />
             <Links />
          </head>
