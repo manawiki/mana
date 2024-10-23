@@ -38,12 +38,15 @@ export function Discover() {
    return (
       <>
          <section className="relative z-10 h-full flex-grow">
-            <div className="border-zinc-300/80 dark:border-zinc-600/50 border-t-2 px-4 relative">
+            <div className="border-zinc-300/80 dark:border-zinc-600/50 border-t-2 px-4 py-20 relative">
                <div className="relative z-20">
                   <main className="mx-auto max-w-2xl">
+                     <div className="pb-7 font-header text-2xl text-center">
+                        Find your wiki
+                     </div>
                      <div className="flex items-center justify-center">
                         <div
-                           className="bg-white dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative -mt-7 dark:bg-dark350
+                           className="bg-white dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative dark:bg-dark350
                          h-12 w-full rounded-xl border-2 border-zinc-300/80 drop-shadow-sm dark:focus-within:border-zinc-600
                         focus-within:border-zinc-300"
                         >
@@ -79,7 +82,7 @@ export function Discover() {
                            </>
                         </div>
                      </div>
-                     <div className="flex items-center justify-between gap-4 pb-4 pt-6">
+                     <div className="flex items-center justify-between gap-4 py-3">
                         <RadioGroup
                            className="flex items-center gap-3"
                            value={category}
@@ -161,7 +164,7 @@ export function Discover() {
                         </RadioGroup>
                      </div>
                   </main>
-                  <div className="relative z-20 grid mobile:grid-cols-1 tablet:grid-cols-3 laptop:grid-cols-4 gap-4 mx-auto max-w-7xl">
+                  <div className="relative z-20 grid mobile:grid-cols-1 tablet:grid-cols-3 laptop:grid-cols-3 gap-4 mx-auto max-w-5xl">
                      {sites?.docs.length === 0 ? (
                         <div className="py-3 text-sm "></div>
                      ) : (

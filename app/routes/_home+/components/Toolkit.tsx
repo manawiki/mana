@@ -34,7 +34,7 @@ export function ToolKit() {
    return (
       <section className="relative max-laptop:px-5">
          <div className="w-full py-20 relative z-20">
-            <div className="laptop:max-w-5xl mx-auto">
+            <div className="max-tablet:px-4 laptop:max-w-5xl mx-auto">
                <div className="font-header text-2xl pb-1.5">
                   Not quite a wiki, quite a bit better
                </div>

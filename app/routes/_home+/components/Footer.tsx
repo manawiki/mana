@@ -42,7 +42,7 @@ export function Footer() {
                   <Link
                      target="_blank"
                      className="hover:underline underline-offset-2 decoration-zinc-400 dark:decoration-zinc-500"
-                     to="https://github.com/manawiki/mana"
+                     to="https://github.com/manawiki"
                   >
                      Github
                   </Link>

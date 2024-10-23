@@ -112,7 +112,6 @@ export default function IndexMain() {
    return (
       <>
          <TopHome />
-         <Discover />
          <GetStartedOptions />
          <ToolKit />
       </>

@@ -280,6 +280,7 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { entryData }: { entryData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
+                  isAuthOverride: true,
                   customPath:
                      customCollection && !!siteDomain
                         ? `https://${siteDomain}:4000/api/graphql`

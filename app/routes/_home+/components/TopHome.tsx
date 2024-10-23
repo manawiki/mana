@@ -3,7 +3,7 @@ import { Image } from "~/components/Image";
 
 import { ManaCore } from "./manacore";
 import { Particles } from "./particles";
-
+import { Link } from "@remix-run/react";
 export function TopHome() {
    return (
       <section className="relative z-10 bg-zinc-900">
@@ -42,27 +42,26 @@ export function TopHome() {
                      data-aos="fade-down"
                      data-aos-delay="200"
                   >
-                     Open-source, user-friendly, and fully customizable. Build
-                     better wikis with Mana.
+                     Powerful, extensible, and customisable. Collect and
+                     organise knowledge with Mana.
                   </p>
                   <div
                      data-aos="fade-down"
                      data-aos-delay="400"
                      className="flex items-center justify-center gap-3.5"
                   >
-                     <a
-                        href="https://github.com/manawiki/mana"
-                        target="_blank"
+                     <Link
+                        to="/join"
                         className="
-                         relative inline-flex w-28 items-center justify-center gap-2 rounded-full border border-transparent
-                         px-3 py-2.5 text-zinc-100 shadow-sm shadow-black/30 transition duration-150 ease-in-out
+                         relative inline-flex w-32 items-center justify-center gap-1 rounded-full border border-transparent
+                         px-3 pl-4 py-2.5 text-white shadow-sm shadow-black/30 transition duration-150 ease-in-out
                          [background:linear-gradient(theme(colors.zinc.800),_theme(colors.zinc.800))_padding-box,_conic-gradient(theme(colors.zinc.400),_theme(colors.zinc.700)_25%,_theme(colors.zinc.700)_75%,_theme(colors.zinc.400)_100%)_border-box]
                          before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-zinc-800/30 hover:text-white"
                         rel="noreferrer"
                      >
-                        <Icon name="github" size={16} />
-                        <span className="pt-0.5 text-sm font-bold">Github</span>
-                     </a>
+                        <span className="text-sm font-bold">Get Started</span>
+                        <Icon name="chevron-right" size={14} />
+                     </Link>
                   </div>
                </div>
             </div>
