@@ -43,7 +43,7 @@ export const entryMeta: MetaFunction = ({
       canonicalURL = `https://${siteDomain ?? `${siteSlug}.mana.wiki`}/c/${data
          ?.entry?.collectionSlug}/${data?.entry?.slug}`;
    } catch (error) {
-      console.error("Error in entryMeta", error, data?.entry);
+      console.error("Error in entryMeta: ", title, canonicalURL, error);
    }
 
    return getMeta({ title, description, image, siteName, canonicalURL });
