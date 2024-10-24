@@ -284,6 +284,11 @@ export function BlockLink({ element, children }: Props) {
       if (canFetch && data && data.name && data.icon?.url) {
          const path = ReactEditor.findPath(editor, element);
 
+         if (!path) {
+            console.log("Path not found", data.name);
+            return;
+         }
+
          const newProperties: Partial<CustomElement> = {
             view: "icon-inline",
             removeCircleBorder: false,
