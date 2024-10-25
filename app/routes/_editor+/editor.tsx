@@ -32,7 +32,7 @@ export function ManaEditor({
    pageId?: string;
    siteId?: string;
    subSectionId?: string | undefined;
-   entryId?: string;
+   entryId?: string | undefined | null;
    collectionEntity?: string;
    collectionSlug?: keyof Config["collections"];
 }) {
@@ -54,9 +54,9 @@ export function ManaEditor({
                siteId,
                pageId,
                collectionSlug,
-               collectionEntity,
-               subSectionId,
-               entryId,
+               ...(entryId ? { entryId } : {}),
+               ...(collectionEntity ? { collectionEntity } : {}),
+               ...(subSectionId ? { subSectionId } : {}),
             },
             { method: "patch", action: "/editor" },
          );
@@ -162,9 +162,9 @@ export async function action({
                   siteId: z.string(),
                   content: z.string(),
                   pageId: z.string(),
-                  subSectionId: z.string(),
-                  entryId: z.string(),
-                  collectionEntity: z.string(),
+                  subSectionId: z.string().optional(),
+                  entryId: z.string().optional(),
+                  collectionEntity: z.string().optional(),
                });
 
                try {
@@ -190,14 +190,12 @@ export async function action({
                } catch (error) {
                   return await payload.create({
                      collection: collectionSlug,
-                     //@ts-ignore
                      data: {
-                        //@ts-ignore
                         relationId: entryId,
                         site: siteId as any,
+                        subSectionId,
                         //@ts-ignore
-                        subSectionId: subSectionId,
-                        collectionEntity: collectionEntity as any,
+                        collectionEntity,
                         content: JSON.parse(content),
                      },
                      user,

@@ -1,7 +1,12 @@
 import type { ReactNode } from "react";
 import { Children, Fragment, useState } from "react";
 
-import { Popover, Transition } from "@headlessui/react";
+import {
+   Popover,
+   PopoverButton,
+   PopoverPanel,
+   Transition,
+} from "@headlessui/react";
 import type { FetcherWithComponents } from "@remix-run/react";
 import clsx from "clsx";
 
@@ -33,7 +38,7 @@ export const EditorCommandBar = ({
    fetcher: FetcherWithComponents<unknown>;
    collectionSlug: keyof Config["collections"];
    collectionId?: string;
-   entryId?: string;
+   entryId?: string | null | undefined;
    postId?: string;
    pageId?: string;
    homeContentId?: string;
@@ -119,7 +124,7 @@ export const EditorCommandBar = ({
                               <Popover className="relative">
                                  {({ open }) => (
                                     <>
-                                       <Popover.Button as="div">
+                                       <PopoverButton as="div">
                                           <Tooltip placement="top">
                                              <TooltipTrigger
                                                 title="Settings"
@@ -143,7 +148,7 @@ export const EditorCommandBar = ({
                                                 Settings
                                              </TooltipContent>
                                           </Tooltip>
-                                       </Popover.Button>
+                                       </PopoverButton>
                                        <Transition
                                           as={Fragment}
                                           enter="transition ease-out duration-200"
@@ -153,13 +158,13 @@ export const EditorCommandBar = ({
                                           leaveFrom="opacity-100 translate-y-0"
                                           leaveTo="opacity-0 translate-y-1"
                                        >
-                                          <Popover.Panel
+                                          <PopoverPanel
                                              className="dark:border-zinc-600 bottom-10 bg-3-sub w-32 shadow-1 p-1
                                                     transform rounded-lg border shadow absolute right-0"
                                           >
                                              {/* @ts-ignore */}
                                              {_secondaryOptions}
-                                          </Popover.Panel>
+                                          </PopoverPanel>
                                        </Transition>
                                     </>
                                  )}
