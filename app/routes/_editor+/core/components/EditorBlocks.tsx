@@ -64,7 +64,6 @@ export function EditorBlocks({
    switch (element.type) {
       case BlockType.Paragraph: {
          if (readOnly) {
-            console.log("element", element);
             // check if children is an empty string, if so, return an empty div
             //otherwise this will create <br /> in span elements and cause html validation errors
             children = children?.[0]?.text === "" ? <div></div> : children;
