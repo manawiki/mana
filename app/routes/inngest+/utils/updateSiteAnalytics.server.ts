@@ -448,6 +448,7 @@ export const updateSiteAnalytics = inngest.createFunction(
 
       // Update site with new data
       await authRestFetcher({
+         isAuthOverride: true,
          method: "PATCH",
          path: `https://mana.wiki/api/sites/${siteId}`,
          body: {
