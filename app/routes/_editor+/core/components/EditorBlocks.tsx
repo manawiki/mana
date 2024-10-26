@@ -66,7 +66,9 @@ export function EditorBlocks({
          if (readOnly) {
             // check if children is an empty string, if so, return an empty div
             //otherwise this will create <br /> in span elements and cause html validation errors
-            children = children?.[0]?.text === "" ? <div></div> : children;
+            if (element?.children[0]?.text === "") {
+               return <p className="mb-3" {...attributes}></p>;
+            }
          }
          return (
             <p className="mb-3" {...attributes}>
