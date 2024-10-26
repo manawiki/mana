@@ -63,13 +63,6 @@ export function EditorBlocks({
 
    switch (element.type) {
       case BlockType.Paragraph: {
-         if (readOnly) {
-            // check if children is an empty string, if so, return an empty div
-            //otherwise this will create <br /> in span elements and cause html validation errors
-            if (element?.children[0]?.text === "") {
-               return <p className="mb-3" {...attributes}></p>;
-            }
-         }
          return (
             <p className="mb-3" {...attributes}>
                {children}
@@ -272,17 +265,10 @@ export function EditorBlocks({
          );
       }
       case BlockType.InlineAd: {
-         // prevent slate from adding <br /> to empty inline ad and causing html validation errors
-         if (readOnly)
-            return (
-               <div contentEditable={false}>
-                  <BlockInlineAd element={element} {...attributes} />
-               </div>
-            );
          return (
             <div contentEditable={false}>
                <BlockInlineAd element={element} {...attributes} />
-               <div style={{ display: "none" }}>{children}</div>
+               {children && <div className="hidden">{children}</div>}
             </div>
          );
       }

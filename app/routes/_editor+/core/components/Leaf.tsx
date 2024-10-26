@@ -1,10 +1,12 @@
 import clsx from "clsx";
-import type { RenderLeafProps } from "slate-react";
+import { useReadOnly, type RenderLeafProps } from "slate-react";
 
 import { Badge } from "~/components/Badge";
 
 import { COLORS } from "./Toolbar";
 export function Leaf({ leaf, children, attributes }: RenderLeafProps) {
+   const readOnly = useReadOnly();
+
    if (leaf.bold) {
       children = <strong>{children}</strong>;
    }
@@ -105,6 +107,11 @@ export function Leaf({ leaf, children, attributes }: RenderLeafProps) {
       children = (
          <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
       );
+   }
+
+   // make sure text empty string never render as br, otherwise <span><br /></span> will cause html validation error
+   if (readOnly && leaf.text === "") {
+      children = "";
    }
 
    return <span {...attributes}>{children}</span>;
