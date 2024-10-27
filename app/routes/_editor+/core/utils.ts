@@ -18,7 +18,7 @@ export function initialValue(): CustomElement[] {
       {
          id,
          type: BlockType.Paragraph,
-         children: [{ text: "" }],
+         children: [{ text: " " }],
       },
    ];
 }
