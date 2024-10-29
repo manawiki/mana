@@ -169,8 +169,9 @@ export function FilterSection({
       filters && (
          <div className="flex items-center gap-3">
             <Button
+               color="purple"
                onClick={() => setFilterToggle(!filterMenuToggle)}
-               className="text-sm h-9 font-bold"
+               className="h-9 !font-bold"
             >
                Filter
                {cFilters && cFilters.length > 0 ? (
@@ -178,7 +179,7 @@ export function FilterSection({
                      {cFilters.length}
                   </span>
                ) : (
-                  <Icon name="arrow-up-down" title="Sort" size={12} />
+                  <Icon name="arrow-up-down" title="Sort" size={16} />
                )}
             </Button>
             <MobileTray
@@ -351,7 +352,7 @@ export function FilterSection({
                <AdminOrStaffOrOwner>
                   <Button
                      type="button"
-                     color="blue"
+                     color="dark/white"
                      target="_blank"
                      className="text-sm flex-none h-9"
                      href={`/admin/collections/${collection?.slug}/create`}
@@ -359,7 +360,7 @@ export function FilterSection({
                         e.target.port = 4000;
                      }}
                   >
-                     <Icon className="text-blue-200" name="plus" size={15} />
+                     <Icon className="" name="plus" size={15} />
                      Add
                   </Button>
                </AdminOrStaffOrOwner>

@@ -99,7 +99,18 @@ export const MobileTray = ({
                         </Button>
                      </div>
                   )}
-                  <div>{children}</div>
+                  <div className="z-50 flex tablet:hidden items-center justify-center fixed bottom-0 left-0 w-full p-3">
+                     <button
+                        onClick={() => onOpenChange(false)}
+                        className="z-50 inline-flex tablet:hidden items-center gap-1 text-zinc-100 font-semibold dark:text-zinc-900
+                     text-sm justify-between dark:bg-zinc-100 bg-zinc-900 py-2 rounded-full px-3 shadow-lg shadow-zinc-200  dark:shadow-zinc-900/50"
+                     >
+                        <Icon name="chevron-down" size={16} />
+                        <span>Close Menu</span>
+                        <Icon name="chevron-down" size={16} />
+                     </button>
+                  </div>
+                  <div className="max-tablet:pb-10">{children}</div>
                </div>
             </Drawer.Content>
          </Drawer.Portal>
