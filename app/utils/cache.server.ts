@@ -313,10 +313,8 @@ export function verboseReporter<Value>({
                const totalTime = performance.now() - getFreshValueStartTs;
                if (event.written) {
                   console.log(
-                     `Fresh cache took ${abbrevatedKey} ${formatDuration(
-                        totalTime,
-                     )}, `,
-                     `${lruCache.size} cached total.`,
+                     `Fresh cache took ${formatDuration(totalTime)}, `,
+                     `${lruCache.size} cached total. ${abbrevatedKey}`,
                   );
                } else {
                   console.log(
@@ -348,10 +346,10 @@ export function verboseReporter<Value>({
                break;
             case "refreshValueSuccess":
                console.log(
-                  `Stale cache ${abbrevatedKey} took ${formatDuration(
+                  `Stale cache took ${formatDuration(
                      performance.now() - refreshValueStartTS,
                   )}, `,
-                  `${lruCache.size} cached total.`,
+                  `${lruCache.size} cached total. ${abbrevatedKey}`,
                );
                break;
             case "refreshValueError":
