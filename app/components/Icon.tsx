@@ -29,7 +29,13 @@ export function Icon({ name, size, title, children, ...props }: IconProps) {
    }
 
    return (
-      <svg viewBox="0 0 24 24" width={size} height={size} {...props}>
+      <svg
+         data-slot="icon"
+         viewBox="0 0 24 24"
+         width={size}
+         height={size}
+         {...props}
+      >
          <title>{title ?? name}</title>
          <use href={`/icons/${name}.svg#${name}`} />
       </svg>

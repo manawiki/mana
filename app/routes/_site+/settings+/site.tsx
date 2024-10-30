@@ -21,7 +21,6 @@ import {
 } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { ImageUploader } from "~/components/ImageUploader";
-import { Input } from "~/components/Input";
 import { Switch, SwitchField } from "~/components/Switch";
 import { Strong, TextLink, Text } from "~/components/Text";
 import { Textarea } from "~/components/Textarea";
@@ -31,6 +30,8 @@ import {
    uploadImage,
 } from "~/utils/upload-handler.server";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
+
+import { InputGroup, Input } from "~/components/Input";
 
 const SettingsSiteSchema = z.object({
    name: z.string().min(3),
@@ -46,6 +47,8 @@ const SettingsSiteSchema = z.object({
    gaTagId: z.string().optional(),
    gaPropertyId: z.string().optional(),
    intent: z.string(),
+   announcementMessage: z.string().optional(),
+   announcementLink: z.string().optional(),
 });
 
 export default function SiteSettings() {
@@ -249,6 +252,33 @@ export default function SiteSettings() {
                         property to generate trending pages.
                      </Description>
                   </Field>
+               </FieldGroup>
+            </Fieldset>
+            <Fieldset className="pb-6 border-b-2 border-color border-dashed mt-6">
+               <Legend>Announcement</Legend>
+               <Text>
+                  Add an announcement to your site to notify users of important
+                  updates or events.
+               </Text>
+               <FieldGroup>
+                  <InputGroup>
+                     <Icon name="text" />
+                     <Input
+                        placeholder="Type your announcement here..."
+                        defaultValue={site?.announcementMessage ?? ""}
+                        name={zo.fields.announcementMessage()}
+                        type="text"
+                     />
+                  </InputGroup>
+                  <InputGroup>
+                     <Icon name="link" />
+                     <Input
+                        placeholder="https://example.com"
+                        defaultValue={site.announcementLink ?? ""}
+                        name={zo.fields.announcementLink()}
+                        type="text"
+                     />
+                  </InputGroup>
                </FieldGroup>
             </Fieldset>
             <Transition

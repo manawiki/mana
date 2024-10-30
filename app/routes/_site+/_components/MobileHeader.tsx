@@ -97,7 +97,7 @@ export function MobileHeader() {
                >
                   Follow
                </Link>
-               <div className="relative z-10 flex w-full items-center justify-end gap-3 py-4 border-b border-color">
+               <div className="relative z-10 flex w-full items-center justify-end gap-3 py-4">
                   <Link
                      to="/join"
                      className="group relative inline-flex h-8 items-center justify-center overflow-hidden 

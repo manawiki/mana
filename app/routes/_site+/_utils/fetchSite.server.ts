@@ -104,6 +104,8 @@ const QUERY = gql`
          trendingPages
          isWhiteLabel
          logoURL
+         announcementMessage
+         announcementLink
          partnerSites {
             id
             slug

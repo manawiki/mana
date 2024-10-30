@@ -166,6 +166,14 @@ export const Sites: CollectionConfig = {
          type: "text",
       },
       {
+         name: "announcementMessage",
+         type: "text",
+      },
+      {
+         name: "announcementLink",
+         type: "text",
+      },
+      {
          name: "admins",
          type: "relationship",
          relationTo: "users",

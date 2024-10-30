@@ -29,9 +29,9 @@ export async function loader({
 }
 export default function Settings() {
    return (
-      <div className="max-laptop:pt-[61px]">
+      <div className="">
          <div
-            className="bg-3 z-10 sticky top-[117px] laptop:top-[61px] dark:bg-bg2Dark
+            className="bg-3 z-10 sticky top-[61px] laptop:top-[61px] dark:bg-bg2Dark
             border-b-2 border-color dark:bg-dark300 bg-zinc-50 h-12 max-tablet:px-3"
          >
             <div className="flex items-center gap-4 font-semibold overflow-y-hidden text-sm overflow-x-auto relative max-w-[728px] mx-auto laptop:w-[728px] h-12">
