@@ -1,7 +1,9 @@
 import { useEffect, type ReactNode } from "react";
 
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
+import clsx from "clsx";
 import { gql, request as gqlRequest } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
@@ -13,16 +15,12 @@ import { zx } from "zodix";
 import type { Collection, Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { Input } from "~/components/Input";
+import { Listbox, ListboxOption, ListboxLabel } from "~/components/Listbox";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { gqlFormat } from "~/utils/to-words";
 
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
-
 import type { CustomElement, LinkElement } from "../../core/types";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-
-import { Listbox, ListboxOption, ListboxLabel } from "~/components/Listbox";
-import { Input } from "~/components/Input";
-import clsx from "clsx";
 
 export async function loader({
    context: { payload, user },
@@ -338,8 +336,6 @@ function LinkPopover({ element, children }: Props) {
 
    const path = ReactEditor.findPath(editor, element);
 
-   const { pathname } = new URL(element?.url as string);
-
    return (
       <Popover className="absolute -left-1 -top-1 z-20 transition-opacity opacity-0 duration-200 ease-out group-hover/link:opacity-100">
          {({ open }) => (
@@ -498,7 +494,7 @@ function LinkPopover({ element, children }: Props) {
                         className="size-9 rounded-lg flex items-center justify-center dark:border-zinc-500/50
                      border border-zinc-200 bg-zinc-100 dark:bg-dark500 relative"
                      >
-                        <Link to={pathname}>
+                        <Link to={element.url!}>
                            <Icon name="link" size={14} />
                         </Link>
                      </TooltipTrigger>
