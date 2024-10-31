@@ -48,7 +48,6 @@ RUN yarn install --frozen-lockfile --production=true
 # Final stage for app image
 FROM base as runtime
 
-RUN corepack enable
 WORKDIR /app
 
 # Install supervisor in the base image
