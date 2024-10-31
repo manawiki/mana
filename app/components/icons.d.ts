@@ -1,4 +1,5 @@
 export type IconName =
+  | "telescope"
   | "hash"
   | "corner-down-right"
   | "chevrons-left"

@@ -15,7 +15,7 @@ import { zx } from "zodix";
 import { gql, gqlRequestWithCache } from "~/utils/cache.server";
 import { gqlEndpoint } from "~/utils/fetchers.server";
 
-import { Discover } from "./components/Discover";
+import { Discover } from "../_exploreuser+/components/Discover";
 import { GetStartedOptions } from "./components/GetStartedOptions";
 import { ToolKit } from "./components/Toolkit";
 import { TopHome } from "./components/TopHome";
@@ -30,7 +30,7 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   if (user) return redirect("/home");
+   if (user) return redirect("/explore");
 
    const { q, c, page } = zx.parseQuery(request, {
       q: z.string().optional(),
@@ -82,6 +82,7 @@ export async function loader({
 
    const data = await gqlRequestWithCache(gqlEndpoint({}), QUERY);
 
+   //@ts-ignore
    const sites = data.sites;
 
    return json(

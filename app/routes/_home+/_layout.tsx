@@ -52,7 +52,7 @@ function Header() {
                      <Link
                         className="flex h-[34px] items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 px-3 text-center 
                                     text-xs font-extrabold uppercase text-white shadow-sm shadow-zinc-950"
-                        to={`/login?redirectTo=/home`}
+                        to="/login"
                      >
                         Login
                      </Link>

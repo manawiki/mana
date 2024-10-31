@@ -22,7 +22,7 @@ export function MobileHeader() {
 
    const isNotSite =
       location.pathname.startsWith("/user") ||
-      location.pathname.startsWith("/home");
+      location.pathname.startsWith("/explore");
 
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
 
@@ -184,7 +184,7 @@ export function MobileHeader() {
                      <Link
                         className="my-4 rounded-xl bg-zinc-800 px-5 py-3
                         text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
-                        to="https://mana.wiki"
+                        to="/explore"
                      >
                         Explore
                      </Link>

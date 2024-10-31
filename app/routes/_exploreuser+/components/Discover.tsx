@@ -11,7 +11,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
 import { useDebouncedValue } from "~/utils/use-debounce";
 
-import type { loader } from "../_index";
+import type { loader } from "../../_home+/_index";
+import { Radio } from "@headlessui/react";
 
 export function Discover() {
    const { q, sites } = useLoaderData<typeof loader>() || {};
@@ -37,14 +38,11 @@ export function Discover() {
 
    return (
       <>
-         <section className="relative z-10 h-full flex-grow">
-            <div className="border-zinc-300/80 dark:border-zinc-600/50 border-t-2 px-4 py-20 relative">
+         <section className="relative z-10 py-5">
+            <div className="px-4 relative">
                <div className="relative z-20">
-                  <main className="mx-auto max-w-2xl">
-                     <div className="pb-7 font-header text-2xl text-center">
-                        Find your wiki
-                     </div>
-                     <div className="flex items-center justify-center">
+                  <main className="mx-auto max-w-7xl">
+                     <div className="flex items-center">
                         <div
                            className="bg-white dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative dark:bg-dark350
                          h-12 w-full rounded-xl border-2 border-zinc-300/80 drop-shadow-sm dark:focus-within:border-zinc-600
@@ -106,7 +104,7 @@ export function Discover() {
                               setCategory(value);
                            }}
                         >
-                           <RadioGroup.Option value="all">
+                           <Radio value="all">
                               {({ checked }) => (
                                  <div
                                     className={clsx(
@@ -124,8 +122,8 @@ export function Discover() {
                                     </Icon>
                                  </div>
                               )}
-                           </RadioGroup.Option>
-                           <RadioGroup.Option value="gaming">
+                           </Radio>
+                           <Radio value="gaming">
                               {({ checked }) => (
                                  <div
                                     className={clsx(
@@ -141,8 +139,8 @@ export function Discover() {
                                     </Icon>
                                  </div>
                               )}
-                           </RadioGroup.Option>
-                           <RadioGroup.Option value="other">
+                           </Radio>
+                           <Radio value="other">
                               {({ checked }) => (
                                  <div
                                     className={clsx(
@@ -160,11 +158,11 @@ export function Discover() {
                                     </Icon>
                                  </div>
                               )}
-                           </RadioGroup.Option>
+                           </Radio>
                         </RadioGroup>
                      </div>
                   </main>
-                  <div className="relative z-20 grid mobile:grid-cols-1 tablet:grid-cols-3 laptop:grid-cols-3 gap-4 mx-auto max-w-5xl">
+                  <div className="relative z-20 grid mobile:grid-cols-1 tablet:grid-cols-2 laptop:grid-cols-4 gap-4 mx-auto max-w-7xl">
                      {sites?.docs.length === 0 ? (
                         <div className="py-3 text-sm "></div>
                      ) : (
@@ -179,11 +177,17 @@ export function Discover() {
                               className="group bg-zinc-50 dark:shadow-zinc-900/50  border-zinc-200/80 hover:border-zinc-300
                               gap-3.5 rounded-2xl border p-2.5 shadow-sm dark:hover:border-zinc-600 dark:bg-dark350 dark:border-zinc-700"
                            >
-                              <Image
-                                 url={site?.banner?.url}
-                                 options="aspect_ratio=1.9:1&height=800"
-                                 className="rounded-lg overflow-hidden shadow-sm shadow-1"
-                              />
+                              <div className="relative max-tablet:min-h-24 tablet:min-h-[150px]">
+                                 {site?.banner?.url ? (
+                                    <Image
+                                       url={site?.banner?.url}
+                                       options="aspect_ratio=1.9:1&height=800"
+                                       className="rounded-lg max-tablet:h-24 object-cover overflow-hidden shadow-sm shadow-1"
+                                    />
+                                 ) : (
+                                    <div className="rounded-lg bg-zinc-300 dark:bg-dark450 block max-tablet:min-h-24 tablet:min-h-[150px]"></div>
+                                 )}
+                              </div>
                               <div className="-mt-9 space-y-1 p-2 flex flex-col ">
                                  <Avatar
                                     src={site.icon?.url}
@@ -240,90 +244,6 @@ export function Discover() {
                            </Link>
                         ))
                      )}
-                  </div>
-                  <div className="flex items-center justify-between gap-4 pt-4 pb-10 relative z-10 max-w-3xl mx-auto">
-                     {sites?.totalPages > 0 && (
-                        <div className="text-1 flex items-center justify-between py-3 pl-1 text-xs">
-                           <div>
-                              Showing{" "}
-                              <span className="font-bold">
-                                 {sites?.pagingCounter}
-                              </span>{" "}
-                              to{" "}
-                              <span className="font-bold">
-                                 {sites?.docs?.length + sites.pagingCounter - 1}
-                              </span>{" "}
-                              of{" "}
-                              <span className="font-bold">
-                                 {sites?.totalDocs}
-                              </span>{" "}
-                              results
-                           </div>
-                           <div className="flex items-center gap-3 text-xs">
-                              {sites?.hasPrevPage ? (
-                                 <button
-                                    className="flex items-center gap-1 font-semibold uppercase hover:underline"
-                                    onClick={() =>
-                                       setSearchParams((searchParams) => {
-                                          searchParams.set(
-                                             "page",
-                                             sites.prevPage as any,
-                                          );
-                                          return searchParams;
-                                       })
-                                    }
-                                 >
-                                    <Icon
-                                       name="chevron-left"
-                                       className="text-zinc-500 w-4.5 h-4.5"
-                                    />
-                                    Prev
-                                 </button>
-                              ) : null}
-                              {sites.hasNextPage && sites.hasPrevPage && (
-                                 <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                              )}
-                              {sites.hasNextPage ? (
-                                 <button
-                                    className="flex items-center gap-1 font-semibold uppercase hover:underline"
-                                    onClick={() =>
-                                       setSearchParams((searchParams) => {
-                                          searchParams.set(
-                                             "page",
-                                             sites.nextPage as any,
-                                          );
-                                          return searchParams;
-                                       })
-                                    }
-                                 >
-                                    Next
-                                    <Icon
-                                       name="chevron-right"
-                                       className="text-zinc-500 w-4.5 h-4.5"
-                                    />
-                                 </button>
-                              ) : null}
-                           </div>
-                        </div>
-                     )}
-                     <div className="border-t flex-grow border-color-sub" />
-                     <Link
-                        className="text-xs text-1 hover:underline group flex items-center gap-1"
-                        to="https://hq.mana.wiki/p/how-to-verify-your-site"
-                     >
-                        How to
-                        <Tooltip placement="top">
-                           <TooltipTrigger>
-                              <Icon
-                                 className="dark:text-dark text-light group-hover:text-teal-500"
-                                 name="badge-check"
-                                 size={14}
-                              />
-                           </TooltipTrigger>
-                           <TooltipContent>Verified</TooltipContent>
-                        </Tooltip>
-                        verify your wiki?
-                     </Link>
                   </div>
                </div>
             </div>

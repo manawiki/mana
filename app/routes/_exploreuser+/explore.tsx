@@ -7,9 +7,13 @@ import { zx } from "zodix";
 import { gqlRequestWithCache } from "~/utils/cache.server";
 import { gqlEndpoint } from "~/utils/fetchers.server";
 
-import { Discover } from "../_home+/components/Discover";
+import { Discover } from "./components/Discover";
 import { ColumnOneMenu } from "../_site+/_components/Column-1-Menu";
 import { MobileHeader } from "../_site+/_components/MobileHeader";
+
+export const meta = () => {
+   return [{ title: "Explore" }];
+};
 
 export async function loader({
    context: { payload, user },
@@ -67,6 +71,7 @@ export async function loader({
 
    const data = await gqlRequestWithCache(gqlEndpoint({}), QUERY);
 
+   //@ts-ignore
    const sites = data.sites;
 
    return json(
@@ -75,12 +80,12 @@ export async function loader({
    );
 }
 
-export default function Home() {
+export default function Explore() {
    return (
       <>
          <MobileHeader />
          <main
-            className="max-laptop:pt-14 grid min-h-screen laptop:auto-cols-[70px_1fr] 
+            className="grid min-h-screen laptop:auto-cols-[70px_1fr] 
                laptop:grid-flow-col"
          >
             <section className="bg-1 border-color relative top-0 z-50 max-laptop:fixed max-laptop:w-full shadow-sm shadow-1 laptop:border-r">
@@ -91,9 +96,7 @@ export default function Home() {
                   <ColumnOneMenu />
                </div>
             </section>
-            <div className="bg-3 pt-11">
-               <Discover />
-            </div>
+            <Discover />
          </main>
       </>
    );

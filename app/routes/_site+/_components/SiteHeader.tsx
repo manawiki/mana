@@ -142,17 +142,37 @@ export function SiteHeader({
                                           <AdminOrStaffOrOwner>
                                              <MenuItem>
                                                 <Link
-                                                   to="/settings/site"
-                                                   className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
+                                                   onMouseOver={(e: any) => {
+                                                      e.target.port = 4000;
+                                                   }}
+                                                   target="_blank"
+                                                   to="/admin"
+                                                   className="text-left flex w-full items-center gap-3 rounded-lg
                                                p-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                                 >
-                                                   <div className="flex-grow">
-                                                      Settings
+                                                   <div className="flex-grow text-sm">
+                                                      Database
                                                    </div>
                                                    <Icon
                                                       size={14}
+                                                      name="database"
+                                                      className="text-zinc-400 size-4.5 flex-none"
+                                                   />
+                                                </Link>
+                                             </MenuItem>
+                                             <MenuItem>
+                                                <Link
+                                                   to="/settings/site"
+                                                   className="text-left flex w-full items-center gap-3 rounded-lg
+                                               p-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                >
+                                                   <div className="flex-grow text-sm">
+                                                      Settings
+                                                   </div>
+                                                   <Icon
+                                                      size={16}
                                                       name="settings"
-                                                      className="text-zinc-400 w-4.5 h-4.5"
+                                                      className="text-zinc-400 size-4.5 flex-none"
                                                    />
                                                 </Link>
                                              </MenuItem>
@@ -170,16 +190,16 @@ export function SiteHeader({
                                                    );
                                                 }}
                                                 type="submit"
-                                                className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
+                                                className="text-left flex w-full items-center gap-3 rounded-lg
                                                p-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                              >
-                                                <div className="flex-grow">
+                                                <div className="flex-grow text-sm">
                                                    Unfollow
                                                 </div>
                                                 <Icon
-                                                   size={14}
+                                                   size={16}
                                                    name="log-out"
-                                                   className="text-zinc-400 w-4.5 h-4.5"
+                                                   className="text-zinc-400 size-4.5 flex-none"
                                                 />
                                              </button>
                                           </MenuItem>
