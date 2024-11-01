@@ -62,7 +62,7 @@ export function BlockHTMLBlock({
          ) : (
             <div className="bg-2 border border-color-sub p-3 rounded-lg shadow-sm shadow-1 text-sm relative">
                <TextareaAutosize
-                  className="w-full resize-none font-mono text-1 focus:ring-0 overflow-hidden text-sm border-0 bg-transparent p-0"
+                  className="w-full resize-none font-mono text-1 focus:ring-0 overflow-hidden text-sm border-0 bg-transparent p-0 max-h-96 overflow-y-auto"
                   defaultValue={HTMLBlockValue}
                   onChange={(event) => updateLabelValue(event.target.value)}
                   placeholder="Start typing..."
