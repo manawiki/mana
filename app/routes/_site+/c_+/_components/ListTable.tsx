@@ -43,6 +43,7 @@ export function ListTable({
    pageSize = 60,
    globalFilterFn,
    stickyFooter = false,
+   hideViewMode = false,
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[] | any;
@@ -59,6 +60,7 @@ export function ListTable({
    pager?: boolean;
    globalFilterFn?: FilterFn<any>;
    stickyFooter?: boolean;
+   hideViewMode?: boolean;
 }) {
    const FilterContext = useContext(TableFilterContext);
 
@@ -117,6 +119,7 @@ export function ListTable({
          {FilterContext?.globalColumnFilters &&
          typeof FilterContext?.setGlobalColumnFilters == "function" ? null : (
             <ListTop
+               hideViewMode={hideViewMode}
                searchPlaceholder={searchPlaceholder}
                collection={collection}
                columnFilters={columnFilters}
