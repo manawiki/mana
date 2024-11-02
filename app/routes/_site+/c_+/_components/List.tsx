@@ -49,6 +49,7 @@ export function List({
    defaultViewType,
    gridView,
    defaultSort,
+   beforeListComponent,
 }: {
    children?: ReactNode;
    columns: AccessorKeyColumnDefBase<any>[];
@@ -57,6 +58,7 @@ export function List({
    gridView?: AccessorKeyColumnDef<any>;
    columnViewability?: VisibilityState;
    defaultSort?: SortingState;
+   beforeListComponent?: ReactNode;
 }) {
    //@ts-ignore
    const { list } = useLoaderData();
@@ -94,6 +96,7 @@ export function List({
             className="mt-6 mb-4 mx-auto flex items-center justify-center"
             selectorId="listDesktopLeaderATF"
          />
+         {beforeListComponent}
          <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
             {!collection?.customDatabase && <AddEntry />}
             {children ? (
