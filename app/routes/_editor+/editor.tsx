@@ -26,6 +26,7 @@ export function ManaEditor({
    entryId,
    collectionEntity,
    collectionSlug,
+   onChange,
 }: {
    fetcher?: FetcherWithComponents<unknown>;
    defaultValue: unknown[];
@@ -35,6 +36,7 @@ export function ManaEditor({
    entryId?: string | undefined | null;
    collectionEntity?: string;
    collectionSlug?: keyof Config["collections"];
+   onChange?: (value: Descendant[]) => void;
 }) {
    const editor = useEditor();
 
@@ -45,7 +47,7 @@ export function ManaEditor({
    const debouncedValue = useDebouncedValue(value, 1000);
 
    useEffect(() => {
-      if (!isMount) {
+      if (!isMount && !onChange) {
          fetcher?.submit(
             //@ts-ignore
             {
@@ -65,7 +67,7 @@ export function ManaEditor({
 
    return (
       <Slate
-         onChange={setValue}
+         onChange={onChange ?? setValue}
          editor={editor}
          initialValue={(value as Descendant[]) ?? initialValue()}
       >

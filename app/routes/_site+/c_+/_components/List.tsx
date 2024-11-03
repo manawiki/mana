@@ -97,7 +97,7 @@ export function List({
             selectorId="listDesktopLeaderATF"
          />
          {beforeListComponent}
-         <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
+         <div className="mx-auto max-w-[728px] max-tablet:px-3 py-4 laptop:pb-14">
             {!collection?.customDatabase && <AddEntry />}
             {children ? (
                children
