@@ -60,6 +60,7 @@ export default buildConfig({
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
+      css: path.resolve(__dirname, "../_custom/admin-panel-styles.css"),
    },
    plugins: [
       selectPlugin(),
