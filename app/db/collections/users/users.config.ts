@@ -3,12 +3,12 @@ import type { CollectionConfig } from "payload/types";
 import {
    isStaff,
    isStaffFieldLevel,
-   isStaffOrSelf,
    isStaffOrSelfFieldLevel,
 } from "./users.access";
 
 export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";
+import { canUpdateUser } from "./users.access";
 
 export const Users: CollectionConfig = {
    slug: usersSlug,
@@ -92,8 +92,8 @@ export const Users: CollectionConfig = {
    access: {
       read: () => true,
       create: () => true,
-      delete: isStaffOrSelf,
-      update: isStaffOrSelf,
+      delete: isStaff,
+      update: canUpdateUser,
       // @ts-expect-error - this is a payload type bug
       admin: isStaff,
    },

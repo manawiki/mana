@@ -4,7 +4,7 @@ import { ContentEmbeds } from "./content-embeds/config";
 import { CustomPages } from "./custom-pages/custom-pages-config";
 import { Entries } from "./entries/entries-config";
 import { HomeContents } from "./home-contents/config";
-import { Images } from "./images/config";
+import { Images } from "./images/images.config";
 import { PostContents } from "./post-contents/post-contents-config";
 import { PostTags } from "./post-tags/post-tags-config";
 import { Posts } from "./posts/posts-config";

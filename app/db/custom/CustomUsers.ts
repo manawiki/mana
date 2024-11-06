@@ -3,7 +3,6 @@ import type { CollectionConfig } from "payload/types";
 import {
    isStaff,
    isStaffFieldLevel,
-   isStaffOrSelf,
    isStaffOrSelfFieldLevel,
 } from "../collections/users/users.access";
 
@@ -16,7 +15,7 @@ export const Users: CollectionConfig = {
       read: isStaff,
       create: isStaff,
       delete: isStaff,
-      update: isStaffOrSelf,
+      update: isStaff,
    },
    fields: [
       {

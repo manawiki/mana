@@ -28,3 +28,9 @@ export const canDeleteImages: Access = async ({ req: { user } }) => {
    // Reject everyone else
    return false;
 };
+
+export const canCreateImage: Access = async ({ req: { user }, data }) => {
+   const isSelf = user?.id === data?.createdBy;
+   const isStaff = user?.roles?.includes("staff");
+   return isStaff || isSelf;
+};

@@ -2,12 +2,8 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canDeleteImages } from "./access";
-import {
-   isStaff,
-   isStaffFieldLevel,
-   isStaffOrSelf,
-} from "../users/users.access";
+import { canDeleteImages, canCreateImage } from "./images.access";
+import { isStaff, isStaffFieldLevel } from "../users/users.access";
 
 export const imagesSlug = "images";
 export const Images: CollectionConfig = {
@@ -16,7 +12,7 @@ export const Images: CollectionConfig = {
       read: (): boolean => true, // Everyone can read Images
       update: isStaff,
       delete: canDeleteImages,
-      create: isStaffOrSelf,
+      create: canCreateImage,
    },
    fields: [
       {

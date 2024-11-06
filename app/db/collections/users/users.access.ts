@@ -13,14 +13,6 @@ export const isStaff: Access<User, User> = ({ req: { user } }) => {
    return Boolean(user?.roles?.includes("staff"));
 };
 
-// This work because the document id here is the user being accessed
-export const isSelf: Access<User, User> = ({ req: { user }, id }) => {
-   return user?.id === id;
-};
-
-export const isStaffOrSelf: Access<User, User> = (props) =>
-   isStaff(props) || isSelf(props);
-
 export const isStaffFieldLevel: FieldAccess<User, User, User> = ({
    req: { user },
 }) => {
@@ -38,3 +30,10 @@ export const isSelfFieldLevel: FieldAccess<User, unknown, User> = ({
 export const isStaffOrSelfFieldLevel: FieldAccess<User, unknown, User> = (
    props,
 ) => isStaffFieldLevel(props) || isSelfFieldLevel(props);
+
+export const canUpdateUser: Access = async ({ req: { user }, id }) => {
+   const isStaff = user?.roles?.includes("staff");
+   const isSelf = user?.id === id;
+
+   return isStaff || isSelf;
+};

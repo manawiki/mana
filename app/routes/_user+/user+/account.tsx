@@ -171,24 +171,24 @@ export const action: ActionFunction = async ({
          });
          if (result.success) {
             const { userAvatar, userAvatarId } = result.data;
-            //Icon
+            //Upload new avatar
             if (userAvatar && !userAvatarId) {
                const upload = await uploadImage({
                   payload,
+                  user,
                   image: userAvatar,
-                  user,
                });
-
-               await payload.update({
-                  collection: "users",
-                  id: user.id,
-                  data: {
-                     //@ts-ignore
-                     avatar: upload?.id,
-                  },
-                  overrideAccess: false,
-                  user,
-               });
+               if (upload) {
+                  await payload.update({
+                     collection: "users",
+                     id: user.id,
+                     data: {
+                        avatar: upload?.id as any,
+                     },
+                     overrideAccess: false,
+                     user,
+                  });
+               }
             }
             //If existing icon, delete it and upload new one
             if (userAvatar && userAvatarId) {
@@ -215,15 +215,7 @@ export const action: ActionFunction = async ({
                   user,
                });
             }
-            // await payload.update({
-            //    collection: "sites",
-            //    id: siteId,
-            //    data: {
-            //       ...result.data,
-            //    },
-            //    overrideAccess: false,
-            //    user,
-            // });
+
             return jsonWithSuccess(null, "Account settings updated");
          }
          if (result.error) {
