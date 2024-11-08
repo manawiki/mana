@@ -23,7 +23,7 @@ let styles = {
       "data-[disabled]:opacity-50",
 
       // Icon
-      "[&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5 [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:tablet:my-1 [&>[data-slot=icon]]:tablet:size-4 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText]",
+      "[&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5  [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:tablet:my-1 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText]",
    ],
    solid: [
       // Optical border, implemented as the button background to avoid corner artifacts
@@ -214,6 +214,8 @@ export const Button = React.forwardRef(function Button(
          {...props}
          className={classes}
          ref={ref as React.ForwardedRef<HTMLAnchorElement>}
+         viewTransition
+         prefetch="intent"
       >
          <TouchTarget>{children}</TouchTarget>
       </Link>

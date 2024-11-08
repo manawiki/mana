@@ -193,9 +193,9 @@ export function FilterSection({
             >
                <>
                   {cFilters && cFilters.length > 0 && (
-                     <div className="max-laptop:pb-4 laptop:absolute laptop:top-3.5">
+                     <div className="max-laptop:pb-4 laptop:absolute laptop:top-3">
                         <Button
-                           className="text-xs max-laptop:py-1.5 max-laptop:pl-2 !laptop:p-0 !laptop:size-7"
+                           className="!h-9"
                            color="light/zinc"
                            onClick={() =>
                               setCFilters &&
@@ -205,13 +205,13 @@ export function FilterSection({
                            <Icon
                               title="Clear Filters"
                               name="refresh-ccw"
-                              size={12}
+                              size={14}
                            />
-                           <span className="laptop:hidden">Refresh</span>
+                           <span className="">Reset</span>
                         </Button>
                      </div>
                   )}
-                  <div className="space-y-6">
+                  <div className="space-y-6 pt-3">
                      {filters.map((filterRow) => {
                         return (
                            <section key={filterRow.id}>
