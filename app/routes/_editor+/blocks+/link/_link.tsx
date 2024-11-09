@@ -545,6 +545,7 @@ export function LinkBlockElement({ element, children }: Props) {
                      >
                         {element?.icon?.url ? (
                            <Image
+                              loading="lazy"
                               className={clsx(
                                  "contain",
                                  !element.removeCircleBorder
@@ -574,7 +575,11 @@ export function LinkBlockElement({ element, children }: Props) {
                   </>
                </TooltipTrigger>
                <TooltipContent className="!p-0 z-50">
-                  <Image url={element.icon.url} alt={element?.name} />
+                  <Image
+                     loading="lazy"
+                     url={element.icon.url}
+                     alt={element?.name}
+                  />
                </TooltipContent>
             </Tooltip>
          ) : (
@@ -590,6 +595,7 @@ export function LinkBlockElement({ element, children }: Props) {
                >
                   {element?.icon?.url ? (
                      <Image
+                        loading="lazy"
                         className={clsx(
                            "contain",
                            !element.removeCircleBorder
@@ -619,6 +625,7 @@ export function LinkBlockElement({ element, children }: Props) {
                   <div className="flex items-center justify-center flex-col gap-1">
                      {!element.removeCircleBorder ? (
                         <Image
+                           loading="lazy"
                            className="border border-color-sub rounded-full object-contain overflow-hidden"
                            style={{
                               ...(!element.removeCircleBorder
@@ -643,6 +650,7 @@ export function LinkBlockElement({ element, children }: Props) {
                         />
                      ) : (
                         <Image
+                           loading="lazy"
                            className="object-contain"
                            width={
                               element.iconWidth
@@ -664,13 +672,18 @@ export function LinkBlockElement({ element, children }: Props) {
                   </div>
                </TooltipTrigger>
                <TooltipContent className="!p-0 z-50">
-                  <Image url={element.icon.url} alt={element?.name} />
+                  <Image
+                     loading="lazy"
+                     url={element.icon.url}
+                     alt={element?.name}
+                  />
                </TooltipContent>
             </Tooltip>
          ) : (
             <div className="flex items-center justify-center flex-col gap-1">
                {!element.removeCircleBorder ? (
                   <Image
+                     loading="lazy"
                      className="border border-color-sub rounded-full object-contain overflow-hidden"
                      style={{
                         width: element.iconWidth,
@@ -687,6 +700,7 @@ export function LinkBlockElement({ element, children }: Props) {
                   />
                ) : (
                   <Image
+                     loading="lazy"
                      className="object-contain"
                      width={
                         element.iconWidth ? element.iconWidth * 2 : undefined
