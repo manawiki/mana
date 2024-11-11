@@ -101,7 +101,7 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                      </ul>
                   </div>
                )}
-               <NewSiteModal />
+               {!site?.hideNewSiteButton && <NewSiteModal />}
             </LoggedIn>
             <div className="fixed bottom-0 left-0 w-[70px] bg-1 border-r border-color py-3">
                <LoggedIn>

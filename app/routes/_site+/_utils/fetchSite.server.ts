@@ -104,6 +104,7 @@ const QUERY = gql`
          trendingPages
          isWhiteLabel
          logoURL
+         hideNewSiteButton
          announcementMessage
          announcementLink
          partnerSites {

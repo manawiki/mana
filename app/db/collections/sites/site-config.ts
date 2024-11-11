@@ -37,6 +37,12 @@ export const Sites: CollectionConfig = {
          defaultValue: false,
       },
       {
+         name: "hideNewSiteButton",
+         type: "checkbox",
+         label: "Hide New Site Button",
+         defaultValue: false,
+      },
+      {
          name: "enableAds",
          type: "checkbox",
          label: "Enable Ads",
