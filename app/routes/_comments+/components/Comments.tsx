@@ -373,6 +373,7 @@ function CommentRow({
                      commentDepth={comment.depth}
                      parentId={parentId}
                      parentSlug={parentSlug}
+                     isCustomSite={isCustomSite}
                      siteId={siteId}
                   />
                </div>
