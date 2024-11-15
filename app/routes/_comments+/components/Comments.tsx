@@ -25,6 +25,7 @@ import { initialValue } from "~/routes/_editor+/core/utils";
 import { isAdding, isProcessing } from "~/utils/form";
 import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 import { Loading } from "~/components/Loading";
+import { DotLoader } from "~/components/DotLoader";
 
 export function Comments({
    comments,
@@ -136,6 +137,8 @@ function CommentRow({
 
    const isDeleted = comment.isDeleted == true;
 
+   const isDeleting = isAdding(fetcher, "deleteComment");
+
    return (
       <>
          <div
@@ -221,7 +224,7 @@ function CommentRow({
                                  userId,
                                  intent: "upVoteComment",
                               },
-                              { method: "post" },
+                              { method: "post", action: "/comments" },
                            )
                         }
                         className="border shadow-sm shadow-emerald-100 dark:shadow-emerald-950/50 active:border-emerald-300 group
@@ -281,8 +284,9 @@ function CommentRow({
                                     )}
                                  </PopoverButton>
                                  <PopoverPanel
+                                    as="div"
                                     className="border-color-sub justify-items-center text-1 bg-3-sub shadow-1 
-                                        gap-1 z-30 rounded-lg border p-1 shadow-sm"
+                                        gap-1 z-30 rounded-lg border p-1 shadow-sm absolute"
                                  >
                                     {comment.isDeleted ? (
                                        <button
@@ -293,7 +297,10 @@ function CommentRow({
                                                    commentId: comment.id,
                                                    intent: "restoreComment",
                                                 },
-                                                { method: "post" },
+                                                {
+                                                   method: "post",
+                                                   action: "/comments",
+                                                },
                                              )
                                           }
                                        >
@@ -312,15 +319,26 @@ function CommentRow({
                                                    commentId: comment.id,
                                                    intent: "deleteComment",
                                                 },
-                                                { method: "post" },
+                                                {
+                                                   method: "post",
+                                                   action: "/comments",
+                                                },
                                              )
                                           }
                                        >
-                                          <Icon
-                                             title="Delete"
-                                             name="archive"
-                                             size={12}
-                                          />
+                                          {isDeleting ? (
+                                             <Icon
+                                                name="loader-2"
+                                                size={12}
+                                                className="animate-spin"
+                                             />
+                                          ) : (
+                                             <Icon
+                                                title="Delete"
+                                                name="archive"
+                                                size={12}
+                                             />
+                                          )}
                                        </button>
                                     )}
                                  </PopoverPanel>
@@ -417,7 +435,7 @@ function CommentsEditor({
             parentSlug: parentSlug,
             siteId: siteId,
          },
-         { method: "POST" },
+         { method: "POST", action: "/comments" },
       );
    }
    function createCommentReply() {
@@ -432,7 +450,7 @@ function CommentsEditor({
             commentDepth: commentDepth ? commentDepth + 1 : 1,
             intent: "createCommentReply",
          },
-         { method: "POST" },
+         { method: "POST", action: "/comments" },
       );
    }
 
@@ -462,10 +480,7 @@ function CommentsEditor({
                )}
             >
                {creatingTopLevelComment || creatingReply ? (
-                  <Icon
-                     name="loader-2"
-                     className="mx-auto h-4 w-4 animate-spin"
-                  />
+                  <DotLoader />
                ) : (
                   "Comment"
                )}

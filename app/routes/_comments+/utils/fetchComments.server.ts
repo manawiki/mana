@@ -4,7 +4,7 @@ import type { Comment } from "payload/generated-types";
 import type { RemixRequestContext } from "remix.env";
 import { gqlFetch } from "~/utils/fetchers.server";
 
-export async function fetchPostComments({
+export async function fetchComments({
    user,
    parentId,
    maxCommentDepth,
@@ -56,7 +56,7 @@ export async function fetchPostComments({
    const query = {
       query: {
          __variables: {
-            parentId: "JSON!",
+            parentId: "String!",
          },
          comments: {
             __aliasFor: "Comments",

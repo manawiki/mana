@@ -50,7 +50,7 @@ import { PostHeaderView } from "./components/PostHeaderView";
 import { PostTableOfContents } from "./components/PostTableOfContents";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { fetchPost } from "./utils/fetchPost.server";
-import { fetchPostComments } from "../../_comments+/utils/fetchPostComments.server";
+import { fetchComments } from "../../_comments+/utils/fetchComments.server";
 import { fetchPostWithSlug } from "./utils/fetchPostWithSlug.server";
 import { AdUnit } from "../_components/RampUnit";
 import { Comments } from "../../_comments+/components/Comments";
@@ -79,7 +79,7 @@ export async function loader({
    });
 
    // This won't initiate loading until `fetchPost` is done, this is intended behavior since we rely on post to be fetched first
-   const comments = fetchPostComments({
+   const comments = fetchComments({
       maxCommentDepth: post.maxCommentDepth,
       parentId: post.id,
       user,
@@ -209,12 +209,12 @@ export default function Post() {
                <EditorView data={postContent} />
             )}
          </main>
-         {/* <Comments
+         <Comments
             comments={comments}
             siteId={post.site.id}
             parentId={post.id}
             parentSlug="posts"
-         /> */}
+         />
       </>
    );
 }
@@ -234,12 +234,6 @@ export async function action({
          "updateSubtitle",
          "updateBanner",
          "deleteBanner",
-         "createTopLevelComment",
-         "createCommentReply",
-         "deleteComment",
-         "updateComment",
-         "upVoteComment",
-         "restoreComment",
       ]),
       field: z.enum(["title"]).optional(),
    });
