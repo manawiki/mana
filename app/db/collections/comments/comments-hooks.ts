@@ -56,14 +56,16 @@ export const updateCommentCount: CollectionAfterChangeHook = async ({
          const parentSlug = doc?.parentSlug;
          const isCustomSite = doc?.isCustomSite;
          if (isCustomSite) {
-            const currentCommentCount = await authRestFetcher({
+            const currentCommentCount = (await authRestFetcher({
                isAuthOverride: true,
                method: "GET",
                path: `http://localhost:4000/api/${parentSlug}/${parentId}?depth=0`,
-            });
+            })) as any;
 
+            //@ts-ignore
             const updatedTotalComments = currentCommentCount?.totalComments
-               ? currentCommentCount?.totalComments + 1
+               ? //@ts-ignore
+                 currentCommentCount?.totalComments + 1
                : 1;
 
             await authRestFetcher({
@@ -78,8 +80,10 @@ export const updateCommentCount: CollectionAfterChangeHook = async ({
                id: parentId,
                depth: 0,
             });
+            //@ts-ignore
             const updatedTotalComments = currentCommentCount?.totalComments
-               ? currentCommentCount?.totalComments + 1
+               ? //@ts-ignore
+                 currentCommentCount?.totalComments + 1
                : 1;
 
             await payload.update({
@@ -112,8 +116,10 @@ export const updateCommentCountAfterDelete: CollectionAfterDeleteHook = async ({
             path: `http://localhost:4000/api/${parentSlug}/${parentId}?depth=0`,
          });
 
+         //@ts-ignore
          const updatedTotalComments = currentCommentCount?.totalComments
-            ? currentCommentCount?.totalComments - 1
+            ? //@ts-ignore
+              currentCommentCount?.totalComments - 1
             : 1;
 
          await authRestFetcher({
@@ -129,8 +135,10 @@ export const updateCommentCountAfterDelete: CollectionAfterDeleteHook = async ({
             depth: 0,
          });
 
+         //@ts-ignore
          const updatedTotalComments = currentCommentCount?.totalComments
-            ? currentCommentCount?.totalComments - 1
+            ? //@ts-ignore
+              currentCommentCount?.totalComments - 1
             : 1;
 
          await payload.update({
