@@ -6,11 +6,11 @@ import { gqlFetch } from "~/utils/fetchers.server";
 
 export async function fetchPostComments({
    user,
-   postId,
+   parentId,
    maxCommentDepth,
 }: {
    user?: RemixRequestContext["user"];
-   postId: string;
+   parentId: string;
    maxCommentDepth: number;
 }) {
    function depthAndDeletionDecorator(array: any, depth = 1) {
@@ -56,14 +56,14 @@ export async function fetchPostComments({
    const query = {
       query: {
          __variables: {
-            postParentId: "JSON!",
+            parentId: "JSON!",
          },
          comments: {
             __aliasFor: "Comments",
             __args: {
                where: {
                   isTopLevel: { equals: true },
-                  postParent: { equals: new VariableType("postParentId") },
+                  parentId: { equals: new VariableType("parentId") },
                },
                sort: "-upVotesStatic",
             },
@@ -92,7 +92,7 @@ export async function fetchPostComments({
    const fetchComments = await gqlFetch({
       isCached: user ? false : true,
       query: graphql_query,
-      variables: { postParentId: postId },
+      variables: { parentId: parentId },
    });
 
    const comments = depthAndDeletionDecorator(

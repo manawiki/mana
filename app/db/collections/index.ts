@@ -1,5 +1,5 @@
 import { Collections } from "./collections/collections-config";
-import { Comments } from "./comments/config";
+import { Comments } from "./comments/comments-config";
 import { ContentEmbeds } from "./content-embeds/config";
 import { CustomPages } from "./custom-pages/custom-pages-config";
 import { Entries } from "./entries/entries-config";

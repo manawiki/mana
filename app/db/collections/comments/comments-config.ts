@@ -7,11 +7,12 @@ import {
    isCommentDeletedField,
    deleteComment,
    canMutateCommentsFieldAsSiteAdmin,
-} from "./access";
+} from "./comments-access";
 import {
    updateCommentCount,
    updateCommentCountAfterDelete,
-} from "./updateCommentCount";
+} from "./comments-hooks";
+
 import { isLoggedIn, isStaff } from "../users/users.access";
 
 export const Comments: CollectionConfig = {
@@ -56,30 +57,14 @@ export const Comments: CollectionConfig = {
          },
       },
       {
-         name: "postParent",
-         type: "relationship",
-         relationTo: "posts",
-         maxDepth: 1,
-         hasMany: false,
-         access: {
-            update: () => false,
-         },
-      },
-      {
-         name: "sectionParentCollection",
-         type: "relationship",
-         relationTo: "collections",
-         maxDepth: 1,
-         access: {
-            update: () => false,
-         },
-      },
-      {
-         name: "sectionParentId",
+         name: "parentId",
          type: "text",
-         access: {
-            update: () => false,
-         },
+         required: true,
+      },
+      {
+         name: "parentSlug",
+         type: "text",
+         required: true,
       },
       {
          name: "isTopLevel",

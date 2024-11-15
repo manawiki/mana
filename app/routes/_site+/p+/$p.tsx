@@ -41,7 +41,6 @@ import {
    uploadImage,
 } from "~/utils/upload-handler.server";
 
-import { CommentHeader, Comments } from "./components/Comments";
 import { PostActionBar } from "./components/PostActionBar";
 import { PostBanner } from "./components/PostBanner";
 import { PostBannerView } from "./components/PostBannerView";
@@ -51,9 +50,10 @@ import { PostHeaderView } from "./components/PostHeaderView";
 import { PostTableOfContents } from "./components/PostTableOfContents";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { fetchPost } from "./utils/fetchPost.server";
-import { fetchPostComments } from "./utils/fetchPostComments.server";
+import { fetchPostComments } from "../../_comments+/utils/fetchPostComments.server";
 import { fetchPostWithSlug } from "./utils/fetchPostWithSlug.server";
 import { AdUnit } from "../_components/RampUnit";
+import { Comments } from "../../_comments+/components/Comments";
 
 export async function loader({
    context: { payload, user },
@@ -81,7 +81,7 @@ export async function loader({
    // This won't initiate loading until `fetchPost` is done, this is intended behavior since we rely on post to be fetched first
    const comments = fetchPostComments({
       maxCommentDepth: post.maxCommentDepth,
-      postId: post.id,
+      parentId: post.id,
       user,
    });
 
@@ -209,14 +209,12 @@ export default function Post() {
                <EditorView data={postContent} />
             )}
          </main>
-         <div className="pt-10">
-            <CommentHeader totalComments={post.totalComments ?? undefined} />
-            <Suspense fallback={<Loading />}>
-               <Await resolve={comments} errorElement={<Loading />}>
-                  {(comments) => <Comments comments={comments} />}
-               </Await>
-            </Suspense>
-         </div>
+         {/* <Comments
+            comments={comments}
+            siteId={post.site.id}
+            parentId={post.id}
+            parentSlug="posts"
+         /> */}
       </>
    );
 }
@@ -492,161 +490,6 @@ export async function action({
             `/posts`,
             `"${postTitle}" successfully deleted`,
          );
-      }
-      case "createTopLevelComment": {
-         const { comment, siteId, postId } = await zx.parseForm(request, {
-            comment: z.string(),
-            siteId: z.string(),
-            postId: z.string(),
-         });
-
-         return await payload.create({
-            collection: "comments",
-            data: {
-               site: siteId as any,
-               comment: JSON.parse(comment),
-               postParent: postId as any,
-               author: user.id as any,
-               isTopLevel: true,
-            },
-         });
-      }
-      case "createCommentReply": {
-         const { comment, commentParentId, commentDepth, postId, siteId } =
-            await zx.parseForm(request, {
-               comment: z.string(),
-               commentParentId: z.string(),
-               commentDepth: z.coerce.number(),
-               postId: z.string(),
-               siteId: z.string(),
-            });
-
-         const commentReply = await payload.create({
-            collection: "comments",
-            data: {
-               site: siteId as any,
-               comment: JSON.parse(comment),
-               postParent: postId as any,
-               author: user.id as any,
-            },
-         });
-
-         const reply = await payload.findByID({
-            collection: "comments",
-            id: commentParentId,
-            depth: 0,
-         });
-
-         let existingReplies = reply?.replies || [];
-
-         await payload.update({
-            collection: "posts",
-            id: postId,
-            data: {
-               maxCommentDepth: commentDepth,
-            },
-         });
-
-         //@ts-ignore
-         await payload.update({
-            collection: "comments",
-            id: commentParentId,
-            data: {
-               //@ts-ignore
-               replies: [commentReply.id, ...existingReplies],
-            },
-         });
-
-         return json({ message: "ok" });
-      }
-      case "upVoteComment": {
-         const { commentId, userId } = await zx.parseForm(request, {
-            commentId: z.string(),
-            userId: z.string(),
-         });
-
-         const comment = await payload.findByID({
-            collection: "comments",
-            id: commentId,
-            depth: 0,
-         });
-
-         const existingVoteStatic = comment?.upVotesStatic ?? 0;
-
-         //@ts-ignore
-         let existingVotes = (comment?.upVotes as string[]) ?? [];
-
-         //If vote exists, remove instead
-         if (existingVotes.includes(userId)) {
-            existingVotes.splice(existingVotes.indexOf(userId), 1);
-            try {
-               return await payload.update({
-                  collection: "comments",
-                  id: commentId,
-                  data: {
-                     //@ts-ignore
-                     upVotes: existingVotes,
-                     //@ts-ignore
-                     upVotesStatic: existingVoteStatic - 1,
-                  },
-               });
-            } catch (err: unknown) {
-               console.log("ERROR");
-               payload.logger.error(`${err}`);
-            }
-         }
-         //@ts-ignore
-         return await payload.update({
-            collection: "comments",
-            id: commentId,
-            data: {
-               upVotes: [...existingVotes, userId],
-               //@ts-ignore
-               upVotesStatic: existingVoteStatic + 1,
-            },
-         });
-      }
-      case "deleteComment": {
-         const { commentId } = await zx.parseForm(request, {
-            commentId: z.string(),
-         });
-         const comment = await payload.findByID({
-            collection: "comments",
-            id: commentId,
-            depth: 0,
-         });
-         //@ts-ignore
-         if (comment.replies && comment?.replies?.length > 0) {
-            return await payload.update({
-               collection: "comments",
-               id: commentId,
-               data: {
-                  isDeleted: true,
-               },
-               overrideAccess: false,
-               user,
-            });
-         }
-         return await payload.delete({
-            collection: "comments",
-            id: commentId,
-            overrideAccess: false,
-            user,
-         });
-      }
-      case "restoreComment": {
-         const { commentId } = await zx.parseForm(request, {
-            commentId: z.string(),
-         });
-         return await payload.update({
-            collection: "comments",
-            id: commentId,
-            data: {
-               isDeleted: false,
-            },
-            overrideAccess: false,
-            user,
-         });
       }
    }
 }

@@ -10,10 +10,12 @@ export const updateCommentCount: CollectionAfterChangeHook = async ({
 }) => {
    try {
       if (operation == "create") {
-         const postParentId = doc.postParent.id;
+         const parentId = doc.parentId;
+         const parentSlug = doc.parentSlug;
+
          const currentCommentCount = await payload.findByID({
-            collection: "posts",
-            id: postParentId,
+            collection: parentSlug,
+            id: parentId,
             depth: 0,
          });
 
@@ -21,8 +23,8 @@ export const updateCommentCount: CollectionAfterChangeHook = async ({
             ? currentCommentCount?.totalComments + 1
             : 1;
          await payload.update({
-            collection: "posts",
-            id: postParentId,
+            collection: parentSlug,
+            id: parentId,
             data: {
                totalComments: updatedTotalComments,
             },
@@ -38,10 +40,12 @@ export const updateCommentCountAfterDelete: CollectionAfterDeleteHook = async ({
    req: { payload },
 }) => {
    try {
-      const postParentId = doc.postParent.id;
+      const parentId = doc.parentId;
+      const parentSlug = doc.parentSlug;
+
       const currentCommentCount = await payload.findByID({
-         collection: "posts",
-         id: postParentId,
+         collection: parentSlug,
+         id: parentId,
          depth: 0,
       });
 
@@ -50,8 +54,8 @@ export const updateCommentCountAfterDelete: CollectionAfterDeleteHook = async ({
          : 1;
 
       await payload.update({
-         collection: "posts",
-         id: postParentId,
+         collection: parentSlug,
+         id: parentId,
          data: {
             totalComments: updatedTotalComments,
          },
