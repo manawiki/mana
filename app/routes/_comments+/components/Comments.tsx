@@ -33,12 +33,14 @@ export function Comments({
    parentId,
    parentSlug,
    totalComments,
+   isCustomSite = false,
 }: {
    comments: Comment[] | null | Promise<Comment[]>;
    siteId: string;
-   parentId: string;
+   parentId: string | number;
    parentSlug: string;
    totalComments: number;
+   isCustomSite?: boolean;
 }) {
    const { user } = useRootLoaderData();
 
@@ -66,6 +68,7 @@ export function Comments({
                         </div>
                      </LoggedOut>
                      <CommentsEditor
+                        isCustomSite={isCustomSite}
                         parentSlug={parentSlug}
                         parentId={parentId}
                         siteId={siteId}
@@ -89,6 +92,7 @@ export function Comments({
                                 topLevelIndex={index}
                                 parentId={parentId}
                                 parentSlug={parentSlug}
+                                isCustomSite={isCustomSite}
                                 siteId={siteId}
                              />
                           ))
@@ -110,15 +114,17 @@ function CommentRow({
    parentId,
    parentSlug,
    siteId,
+   isCustomSite = false,
 }: {
    comment: Comment;
    comments: Comment[];
    userId: string | undefined;
    isNested?: Boolean;
    topLevelIndex?: number;
-   parentId: string;
+   parentId: string | number;
    parentSlug: string;
    siteId: string;
+   isCustomSite?: boolean;
 }) {
    const [isReplyOpen, setReplyOpen] = useState(false);
    const [isCommentExpanded, setCommentExpanded] = useState(true);
@@ -392,6 +398,7 @@ function CommentRow({
                            parentId={parentId}
                            parentSlug={parentSlug}
                            siteId={siteId}
+                           isCustomSite={isCustomSite}
                            isNested
                         />
                      ))}
@@ -413,13 +420,15 @@ function CommentsEditor({
    parentId,
    parentSlug,
    siteId,
+   isCustomSite = false,
 }: {
    commentParentId?: string;
    commentDepth?: number;
    isReply?: boolean;
-   parentId: string;
+   parentId: string | number;
    parentSlug: string;
    siteId: string;
+   isCustomSite?: boolean;
 }) {
    const inlineEditor = useEditor();
    const fetcher = useFetcher({ key: "comments" });
@@ -435,6 +444,7 @@ function CommentsEditor({
             parentId: parentId,
             parentSlug: parentSlug,
             siteId: siteId,
+            isCustomSite: isCustomSite ? "true" : "",
          },
          { method: "POST", action: "/comments" },
       );
@@ -450,6 +460,7 @@ function CommentsEditor({
             parentSlug: parentSlug,
             commentDepth: commentDepth ? commentDepth + 1 : 1,
             intent: "createCommentReply",
+            isCustomSite: isCustomSite ? "true" : "",
          },
          { method: "POST", action: "/comments" },
       );

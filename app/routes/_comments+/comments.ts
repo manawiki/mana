@@ -3,6 +3,8 @@ import { redirect } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 import { ActionFunctionArgs, json } from "@remix-run/server-runtime";
+import { authRestFetcher } from "~/utils/fetchers.server";
+import { jsonWithSuccess } from "remix-toast";
 
 //1) Comments need an accompanying parent entity, parent entity needs: totalComments, maxCommentDepth
 
@@ -28,17 +30,16 @@ export async function action({
 
    switch (intent) {
       case "createTopLevelComment": {
-         const { comment, siteId, parentId, parentSlug } = await zx.parseForm(
-            request,
-            {
+         const { comment, siteId, parentId, parentSlug, isCustomSite } =
+            await zx.parseForm(request, {
                comment: z.string(),
                siteId: z.string(),
                parentId: z.string(),
                parentSlug: z.string(),
-            },
-         );
+               isCustomSite: z.coerce.boolean(),
+            });
 
-         return await payload.create({
+         const createComment = await payload.create({
             collection: "comments",
             data: {
                site: siteId as any,
@@ -47,8 +48,12 @@ export async function action({
                parentSlug: parentSlug,
                author: user.id as any,
                isTopLevel: true,
+               isCustomSite,
             },
          });
+         if (createComment) {
+            return json({ message: "ok" });
+         }
       }
       case "createCommentReply": {
          const {
@@ -58,6 +63,7 @@ export async function action({
             parentId,
             parentSlug,
             siteId,
+            isCustomSite,
          } = await zx.parseForm(request, {
             comment: z.string(),
             commentParentId: z.string(),
@@ -65,6 +71,7 @@ export async function action({
             parentId: z.string(),
             parentSlug: z.string(),
             siteId: z.string(),
+            isCustomSite: z.coerce.boolean(),
          });
 
          const commentReply = await payload.create({
@@ -75,6 +82,7 @@ export async function action({
                parentId: parentId,
                parentSlug: parentSlug,
                author: user.id as any,
+               isCustomSite,
             },
          });
 
@@ -86,13 +94,22 @@ export async function action({
 
          let existingReplies = reply?.replies || [];
 
-         await payload.update({
-            collection: parentSlug,
-            id: parentId,
-            data: {
-               maxCommentDepth: commentDepth,
-            },
-         });
+         if (isCustomSite) {
+            await authRestFetcher({
+               isAuthOverride: true,
+               method: "PATCH",
+               path: `http://localhost:4000/api/${parentSlug}/${parentId}`,
+               body: { maxCommentDepth: commentDepth },
+            });
+         } else {
+            await payload.update({
+               collection: parentSlug,
+               id: parentId,
+               data: {
+                  maxCommentDepth: commentDepth,
+               },
+            });
+         }
 
          //@ts-ignore
          await payload.update({

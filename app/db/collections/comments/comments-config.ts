@@ -36,6 +36,11 @@ export const Comments: CollectionConfig = {
          },
       },
       {
+         name: "isCustomSite",
+         type: "checkbox",
+         defaultValue: false,
+      },
+      {
          name: "isDeleted",
          type: "checkbox",
       },
