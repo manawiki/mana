@@ -210,6 +210,7 @@ export default function Post() {
             )}
          </main>
          <Comments
+            totalComments={post.totalComments}
             comments={comments}
             siteId={post.site.id}
             parentId={post.id}

@@ -32,11 +32,13 @@ export function Comments({
    siteId,
    parentId,
    parentSlug,
+   totalComments,
 }: {
    comments: Comment[] | null | Promise<Comment[]>;
    siteId: string;
    parentId: string;
    parentSlug: string;
+   totalComments: number;
 }) {
    const { user } = useRootLoaderData();
 
@@ -47,51 +49,50 @@ export function Comments({
          <Suspense fallback={<Loading />}>
             <Await resolve={comments} errorElement={<Loading />}>
                {(comments) => (
-                  <div className="mx-auto max-w-[728px] laptop:w-[728px] py-6 laptop:pb-40">
-                     <LoggedIn>
-                        <div className="pb-5">
-                           <CommentsEditor
-                              parentSlug={parentSlug}
-                              parentId={parentId}
-                              siteId={siteId}
-                           />
-                        </div>
-                     </LoggedIn>
-                     {comments && comments.length > 0 ? (
-                        comments.map((comment, index) => (
-                           <CommentRow
-                              key={comment?.id}
-                              userId={user?.id}
-                              comment={comment}
-                              comments={comments}
-                              topLevelIndex={index}
-                              parentId={parentId}
-                              parentSlug={parentSlug}
-                              siteId={siteId}
-                           />
-                        ))
-                     ) : (
-                        <LoggedOut>
-                           <div>
-                              <div className="mb-5 text-sm pl-4 border-l-2 border-color-sub">
-                                 <Link
-                                    className="underline font-bold pr-1 hover:text-blue-500"
-                                    to={`/login?redirectTo=${location.pathname}`}
-                                 >
-                                    Login
-                                 </Link>
-                                 <span className="text-1">
-                                    to leave a comment...
-                                 </span>
-                              </div>
-                              <CommentsEditor
-                                 parentSlug={parentSlug}
-                                 parentId={parentId}
-                                 siteId={siteId}
-                              />
+                  <div className="max-tablet:px-3 mx-auto max-w-[728px] laptop:w-[728px] py-6 laptop:pb-40 border-t-2 border-color-sub pt-5 mt-5">
+                     <LoggedOut>
+                        <div>
+                           <div className="mb-3 text-sm">
+                              <Link
+                                 className="underline font-bold pr-1 hover:text-blue-500"
+                                 to={`/login?redirectTo=${location.pathname}`}
+                              >
+                                 Login
+                              </Link>
+                              <span className="text-1">
+                                 to leave a comment...
+                              </span>
                            </div>
-                        </LoggedOut>
+                        </div>
+                     </LoggedOut>
+                     <CommentsEditor
+                        parentSlug={parentSlug}
+                        parentId={parentId}
+                        siteId={siteId}
+                     />
+                     {totalComments > 0 && (
+                        <div className="flex items-center gap-3 pt-2 pb-4">
+                           <div className="text-base font-header flex items-center gap-1">
+                              <span className="font-bold">{totalComments}</span>
+                              <span className="text-1">Comments</span>
+                           </div>
+                           <span className="text-1 h-0.5 w-full dark:bg-zinc-700 bg-zinc-200/70 rounded-full" />
+                        </div>
                      )}
+                     {comments && comments.length > 0
+                        ? comments.map((comment, index) => (
+                             <CommentRow
+                                key={comment?.id}
+                                userId={user?.id}
+                                comment={comment}
+                                comments={comments}
+                                topLevelIndex={index}
+                                parentId={parentId}
+                                parentSlug={parentSlug}
+                                siteId={siteId}
+                             />
+                          ))
+                        : undefined}
                   </div>
                )}
             </Await>
