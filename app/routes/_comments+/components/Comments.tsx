@@ -51,7 +51,29 @@ export function Comments({
          <Suspense fallback={<Loading />}>
             <Await resolve={comments} errorElement={<Loading />}>
                {(comments) => (
-                  <div className="max-tablet:px-3 mx-auto max-w-[728px] laptop:w-[728px] py-6 laptop:pb-40 border-t-2 border-color-sub pt-5 mt-5">
+                  <div className="max-tablet:px-3 mx-auto max-w-[728px] laptop:w-[728px] py-6 laptop:pb-40 pt-5">
+                     <div className="flex items-center gap-3 pt-2 pb-4">
+                        <div className="text-base font-header flex items-center gap-1 flex-none">
+                           {totalComments > 0 ? (
+                              <>
+                                 <span className="font-bold">
+                                    {totalComments}
+                                 </span>
+                                 <span className="text-1">
+                                    {`Comment${totalComments > 1 ? "s" : ""}`}
+                                 </span>
+                              </>
+                           ) : (
+                              <>
+                                 <Icon name="message-circle" size={16} />
+                                 <span className="text-1">
+                                    Start a discussion
+                                 </span>
+                              </>
+                           )}
+                        </div>
+                        <span className="text-1 h-0.5 w-full dark:bg-zinc-700 bg-zinc-200/70 rounded-full" />
+                     </div>
                      <LoggedOut>
                         <div>
                            <div className="mb-3 text-sm">
@@ -73,15 +95,7 @@ export function Comments({
                         parentId={parentId}
                         siteId={siteId}
                      />
-                     {totalComments > 0 && (
-                        <div className="flex items-center gap-3 pt-2 pb-4">
-                           <div className="text-base font-header flex items-center gap-1">
-                              <span className="font-bold">{totalComments}</span>
-                              <span className="text-1">Comments</span>
-                           </div>
-                           <span className="text-1 h-0.5 w-full dark:bg-zinc-700 bg-zinc-200/70 rounded-full" />
-                        </div>
-                     )}
+
                      {comments && comments.length > 0
                         ? comments.map((comment, index) => (
                              <CommentRow
