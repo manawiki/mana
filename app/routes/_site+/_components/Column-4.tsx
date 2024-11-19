@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -19,6 +19,8 @@ import { useTheme } from "~/utils/client-hints";
 import { Contributors } from "./Contributors";
 import { AdUnit } from "./RampUnit";
 import { DarkModeToggle } from "../action+/theme-toggle";
+import { SideMenu } from "./sidemenu/SideMenu";
+import { ViewSideMenu } from "./sidemenu/ViewSideMenu";
 
 function AboutSection({
    site,
@@ -91,6 +93,8 @@ export function ColumnFour() {
       //@ts-ignore
       groupedTrendingPages.push(trendingPages.slice(i, i + 10));
    }
+
+   const [editMode, setEditMode] = useState(false);
 
    return (
       <section className="relative laptop:z-50 laptop:block">
@@ -336,7 +340,10 @@ export function ColumnFour() {
                   </div>
                )}
             </LoggedOut>
-            <div className="max-laptop:py-4 border-t border-color laptop:h-[54px] justify-center bg-zinc-50 laptop:bg-white dark:bg-bg2Dark flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
+            <div className="tablet:hidden z-10 relative border-t border-color bg-2 pb-3">
+               <ViewSideMenu site={site} />
+            </div>
+            <div className="max-laptop:py-4 border-t border-color laptop:h-[54px] justify-center bg-white dark:bg-bg3Dark flex items-center px-3.5 laptop:w-[333px] z-40 laptop:fixed bottom-0 right-0">
                <div className="justify-between flex items-center max-laptop:max-w-[728px]  w-full gap-3">
                   {!site.isWhiteLabel && (
                      <Link
