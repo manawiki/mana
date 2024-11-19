@@ -63,8 +63,8 @@ const JoinFormSchema = z.object({
    username: z
       .string()
       .regex(
-         new RegExp(/^[a-z0-9]+(-[a-z0-9]+)*$/),
-         "Username contains invalid characters",
+         /^[a-z0-9]+(-[a-z0-9]+)*$/,
+         "Username can only contain lowercase letters, numbers, and hyphens. Hyphens cannot be at the start or end, and cannot be consecutive.",
       )
       .min(3, "Username must be at least 3 characters long")
       .max(24, "Username cannot be more than 24 characters long")
