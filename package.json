@@ -67,6 +67,7 @@
       "compression": "^1.7.4",
       "cross-env": "^7.0.3",
       "date-and-time": "^3.0.3",
+      "date-fns": "^4.1.0",
       "dotenv": "^16.0.3",
       "express": "^4.21.1",
       "graphql": "^16.8.0",
