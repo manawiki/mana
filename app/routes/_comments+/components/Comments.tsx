@@ -163,6 +163,7 @@ function CommentRow({
    return (
       <>
          <div
+            id={comment.id}
             className={clsx(
                isNested
                   ? `relative before:content-[''] before:absolute before:left-3 

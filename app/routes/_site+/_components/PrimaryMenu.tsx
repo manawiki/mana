@@ -159,41 +159,48 @@ export function PrimaryMenu({
                </div>
             )}
          </NavLink>
-         <Tooltip placement="right">
-            <TooltipTrigger>
-               <div
-                  className={clsx(
-                     !isSidebar && "p-1.5",
-                     "hover:dark:bg-dark350 text-left hover:bg-zinc-200/40 text-1 flex items-center gap-3 max-desktop:justify-center desktop:p-1.5 rounded-lg relative group cursor-help",
-                  )}
-               >
-                  <div className="flex items-center gap-3  w-full max-desktop:justify-center">
-                     <div
-                        className={clsx(
-                           isSidebar && "max-desktop:size-8 size-6",
-                           "dark:bg-dark450 bg-zinc-200/50 rounded-md size-6 flex items-center justify-center dark:group-hover:bg-purple-900 group-hover:bg-purple-200",
-                        )}
-                     >
-                        <Icon
-                           name="message-circle"
-                           title="Community"
-                           size={12}
-                           className="dark:text-zinc-300 text-zinc-500 group-hover:dark:text-purple-300 group-hover:text-purple-500"
-                        />
-                     </div>
-                     <div
-                        className={clsx(
-                           isSidebar && "max-desktop:hidden",
-                           "flex-grow font-semibold text-sm dark:text-zinc-600 text-zinc-300",
-                        )}
-                     >
-                        Community
-                     </div>
+         <NavLink
+            // prefetch="intent"
+            className={({ isActive }) =>
+               clsx(
+                  isActive
+                     ? "bg-zinc-200/40 dark:bg-dark350"
+                     : "hover:dark:bg-dark350 hover:bg-zinc-200/40 text-1",
+                  !isSidebar && "p-1.5",
+                  "flex items-center gap-3 max-desktop:justify-center desktop:p-1.5 rounded-lg relative group",
+               )
+            }
+            to="/community"
+         >
+            {({ isActive }) => (
+               <div className="flex items-center gap-3  w-full max-desktop:justify-center">
+                  <div
+                     className={clsx(
+                        isActive
+                           ? "dark:bg-purple-900 bg-purple-200"
+                           : "dark:bg-dark450 bg-zinc-200/50",
+                        isSidebar && "max-desktop:size-8 size-6",
+                        "dark:bg-dark450 bg-zinc-200/50 rounded-md size-6 flex items-center justify-center dark:group-hover:bg-purple-900 group-hover:bg-purple-200",
+                     )}
+                  >
+                     <Icon
+                        name="message-circle"
+                        title="Community"
+                        size={12}
+                        className="dark:text-zinc-300 text-zinc-500 group-hover:dark:text-purple-300 group-hover:text-purple-500"
+                     />
+                  </div>
+                  <div
+                     className={clsx(
+                        isSidebar && "max-desktop:hidden",
+                        "flex-grow font-semibold text-sm",
+                     )}
+                  >
+                     Community
                   </div>
                </div>
-            </TooltipTrigger>
-            <TooltipContent>Coming Soon</TooltipContent>
-         </Tooltip>
+            )}
+         </NavLink>
       </div>
    );
 }

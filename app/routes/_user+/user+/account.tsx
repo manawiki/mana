@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Transition } from "@headlessui/react";
+import { Label, Transition } from "@headlessui/react";
 import { useFetcher } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import type { ActionFunction } from "@remix-run/server-runtime";
@@ -24,6 +24,8 @@ import {
 import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { UserContainer } from "../components/UserContainer";
+import { Input } from "~/components/Input";
+import { Field } from "~/components/Fieldset";
 
 const UserAccountSchema = z.object({
    userAvatar: z.any().optional(),
@@ -72,6 +74,10 @@ export default function UserAccount() {
 
    return (
       <UserContainer title="Account">
+         <Field className="flex flex-col gap-1 mb-6">
+            <Label className="text-xs font-bold pl-0.5">Username</Label>
+            <Input readOnly name="username" value={user?.username} />
+         </Field>
          <fetcher.Form
             //Only onSubmit if we have an uploaded file
             onSubmit={preparedAvatarFile && handleSubmit}
