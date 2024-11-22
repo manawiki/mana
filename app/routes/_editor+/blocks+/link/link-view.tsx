@@ -13,13 +13,11 @@ type Props = {
 };
 
 export function BlockLinkView({ element, children }: Props) {
-   const { hostname } = new URL(element?.url as string);
-
    const { site } = useSiteLoaderData();
 
    const isSelfLink = site?.domain
-      ? hostname === site?.domain
-      : hostname === "mana.wiki";
+      ? element?.url?.includes(site?.domain)
+      : element?.url?.includes("mana.wiki");
 
    if (element.icon) {
       return (
