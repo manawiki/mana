@@ -116,40 +116,39 @@ export function AdUnit({
       }
    }, [startDetect, enableAds]);
 
-   if (!enableAds) return <></>;
+   if (!enableAds) return <div className={className}></div>;
 
    // set Default height to fix ad cls, only in production when adblock is not detected
    if (!detected && process.env.NODE_ENV === "production")
       className = className + " h-[250px] tablet:h-[90px]";
 
    return (
-      <ClientOnly fallback={<div className={className} />}>
-         {() => (
-            <>
-               {!detected && deviceType.isMobile && adType.mobile ? (
-                  <AdUnitSelector
-                     adType={adType.mobile}
-                     selectorId={selectorId}
-                     className={className}
-                  />
-               ) : undefined}
-               {!detected && deviceType.isTablet && adType.tablet ? (
-                  <AdUnitSelector
-                     adType={adType.tablet}
-                     selectorId={selectorId}
-                     className={className}
-                  />
-               ) : undefined}
-               {!detected && deviceType.isDesktop && adType.desktop ? (
-                  <AdUnitSelector
-                     adType={adType.desktop}
-                     selectorId={selectorId}
-                     className={className}
-                  />
-               ) : undefined}
-            </>
-         )}
-      </ClientOnly>
+      <div className={className}>
+         <ClientOnly fallback={<></>}>
+            {() => (
+               <>
+                  {!detected && deviceType.isMobile && adType.mobile && (
+                     <AdUnitSelector
+                        adType={adType.mobile}
+                        selectorId={selectorId}
+                     />
+                  )}
+                  {!detected && deviceType.isTablet && adType.tablet && (
+                     <AdUnitSelector
+                        adType={adType.tablet}
+                        selectorId={selectorId}
+                     />
+                  )}
+                  {!detected && deviceType.isDesktop && adType.desktop && (
+                     <AdUnitSelector
+                        adType={adType.desktop}
+                        selectorId={selectorId}
+                     />
+                  )}
+               </>
+            )}
+         </ClientOnly>
+      </div>
    );
 }
 
