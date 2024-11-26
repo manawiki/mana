@@ -115,10 +115,9 @@ export default function SiteLayout() {
             <RampInit adWebId={adWebId} />
          )}
          <AdUnit
-            className="fixed bottom-0 left-0 w-full h-[50px] z-50 bg-3 flex items-center justify-center"
+            className="tablet:hidden fixed bottom-0 left-0 w-full h-[50px] z-50 bg-3 flex items-center justify-center"
             enableAds={enableAds}
             adType={{
-               tablet: "leaderboard_btf",
                mobile: "leaderboard_btf",
             }}
             selectorId="mobileBottomSticky"
