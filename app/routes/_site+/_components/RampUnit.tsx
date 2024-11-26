@@ -116,7 +116,7 @@ export function AdUnit({
       }
    }, [startDetect, enableAds]);
 
-   if (!enableAds) return <div className={className}></div>;
+   if (!enableAds) return <></>;
 
    // set Default height to fix ad cls, only in production when adblock is not detected
    if (!detected && process.env.NODE_ENV === "production")
