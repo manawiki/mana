@@ -77,7 +77,7 @@ export function Autocomplete({
          ...autocompleteProps,
          detachedMediaQuery: "",
          container: autocompleteContainer.current,
-         initialState: { query },
+         initialState: { query, isOpen: true },
          autoFocus: true,
          placeholder: "Search...",
          classNames: {

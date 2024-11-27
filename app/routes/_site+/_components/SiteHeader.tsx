@@ -8,7 +8,6 @@ import {
    Transition,
 } from "@headlessui/react";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
-import { InstantSearch } from "react-instantsearch";
 
 import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
@@ -23,8 +22,7 @@ import { isAdding } from "~/utils/form";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import { DarkModeToggle } from "../action+/theme-toggle";
-import { searchClient } from "../search/_search";
-import { Autocomplete } from "../search/components/Autocomplete";
+import { SiteSearch } from "../search/SiteSearch";
 
 export function SiteHeader({
    setPrimaryMenuOpen,
@@ -245,9 +243,7 @@ export function SiteHeader({
                         <DarkModeToggle className="size-5" />
                      </div>
                      <div className="flex items-center justify-center gap-2 hover:border-zinc-400 shadow-sm bg-zinc-100 dark:bg-dark500 border border-zinc-300 dark:border-zinc-500 dark:hover:border-zinc-400 rounded-full size-10">
-                        <InstantSearch searchClient={searchClient}>
-                           <Autocomplete site={site} />
-                        </InstantSearch>
+                        <SiteSearch site={site} />
                      </div>
                      <button
                         className="dark:bg-zinc-600 shadow-1 flex size-10 items-center 
