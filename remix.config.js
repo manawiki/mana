@@ -10,7 +10,6 @@ module.exports = {
       "react-code-block",
       "graphql-request",
       /^remix-utils.*/,
-      /^remix-i18next*/,
       /^@epic-web.*/,
    ],
    // ignore all files in routes folder to prevent
