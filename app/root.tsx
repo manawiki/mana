@@ -25,7 +25,6 @@ import rdtStylesheet from "remix-development-tools/index.css";
 import { getToast } from "remix-toast";
 import { Toaster, toast as notify } from "sonner";
 
-import cardCSS from "~/_custom/cards.css";
 import customStylesheetUrl from "~/_custom/styles.css";
 import fonts from "~/styles/fonts.css";
 import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
@@ -115,14 +114,12 @@ export const links: LinksFunction = () => [
    { rel: "preload", href: customStylesheetUrl, as: "style" },
    { rel: "preload", href: splideCSS, as: "style" },
    { rel: "preload", href: reactCropUrl, as: "style" },
-   { rel: "preload", href: cardCSS, as: "style" },
 
    { rel: "stylesheet", href: fonts },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
    { rel: "stylesheet", href: splideCSS },
    { rel: "stylesheet", href: reactCropUrl },
-   { rel: "stylesheet", href: cardCSS },
 
    { rel: "preconnect", href: "https://static.mana.wiki" },
    { rel: "preconnect", href: "https://www.googletagmanager.com" },
