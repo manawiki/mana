@@ -1,8 +1,0 @@
-{
-   "actions": {
-      "delete": "Delete",
-      "publish": "Publish",
-      "unpublish": "Unpublish",
-      "save": "Publish Updates"
-   }
-}

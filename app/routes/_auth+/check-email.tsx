@@ -23,10 +23,6 @@ export const meta: MetaFunction = () => {
    ];
 };
 
-export const handle = {
-   i18n: "auth",
-};
-
 export default function CheckEmail() {
    return (
       <div

@@ -24,11 +24,6 @@ const SiteSchema = z.object({
    siteName: z.string().min(3, "Name is too short."),
 });
 
-export const handle = {
-   // i18n key for this route. This will be used to load the correct translation
-   i18n: "site",
-};
-
 export function NewSiteModal() {
    const [isOpen, setIsOpen] = useState(false);
    const transition = useNavigation();

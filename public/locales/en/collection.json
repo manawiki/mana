@@ -1,8 +1,0 @@
-{
-   "new": {
-      "action": "Add",
-      "name": "Collection Name",
-      "namePlaceholder": "Enter a name...",
-      "slugPlaceholder": "Collection slug..."
-   }
-}

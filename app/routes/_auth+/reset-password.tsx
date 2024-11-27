@@ -25,10 +25,6 @@ export const meta: MetaFunction = () => {
    ];
 };
 
-export const handle = {
-   i18n: "auth",
-};
-
 export default function ResetPassword() {
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);

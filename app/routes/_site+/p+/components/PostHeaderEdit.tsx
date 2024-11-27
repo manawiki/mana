@@ -8,11 +8,6 @@ import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 
 import { PostAuthorHeader } from "./PostAuthorHeader";
 
-export const handle = {
-   // i18n key for this route. This will be used to load the correct translation
-   i18n: "post",
-};
-
 export function PostHeaderEdit({ post }: { post: Post }) {
    const fetcher = useFetcher();
    const [titleValue, setTitleValue] = useState(post.name);
