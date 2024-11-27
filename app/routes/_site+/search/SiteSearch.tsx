@@ -25,12 +25,7 @@ export function SiteSearchOff({
    setSearchOn: (value: boolean) => void;
 }) {
    return (
-      <div
-         className="aa-Autocomplete"
-         aria-expanded="false"
-         aria-haspopup="listbox"
-         aria-labelledby="autocomplete-0-label"
-      >
+      <div className="aa-Autocomplete">
          <button
             type="button"
             className="aa-DetachedSearchButton flex items-center justify-center gap-2 hover:border-zinc-400 shadow-sm bg-zinc-100 dark:bg-dark500 border border-zinc-300 dark:border-zinc-500 dark:hover:border-zinc-400 rounded-full p-1 size-10"

@@ -373,6 +373,7 @@ export function ColumnFour() {
                                        ? site?.logoLightImage?.url
                                        : site?.logoDarkImage?.url
                                  }
+                                 alt={site?.name}
                                  loading="lazy"
                               />
                            </Link>
