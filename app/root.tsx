@@ -195,7 +195,7 @@ function App() {
    const [searchToggle, setSearchToggle] = useState(false);
 
    return (
-      <html className={`font-body scroll-smooth ${theme ?? ""}`}>
+      <html lang="en" className={`font-body scroll-smooth ${theme ?? ""}`}>
          <head>
             {!isBot && <ClientHintCheck />}
             <meta charSet="utf-8" />
