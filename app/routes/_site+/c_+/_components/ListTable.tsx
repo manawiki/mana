@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState, useEffect } from "react";
 
 import {
    useReactTable,
@@ -79,6 +79,7 @@ export function ListTable({
    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
       columnViewability ?? {},
    );
+
    const [pagination, setPagination] = useState<PaginationState>({
       pageIndex: 0,
       pageSize: pageSize,
@@ -113,6 +114,10 @@ export function ListTable({
       onColumnVisibilityChange: setColumnVisibility,
       globalFilterFn: globalFilterFn ?? fuzzyFilter,
    });
+
+   useEffect(() => {
+      setColumnVisibility(columnViewability ?? {});
+   }, [columnViewability]);
 
    return (
       <>
