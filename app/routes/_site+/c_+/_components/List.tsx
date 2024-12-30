@@ -6,6 +6,7 @@ import type {
    AccessorKeyColumnDef,
    AccessorKeyColumnDefBase,
    SortingState,
+   ColumnFiltersState,
 } from "@tanstack/react-table";
 
 import type { Collection } from "~/db/payload-types";
@@ -50,6 +51,7 @@ export function List({
    gridView,
    defaultSort,
    beforeListComponent,
+   defaultFilters,
 }: {
    children?: ReactNode;
    columns: AccessorKeyColumnDefBase<any>[];
@@ -59,7 +61,12 @@ export function List({
    columnViewability?: VisibilityState;
    defaultSort?: SortingState;
    beforeListComponent?: ReactNode;
+   defaultFilters?: ColumnFiltersState;
 }) {
+   // defaultFilters allows setting filters at a starting state; format:
+   // defaultFilters = [{ id: "alignment", value: ["evil"] }];
+   // id is equal to ID for a column, value is an array containing all values that should be filtered
+
    //@ts-ignore
    const { list } = useLoaderData();
    const { site } = useSiteLoaderData();
@@ -112,6 +119,7 @@ export function List({
                   filters={filters}
                   columnViewability={columnViewability}
                   gridView={gridView}
+                  defaultFilters={defaultFilters}
                />
             )}
          </div>

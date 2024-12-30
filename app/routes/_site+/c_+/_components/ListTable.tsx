@@ -44,6 +44,7 @@ export function ListTable({
    globalFilterFn,
    stickyFooter = false,
    hideViewMode = false,
+   defaultFilters,
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[] | any;
@@ -61,6 +62,7 @@ export function ListTable({
    globalFilterFn?: FilterFn<any>;
    stickyFooter?: boolean;
    hideViewMode?: boolean;
+   defaultFilters?: ColumnFiltersState;
 }) {
    const FilterContext = useContext(TableFilterContext);
 
@@ -114,6 +116,10 @@ export function ListTable({
       onColumnVisibilityChange: setColumnVisibility,
       globalFilterFn: globalFilterFn ?? fuzzyFilter,
    });
+
+   useEffect(() => {
+      setColumnFilters(defaultFilters ?? []);
+   }, [defaultFilters]);
 
    useEffect(() => {
       setColumnVisibility(columnViewability ?? {});
