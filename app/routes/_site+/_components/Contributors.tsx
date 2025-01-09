@@ -15,8 +15,8 @@ export function Contributors({
       <>
          <section
             className={clsx(
-               site?.trendingPages?.length == 0 ? "w-full py-4" : "pb-4",
-               "relative z-20 mx-auto max-laptop:max-w-[728px] laptop:px-4  max-tablet:px-4",
+               site?.trendingPages?.length == 0 ? "w-full py-4" : "",
+               "relative z-20 mx-auto max-laptop:max-w-[728px] py-4 laptop:px-4  max-tablet:px-4",
             )}
          >
             <div className="flex items-center pb-3">

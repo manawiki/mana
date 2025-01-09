@@ -217,18 +217,6 @@ export function Discover() {
                                     {site.about}
                                  </div>
                                  <div className="flex items-center justify-between pt-1">
-                                    {site?.followers && (
-                                       <div className="text-[10px] flex items-center gap-1">
-                                          <Icon
-                                             name="users-2"
-                                             size={12}
-                                             className="text-1"
-                                          />
-                                          <span className="dark:text-zinc-500 text-zinc-400">
-                                             {site?.followers}
-                                          </span>
-                                       </div>
-                                    )}
                                     <span className="text-xs dark:text-zinc-500 text-zinc-400 flex items-center gap-1">
                                        <Icon
                                           name="link-2"
