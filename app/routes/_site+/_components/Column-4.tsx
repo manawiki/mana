@@ -52,7 +52,7 @@ function AboutSection({
          )}
          <div
             className={clsx(
-               hasTrending ? "" : "border-b mb-4 pt-2 pb-5 border-color",
+               hasTrending ? "" : "border-b pt-2 pb-5 border-color",
                "space-y-1",
             )}
          >
