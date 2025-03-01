@@ -47,7 +47,7 @@ export function ListPager({
                               : 0;
                            table.setPageIndex(page);
                         }}
-                        className="border p-1 rounded w-16"
+                        className="border p-1 rounded w-16 dark:bg-zinc-800"
                      />
                   </span>
                ) : null}
