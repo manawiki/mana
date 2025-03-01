@@ -52,6 +52,8 @@ export function List({
    defaultSort,
    beforeListComponent,
    defaultFilters,
+   pageSize,
+   paginationShowGoToPage,
 }: {
    children?: ReactNode;
    columns: AccessorKeyColumnDefBase<any>[];
@@ -62,6 +64,8 @@ export function List({
    defaultSort?: SortingState;
    beforeListComponent?: ReactNode;
    defaultFilters?: ColumnFiltersState;
+   pageSize?: number;
+   paginationShowGoToPage?: boolean;
 }) {
    // defaultFilters allows setting filters at a starting state; format:
    // defaultFilters = [{ id: "alignment", value: ["evil"] }];
@@ -120,6 +124,8 @@ export function List({
                   columnViewability={columnViewability}
                   gridView={gridView}
                   defaultFilters={defaultFilters}
+                  pageSize={pageSize}
+                  paginationShowGoToPage={paginationShowGoToPage}
                />
             )}
          </div>

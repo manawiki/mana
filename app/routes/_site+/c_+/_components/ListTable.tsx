@@ -26,6 +26,7 @@ import { ListTop } from "./ListTop";
 import { ListPager } from "./ListPager";
 import { ListView } from "./ListView";
 import { TableFilterContext } from "./ListTableContainer";
+import { ShowMoreButton } from "node_modules/react-instantsearch/dist/es/ui/ShowMoreButton";
 
 export function ListTable({
    data,
@@ -45,6 +46,7 @@ export function ListTable({
    stickyFooter = false,
    hideViewMode = false,
    defaultFilters,
+   paginationShowGoToPage = false,
 }: {
    data: any;
    columns: AccessorKeyColumnDefBase<any>[] | any;
@@ -63,6 +65,7 @@ export function ListTable({
    stickyFooter?: boolean;
    hideViewMode?: boolean;
    defaultFilters?: ColumnFiltersState;
+   paginationShowGoToPage?: boolean;
 }) {
    const FilterContext = useContext(TableFilterContext);
 
@@ -151,7 +154,11 @@ export function ListTable({
             />
          )}
          {tableData?.length > pageSize && pager ? (
-            <ListPager table={table} stickyFooter={stickyFooter} />
+            <ListPager
+               table={table}
+               stickyFooter={stickyFooter}
+               paginationShowGoToPage={paginationShowGoToPage}
+            />
          ) : null}
       </>
    );

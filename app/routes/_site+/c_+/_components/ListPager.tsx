@@ -6,9 +6,11 @@ import { Icon } from "~/components/Icon";
 export function ListPager({
    table,
    stickyFooter,
+   paginationShowGoToPage,
 }: {
    table: TableType<any>;
    stickyFooter: boolean;
+   paginationShowGoToPage: boolean;
 }) {
    return (
       <div
@@ -31,6 +33,24 @@ export function ListPager({
                   <span>{table.getRowCount().toLocaleString()}</span>
                   <span className="text-1">results</span>
                </div>
+               {paginationShowGoToPage ? (
+                  <span className="flex items-center gap-1">
+                     | Go to page:
+                     <input
+                        type="number"
+                        min="1"
+                        max={table.getPageCount()}
+                        defaultValue={table.getState().pagination.pageIndex + 1}
+                        onChange={(e) => {
+                           const page = e.target.value
+                              ? Number(e.target.value) - 1
+                              : 0;
+                           table.setPageIndex(page);
+                        }}
+                        className="border p-1 rounded w-16"
+                     />
+                  </span>
+               ) : null}
             </div>
             <div className="flex items-center gap-1">
                <Button
