@@ -21,6 +21,7 @@ const initTypesenseSchema = async () => {
       connectionTimeoutSeconds: 2,
    });
 
+   // // Output API Keys
    // const searchOnlykey = await client.keys().create({
    //    description: "Search-only key.",
    //    actions: ["documents:search"],
