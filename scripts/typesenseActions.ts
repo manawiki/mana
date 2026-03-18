@@ -39,7 +39,7 @@ const initTypesenseSchema = async () => {
    // console.log(adminOnlykey);
 
    // ====
-   // Define Schema
+   // Define Schema for collections
    // ====
 
    // let schema = {
